@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PropMaster Pro - Rental & Finance Manager</title>
+  
+  <!-- Tailwind CSS & FontAwesome Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    /* Glassmorphism Styles */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+    .glass-modal {
+      background: rgba(18, 24, 38, 0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+    @keyframes pulse-green {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.7; }
+    }
+    .animate-pulse-green {
+      animation: pulse-green 1.8s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans selection:bg-emerald-500 selection:text-white">
+
+  <!-- ========================================== -->
+  <!-- CONFIGURATION: EMBEDDED WEB APP SCRIPT URL -->
+  <!-- ========================================== -->
+  <script>
+    // Paste your Google Apps Script Web App URL below
+    window.APPS_SCRIPT_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+  </script>
+
+  <!-- ========================================== -->
+  <!-- SCREEN 1: LOGIN SCREEN                     -->
+  <!-- ========================================== -->
+  <section id="loginScreen" class="relative flex items-center justify-center min-h-screen w-full overflow-hidden bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=80');">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
+
+    <div class="relative z-10 w-11/12 max-w-md p-8 rounded-3xl glass-card text-white">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white/20 flex items-center justify-center border border-white/30 shadow-inner">
+          <i class="fa-solid fa-house-chimney text-3xl text-emerald-400"></i>
+        </div>
+        <h1 class="text-2xl font-bold tracking-tight">PropMaster Portal</h1>
+        <p class="text-sm text-slate-300">Live Secure Sheet Database</p>
+      </div>
+
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-200 mb-1">Username</label>
+          <input type="text" id="loginUsername" required class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="Enter username">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-200 mb-1">Password</label>
+          <input type="password" id="loginPassword" required class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="Enter password">
+        </div>
+
+        <button type="submit" id="loginBtn" class="w-full py-3.5 mt-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 transition duration-200 font-semibold text-white shadow-lg shadow-emerald-500/30 flex items-center justify-center space-x-2">
+          <span>Login Securely</span>
+          <i class="fa-solid fa-arrow-right text-sm"></i>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SCREEN 2: MAIN DASHBOARD                   -->
+  <!-- ========================================== -->
+  <div id="mainDashboard" class="hidden min-h-screen flex flex-col bg-slate-900">
+    
+    <!-- Top Header -->
+    <header class="sticky top-0 z-40 w-full px-6 py-4 glass-card border-b border-white/10 flex items-center justify-between">
+      <!-- Left Side -->
+      <div class="flex items-center space-x-3">
+        <h1 class="text-xl font-bold tracking-tight text-white">Dashboard</h1>
+        <div class="relative flex items-center justify-center w-3 h-3">
+          <span class="absolute w-3 h-3 rounded-full bg-emerald-400 animate-pulse-green"></span>
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        </div>
+      </div>
+
+      <!-- Center: Search Bar (Icon-only until clicked/focused) -->
+      <div class="relative flex items-center">
+        <input type="text" id="globalSearch" oninput="handleGlobalSearch()" placeholder="Search..." class="w-10 focus:w-64 transition-all duration-300 pl-9 pr-3 py-2 rounded-full bg-white/10 border border-white/20 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer focus:cursor-text">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 text-slate-300 pointer-events-none"></i>
+      </div>
+
+      <!-- Right Side Action Icons -->
+      <div class="flex items-center space-x-4">
+        <!-- Live Reload Icon -->
+        <button onclick="fetchSheetData(true)" title="Live Reload Data" class="p-2.5 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition">
+          <i class="fa-solid fa-rotate text-lg"></i>
+        </button>
+
+        <!-- Plus Action Icon Dropdown -->
+        <div class="relative">
+          <button onclick="togglePlusMenu()" title="Manage" class="p-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white transition shadow-md shadow-emerald-500/20">
+            <i class="fa-solid fa-plus text-lg"></i>
+          </button>
+          <div id="plusMenu" class="hidden absolute right-0 mt-2 w-56 rounded-2xl glass-modal p-2 shadow-2xl z-50 border border-white/10 text-sm">
+            <button onclick="openModal('addPropertyModal')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center space-x-2 text-slate-200">
+              <i class="fa-solid fa-building text-emerald-400 w-5"></i><span>Add Property</span>
+            </button>
+            <button onclick="openModal('editPropertyModal')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center space-x-2 text-slate-200">
+              <i class="fa-solid fa-pen-to-square text-cyan-400 w-5"></i><span>Edit Property Name</span>
+            </button>
+            <button onclick="openModal('deletePropertyModal')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center space-x-2 text-rose-400">
+              <i class="fa-solid fa-trash text-rose-400 w-5"></i><span>Delete Property</span>
+            </button>
+            <div class="my-1 border-t border-white/10"></div>
+            <button onclick="openModal('addFlatModal')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center space-x-2 text-slate-200">
+              <i class="fa-solid fa-door-open text-amber-400 w-5"></i><span>Add Flat</span>
+            </button>
+            <button onclick="openModal('deleteFlatModal')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center space-x-2 text-rose-400">
+              <i class="fa-solid fa-rectangle-xmark text-rose-400 w-5"></i><span>Delete Flat</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Profile Icon (Change Password) -->
+        <button onclick="openModal('changePasswordModal')" title="Profile & Password" class="p-2.5 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition">
+          <i class="fa-solid fa-user-gear text-lg"></i>
+        </button>
+
+        <!-- Logout Icon -->
+        <button onclick="handleLogout()" title="Logout" class="p-2.5 rounded-xl hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 transition">
+          <i class="fa-solid fa-arrow-right-from-bracket text-lg"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 p-6 space-y-8 max-w-7xl mx-auto w-full">
+      
+      <!-- Horizontal Scrollable Properties Row -->
+      <div>
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-3">Properties</h2>
+        <div id="propertiesContainer" class="flex space-x-4 overflow-x-auto pb-3 custom-scrollbar">
+          <!-- Dynamically Injected Property Cards -->
+        </div>
+      </div>
+
+      <!-- Selected Property Banner & Details -->
+      <div id="selectedPropertyInfo" class="p-4 rounded-2xl glass-card flex flex-wrap items-center justify-between text-sm">
+        <div class="flex items-center space-x-3">
+          <span class="text-slate-400">Active Property:</span>
+          <span id="activePropertyTitle" class="font-bold text-emerald-400 text-base">Select a Property</span>
+        </div>
+        <div class="flex items-center space-x-6 text-xs text-slate-300">
+          <div>UPI Name: <span id="propUpiName" class="font-medium text-white">-</span></div>
+          <div>UPI ID: <span id="propUpiId" class="font-medium text-emerald-400">-</span></div>
+          <div>Contact: <span id="propContact" class="font-medium text-white">-</span></div>
+        </div>
+      </div>
+
+      <!-- Flats Section: 3 Units Merged Wide -->
+      <div>
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-3">Flats & Renters</h2>
+        <div id="flatsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Dynamically Injected Merged Flat Cards -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: FLAT DETAIL POPUP (4 SUB-TABS)       -->
+  <!-- ========================================== -->
+  <div id="flatDetailModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+    <div class="relative w-full max-w-5xl h-[88vh] rounded-3xl glass-modal flex flex-col overflow-hidden shadow-2xl">
+      
+      <!-- Modal Top Navigation Bar -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/5">
+        <div class="flex space-x-1 sm:space-x-3 overflow-x-auto text-sm">
+          <button onclick="switchFlatTab('calcTab')" id="btn-calcTab" class="flat-tab-btn px-4 py-2 rounded-xl bg-emerald-500 text-white font-medium">1. Calculation</button>
+          <button onclick="switchFlatTab('histTab')" id="btn-histTab" class="flat-tab-btn px-4 py-2 rounded-xl text-slate-300 hover:bg-white/10">2. History</button>
+          <button onclick="switchFlatTab('profTab')" id="btn-profTab" class="flat-tab-btn px-4 py-2 rounded-xl text-slate-300 hover:bg-white/10">3. Profile</button>
+          <button onclick="switchFlatTab('renterHistTab')" id="btn-renterHistTab" class="flat-tab-btn px-4 py-2 rounded-xl text-slate-300 hover:bg-white/10">4. Renter History</button>
+        </div>
+        <button onclick="closeModal('flatDetailModal')" class="p-2 rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body Content -->
+      <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+
+        <!-- SUB-TAB 1: MONTHLY BILL CALCULATOR -->
+        <div id="calcTab" class="flat-tab-content space-y-6">
+          <div class="flex justify-between items-center border-b border-white/10 pb-3">
+            <h2 class="text-xl font-bold text-emerald-400">Monthly Bill Calculator</h2>
+            <span id="calcFlatName" class="px-3 py-1 rounded-lg bg-white/10 text-sm font-semibold">Flat -</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Billing Month & Year</label>
+              <input type="month" id="calcBillingMonth" class="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white text-sm">
+            </div>
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Rent (₹)</label>
+              <div class="relative">
+                <input type="number" id="calcRent" class="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white text-sm" placeholder="Rent amount">
+                <i class="fa-solid fa-pen absolute right-3 top-3 text-xs text-slate-400"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Utility Consumption Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Electricity -->
+            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+              <h3 class="text-xs font-bold uppercase text-amber-400 flex items-center justify-between">
+                <span>Electricity</span><i class="fa-solid fa-bolt"></i>
+              </h3>
+              <div class="text-xs flex justify-between"><span>Prev:</span><input type="number" id="calcElecPrev" value="0" class="w-20 bg-white/10 px-2 py-0.5 rounded text-right"></div>
+              <div class="text-xs flex justify-between"><span>Curr:</span><input type="number" id="calcElecCurr" oninput="runBillMath()" placeholder="Enter current" class="w-20 bg-white/10 px-2 py-0.5 rounded text-right"></div>
+              <div class="text-xs flex justify-between"><span>Rate (₹):</span><input type="number" id="calcElecRate" value="9" class="w-20 bg-white/10 px-2 py-0.5 rounded text-right"></div>
+              <div class="pt-2 border-t border-white/10 flex justify-between text-xs font-semibold text-slate-200">
+                <span>Units Consumed:</span><span id="calcElecUnits">0</span>
+              </div>
+            </div>
+
+            <!-- PNG Gas -->
+            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+              <h3 class="text-xs font-bold uppercase text-orange-400 flex items-center justify-between">
+                <span>PNG Gas</span><i class="fa-solid fa-fire-burner"></i>
+              </h3>
+              <div class="text-xs flex justify-between"><span>Prev:</span><input type="number" id="calcPngPrev" value="0" class="w-20 bg-white/10 px-2 py-0.5 rounded text-right"></div>
+              <div class="text-xs flex justify-between"><span>Curr:</span><input type="number" id="calcPngCurr" oninput="runBillMath()" placeholder="Enter current" class="w-20 bg-white/10 px-2 py-0.5 rounded text-right"></div>
+              <div class="text-xs flex justify-between"><span>Rate (₹):</span><input type="number" id="calcPngRate" value="45" class="w-20 bg-white/10 px-2 py-0.5 rounded text-right"></div>
+              <div class="pt-2 border-t border-white/10 flex justify-between text-xs font-semibold text-slate-200">
+                <span>Units Consumed:</span><span id="calcPngUnits">0</span>
+              </div>
+            </div>
+
+            <!-- Water -->
+            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+              <h3 class="text-xs font-bold uppercase text-cyan-400 flex items-center justify-between">
+                <span>Water</span><i class="fa-solid fa-droplet"></i>
+              </h3>
+              <div class="text-xs flex justify-between"><span>Prev:</span><input type="number" id="calcWaterPrev" value="0" class="w-20 bg-white/10 px-2 py-0.5 rounded text-right"></div>
+              <div class="text-xs flex justify-between"><span>Curr:</span><input type="number" id="calcWaterCurr" oninput="runBillMath()" placeholder="Enter current" class="w-20 bg-white/10 px-2 py-0.5 rounded text-right"></div>
+              <div class="text-xs flex justify-between"><span>Rate (₹):</span><input type="number" id="calcWaterRate" value="15" class="w-20 bg-white/10 px-2 py-0.5 rounded text-right"></div>
+              <div class="pt-2 border-t border-white/10 flex justify-between text-xs font-semibold text-slate-200">
+                <span>Units Consumed:</span><span id="calcWaterUnits">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional Charges -->
+          <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+            <h3 class="text-xs font-bold uppercase text-slate-300">Additional Charges</h3>
+            <div class="flex flex-wrap items-center gap-3">
+              <input type="text" id="calcAddName" placeholder="Charge Name" class="flex-1 px-3 py-1.5 rounded-lg bg-white/10 text-sm">
+              <select id="calcAddSign" onchange="runBillMath()" class="px-3 py-1.5 rounded-lg bg-slate-800 text-sm">
+                <option value="plus">+</option>
+                <option value="minus">-</option>
+              </select>
+              <input type="number" id="calcAddAmt" oninput="runBillMath()" placeholder="₹ Amount" class="w-32 px-3 py-1.5 rounded-lg bg-white/10 text-sm">
+            </div>
+            <div class="flex justify-between items-center text-sm pt-2">
+              <span class="text-slate-400">Total Additional:</span>
+              <span id="calcTotalAdd" class="font-bold text-white">₹ 0</span>
+            </div>
+          </div>
+
+          <!-- Notes & Due/Total -->
+          <div class="space-y-2">
+            <label class="block text-xs text-slate-400">Important Notes</label>
+            <textarea id="calcNotes" rows="2" class="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white text-sm" placeholder="Additional points..."></textarea>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex justify-between items-center">
+            <span class="text-base font-semibold">Balance Adv / Due:</span>
+            <span id="calcGrandTotal" class="text-2xl font-black text-rose-400">₹ 0</span>
+          </div>
+
+          <button onclick="submitCalculationBill()" class="w-full py-4 rounded-xl bg-emerald-500 hover:bg-emerald-600 font-bold text-white shadow-xl shadow-emerald-500/20">
+            Calculate Bill
+          </button>
+        </div>
+
+        <!-- SUB-TAB 2: BILLED HISTORY LEDGER -->
+        <div id="histTab" class="flat-tab-content hidden space-y-4">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+              <i class="fa-solid fa-clock-rotate-left text-emerald-400"></i>
+              <h2 class="text-lg font-bold">Billed History Ledger</h2>
+            </div>
+            <span id="histFlatName" class="px-3 py-1 rounded-lg bg-white/10 text-xs font-semibold">Flat -</span>
+          </div>
+
+          <div class="relative">
+            <input type="text" id="ledgerSearchInput" oninput="filterLedgerTable()" placeholder="Search tenant, month, status..." class="w-full pl-9 pr-3 py-2 rounded-xl bg-white/10 text-sm focus:outline-none">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
+          </div>
+
+          <div class="overflow-x-auto rounded-2xl border border-white/10">
+            <table class="w-full text-left text-xs whitespace-nowrap">
+              <thead class="bg-white/10 text-slate-300">
+                <tr>
+                  <th class="p-3">Month</th>
+                  <th class="p-3">Tenant Name</th>
+                  <th class="p-3">Rent</th>
+                  <th class="p-3">Elec Details</th>
+                  <th class="p-3">PNG Details</th>
+                  <th class="p-3">Water</th>
+                  <th class="p-3">Total</th>
+                  <th class="p-3">Paid & Mode</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="ledgerTableBody" class="divide-y divide-white/5">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SUB-TAB 3: RENTER PROFILE & UTILITY FORM -->
+        <div id="profTab" class="flat-tab-content hidden space-y-6">
+          <div class="text-center">
+            <h3 class="text-xs uppercase font-bold tracking-widest text-emerald-400 mb-2">Renter Images</h3>
+            <div class="flex flex-wrap justify-center gap-6">
+              <div class="w-28 h-28 rounded-2xl bg-white/5 border border-white/20 flex flex-col items-center justify-center overflow-hidden">
+                <img id="profImgPreview" src="" alt="Profile Preview" class="hidden w-full h-full object-cover">
+                <i id="profImgIcon" class="fa-solid fa-user text-3xl text-slate-500"></i>
+              </div>
+              <div class="w-48 h-28 rounded-2xl bg-white/5 border border-white/20 flex flex-col items-center justify-center overflow-hidden">
+                <img id="aadhaarImgPreview" src="" alt="Aadhaar Preview" class="hidden w-full h-full object-cover">
+                <i id="aadhaarImgIcon" class="fa-solid fa-id-card text-3xl text-slate-500"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Left Side: Rent & Utility Details -->
+            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+              <h4 class="text-xs font-bold uppercase text-slate-300">Rent & Utility Details</h4>
+              <input type="number" id="pRentAmt" placeholder="Rent Amount" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
+              <input type="text" id="pFlatName" readonly class="w-full px-3 py-1.5 rounded-lg bg-white/5 text-xs text-slate-400">
+              <input type="text" id="pPngNum" placeholder="PNG Consumer ID" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
+              <input type="text" id="pPngMeter" placeholder="PNG Meter Number" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
+              <input type="text" id="pWaterNum" placeholder="Water Number" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
+              <input type="text" id="pWaterMeter" placeholder="Water Meter Number" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
+              <input type="text" id="pElecMeter" placeholder="Electricity Meter Number" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
+              <button onclick="saveRentUtilitySettings()" class="w-full py-2 mt-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-xs font-bold">
+                Update Core Utilities
+              </button>
+            </div>
+
+            <!-- Right Side: Renter Profile Details -->
+            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+              <h4 class="text-xs font-bold uppercase text-slate-300">Renter Profile</h4>
+              <input type="text" id="pRenterName" placeholder="Renter Full Name" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
+              <input type="text" id="pAadhaarNum" placeholder="12-Digit Identity Mask" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
+              <input type="text" id="pMobile" placeholder="Primary Mobile" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
+              <input type="text" id="pAltMobile" placeholder="Alternative Mobile" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
+              <input type="text" id="pAddress" placeholder="Permanent Address" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
+              <input type="number" id="pMembers" placeholder="Total Family Members" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
+              
+              <div class="grid grid-cols-2 gap-2">
+                <input type="date" id="pJoinDate" title="Join Date" class="px-2 py-1.5 rounded-lg bg-white/10 text-xs">
+                <input type="date" id="pLeaveDate" title="Vacate Date" class="px-2 py-1.5 rounded-lg bg-white/10 text-xs">
+              </div>
+
+              <select id="pStatus" class="w-full px-3 py-1.5 rounded-lg bg-slate-800 text-xs">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+
+              <button onclick="submitRenterSmartProfile()" class="w-full py-2 mt-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-xs font-bold">
+                Submit Profile & Sync
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUB-TAB 4: RENTER HISTORY & FINANCIAL RECORDS -->
+        <div id="renterHistTab" class="flat-tab-content hidden space-y-6">
+          <div class="flex items-center space-x-2 border-b border-white/10 pb-3">
+            <i class="fa-solid fa-file-invoice-dollar text-emerald-400"></i>
+            <h2 class="text-base font-bold">Renter History & Financial Records</h2>
+          </div>
+
+          <!-- Top Profile Card -->
+          <div class="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-4">
+              <div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center font-bold text-emerald-400 text-lg">
+                <i class="fa-solid fa-user"></i>
+              </div>
+              <div>
+                <div class="flex items-center space-x-2">
+                  <span id="rhName" class="font-bold text-white text-sm">-</span>
+                  <span id="rhStatusBadge" class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/20 text-emerald-400">Active</span>
+                </div>
+                <div class="text-xs text-slate-400 mt-0.5">Stay: <span id="rhStaySpan">-</span></div>
+              </div>
+            </div>
+            <button class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-medium">View Profile & Docs</button>
+          </div>
+
+          <!-- Metrics Horizontal Bar -->
+          <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div class="p-3 rounded-xl bg-white/5 text-center">
+              <div class="text-[10px] uppercase text-slate-400">Total Billed</div>
+              <div id="rhBilled" class="text-sm font-bold text-white mt-1">₹ 0</div>
+            </div>
+            <div class="p-3 rounded-xl bg-white/5 text-center">
+              <div class="text-[10px] uppercase text-slate-400">Total Paid</div>
+              <div id="rhPaid" class="text-sm font-bold text-emerald-400 mt-1">₹ 0</div>
+            </div>
+            <div class="p-3 rounded-xl bg-white/5 text-center">
+              <div class="text-[10px] uppercase text-slate-400">Total Rent</div>
+              <div id="rhRent" class="text-sm font-bold text-white mt-1">₹ 0</div>
+            </div>
+            <div class="p-3 rounded-xl bg-white/5 text-center">
+              <div class="text-[10px] uppercase text-slate-400">Total Utility</div>
+              <div id="rhUtility" class="text-sm font-bold text-white mt-1">₹ 0</div>
+            </div>
+            <div class="p-3 rounded-xl bg-white/5 text-center col-span-2 md:col-span-1">
+              <div class="text-[10px] uppercase text-slate-400">Balance Status</div>
+              <div id="rhBalance" class="text-sm font-bold text-rose-400 mt-1">Due: ₹ 0</div>
+            </div>
+          </div>
+
+          <!-- Invoices Accordion -->
+          <div class="border border-white/10 rounded-2xl overflow-hidden">
+            <button onclick="toggleInvoicesAccordion()" class="w-full p-4 bg-white/5 flex items-center justify-between text-xs font-semibold text-slate-200">
+              <span>&gt; Show Stay-Specific Invoices</span>
+              <i id="accordionIcon" class="fa-solid fa-chevron-down text-slate-400"></i>
+            </button>
+            <div id="accordionContent" class="hidden p-4 space-y-2 text-xs divide-y divide-white/5">
+              <!-- Dynamically populated invoices -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODALS: ACTION POPUPS                      -->
+  <!-- ========================================== -->
+
+  <!-- 1. Add Property Modal -->
+  <div id="addPropertyModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75">
+    <div class="w-full max-w-md p-6 rounded-3xl glass-modal space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-emerald-400">Add Property</h3>
+        <button onclick="closeModal('addPropertyModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <input type="text" id="addPropName" placeholder="Property Name (Mandatory)" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
+      <input type="text" id="addPropUpiName" placeholder="UPI Name (Optional)" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
+      <input type="text" id="addPropUpiId" placeholder="UPI ID (Optional)" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
+      <input type="text" id="addPropContract" placeholder="Contract Number" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
+      <button onclick="submitAddProperty()" class="w-full py-2.5 rounded-xl bg-emerald-500 font-bold text-sm">Save Property</button>
+    </div>
+  </div>
+
+  <!-- 2. Edit Property Modal -->
+  <div id="editPropertyModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75">
+    <div class="w-full max-w-md p-6 rounded-3xl glass-modal space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-cyan-400">Edit Property Name</h3>
+        <button onclick="closeModal('editPropertyModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <select id="editPropSelect" onchange="document.getElementById('editPropCurrent').value = this.value" class="w-full px-3 py-2 rounded-xl bg-slate-800 text-sm"></select>
+      <input type="text" id="editPropCurrent" readonly placeholder="Current Name" class="w-full px-3 py-2 rounded-xl bg-white/5 text-slate-400 text-sm">
+      <input type="text" id="editPropNew" placeholder="New Property Name" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
+      <button onclick="submitEditProperty()" class="w-full py-2.5 rounded-xl bg-cyan-600 font-bold text-sm">Update Name</button>
+    </div>
+  </div>
+
+  <!-- 3. Delete Property Modal (Double-confirmation) -->
+  <div id="deletePropertyModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75">
+    <div class="w-full max-w-md p-6 rounded-3xl glass-modal space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-rose-400">Delete Property</h3>
+        <button onclick="closeModal('deletePropertyModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <select id="deletePropSelect" class="w-full px-3 py-2 rounded-xl bg-slate-800 text-sm"></select>
+      <button onclick="confirmDeleteProperty()" class="w-full py-2.5 rounded-xl bg-rose-600 font-bold text-sm">Proceed to Delete</button>
+    </div>
+  </div>
+
+  <!-- 4. Add Flat Modal -->
+  <div id="addFlatModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75">
+    <div class="w-full max-w-md p-6 rounded-3xl glass-modal space-y-3">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-amber-400">Add Flat</h3>
+        <button onclick="closeModal('addFlatModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <select id="addFlatPropSelect" class="w-full px-3 py-2 rounded-xl bg-slate-800 text-sm"></select>
+      <input type="text" id="addFlatName" placeholder="Flat Name/Number (Mandatory)" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
+      <input type="text" id="addFlatRenter" placeholder="Renter Name" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
+      <input type="number" id="addFlatRent" placeholder="Monthly Rent Bill Amount" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
+      <div class="grid grid-cols-3 gap-2">
+        <input type="number" id="addFlatWater" placeholder="Water Rate" class="px-2 py-1.5 rounded-lg bg-white/10 text-xs">
+        <input type="number" id="addFlatPng" placeholder="PNG Rate" class="px-2 py-1.5 rounded-lg bg-white/10 text-xs">
+        <input type="number" id="addFlatElec" placeholder="Elec Rate" class="px-2 py-1.5 rounded-lg bg-white/10 text-xs">
+      </div>
+      <button onclick="submitAddFlat()" class="w-full py-2.5 rounded-xl bg-amber-500 font-bold text-sm">Save Flat</button>
+    </div>
+  </div>
+
+  <!-- 5. Delete Flat Modal -->
+  <div id="deleteFlatModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75">
+    <div class="w-full max-w-md p-6 rounded-3xl glass-modal space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-rose-400">Delete Flat</h3>
+        <button onclick="closeModal('deleteFlatModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <select id="deleteFlatPropSelect" onchange="populateDeleteFlatList()" class="w-full px-3 py-2 rounded-xl bg-slate-800 text-sm"></select>
+      <select id="deleteFlatSelect" class="w-full px-3 py-2 rounded-xl bg-slate-800 text-sm"></select>
+      <button onclick="confirmDeleteFlat()" class="w-full py-2.5 rounded-xl bg-rose-600 font-bold text-sm">Proceed to Delete</button>
+    </div>
+  </div>
+
+  <!-- 6. Profile / Change Password Modal -->
+  <div id="changePasswordModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75">
+    <div class="w-full max-w-md p-6 rounded-3xl glass-modal space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-emerald-400">Change Password</h3>
+        <button onclick="closeModal('changePasswordModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <input type="password" id="oldPass" placeholder="Current Password" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
+      <input type="password" id="newPass" placeholder="New Password" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
+      <input type="password" id="confirmPass" placeholder="Confirm New Password" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
+      <button onclick="submitChangePassword()" class="w-full py-2.5 rounded-xl bg-emerald-500 font-bold text-sm">Update Password</button>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- CLIENT JAVASCRIPT APPLICATION CONTROLLER   -->
+  <!-- ========================================== -->
+  <script>
+    // State Store (In-Memory Only, never stored in LocalStorage)
+    let APP_STATE = {
+      username: "",
+      properties: [],
+      flats: [],
+      renters: [],
+      ledger: [],
+      selectedProperty: null,
+      selectedFlat: null
+    };
+
+    // 1. LIVE AUTHENTICATION
+    async function handleLogin(e) {
+      e.preventDefault();
+      const u = document.getElementById('loginUsername').value.trim();
+      const p = document.getElementById('loginPassword').value;
+      const btn = document.getElementById('loginBtn');
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i><span>Verifying...</span>`;
+
+      try {
+        const res = await fetch(`${window.APPS_SCRIPT_URL}?action=login&username=${encodeURIComponent(u)}&password=${encodeURIComponent(p)}`);
+        const json = await res.json();
+
+        if (json.status === "success") {
+          APP_STATE.username = u;
+          document.getElementById('loginScreen').classList.add('hidden');
+          document.getElementById('mainDashboard').classList.remove('hidden');
+          // Live fetch data immediately
+          await fetchSheetData();
+          // Start background polling sync (every 20s)
+          setInterval(() => fetchSheetData(false), 20000);
+        } else {
+          alert("Your Username or Password is wrong.");
+        }
+      } catch (err) {
+        alert("Server verification error. Check your Apps Script deployment URL.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Login Securely</span><i class="fa-solid fa-arrow-right text-sm"></i>`;
+      }
+    }
+
+    // 2. LIVE DATA SYNC
+    async function fetchSheetData(notify = false) {
+      try {
+        const res = await fetch(`${window.APPS_SCRIPT_URL}?action=get_all_data`);
+        const data = await res.json();
+        if (data.status === "success") {
+          APP_STATE.properties = data.properties || [];
+          APP_STATE.flats = data.flats || [];
+          APP_STATE.renters = data.renters || [];
+          APP_STATE.ledger = data.ledger || [];
+
+          renderPropertiesRow();
+          if (!APP_STATE.selectedProperty && APP_STATE.properties.length > 0) {
+            selectProperty(APP_STATE.properties[0].PropertyName);
+          } else if (APP_STATE.selectedProperty) {
+            selectProperty(APP_STATE.selectedProperty);
+          }
+          if (notify) alert("Data successfully synchronized with Google Sheet.");
+        }
+      } catch (e) {
+        console.error("Sync error", e);
+      }
+    }
+
+    // 3. RENDER PROPERTIES
+    function renderPropertiesRow() {
+      const c = document.getElementById('propertiesContainer');
+      c.innerHTML = "";
+      APP_STATE.properties.forEach(p => {
+        const isSelected = p.PropertyName === APP_STATE.selectedProperty;
+        const div = document.createElement('div');
+        div.className = `flex-shrink-0 cursor-pointer px-5 py-3 rounded-2xl glass-card border transition flex items-center space-x-2.5 ${isSelected ? 'border-emerald-400 bg-emerald-500/20' : 'border-white/10 hover:border-white/30'}`;
+        div.onclick = () => selectProperty(p.PropertyName);
+        div.innerHTML = `
+          <i class="fa-solid fa-hotel text-emerald-400"></i>
+          <span class="font-semibold text-sm whitespace-nowrap">${p.PropertyName}</span>
+        `;
+        c.appendChild(div);
+      });
+    }
+
+    function selectProperty(propName) {
+      APP_STATE.selectedProperty = propName;
+      renderPropertiesRow();
+
+      const pData = APP_STATE.properties.find(p => p.PropertyName === propName) || {};
+      document.getElementById('activePropertyTitle').innerText = propName;
+      document.getElementById('propUpiName').innerText = pData.UpiName || "None";
+      document.getElementById('propUpiId').innerText = pData.UpiId || "None";
+      document.getElementById('propContact').innerText = pData.ContractNumber || "None";
+
+      renderFlatsGrid();
+    }
+
+    // 4. RENDER FLATS (3-Unit Merged Horizontal Cards)
+    function renderFlatsGrid() {
+      const grid = document.getElementById('flatsGrid');
+      grid.innerHTML = "";
+      const filtered = APP_STATE.flats.filter(f => f.PropertyName === APP_STATE.selectedProperty);
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-500">No flats added yet. Use the (+) menu above.</div>`;
+        return;
+      }
+
+      filtered.forEach(f => {
+        const card = document.createElement('div');
+        card.className = "cursor-pointer p-5 rounded-2xl glass-card border border-white/10 hover:border-emerald-400/50 transition transform hover:-translate-y-1 shadow-lg";
+        card.onclick = () => openFlatDetailModal(f.FlatName);
+        card.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div>
+              <div class="text-lg font-bold text-white">${f.FlatName}</div>
+              <div class="flex items-center space-x-2 mt-1">
+                <i class="fa-solid fa-circle-user text-slate-400"></i>
+                <span class="text-sm text-slate-300 font-medium">${f.RenterName || "Vacant"}</span>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${f.RenterName ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-700 text-slate-400'}">
+              ${f.RenterName ? 'Occupied' : 'Vacant'}
+            </span>
+          </div>
+          <div class="mt-4 pt-3 border-t border-white/10 flex justify-between items-center text-xs">
+            <span class="text-slate-400">Rent: ₹${f.RentAmount || 0}</span>
+            <span class="text-emerald-400 font-semibold">Active Status</span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // 5. FLAT DETAIL MODAL CONTROLLER
+    function openFlatDetailModal(flatName) {
+      APP_STATE.selectedFlat = flatName;
+      document.getElementById('calcFlatName').innerText = flatName;
+      document.getElementById('histFlatName').innerText = flatName;
+      document.getElementById('pFlatName').value = flatName;
+
+      const flat = APP_STATE.flats.find(f => f.FlatName === flatName) || {};
+      const renter = APP_STATE.renters.find(r => r.FlatName === flatName && r.Status === "Active") || {};
+
+      // Populate Calculator fields
+      document.getElementById('calcRent').value = flat.RentAmount || 0;
+      document.getElementById('calcWaterRate').value = flat.WaterRate || 15;
+      document.getElementById('calcPngRate').value = flat.PngRate || 45;
+      document.getElementById('calcElecRate').value = flat.ElectricityRate || 9;
+
+      // Populate Profile fields
+      document.getElementById('pRentAmt').value = flat.RentAmount || 0;
+      document.getElementById('pRenterName').value = renter.RenterName || "";
+      document.getElementById('pAadhaarNum').value = renter.AadhaarNumber || "";
+      document.getElementById('pMobile').value = renter.Mobile || "";
+      document.getElementById('pAltMobile').value = renter.AltMobile || "";
+      document.getElementById('pAddress').value = renter.Address || "";
+      document.getElementById('pMembers').value = renter.TotalMembers || "";
+      document.getElementById('pJoinDate').value = renter.JoinDate || "";
+      document.getElementById('pLeaveDate').value = renter.LeaveDate || "";
+      document.getElementById('pStatus').value = renter.Status || "Active";
+
+      switchFlatTab('calcTab');
+      openModal('flatDetailModal');
+    }
+
+    function switchFlatTab(tabId) {
+      document.querySelectorAll('.flat-tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.flat-tab-btn').forEach(b => {
+        b.classList.remove('bg-emerald-500', 'text-white');
+        b.classList.add('text-slate-300');
+      });
+
+      document.getElementById(tabId).classList.remove('hidden');
+      const activeBtn = document.getElementById(`btn-${tabId}`);
+      activeBtn.classList.remove('text-slate-300');
+      activeBtn.classList.add('bg-emerald-500', 'text-white');
+
+      if (tabId === 'histTab') renderLedgerTable();
+      if (tabId === 'renterHistTab') renderRenterHistoryTab();
+    }
+
+    // Calculator Math Engine
+    function runBillMath() {
+      const rent = parseFloat(document.getElementById('calcRent').value) || 0;
+      
+      const ePrev = parseFloat(document.getElementById('calcElecPrev').value) || 0;
+      const eCurr = parseFloat(document.getElementById('calcElecCurr').value) || 0;
+      const eRate = parseFloat(document.getElementById('calcElecRate').value) || 0;
+      const eUnits = Math.max(0, eCurr - ePrev);
+      document.getElementById('calcElecUnits').innerText = eUnits;
+      const eTotal = eUnits * eRate;
+
+      const pPrev = parseFloat(document.getElementById('calcPngPrev').value) || 0;
+      const pCurr = parseFloat(document.getElementById('calcPngCurr').value) || 0;
+      const pRate = parseFloat(document.getElementById('calcPngRate').value) || 0;
+      const pUnits = Math.max(0, pCurr - pPrev);
+      document.getElementById('calcPngUnits').innerText = pUnits;
+      const pTotal = pUnits * pRate;
+
+      const wPrev = parseFloat(document.getElementById('calcWaterPrev').value) || 0;
+      const wCurr = parseFloat(document.getElementById('calcWaterCurr').value) || 0;
+      const wRate = parseFloat(document.getElementById('calcWaterRate').value) || 0;
+      const wUnits = Math.max(0, wCurr - wPrev);
+      document.getElementById('calcWaterUnits').innerText = wUnits;
+      const wTotal = wUnits * wRate;
+
+      const addAmt = parseFloat(document.getElementById('calcAddAmt').value) || 0;
+      const addSign = document.getElementById('calcAddSign').value;
+      const totalAdd = addSign === "plus" ? addAmt : -addAmt;
+      document.getElementById('calcTotalAdd').innerText = `₹ ${totalAdd}`;
+
+      const grand = rent + eTotal + pTotal + wTotal + totalAdd;
+      document.getElementById('calcGrandTotal').innerText = `₹ ${grand.toFixed(2)}`;
+    }
+
+    async function submitCalculationBill() {
+      runBillMath();
+      const payload = {
+        action: "save_bill",
+        flatName: APP_STATE.selectedFlat,
+        month: document.getElementById('calcBillingMonth').value,
+        renterName: (APP_STATE.flats.find(f => f.FlatName === APP_STATE.selectedFlat) || {}).RenterName || "Tenant",
+        rent: document.getElementById('calcRent').value,
+        elecDetails: `${document.getElementById('calcElecRate').value} / Unit (${document.getElementById('calcElecPrev').value} - ${document.getElementById('calcElecCurr').value} = ${document.getElementById('calcElecUnits').innerText})`,
+        pngDetails: `${document.getElementById('calcPngRate').value} / Unit (${document.getElementById('calcPngPrev').value} - ${document.getElementById('calcPngCurr').value} = ${document.getElementById('calcPngUnits').innerText})`,
+        waterDetails: `${document.getElementById('calcWaterRate').value} / Unit (${document.getElementById('calcWaterPrev').value} - ${document.getElementById('calcWaterCurr').value} = ${document.getElementById('calcWaterUnits').innerText})`,
+        total: document.getElementById('calcGrandTotal').innerText,
+        status: "Unpaid"
+      };
+
+      await fetch(window.APPS_SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+      alert("Bill calculation saved to Google Sheet ledger!");
+      await fetchSheetData();
+      switchFlatTab('histTab');
+    }
+
+    // Ledger Rendering
+    function renderLedgerTable() {
+      const tbody = document.getElementById('ledgerTableBody');
+      tbody.innerHTML = "";
+      const records = APP_STATE.ledger.filter(l => l.FlatName === APP_STATE.selectedFlat);
+
+      records.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-white/5";
+        tr.innerHTML = `
+          <td class="p-3">${r.Month || "-"}</td>
+          <td class="p-3 font-semibold">${r.TenantName || "-"}</td>
+          <td class="p-3">₹${r.Rent || 0}</td>
+          <td class="p-3">${r.ElecDetails || "-"}</td>
+          <td class="p-3">${r.PngDetails || "-"}</td>
+          <td class="p-3">${r.WaterDetails || "-"}</td>
+          <td class="p-3 font-bold text-emerald-400">${r.Total || 0}</td>
+          <td class="p-3">₹${r.Paid || 0} (${r.Mode || "-"})</td>
+          <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] ${r.Status === 'Fully Paid' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">${r.Status || 'Unpaid'}</span></td>
+          <td class="p-3 flex space-x-2">
+            <button title="Download PDF"><i class="fa-solid fa-file-pdf text-rose-400"></i></button>
+            <button title="Receipt"><i class="fa-solid fa-receipt text-blue-400"></i></button>
+            <button title="WhatsApp"><i class="fa-brands fa-whatsapp text-emerald-400"></i></button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Smart Renter Profile (Overwrite active / append on inactive)
+    async function submitRenterSmartProfile() {
+      const status = document.getElementById('pStatus').value;
+      const payload = {
+        action: "save_renter_profile",
+        flatName: APP_STATE.selectedFlat,
+        status: status,
+        renterName: document.getElementById('pRenterName').value,
+        aadhaarNumber: document.getElementById('pAadhaarNum').value,
+        mobile: document.getElementById('pMobile').value,
+        altMobile: document.getElementById('pAltMobile').value,
+        address: document.getElementById('pAddress').value,
+        totalMembers: document.getElementById('pMembers').value,
+        joinDate: document.getElementById('pJoinDate').value,
+        leaveDate: document.getElementById('pLeaveDate').value,
+        rentAmount: document.getElementById('pRentAmt').value,
+        pngNumber: document.getElementById('pPngNum').value,
+        pngMeter: document.getElementById('pPngMeter').value,
+        waterNumber: document.getElementById('pWaterNum').value,
+        waterMeter: document.getElementById('pWaterMeter').value,
+        elecMeter: document.getElementById('pElecMeter').value
+      };
+
+      await fetch(window.APPS_SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+
+      if (status === "Inactive") {
+        // Auto-clear right side only
+        document.getElementById('pRenterName').value = "";
+        document.getElementById('pAadhaarNum').value = "";
+        document.getElementById('pMobile').value = "";
+        document.getElementById('pAltMobile').value = "";
+        document.getElementById('pAddress').value = "";
+        document.getElementById('pMembers').value = "";
+        document.getElementById('pLeaveDate').value = "";
+        document.getElementById('pStatus').value = "Active";
+      }
+
+      alert("Profile data synced with Google Sheet!");
+      await fetchSheetData();
+    }
+
+    // Renter History Tab
+    function renderRenterHistoryTab() {
+      const renter = APP_STATE.renters.find(r => r.FlatName === APP_STATE.selectedFlat) || {};
+      document.getElementById('rhName').innerText = renter.RenterName || "Tenant";
+      document.getElementById('rhStaySpan').innerText = `${renter.JoinDate || 'N/A'} to ${renter.LeaveDate || 'Present'}`;
+      
+      const bills = APP_STATE.ledger.filter(l => l.FlatName === APP_STATE.selectedFlat);
+      let totalBilled = 0, totalPaid = 0;
+      bills.forEach(b => {
+        totalBilled += parseFloat(String(b.Total).replace(/[^0-9.-]+/g,"")) || 0;
+        totalPaid += parseFloat(b.Paid) || 0;
+      });
+
+      document.getElementById('rhBilled').innerText = `₹ ${totalBilled}`;
+      document.getElementById('rhPaid').innerText = `₹ ${totalPaid}`;
+      document.getElementById('rhBalance').innerText = `Due: ₹ ${(totalBilled - totalPaid).toFixed(2)}`;
+    }
+
+    function toggleInvoicesAccordion() {
+      const el = document.getElementById('accordionContent');
+      el.classList.toggle('hidden');
+    }
+
+    // Global Search
+    function handleGlobalSearch() {
+      const q = document.getElementById('globalSearch').value.toLowerCase();
+      document.querySelectorAll('#flatsGrid > div').forEach(card => {
+        card.style.display = card.innerText.toLowerCase().includes(q) ? 'block' : 'none';
+      });
+    }
+
+    // Modal Helpers
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function togglePlusMenu() { document.getElementById('plusMenu').classList.toggle('hidden'); }
+
+    // Double Confirmation Handlers
+    function confirmDeleteProperty() {
+      const name = document.getElementById('deletePropSelect').value;
+      if (confirm("Are you sure you want to confirm delete this property? Yes or No?")) {
+        fetch(window.APPS_SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "delete_property", name: name })
+        }).then(() => {
+          closeModal('deletePropertyModal');
+          fetchSheetData();
+        });
+      }
+    }
+
+    function confirmDeleteFlat() {
+      const prop = document.getElementById('deleteFlatPropSelect').value;
+      const flat = document.getElementById('deleteFlatSelect').value;
+      if (confirm("Are you sure you want to confirm delete this flat? Yes or No?")) {
+        fetch(window.APPS_SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "delete_flat", propertyName: prop, flatName: flat })
+        }).then(() => {
+          closeModal('deleteFlatModal');
+          fetchSheetData();
+        });
+      }
+    }
+
+    async function submitAddProperty() {
+      const name = document.getElementById('addPropName').value.trim();
+      if (!name) { alert("Property Name is mandatory!"); return; }
+
+      const res = await fetch(window.APPS_SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "add_property",
+          name: name,
+          upiName: document.getElementById('addPropUpiName').value,
+          upiId: document.getElementById('addPropUpiId').value,
+          contractNumber: document.getElementById('addPropContract').value
+        })
+      });
+      const data = await res.json();
+      if (data.status === "duplicate") {
+        alert(data.message);
+      } else {
+        closeModal('addPropertyModal');
+        fetchSheetData();
+      }
+    }
+
+    async function submitEditProperty() {
+      const oldName = document.getElementById('editPropSelect').value;
+      const newName = document.getElementById('editPropNew').value.trim();
+      if (!newName) return;
+
+      const res = await fetch(window.APPS_SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "edit_property", oldName: oldName, newName: newName })
+      });
+      const data = await res.json();
+      if (data.status === "duplicate") {
+        alert(data.message);
+      } else {
+        closeModal('editPropertyModal');
+        fetchSheetData();
+      }
+    }
+
+    async function submitAddFlat() {
+      const flatName = document.getElementById('addFlatName').value.trim();
+      if (!flatName) { alert("Flat Name is mandatory!"); return; }
+
+      await fetch(window.APPS_SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "add_flat",
+          propertyName: document.getElementById('addFlatPropSelect').value,
+          flatName: flatName,
+          renterName: document.getElementById('addFlatRenter').value,
+          rentAmount: document.getElementById('addFlatRent').value,
+          waterRate: document.getElementById('addFlatWater').value,
+          pngRate: document.getElementById('addFlatPng').value,
+          electricityRate: document.getElementById('addFlatElec').value
+        })
+      });
+      closeModal('addFlatModal');
+      fetchSheetData();
+    }
+
+    async function submitChangePassword() {
+      const oldP = document.getElementById('oldPass').value;
+      const newP = document.getElementById('newPass').value;
+      const confP = document.getElementById('confirmPass').value;
+
+      if (newP !== confP) {
+        alert("New passwords do not match!");
+        return;
+      }
+
+      const res = await fetch(window.APPS_SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "change_password",
+          username: APP_STATE.username,
+          oldPassword: oldP,
+          newPassword: newP
+        })
+      });
+      const json = await res.json();
+      if (json.status === "success") {
+        alert("Password updated successfully. Logging out now.");
+        handleLogout();
+      } else {
+        alert("Current password does not match!");
+      }
+    }
+
+    function handleLogout() {
+      APP_STATE = { username: "", properties: [], flats: [], renters: [], ledger: [] };
+      document.getElementById('mainDashboard').classList.add('hidden');
+      document.getElementById('loginScreen').classList.remove('hidden');
+      document.getElementById('loginPassword').value = "";
+    }
+  </script>
+</body>
+</html>
