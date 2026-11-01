@@ -136,7 +136,6 @@
 
     /* ==========================================================================
        UNIVERSAL COLORFUL SIDE SLIDE-IN NOTIFICATION TOAST
-       (Replaces ALL top browser alerts across the entire website)
        ========================================================================== */
     .side-toast {
       position: fixed;
@@ -348,27 +347,30 @@
       filter: brightness(1.06);
     }
 
-    /* Profile Action Toggle Buttons */
+    /* ==========================================================================
+       PROFILE 3-OPTION ACTION SWITCH (Change Password | Change Username | Change Name)
+       ========================================================================== */
     .profile-action-switch {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin: 18px 0 14px 0;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 16px 0 12px 0;
     }
     .btn-switch-option {
-      padding: 11px 12px;
+      padding: 10px 8px;
       border-radius: var(--radius-md);
       border: 1px solid var(--glass-border);
       background: var(--bg-input);
       color: var(--text-main);
       font-weight: 700;
-      font-size: 0.84rem;
+      font-size: 0.78rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       transition: all 0.2s;
+      white-space: nowrap;
     }
     .btn-switch-option.active {
       background: var(--primary);
@@ -411,9 +413,7 @@
       color: var(--accent-green);
     }
 
-    /* ==========================================================================
-       MAIN DASHBOARD HEADER & CLEARLY VISIBLE MOBILE PLUS (+) BUTTON
-       ========================================================================== */
+    /* Main Dashboard Header & Controls */
     #dashboardScreen {
       flex-direction: column;
       width: 100%;
@@ -562,7 +562,6 @@
       transform: translateY(-1px);
     }
 
-    /* Prominent Plus (+) Button so it is always unmistakable on Mobile & Desktop */
     .plus-btn-highlight {
       background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
       color: #ffffff !important;
@@ -570,7 +569,6 @@
       box-shadow: 0 4px 14px rgba(79, 70, 229, 0.5);
     }
 
-    /* Plus Dropdown Menu */
     .dropdown-anchor {
       position: relative;
       display: flex;
@@ -889,14 +887,12 @@
       color: var(--accent-red);
     }
 
-    /* ==========================================================================
-       CENTERED VISUAL CONFIRMATION MODAL (FOR DELETE FLAT / DELETE PROPERTY)
-       ========================================================================== */
+    /* Centered Visual Confirmation Modal */
     #customConfirmModal {
       z-index: 2500;
     }
     .confirm-modal-card {
-      max-width: 420px;
+      max-width: 430px;
       text-align: center;
       padding: 30px 24px;
       background: linear-gradient(160deg, var(--bg-modal) 0%, rgba(153, 27, 27, 0.28) 100%);
@@ -924,7 +920,7 @@
       color: var(--text-main);
     }
     .confirm-modal-card p {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--text-muted);
       line-height: 1.5;
       margin-bottom: 24px;
@@ -1209,9 +1205,7 @@
       display: none !important;
     }
 
-    /* ==========================================================================
-       MOBILE AUTO-FIT PERFECTION & GUARANTEED PLUS (+) BUTTON VISIBILITY
-       ========================================================================== */
+    /* Mobile Auto-Fit Perfection */
     @media (max-width: 768px) {
       header.top-nav {
         padding: 10px 12px;
@@ -1230,7 +1224,6 @@
         justify-content: space-between;
         gap: 8px;
       }
-      /* Keep Plus (+), Profile, Settings, Logout clearly visible on top right */
       .nav-actions-group {
         margin-left: auto;
         gap: 8px;
@@ -1252,7 +1245,6 @@
         min-width: 100%;
         max-width: 100%;
       }
-      /* Ensure Plus (+) Menu never overflows off the side on mobile */
       .action-menu {
         position: fixed;
         top: 64px;
@@ -1321,7 +1313,7 @@
     <div class="side-toast-progress"></div>
   </div>
 
-  <!-- CENTERED REDESIGNED CONFIRMATION MODAL (FOR DELETE FLAT & DELETE PROPERTY) -->
+  <!-- CENTERED REDESIGNED CONFIRMATION MODAL (FOR CASCADE DELETE FLAT & DELETE PROPERTY) -->
   <div id="customConfirmModal" class="modal-overlay">
     <div class="modal-window confirm-modal-card">
       <div class="confirm-icon-ring">
@@ -1334,7 +1326,7 @@
           <i class="fa-solid fa-xmark"></i> No, Cancel
         </button>
         <button type="button" class="btn-confirm-danger" id="confirmModalYesBtn">
-          <i class="fa-solid fa-check"></i> Yes, Delete
+          <i class="fa-solid fa-check"></i> Yes, Delete All
         </button>
       </div>
     </div>
@@ -1400,9 +1392,9 @@
           </div>
         </div>
 
-        <!-- Action Icons Grouped Together so Plus (+) is Always Clearly Visible on Mobile -->
+        <!-- Action Icons Grouped Together -->
         <div class="nav-actions-group">
-          <!-- Dynamic Add Plus (+) Icon (Highlighted & Never Cut Off on Mobile) -->
+          <!-- Dynamic Add Plus (+) Icon -->
           <div class="dropdown-anchor admin-only">
             <button class="nav-btn plus-btn-highlight" onclick="toggleActionMenu()" title="Add / Manage">
               <i class="fa-solid fa-plus"></i>
@@ -1459,16 +1451,26 @@
 
   <!-- ==================== POPUP MODALS ==================== -->
 
-  <!-- 1. PROFILE MODAL -->
+  <!-- ==========================================================================
+       1. PROFILE MODAL:
+       - Top Locked Fields: Name, Mobile No., Username, Password
+       - Three Dedicated Buttons Below: Change Password | Change Username | Change Name
+       ========================================================================== -->
   <div id="profileModal" class="modal-overlay">
     <div class="modal-window">
       <button class="modal-close-btn" onclick="closeModal('profileModal')"><i class="fa-solid fa-xmark"></i></button>
       <h3 style="margin-bottom: 14px;"><i class="fa-solid fa-id-badge" style="color:var(--primary); margin-right:8px;"></i>My Profile</h3>
 
-      <!-- Locked Display Fields -->
-      <div class="form-group">
-        <label>Name (Locked)</label>
-        <input type="text" id="profViewFullName" class="form-control" readonly>
+      <!-- Locked Display Fields (Cannot be edited directly here) -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="form-group">
+          <label>Name (Locked)</label>
+          <input type="text" id="profViewFullName" class="form-control" readonly>
+        </div>
+        <div class="form-group">
+          <label>Mobile No. (Locked)</label>
+          <input type="text" id="profViewMobile" class="form-control" readonly placeholder="Not set">
+        </div>
       </div>
 
       <div class="form-group">
@@ -1486,13 +1488,16 @@
         </div>
       </div>
 
-      <!-- Action Switch Buttons Below Locked Fields -->
+      <!-- 3 Dedicated Action Switch Buttons Below Locked Fields -->
       <div class="profile-action-switch">
         <button type="button" id="btnShowChangePass" class="btn-switch-option active" onclick="switchProfileDrawer('drawerChangePass', 'btnShowChangePass')">
           <i class="fa-solid fa-key"></i> Change Password
         </button>
         <button type="button" id="btnShowChangeUser" class="btn-switch-option" onclick="switchProfileDrawer('drawerChangeUser', 'btnShowChangeUser')">
-          <i class="fa-solid fa-user-pen"></i> Change Username
+          <i class="fa-solid fa-at"></i> Change Username
+        </button>
+        <button type="button" id="btnShowChangeName" class="btn-switch-option" onclick="switchProfileDrawer('drawerChangeName', 'btnShowChangeName')">
+          <i class="fa-solid fa-user-pen"></i> Change Name
         </button>
       </div>
 
@@ -1500,7 +1505,7 @@
       <div id="drawerChangePass" class="profile-sub-drawer active">
         <h4 style="margin-bottom: 12px; font-size: 0.92rem; color: var(--primary);">Update Your Password</h4>
         <div class="form-group">
-          <label>Current Password</label>
+          <label>Current Password <span class="req-star">*</span></label>
           <div class="password-field-wrapper">
             <input type="password" id="oldPassInput" class="form-control" placeholder="Enter current password">
             <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('oldPassInput', this)">
@@ -1510,7 +1515,7 @@
         </div>
 
         <div class="form-group">
-          <label>New Password</label>
+          <label>New Password <span class="req-star">*</span></label>
           <div class="password-field-wrapper">
             <input type="password" id="newPassInput" class="form-control" placeholder="Enter new password">
             <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('newPassInput', this)">
@@ -1520,7 +1525,7 @@
         </div>
 
         <div class="form-group">
-          <label>Confirm New Password</label>
+          <label>Confirm New Password <span class="req-star">*</span></label>
           <div class="password-field-wrapper">
             <input type="password" id="confirmNewPassInput" class="form-control" placeholder="Confirm new password">
             <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('confirmNewPassInput', this)">
@@ -1533,32 +1538,45 @@
         <div id="passChangeBottomMsg" class="bottom-status-msg"></div>
       </div>
 
-      <!-- Option B: Change Username & Name Drawer -->
+      <!-- Option B: Dedicated Change Username Drawer (Name option removed from here) -->
       <div id="drawerChangeUser" class="profile-sub-drawer">
-        <h4 style="margin-bottom: 12px; font-size: 0.92rem; color: var(--primary);">Update Username & Name</h4>
+        <h4 style="margin-bottom: 12px; font-size: 0.92rem; color: var(--primary);">Update Your Username</h4>
 
         <div class="form-group">
-          <label>Change Name (Full Name)</label>
-          <input type="text" id="changeNameInput" class="form-control" placeholder="Enter your updated full name">
-        </div>
-
-        <div class="form-group">
-          <label>Current Username</label>
+          <label>Current Username <span class="req-star">*</span></label>
           <input type="text" id="currentUsernameVerifyInput" class="form-control" placeholder="Enter your current username">
         </div>
 
         <div class="form-group">
-          <label>New Username</label>
+          <label>New Username <span class="req-star">*</span></label>
           <input type="text" id="newUsernameInput" class="form-control" placeholder="Enter new username">
         </div>
 
         <div class="form-group">
-          <label>Confirm New Username</label>
+          <label>Confirm New Username <span class="req-star">*</span></label>
           <input type="text" id="confirmNewUsernameInput" class="form-control" placeholder="Confirm new username">
         </div>
 
-        <button class="btn-primary" onclick="submitChangeUsernameAndName()">Update Username & Name</button>
+        <button class="btn-primary" onclick="submitChangeUsernameOnly()">Update Username</button>
         <div id="userChangeBottomMsg" class="bottom-status-msg"></div>
+      </div>
+
+      <!-- Option C: Dedicated Change Name & Mobile No. Drawer -->
+      <div id="drawerChangeName" class="profile-sub-drawer">
+        <h4 style="margin-bottom: 12px; font-size: 0.92rem; color: var(--primary);">Update Name & Mobile No.</h4>
+
+        <div class="form-group">
+          <label>New Full Name <span class="req-star">*</span></label>
+          <input type="text" id="changeNameOnlyInput" class="form-control" placeholder="Enter your full name">
+        </div>
+
+        <div class="form-group">
+          <label>Mobile No. <span class="req-star">*</span></label>
+          <input type="tel" id="changeMobileOnlyInput" class="form-control" placeholder="Enter your mobile number">
+        </div>
+
+        <button class="btn-primary" onclick="submitChangeNameAndMobile()">Update Name & Mobile No.</button>
+        <div id="nameChangeBottomMsg" class="bottom-status-msg"></div>
       </div>
     </div>
   </div>
@@ -1614,6 +1632,10 @@
           <input type="text" id="createUserName" class="form-control" placeholder="Enter full name">
         </div>
         <div class="form-group">
+          <label>Mobile No.</label>
+          <input type="tel" id="createUserMobile" class="form-control" placeholder="Enter mobile number">
+        </div>
+        <div class="form-group">
           <label>Desired Username (User ID) <span class="req-star">*</span></label>
           <input type="text" id="createUserLoginId" class="form-control" placeholder="e.g. manager_01">
         </div>
@@ -1642,6 +1664,7 @@
           <span>ACTIVE ACCOUNT DETAILS</span>
           <div style="margin-top: 6px; font-size: 0.88rem;">
             <div><strong>Name:</strong> <span id="otherProfileFullName">--</span></div>
+            <div><strong>Mobile No.:</strong> <span id="otherProfileMobile">--</span></div>
             <div><strong>Username:</strong> <span id="otherProfileUsername">--</span></div>
             <div><strong>Assigned Role:</strong> <span id="otherProfileRole">--</span></div>
             <div><strong>Saved Theme:</strong> <span id="otherProfileTheme">--</span></div>
@@ -1707,16 +1730,19 @@
   <div id="deletePropertyModal" class="modal-overlay">
     <div class="modal-window">
       <button class="modal-close-btn" onclick="closeModal('deletePropertyModal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 20px;">Delete Property</h3>
+      <h3 style="margin-bottom: 12px;">Delete Property (Complete Wipe)</h3>
+      <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:16px;">
+        Deleting a property will automatically delete all flats inside it, all rent records, and all bills generated for it.
+      </p>
       <div class="form-group">
         <label>Select Property</label>
         <select id="deletePropDropdown" class="form-control"></select>
       </div>
-      <button class="btn-primary admin-only" style="background: var(--accent-red);" onclick="triggerDeletePropertyCheck()">Delete Property</button>
+      <button class="btn-primary admin-only" style="background: var(--accent-red);" onclick="triggerDeletePropertyCheck()">Delete Property & All Records</button>
     </div>
   </div>
 
-  <!-- Add Flat Modal (Renter Name is now Strictly Required with *) -->
+  <!-- Add Flat Modal -->
   <div id="addFlatModal" class="modal-overlay">
     <div class="modal-window">
       <button class="modal-close-btn" onclick="closeModal('addFlatModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -1759,7 +1785,10 @@
   <div id="deleteFlatModal" class="modal-overlay">
     <div class="modal-window">
       <button class="modal-close-btn" onclick="closeModal('deleteFlatModal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 20px;">Delete Flat</h3>
+      <h3 style="margin-bottom: 12px;">Delete Flat (Complete Wipe)</h3>
+      <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:16px;">
+        Deleting a flat will automatically delete all rent records and all bills associated with that flat.
+      </p>
       <div class="form-group">
         <label>Property</label>
         <select id="deleteFlatPropDropdown" class="form-control" onchange="populateDeleteFlatList()"></select>
@@ -1768,7 +1797,7 @@
         <label>Select Flat</label>
         <select id="deleteFlatTargetDropdown" class="form-control"></select>
       </div>
-      <button class="btn-primary admin-only" style="background: var(--accent-red);" onclick="triggerDeleteFlatCheck()">Delete Flat</button>
+      <button class="btn-primary admin-only" style="background: var(--accent-red);" onclick="triggerDeleteFlatCheck()">Delete Flat & Associated Bills</button>
     </div>
   </div>
 
@@ -1790,9 +1819,7 @@
         <div class="flat-nav-item" onclick="switchFlatTab(event, 'tabRenterHistory')">4. Renter History</div>
       </nav>
 
-      <!-- ====================================================================
-           TAB 1: CALCULATION WORKFLOW
-           ==================================================================== -->
+      <!-- TAB 1: CALCULATION WORKFLOW -->
       <div id="tabCalc" class="tab-content active">
         <div class="calc-header-bar">
           <div>
@@ -2192,6 +2219,7 @@
 
     let activeUser = null;
     let activeUserFullName = "Administrator";
+    let activeUserMobile = "";
     let activeRole = "Admin";
     let activeThemePref = "black";
     let selectedProperty = null;
@@ -2205,12 +2233,6 @@
       return GAS_WEB_APP_URL.trim();
     }
 
-    /**
-     * ============================================================================
-     * UNIVERSAL COLORFUL SIDE SLIDE-IN TOAST
-     * Replaces all top browser alerts so every notification slides in from the side
-     * ============================================================================
-     */
     function triggerSideToast(title, message, type = false) {
       const toast = document.getElementById("sideToast");
       const icon = document.getElementById("sideToastIcon");
@@ -2238,11 +2260,6 @@
       }, 3900);
     }
 
-    /**
-     * ============================================================================
-     * CENTERED REDESIGNED CONFIRMATION MODAL (FOR DELETE FLAT & DELETE PROPERTY)
-     * ============================================================================
-     */
     function openCenteredConfirmModal(title, message, onYesCallback) {
       document.getElementById("confirmModalTitle").innerText = title;
       document.getElementById("confirmModalMessage").innerText = message;
@@ -2291,6 +2308,7 @@
       const savedSessionUser = sessionStorage.getItem("active_session_user");
       const savedRole = sessionStorage.getItem("active_session_role") || "Admin";
       const savedFullName = sessionStorage.getItem("active_session_fullname") || savedSessionUser;
+      const savedMobile = sessionStorage.getItem("active_session_mobile") || "";
       const savedSelectedProp = sessionStorage.getItem("active_selected_property");
 
       if (savedSelectedProp) selectedProperty = savedSelectedProp;
@@ -2311,6 +2329,7 @@
         activeUser = savedSessionUser;
         activeRole = savedRole;
         activeUserFullName = savedFullName;
+        activeUserMobile = savedMobile;
         applyRolePermissions(activeRole);
         unlockDashboardInstant();
       }
@@ -2402,6 +2421,7 @@
         if (res.status === "success") {
           activeUser = res.username;
           activeUserFullName = res.fullName || res.username;
+          activeUserMobile = res.mobile || "";
           activeRole = res.role || "Admin";
           const sheetTheme = res.theme || "black";
 
@@ -2410,6 +2430,7 @@
 
           sessionStorage.setItem("active_session_user", activeUser);
           sessionStorage.setItem("active_session_fullname", activeUserFullName);
+          sessionStorage.setItem("active_session_mobile", activeUserMobile);
           sessionStorage.setItem("active_session_role", activeRole);
 
           applyVisualTheme(sheetTheme);
@@ -2464,6 +2485,10 @@
           if (res.userFullName) {
             activeUserFullName = res.userFullName;
             sessionStorage.setItem("active_session_fullname", activeUserFullName);
+          }
+          if (res.userMobile !== undefined && res.userMobile !== null) {
+            activeUserMobile = res.userMobile;
+            sessionStorage.setItem("active_session_mobile", activeUserMobile);
           }
 
           renderAllDashboardUI();
@@ -2755,11 +2780,20 @@
       });
     }
 
-    // 5. Profile Modal
+    /**
+     * ============================================================================
+     * 5. PROFILE MODAL WITH 3 SEPARATED SECTIONS:
+     *    1. Change Password
+     *    2. Change Username (Name field removed from here)
+     *    3. Change Name & Mobile No. (Dedicated section)
+     * ============================================================================
+     */
     async function openProfileModal() {
       document.getElementById("profViewFullName").value = activeUserFullName || activeUser || "";
+      document.getElementById("profViewMobile").value = activeUserMobile || "";
       document.getElementById("profViewUsername").value = activeUser || "";
-      document.getElementById("changeNameInput").value = activeUserFullName || activeUser || "";
+      document.getElementById("changeNameOnlyInput").value = activeUserFullName || activeUser || "";
+      document.getElementById("changeMobileOnlyInput").value = activeUserMobile || "";
 
       const passInput = document.getElementById("profViewPassword");
       passInput.type = "password";
@@ -2768,6 +2802,7 @@
 
       document.getElementById("passChangeBottomMsg").className = "bottom-status-msg";
       document.getElementById("userChangeBottomMsg").className = "bottom-status-msg";
+      document.getElementById("nameChangeBottomMsg").className = "bottom-status-msg";
       document.getElementById("oldPassInput").value = "";
       document.getElementById("newPassInput").value = "";
       document.getElementById("confirmNewPassInput").value = "";
@@ -2785,9 +2820,16 @@
         });
         const res = await response.json();
         if (res.status === "success") {
-          document.getElementById("profViewFullName").value = res.fullName || activeUser;
+          activeUserFullName = res.fullName || activeUser;
+          activeUserMobile = res.mobile || "";
+          sessionStorage.setItem("active_session_fullname", activeUserFullName);
+          sessionStorage.setItem("active_session_mobile", activeUserMobile);
+
+          document.getElementById("profViewFullName").value = activeUserFullName;
+          document.getElementById("profViewMobile").value = activeUserMobile;
           document.getElementById("profViewUsername").value = res.username || activeUser;
-          document.getElementById("changeNameInput").value = res.fullName || activeUser;
+          document.getElementById("changeNameOnlyInput").value = activeUserFullName;
+          document.getElementById("changeMobileOnlyInput").value = activeUserMobile;
           passInput.value = res.password || "";
         }
       } catch (e) {
@@ -2802,8 +2844,8 @@
       document.getElementById(btnId).classList.add("active");
     }
 
-    async function submitChangeUsernameAndName() {
-      const newFullName = document.getElementById("changeNameInput").value.trim();
+    // Dedicated Change Username Handler
+    async function submitChangeUsernameOnly() {
       const currUser = document.getElementById("currentUsernameVerifyInput").value.trim();
       const newUser = document.getElementById("newUsernameInput").value.trim();
       const confUser = document.getElementById("confirmNewUsernameInput").value.trim();
@@ -2846,8 +2888,7 @@
         action: "changeUsername",
         loggedUsername: activeUser,
         currentUsernameInput: currUser,
-        newUsername: newUser,
-        newFullName: newFullName
+        newUsername: newUser
       });
 
       if (res.status === "duplicate") {
@@ -2856,24 +2897,70 @@
         triggerSideToast("Username Taken", res.message, false);
       } else if (res.status === "success") {
         activeUser = res.newUsername;
-        activeUserFullName = res.fullName;
         sessionStorage.setItem("active_session_user", activeUser);
-        sessionStorage.setItem("active_session_fullname", activeUserFullName);
 
-        document.getElementById("profViewFullName").value = activeUserFullName;
         document.getElementById("profViewUsername").value = activeUser;
         document.getElementById("currentUsernameVerifyInput").value = "";
         document.getElementById("newUsernameInput").value = "";
         document.getElementById("confirmNewUsernameInput").value = "";
 
-        msgBox.innerText = "Username and Name updated successfully!";
+        msgBox.innerText = "Username updated successfully!";
         msgBox.className = "bottom-status-msg success";
-        triggerSideToast("Profile Updated", "Username and Name updated in Google Sheet!", true);
+        triggerSideToast("Username Updated", "Your username has been updated in Google Sheet!", true);
         syncDataLive();
       } else {
         msgBox.innerText = res.message || "Could not update username.";
         msgBox.className = "bottom-status-msg error";
         triggerSideToast("Update Error", res.message || "Could not update username.", false);
+      }
+    }
+
+    // Dedicated Change Name & Mobile No. Handler
+    async function submitChangeNameAndMobile() {
+      const newFullName = document.getElementById("changeNameOnlyInput").value.trim();
+      const newMobile = document.getElementById("changeMobileOnlyInput").value.trim();
+      const msgBox = document.getElementById("nameChangeBottomMsg");
+
+      msgBox.className = "bottom-status-msg";
+
+      if (!newFullName) {
+        msgBox.innerText = "Please enter your Full Name.";
+        msgBox.className = "bottom-status-msg error";
+        triggerSideToast("Name Required", "Please enter your Full Name.", false);
+        return;
+      }
+
+      if (!newMobile) {
+        msgBox.innerText = "Please enter your Mobile No.";
+        msgBox.className = "bottom-status-msg error";
+        triggerSideToast("Mobile Required", "Please enter your Mobile No.", false);
+        return;
+      }
+
+      // Instant UI update
+      activeUserFullName = newFullName;
+      activeUserMobile = newMobile;
+      sessionStorage.setItem("active_session_fullname", activeUserFullName);
+      sessionStorage.setItem("active_session_mobile", activeUserMobile);
+      document.getElementById("profViewFullName").value = activeUserFullName;
+      document.getElementById("profViewMobile").value = activeUserMobile;
+
+      const res = await sendGasPost({
+        action: "changeNameAndMobile",
+        loggedUsername: activeUser,
+        newFullName: newFullName,
+        newMobile: newMobile
+      });
+
+      if (res.status === "success") {
+        msgBox.innerText = "Name and Mobile No. updated successfully!";
+        msgBox.className = "bottom-status-msg success";
+        triggerSideToast("Profile Updated", "Name and Mobile No. saved to Google Sheet!", true);
+        syncDataLive();
+      } else {
+        msgBox.innerText = res.message || "Could not update Name & Mobile No.";
+        msgBox.className = "bottom-status-msg error";
+        triggerSideToast("Error", res.message || "Update failed.", false);
       }
     }
 
@@ -2918,6 +3005,7 @@
     // 6. Dedicated Settings Modal
     function openSettingsModal() {
       document.getElementById("otherProfileFullName").innerText = activeUserFullName || activeUser;
+      document.getElementById("otherProfileMobile").innerText = activeUserMobile || "Not set";
       document.getElementById("otherProfileUsername").innerText = activeUser || "--";
       document.getElementById("otherProfileRole").innerText = activeRole || "Admin";
       document.getElementById("otherProfileTheme").innerText = activeThemePref.toUpperCase();
@@ -2925,8 +3013,8 @@
       const usersContainer = document.getElementById("otherUsersList");
       if (usersContainer) {
         usersContainer.innerHTML = (DB.users || []).map(u => `
-          <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--glass-border);">
-            <span><strong>${u.FullName}</strong> (@${u.Username})</span>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--glass-border);">
+            <span><strong>${u.FullName}</strong> (@${u.Username}) ${u.MobileNumber ? '• ' + u.MobileNumber : ''}</span>
             <span class="role-badge">${u.Role}</span>
           </div>
         `).join("") || "No user list loaded.";
@@ -2978,6 +3066,7 @@
 
     async function submitCreateNewUser() {
       const fullName = document.getElementById("createUserName").value.trim();
+      const mobile = document.getElementById("createUserMobile").value.trim();
       const newU = document.getElementById("createUserLoginId").value.trim();
       const newP = document.getElementById("createUserPass").value;
       const role = document.getElementById("createUserRole").value;
@@ -2994,15 +3083,17 @@
         action: "createUser",
         requesterUsername: activeUser,
         fullName: fullName,
+        mobile: mobile,
         newUsername: newU,
         newPassword: newP,
         role: role
       });
 
       if (res.status === "success") {
-        DB.users.push({ Username: newU, FullName: fullName, Role: role, Theme: "black" });
+        DB.users.push({ Username: newU, FullName: fullName, Role: role, Theme: "black", MobileNumber: mobile });
         saveDbSnapshotToCache();
         document.getElementById("createUserName").value = "";
+        document.getElementById("createUserMobile").value = "";
         document.getElementById("createUserLoginId").value = "";
         document.getElementById("createUserPass").value = "";
         triggerSideToast("Account Created", res.message, true);
@@ -3012,7 +3103,7 @@
       }
     }
 
-    // 7. Detailed Calculation Tab Workflow (Automatic Single-Bill-Per-Month Overwrite)
+    // 7. Detailed Calculation Tab Workflow
     function resetAllCalculatorLocks() {
       const lockableIds = [
         "calcRent", "calcElecPrev", "calcElecRate",
@@ -3326,13 +3417,6 @@
       }
     }
 
-    /**
-     * ============================================================================
-     * AUTOMATIC SINGLE-BILL-PER-MONTH OVERWRITE:
-     * If a second bill is entered for the same month, it automatically replaces
-     * the previous bill for that month without creating a duplicate row.
-     * ============================================================================
-     */
     async function submitBillCalculation() {
       if (activeRole === "Viewer") return;
 
@@ -3412,7 +3496,6 @@
       };
 
       if (existingBillIdx !== -1) {
-        // Automatically overwrite & replace the existing bill for that month
         DB.bills[existingBillIdx] = newBillObj;
         triggerSideToast("Bill Replaced & Updated", `Previous bill for ${chosenMonth} was overwritten with the new calculation!`, "warning");
       } else {
@@ -3767,7 +3850,7 @@
       document.getElementById("identityPicturePreview").src = "https://via.placeholder.com/300x150?text=ID+Document";
     }
 
-    // 10. Modals & Strict Property-Targeted Flat Creation
+    // 10. Modals, Strict Property-Targeted Flat Creation & Complete Cascade Deletion
     function toggleActionMenu() {
       document.getElementById("actionMenu").classList.toggle("show");
     }
@@ -3888,30 +3971,38 @@
       syncDataLive();
     }
 
+    // Complete Cascade Delete for Property: Wipes Property + All Flats + All Renters + All Bills
     function triggerDeletePropertyCheck() {
       const p = document.getElementById("deletePropDropdown").value;
       if (!p) return triggerSideToast("Select Property", "No property selected to delete.", false);
 
       openCenteredConfirmModal(
-        "Delete Property",
-        `Are you sure you want to confirm delete this property (${p})? Yes or No?`,
+        "Delete Entire Property & All Records",
+        `Are you sure you want to confirm delete this property (${p})? All flats inside it, all rent records, and all generated bills will be permanently deleted. Yes or No?`,
         () => {
-          DB.properties = DB.properties.filter(item => item.PropertyName !== p);
-          if (selectedProperty === p) {
+          const targetPropClean = String(p).trim().toLowerCase();
+
+          // Cascade delete in local state immediately (Properties, Flats, Renters, Bills)
+          DB.properties = DB.properties.filter(item => String(item.PropertyName).trim().toLowerCase() !== targetPropClean);
+          DB.flats = DB.flats.filter(item => String(item.PropertyName).trim().toLowerCase() !== targetPropClean);
+          DB.renters = DB.renters.filter(item => String(item.PropertyName).trim().toLowerCase() !== targetPropClean);
+          DB.bills = DB.bills.filter(item => String(item.PropertyName).trim().toLowerCase() !== targetPropClean);
+
+          if (selectedProperty && String(selectedProperty).trim().toLowerCase() === targetPropClean) {
             selectedProperty = null;
             sessionStorage.removeItem("active_selected_property");
           }
+
           saveDbSnapshotToCache();
           renderAllDashboardUI();
           closeModal("deletePropertyModal");
-          triggerSideToast("Property Deleted", `${p} was permanently removed.`, "warning");
+          triggerSideToast("Property & Records Wiped", `${p} and all its flats, rent records, and bills were deleted.`, "warning");
 
           sendGasPost({ action: "deleteProperty", propertyName: p }).then(() => syncDataLive());
         }
       );
     }
 
-    // Strictly adds the flat to the exact selected property only, and requires Renter Name (*)
     async function submitAddFlat() {
       const targetProp = document.getElementById("addFlatPropDropdown").value.trim();
       const flat = document.getElementById("addFlatNumber").value.trim();
@@ -3972,21 +4063,25 @@
       syncDataLive();
     }
 
-    // Uses Centered Redesigned Confirmation Modal instead of top browser confirm()
+    // Complete Cascade Delete for Flat: Wipes Flat + All Renters/Rent Records + All Generated Bills for that Flat
     function triggerDeleteFlatCheck() {
       const p = document.getElementById("deleteFlatPropDropdown").value;
       const f = document.getElementById("deleteFlatTargetDropdown").value;
       if (!p || !f) return triggerSideToast("Select Flat", "Please select a property and flat to delete.", false);
 
       openCenteredConfirmModal(
-        "Delete Flat Confirmation",
-        `Are you sure you want to confirm delete this flat (Flat ${f} in ${p})? Yes or No?`,
+        "Delete Flat & All Associated Records",
+        `Are you sure you want to confirm delete this flat (Flat ${f} in ${p})? All rent records and bills associated with this flat will be permanently deleted. Yes or No?`,
         () => {
+          // Cascade delete in local state immediately (Flats, Renters, Bills)
           DB.flats = DB.flats.filter(item => !isSamePropAndFlat(item.PropertyName, item.FlatName, p, f));
+          DB.renters = DB.renters.filter(item => !isSamePropAndFlat(item.PropertyName, item.FlatName, p, f));
+          DB.bills = DB.bills.filter(item => !isSamePropAndFlat(item.PropertyName, item.FlatName, p, f));
+
           saveDbSnapshotToCache();
           renderAllDashboardUI();
           closeModal("deleteFlatModal");
-          triggerSideToast("Flat Deleted", `Flat ${f} was permanently removed from ${p}.`, "warning");
+          triggerSideToast("Flat & Bills Wiped", `Flat ${f} and all its rent & bill records were permanently deleted.`, "warning");
 
           sendGasPost({ action: "deleteFlat", propertyName: p, flatName: f }).then(() => syncDataLive());
         }
