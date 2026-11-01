@@ -15,10 +15,10 @@
     :root,
     body.theme-black {
       --bg-overlay: linear-gradient(180deg, rgba(9, 13, 22, 0.70) 0%, rgba(9, 13, 22, 0.88) 100%);
-      --bg-header: rgba(9, 13, 22, 0.88);
+      --bg-header: rgba(9, 13, 22, 0.90);
       --bg-card: rgba(17, 24, 39, 0.84);
       --bg-modal: #111827;
-      --bg-input: rgba(30, 41, 59, 0.9);
+      --bg-input: rgba(30, 41, 59, 0.92);
       --primary: #4f46e5;
       --primary-hover: #4338ca;
       --accent-green: #10b981;
@@ -36,7 +36,7 @@
 
     body.theme-white {
       --bg-overlay: linear-gradient(180deg, rgba(255, 255, 255, 0.74) 0%, rgba(241, 245, 249, 0.88) 100%);
-      --bg-header: rgba(255, 255, 255, 0.92);
+      --bg-header: rgba(255, 255, 255, 0.94);
       --bg-card: rgba(255, 255, 255, 0.88);
       --bg-modal: #ffffff;
       --bg-input: #f1f5f9;
@@ -134,12 +134,15 @@
       margin-top: 4px;
     }
 
-    /* Colorful Side Slide-In Notification Toast */
+    /* ==========================================================================
+       UNIVERSAL COLORFUL SIDE SLIDE-IN NOTIFICATION TOAST
+       (Replaces ALL top browser alerts across the entire website)
+       ========================================================================== */
     .side-toast {
       position: fixed;
-      top: 24px;
-      right: -420px;
-      z-index: 9999;
+      top: 22px;
+      right: -450px;
+      z-index: 10000;
       min-width: 290px;
       max-width: 90vw;
       background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 50%, #7928ca 100%);
@@ -147,23 +150,28 @@
       padding: 16px 20px;
       border-radius: 16px;
       box-shadow: 0 15px 35px rgba(255, 65, 108, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.35);
+      border: 1.5px solid rgba(255, 255, 255, 0.38);
       display: flex;
       align-items: center;
       gap: 14px;
-      transition: right 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: right 0.42s cubic-bezier(0.22, 1, 0.36, 1);
       overflow: hidden;
+      backdrop-filter: blur(16px);
     }
     .side-toast.show {
-      right: 20px;
+      right: 18px;
     }
     .side-toast.success-toast {
-      background: linear-gradient(135deg, #059669 0%, #10b981 55%, #3b82f6 100%);
-      box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+      background: linear-gradient(135deg, #059669 0%, #10b981 50%, #2563eb 100%);
+      box-shadow: 0 15px 35px rgba(16, 185, 129, 0.45);
+    }
+    .side-toast.warning-toast {
+      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 55%, #db2777 100%);
+      box-shadow: 0 15px 35px rgba(245, 158, 11, 0.45);
     }
     .side-toast-icon {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 12px;
       background: rgba(255, 255, 255, 0.22);
       display: flex;
@@ -177,22 +185,23 @@
       text-align: left;
     }
     .side-toast-body h5 {
-      font-size: 0.92rem;
+      font-size: 0.94rem;
       font-weight: 800;
-      margin-bottom: 2px;
+      margin-bottom: 3px;
       color: #ffffff;
     }
     .side-toast-body p {
-      font-size: 0.8rem;
-      color: rgba(255, 255, 255, 0.92);
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.95);
       font-weight: 500;
+      line-height: 1.35;
     }
     .side-toast-progress {
       position: absolute;
       bottom: 0;
       left: 0;
       height: 4px;
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.88);
       width: 100%;
       transform-origin: left;
     }
@@ -215,6 +224,11 @@
       font-weight: 700;
       margin-bottom: 6px;
       color: var(--text-main);
+    }
+    .req-star {
+      color: #ef4444;
+      font-weight: 800;
+      margin-left: 2px;
     }
     #loginScreen .form-group label {
       color: #ffffff;
@@ -397,7 +411,9 @@
       color: var(--accent-green);
     }
 
-    /* Main Dashboard Layout */
+    /* ==========================================================================
+       MAIN DASHBOARD HEADER & CLEARLY VISIBLE MOBILE PLUS (+) BUTTON
+       ========================================================================== */
     #dashboardScreen {
       flex-direction: column;
       width: 100%;
@@ -482,12 +498,19 @@
       font-size: 0.85rem;
     }
 
-    /* Right Controls & Live P&L Section */
+    /* Right Controls & Action Icons */
     .nav-right {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       flex-wrap: wrap;
+    }
+
+    .nav-actions-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
     }
 
     .pnl-tracker {
@@ -520,8 +543,8 @@
     }
 
     .nav-btn {
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       border: 1px solid var(--glass-border);
       background: var(--bg-input);
@@ -532,47 +555,64 @@
       cursor: pointer;
       transition: all 0.2s;
       flex-shrink: 0;
+      font-size: 0.95rem;
     }
     .nav-btn:hover {
       border-color: var(--primary);
       transform: translateY(-1px);
     }
 
+    /* Prominent Plus (+) Button so it is always unmistakable on Mobile & Desktop */
+    .plus-btn-highlight {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+      color: #ffffff !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.45) !important;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.5);
+    }
+
     /* Plus Dropdown Menu */
     .dropdown-anchor {
       position: relative;
+      display: flex;
+      align-items: center;
     }
     .action-menu {
       display: none;
       position: absolute;
-      top: 46px;
+      top: 48px;
       right: 0;
-      width: 220px;
+      width: 225px;
       background: var(--bg-modal);
-      border: 1px solid var(--glass-border);
+      border: 1.5px solid var(--glass-border);
       border-radius: var(--radius-md);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.45);
+      box-shadow: 0 18px 36px rgba(0,0,0,0.55);
       overflow: hidden;
-      z-index: 300;
+      z-index: 500;
     }
     .action-menu.show {
       display: block;
     }
     .menu-item {
-      padding: 12px 16px;
+      padding: 13px 16px;
       display: flex;
       align-items: center;
       gap: 12px;
-      font-size: 0.85rem;
+      font-size: 0.86rem;
+      font-weight: 600;
       cursor: pointer;
       transition: background 0.2s;
       color: var(--text-main);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .menu-item:last-child {
+      border-bottom: none;
     }
     .menu-item:hover {
-      background: rgba(99, 102, 241, 0.15);
+      background: rgba(99, 102, 241, 0.18);
     }
     .menu-item i {
-      width: 16px;
+      width: 18px;
+      color: #818cf8;
     }
 
     /* Horizontal Properties Row */
@@ -804,7 +844,7 @@
       z-index: 1000;
       align-items: center;
       justify-content: center;
-      padding: 10px;
+      padding: 12px;
     }
     .modal-overlay.active {
       display: flex;
@@ -813,16 +853,21 @@
     .modal-window {
       background: var(--bg-modal);
       color: var(--text-main);
-      border: 1px solid var(--glass-border);
+      border: 1.5px solid var(--glass-border);
       border-radius: var(--radius-lg);
       width: 100%;
       max-width: 520px;
       max-height: 92vh;
       max-height: 92dvh;
       overflow-y: auto;
-      padding: 22px 18px;
+      padding: 24px 20px;
       position: relative;
       box-shadow: var(--shadow-elevation);
+      animation: modalPopIn 0.22s ease-out;
+    }
+    @keyframes modalPopIn {
+      from { transform: scale(0.94); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
     .modal-close-btn {
       position: absolute;
@@ -842,6 +887,82 @@
     .modal-close-btn:hover {
       background: rgba(239, 68, 68, 0.25);
       color: var(--accent-red);
+    }
+
+    /* ==========================================================================
+       CENTERED VISUAL CONFIRMATION MODAL (FOR DELETE FLAT / DELETE PROPERTY)
+       ========================================================================== */
+    #customConfirmModal {
+      z-index: 2500;
+    }
+    .confirm-modal-card {
+      max-width: 420px;
+      text-align: center;
+      padding: 30px 24px;
+      background: linear-gradient(160deg, var(--bg-modal) 0%, rgba(153, 27, 27, 0.28) 100%);
+      border: 2px solid rgba(239, 68, 68, 0.55);
+      box-shadow: 0 25px 60px rgba(239, 68, 68, 0.32);
+    }
+    .confirm-icon-ring {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      margin: 0 auto 16px auto;
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(245, 158, 11, 0.25) 100%);
+      border: 2px solid rgba(239, 68, 68, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: #f87171;
+      box-shadow: 0 0 25px rgba(239, 68, 68, 0.35);
+    }
+    .confirm-modal-card h3 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      color: var(--text-main);
+    }
+    .confirm-modal-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    .confirm-btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .btn-confirm-cancel {
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--glass-border);
+      background: var(--bg-input);
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-confirm-cancel:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    .btn-confirm-danger {
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      border: none;
+      background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
+      transition: all 0.2s;
+    }
+    .btn-confirm-danger:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
     }
 
     /* Flat Detailed 4-Tab Navigation Modal */
@@ -1088,7 +1209,9 @@
       display: none !important;
     }
 
-    /* Mobile Auto-Fit Perfection */
+    /* ==========================================================================
+       MOBILE AUTO-FIT PERFECTION & GUARANTEED PLUS (+) BUTTON VISIBILITY
+       ========================================================================== */
     @media (max-width: 768px) {
       header.top-nav {
         padding: 10px 12px;
@@ -1096,31 +1219,48 @@
       }
       .nav-left {
         order: 1;
+        flex: 1 1 auto;
       }
       .nav-left h2 {
-        font-size: 1.1rem;
+        font-size: 1.08rem;
       }
       .nav-right {
         order: 2;
+        width: 100%;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      /* Keep Plus (+), Profile, Settings, Logout clearly visible on top right */
+      .nav-actions-group {
         margin-left: auto;
-        gap: 6px;
+        gap: 8px;
+        justify-content: flex-end;
       }
       .nav-btn {
-        width: 34px;
-        height: 34px;
-        font-size: 0.85rem;
+        width: 38px;
+        height: 38px;
+        font-size: 0.92rem;
+      }
+      .pnl-tracker {
+        flex: 1 1 auto;
+        justify-content: space-around;
+        padding: 7px 10px;
+        font-size: 0.74rem;
       }
       .nav-center {
         order: 3;
         min-width: 100%;
         max-width: 100%;
       }
-      .pnl-tracker {
-        width: 100%;
-        justify-content: space-around;
-        order: 4;
-        padding: 6px 8px;
-        font-size: 0.74rem;
+      /* Ensure Plus (+) Menu never overflows off the side on mobile */
+      .action-menu {
+        position: fixed;
+        top: 64px;
+        right: 12px;
+        left: 12px;
+        width: auto;
+        max-width: 340px;
+        margin-left: auto;
       }
       .properties-bar {
         padding: 12px 12px 6px 12px;
@@ -1138,7 +1278,7 @@
         grid-template-columns: repeat(2, 1fr);
       }
       .calc-utility-row {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr !important;
       }
       .profile-matrix {
         grid-template-columns: 1fr;
@@ -1147,7 +1287,7 @@
         grid-template-columns: 1fr;
       }
       .modal-window {
-        padding: 16px 12px;
+        padding: 18px 14px;
         max-height: 94dvh;
       }
       .login-container {
@@ -1169,16 +1309,35 @@
   <!-- PERMANENT HOUSE BACKGROUND CANVAS FOR HOME PAGE & LOGIN -->
   <div class="bg-canvas"></div>
 
-  <!-- COLORFUL SIDE SLIDE-IN NOTIFICATION TOAST -->
+  <!-- UNIVERSAL COLORFUL SIDE SLIDE-IN NOTIFICATION TOAST -->
   <div id="sideToast" class="side-toast">
     <div class="side-toast-icon">
       <i id="sideToastIcon" class="fa-solid fa-shield-halved"></i>
     </div>
     <div class="side-toast-body">
-      <h5 id="sideToastTitle">Authentication Alert</h5>
-      <p id="sideToastMessage">Incorrect Username or Password</p>
+      <h5 id="sideToastTitle">Notification</h5>
+      <p id="sideToastMessage">Action completed</p>
     </div>
     <div class="side-toast-progress"></div>
+  </div>
+
+  <!-- CENTERED REDESIGNED CONFIRMATION MODAL (FOR DELETE FLAT & DELETE PROPERTY) -->
+  <div id="customConfirmModal" class="modal-overlay">
+    <div class="modal-window confirm-modal-card">
+      <div class="confirm-icon-ring">
+        <i class="fa-solid fa-trash-can-arrow-up"></i>
+      </div>
+      <h3 id="confirmModalTitle">Confirm Deletion</h3>
+      <p id="confirmModalMessage">Are you sure you want to confirm delete this item? Yes or No?</p>
+      <div class="confirm-btn-row">
+        <button type="button" class="btn-confirm-cancel" onclick="closeConfirmModal()">
+          <i class="fa-solid fa-xmark"></i> No, Cancel
+        </button>
+        <button type="button" class="btn-confirm-danger" id="confirmModalYesBtn">
+          <i class="fa-solid fa-check"></i> Yes, Delete
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- SCREEN 1: LOGIN / LOGOUT SCREEN -->
@@ -1241,44 +1400,47 @@
           </div>
         </div>
 
-        <!-- Dynamic Add Plus (+) Icon (Hidden for Viewers) -->
-        <div class="dropdown-anchor admin-only">
-          <button class="nav-btn" onclick="toggleActionMenu()" title="Add / Manage">
-            <i class="fa-solid fa-plus"></i>
-          </button>
-          <div id="actionMenu" class="action-menu">
-            <div class="menu-item" onclick="openModal('addPropertyModal')">
-              <i class="fa-solid fa-building"></i> Add Property
-            </div>
-            <div class="menu-item" onclick="openModal('editPropertyModal')">
-              <i class="fa-solid fa-pen-to-square"></i> Edit Property Name
-            </div>
-            <div class="menu-item" onclick="openModal('deletePropertyModal')">
-              <i class="fa-solid fa-trash-can"></i> Delete Property
-            </div>
-            <div class="menu-item" onclick="openAddFlatModal()">
-              <i class="fa-solid fa-door-open"></i> Add Flat
-            </div>
-            <div class="menu-item" onclick="openModal('deleteFlatModal')">
-              <i class="fa-solid fa-rectangle-xmark"></i> Delete Flat
+        <!-- Action Icons Grouped Together so Plus (+) is Always Clearly Visible on Mobile -->
+        <div class="nav-actions-group">
+          <!-- Dynamic Add Plus (+) Icon (Highlighted & Never Cut Off on Mobile) -->
+          <div class="dropdown-anchor admin-only">
+            <button class="nav-btn plus-btn-highlight" onclick="toggleActionMenu()" title="Add / Manage">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+            <div id="actionMenu" class="action-menu">
+              <div class="menu-item" onclick="openModal('addPropertyModal')">
+                <i class="fa-solid fa-building"></i> Add Property
+              </div>
+              <div class="menu-item" onclick="openModal('editPropertyModal')">
+                <i class="fa-solid fa-pen-to-square"></i> Edit Property Name
+              </div>
+              <div class="menu-item" onclick="openModal('deletePropertyModal')">
+                <i class="fa-solid fa-trash-can"></i> Delete Property
+              </div>
+              <div class="menu-item" onclick="openAddFlatModal()">
+                <i class="fa-solid fa-door-open"></i> Add Flat
+              </div>
+              <div class="menu-item" onclick="openModal('deleteFlatModal')">
+                <i class="fa-solid fa-rectangle-xmark"></i> Delete Flat
+              </div>
             </div>
           </div>
+
+          <!-- Dedicated Profile Icon -->
+          <button class="nav-btn" onclick="openProfileModal()" title="My Profile">
+            <i class="fa-solid fa-user"></i>
+          </button>
+
+          <!-- Dedicated Settings Icon Next to Profile -->
+          <button class="nav-btn" onclick="openSettingsModal()" title="Settings">
+            <i class="fa-solid fa-gear"></i>
+          </button>
+
+          <!-- Dedicated Logout Icon -->
+          <button class="nav-btn" onclick="handleLogout()" title="Logout">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          </button>
         </div>
-
-        <!-- Dedicated Profile Icon -->
-        <button class="nav-btn" onclick="openProfileModal()" title="My Profile">
-          <i class="fa-solid fa-user"></i>
-        </button>
-
-        <!-- Dedicated Settings Icon Next to Profile -->
-        <button class="nav-btn" onclick="openSettingsModal()" title="Settings">
-          <i class="fa-solid fa-gear"></i>
-        </button>
-
-        <!-- Dedicated Logout Icon -->
-        <button class="nav-btn" onclick="handleLogout()" title="Logout">
-          <i class="fa-solid fa-arrow-right-from-bracket"></i>
-        </button>
       </div>
     </header>
 
@@ -1448,15 +1610,15 @@
       <!-- Settings Tab 2: Create a New User ID -->
       <div id="setSubCreateUser" class="tab-content">
         <div class="form-group">
-          <label>Full Name *</label>
+          <label>Full Name <span class="req-star">*</span></label>
           <input type="text" id="createUserName" class="form-control" placeholder="Enter full name">
         </div>
         <div class="form-group">
-          <label>Desired Username (User ID) *</label>
+          <label>Desired Username (User ID) <span class="req-star">*</span></label>
           <input type="text" id="createUserLoginId" class="form-control" placeholder="e.g. manager_01">
         </div>
         <div class="form-group">
-          <label>Set Password *</label>
+          <label>Set Password <span class="req-star">*</span></label>
           <div class="password-field-wrapper">
             <input type="password" id="createUserPass" class="form-control" placeholder="Create strong password">
             <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('createUserPass', this)">
@@ -1465,7 +1627,7 @@
           </div>
         </div>
         <div class="form-group">
-          <label>Assign Role *</label>
+          <label>Assign Role <span class="req-star">*</span></label>
           <select id="createUserRole" class="form-control">
             <option value="Admin">Admin (Full Access - Can View & Edit Everything)</option>
             <option value="Viewer">Viewer (Read-Only - Can Only View Everything)</option>
@@ -1501,7 +1663,7 @@
       <button class="modal-close-btn" onclick="closeModal('addPropertyModal')"><i class="fa-solid fa-xmark"></i></button>
       <h3 style="margin-bottom: 20px;">Add New Property</h3>
       <div class="form-group">
-        <label>Property Name * (Mandatory)</label>
+        <label>Property Name <span class="req-star">*</span> (Mandatory)</label>
         <input type="text" id="newPropName" class="form-control" placeholder="e.g. Sunrise Enclave">
       </div>
       <div class="form-group">
@@ -1534,7 +1696,7 @@
         <input type="text" id="editPropCurrentName" class="form-control" readonly>
       </div>
       <div class="form-group">
-        <label>New Property Name *</label>
+        <label>New Property Name <span class="req-star">*</span></label>
         <input type="text" id="editPropNewName" class="form-control" placeholder="Enter updated name">
       </div>
       <button class="btn-primary admin-only" onclick="submitEditProperty()">Update Name</button>
@@ -1554,22 +1716,22 @@
     </div>
   </div>
 
-  <!-- Add Flat Modal -->
+  <!-- Add Flat Modal (Renter Name is now Strictly Required with *) -->
   <div id="addFlatModal" class="modal-overlay">
     <div class="modal-window">
       <button class="modal-close-btn" onclick="closeModal('addFlatModal')"><i class="fa-solid fa-xmark"></i></button>
       <h3 style="margin-bottom: 20px;">Add New Flat</h3>
       <div class="form-group">
-        <label>Property Selection * (Strict Target Property)</label>
-        <select id="addFlatPropDropdown" class="form-control"></select>
+        <label>Property Selection <span class="req-star">*</span></label>
+        <select id="addFlatPropDropdown" class="form-control" required></select>
       </div>
       <div class="form-group">
-        <label>Flat Name/Number * (Mandatory)</label>
-        <input type="text" id="addFlatNumber" class="form-control" placeholder="e.g. 101 or 3B">
+        <label>Flat Name/Number <span class="req-star">*</span></label>
+        <input type="text" id="addFlatNumber" class="form-control" placeholder="e.g. 101 or 3B" required>
       </div>
       <div class="form-group">
-        <label>Renter Name (Optional)</label>
-        <input type="text" id="addFlatRenter" class="form-control" placeholder="Primary tenant">
+        <label>Renter Name <span class="req-star">*</span></label>
+        <input type="text" id="addFlatRenter" class="form-control" placeholder="Enter primary tenant full name" required>
       </div>
       <div class="form-group">
         <label>Monthly Rent Bill Amount (₹)</label>
@@ -1930,14 +2092,14 @@
             </div>
           </div>
 
-          <!-- Right Column: Renter Profile Info (Strictly Isolated Per RenterID) -->
+          <!-- Right Column: Renter Profile Info -->
           <div class="matrix-col">
             <div class="col-title">Renter Profile (Isolated Record)</div>
             <div class="form-group admin-only">
               <label>Profile Image Upload</label>
               <input type="file" id="fileProfilePic" class="form-control" accept="image/*" onchange="previewImageFile(this, 'profilePicturePreview')">
             </div>
-            <div class="form-group"><label>Renter Name</label><input type="text" id="renterName" class="form-control"></div>
+            <div class="form-group"><label>Renter Name <span class="req-star">*</span></label><input type="text" id="renterName" class="form-control"></div>
             <div class="form-group"><label>Identity Document Number</label><input type="text" id="renterIdentityNum" class="form-control" maxlength="12" placeholder="[ID Redacted]"></div>
             <div class="form-group admin-only">
               <label>ID Card Image Upload</label>
@@ -1961,7 +2123,7 @@
         </div>
       </div>
 
-      <!-- TAB 4: RENTER HISTORY (Strictly Isolated Records Per Renter with Selector) -->
+      <!-- TAB 4: RENTER HISTORY -->
       <div id="tabRenterHistory" class="tab-content">
         <div class="calc-header-bar" style="margin-bottom:14px;">
           <div>
@@ -2037,19 +2199,34 @@
     let activeFlatRenterObj = null;
     let syncTimer = null;
     let sideToastTimeout = null;
+    let pendingConfirmCallback = null;
 
     function getGasUrl() {
       return GAS_WEB_APP_URL.trim();
     }
 
-    function triggerSideToast(title, message, isSuccess = false) {
+    /**
+     * ============================================================================
+     * UNIVERSAL COLORFUL SIDE SLIDE-IN TOAST
+     * Replaces all top browser alerts so every notification slides in from the side
+     * ============================================================================
+     */
+    function triggerSideToast(title, message, type = false) {
       const toast = document.getElementById("sideToast");
       const icon = document.getElementById("sideToastIcon");
       document.getElementById("sideToastTitle").innerText = title;
       document.getElementById("sideToastMessage").innerText = message;
 
-      toast.classList.toggle("success-toast", isSuccess);
-      icon.className = isSuccess ? "fa-solid fa-circle-check" : "fa-solid fa-triangle-exclamation";
+      toast.classList.remove("success-toast", "warning-toast");
+      if (type === true || type === "success") {
+        toast.classList.add("success-toast");
+        icon.className = "fa-solid fa-circle-check";
+      } else if (type === "warning") {
+        toast.classList.add("warning-toast");
+        icon.className = "fa-solid fa-bell";
+      } else {
+        icon.className = "fa-solid fa-triangle-exclamation";
+      }
 
       toast.classList.remove("show");
       void toast.offsetWidth;
@@ -2058,7 +2235,32 @@
       if (sideToastTimeout) clearTimeout(sideToastTimeout);
       sideToastTimeout = setTimeout(() => {
         toast.classList.remove("show");
-      }, 3800);
+      }, 3900);
+    }
+
+    /**
+     * ============================================================================
+     * CENTERED REDESIGNED CONFIRMATION MODAL (FOR DELETE FLAT & DELETE PROPERTY)
+     * ============================================================================
+     */
+    function openCenteredConfirmModal(title, message, onYesCallback) {
+      document.getElementById("confirmModalTitle").innerText = title;
+      document.getElementById("confirmModalMessage").innerText = message;
+      pendingConfirmCallback = onYesCallback;
+
+      const yesBtn = document.getElementById("confirmModalYesBtn");
+      yesBtn.onclick = () => {
+        const cb = pendingConfirmCallback;
+        closeConfirmModal();
+        if (typeof cb === "function") cb();
+      };
+
+      document.getElementById("customConfirmModal").classList.add("active");
+    }
+
+    function closeConfirmModal() {
+      document.getElementById("customConfirmModal").classList.remove("active");
+      pendingConfirmCallback = null;
     }
 
     function togglePasswordVisibility(inputId, btnEl) {
@@ -2076,20 +2278,11 @@
       }
     }
 
-    /**
-     * ============================================================================
-     * SESSION MANAGEMENT (AUTOMATIC LOGOUT ON TAB/BROWSER CLOSE):
-     * - Uses `sessionStorage` instead of `localStorage` for authentication state.
-     * - Survives F5 / Chrome Refresh button seamlessly.
-     * - Automatically logs the user out when the browser tab or window is closed!
-     * ============================================================================
-     */
     document.addEventListener("DOMContentLoaded", () => {
       window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
         if (activeThemePref === "system") applyVisualTheme("system");
       });
 
-      // Clean up any legacy persistent login flags from older versions
       localStorage.removeItem("active_session_user");
 
       const savedTheme = localStorage.getItem("app_visual_theme") || "black";
@@ -2129,7 +2322,6 @@
       } catch (e) {}
     }
 
-    // Strict helper for matching Property and Flat names without cross-property leakage
     function isSamePropAndFlat(propA, flatA, propB, flatB) {
       return (
         String(propA || "").trim().toLowerCase() === String(propB || "").trim().toLowerCase() &&
@@ -2232,8 +2424,9 @@
 
           document.getElementById("loginPassword").value = "";
           unlockDashboardInstant();
+          triggerSideToast("Welcome Back", `Logged in as ${activeUserFullName}`, true);
         } else {
-          triggerSideToast("Access Denied", "Incorrect Username or Password", false);
+          triggerSideToast("Login Failed", "Your Username or Password is wrong.", false);
         }
       } catch (err) {
         triggerSideToast("Connection Error", "Unable to reach Google Sheet server.", false);
@@ -2280,12 +2473,6 @@
       }
     }
 
-    /**
-     * ============================================================================
-     * STRICT RENTER DATA ISOLATION:
-     * Retrieves bills belonging strictly to a specific Renter object (by RenterID or isolated name)
-     * ============================================================================
-     */
     function getBillsForSpecificRenter(propertyName, flatName, renterObj) {
       if (!renterObj) return [];
       return DB.bills.filter(b => {
@@ -2301,15 +2488,6 @@
       });
     }
 
-    /**
-     * ============================================================================
-     * NET CLOSING BALANCE CALCULATOR FOR ANY RENTER (INCLUDES CARRY-FORWARD):
-     * Because each month's TotalBilled already includes prior months' carry-forward,
-     * the net cumulative balance at any point is:
-     *   Sum(CurrentMonthOnlyCharges) - Sum(PaidAmount)
-     * Or equivalently from the latest chronological bill: (LatestBill.TotalBilled - LatestBill.PaidAmount)
-     * ============================================================================
-     */
     function calculateNetBalanceForRenterBeforeMonth(propertyName, flatName, renterObj, targetMonthYear) {
       const renterBills = getBillsForSpecificRenter(propertyName, flatName, renterObj);
       const priorBills = renterBills
@@ -2318,9 +2496,6 @@
 
       if (priorBills.length === 0) return 0;
 
-      // Since each bill's TotalBilled incorporates its PrevCarryBalance, the closing balance
-      // of the most recent prior bill is the exact carry-forward into targetMonthYear.
-      // However, to handle out-of-order edits safely, we sum each prior month's standalone charges minus payments:
       let cumulativeStandaloneCharges = 0;
       let cumulativePaid = 0;
 
@@ -2334,8 +2509,6 @@
         cumulativePaid += paid;
       });
 
-      // Positive value = Pending Due to be ADDED next month
-      // Negative value = Advance Payment to be DEDUCTED next month
       return cumulativeStandaloneCharges - cumulativePaid;
     }
 
@@ -2420,7 +2593,6 @@
       container.innerHTML = "";
       const targetPropClean = String(propertyName || "").trim().toLowerCase();
 
-      // Strictly filter flats belonging ONLY to this exact property
       const flats = DB.flats.filter(f => String(f.PropertyName || "").trim().toLowerCase() === targetPropClean);
 
       if (flats.length === 0) {
@@ -2441,7 +2613,7 @@
         );
 
         const summary = calculateCurrentNetBalanceForRenter(flat.PropertyName, flat.FlatName, renter);
-        const netBal = summary.netBalance; // > 0 means Pending Due; < 0 means Advance Paid; 0 means Settled
+        const netBal = summary.netBalance;
 
         let statusClass = "";
         let paymentBannerHTML = "";
@@ -2642,18 +2814,21 @@
       if (!currUser || !newUser || !confUser) {
         msgBox.innerText = "Please fill in Current Username, New Username, and Confirm New Username.";
         msgBox.className = "bottom-status-msg error";
+        triggerSideToast("Missing Fields", "Please fill in all username fields.", false);
         return;
       }
 
       if (currUser.toLowerCase() !== String(activeUser).toLowerCase()) {
         msgBox.innerText = "Current Username entered does not match your active username.";
         msgBox.className = "bottom-status-msg error";
+        triggerSideToast("Mismatch", "Current Username entered is incorrect.", false);
         return;
       }
 
       if (newUser !== confUser) {
         msgBox.innerText = "New Username and Confirm New Username do not match.";
         msgBox.className = "bottom-status-msg error";
+        triggerSideToast("Mismatch", "New Username and Confirm New Username do not match.", false);
         return;
       }
 
@@ -2663,6 +2838,7 @@
       )) {
         msgBox.innerText = "This username is already taken. Please select or write another username.";
         msgBox.className = "bottom-status-msg error";
+        triggerSideToast("Username Taken", "This username is already taken. Please choose another.", false);
         return;
       }
 
@@ -2677,6 +2853,7 @@
       if (res.status === "duplicate") {
         msgBox.innerText = "This username is already taken. Please select or write another username.";
         msgBox.className = "bottom-status-msg error";
+        triggerSideToast("Username Taken", res.message, false);
       } else if (res.status === "success") {
         activeUser = res.newUsername;
         activeUserFullName = res.fullName;
@@ -2691,10 +2868,12 @@
 
         msgBox.innerText = "Username and Name updated successfully!";
         msgBox.className = "bottom-status-msg success";
+        triggerSideToast("Profile Updated", "Username and Name updated in Google Sheet!", true);
         syncDataLive();
       } else {
         msgBox.innerText = res.message || "Could not update username.";
         msgBox.className = "bottom-status-msg error";
+        triggerSideToast("Update Error", res.message || "Could not update username.", false);
       }
     }
 
@@ -2709,11 +2888,13 @@
       if (!oldP || !newP || !confP) {
         msgBox.innerText = "All three password fields are required.";
         msgBox.className = "bottom-status-msg error";
+        triggerSideToast("Required", "Please fill in all three password fields.", false);
         return;
       }
       if (newP !== confP) {
         msgBox.innerText = "New Password does not match Confirm New Password.";
         msgBox.className = "bottom-status-msg error";
+        triggerSideToast("Password Mismatch", "New Password does not match Confirm New Password.", false);
         return;
       }
 
@@ -2730,6 +2911,7 @@
       } else {
         msgBox.innerText = res.message || "Current Password is incorrect.";
         msgBox.className = "bottom-status-msg error";
+        triggerSideToast("Incorrect Password", res.message || "Current Password is incorrect.", false);
       }
     }
 
@@ -2783,6 +2965,7 @@
       applyVisualTheme(themePref);
       const otherThemeSpan = document.getElementById("otherProfileTheme");
       if (otherThemeSpan) otherThemeSpan.innerText = themePref.toUpperCase();
+      triggerSideToast("Theme Applied", `Switched to ${themePref.toUpperCase()} theme`, true);
 
       if (activeUser) {
         await sendGasPost({
@@ -2829,11 +3012,7 @@
       }
     }
 
-    /**
-     * ============================================================================
-     * 7. DETAILED CALCULATION TAB WORKFLOW WITH AUTOMATIC DUE / ADVANCE CARRY-FORWARD
-     * ============================================================================
-     */
+    // 7. Detailed Calculation Tab Workflow (Automatic Single-Bill-Per-Month Overwrite)
     function resetAllCalculatorLocks() {
       const lockableIds = [
         "calcRent", "calcElecPrev", "calcElecRate",
@@ -2918,7 +3097,6 @@
 
       const existingBill = sortedBills.find(b => String(b.MonthYear).trim() === String(chosenMonth).trim());
 
-      // Calculate exact Carry-Forward balance (Pending Due > 0 or Advance < 0) from all months prior to chosenMonth
       const autoCarryBalance = calculateNetBalanceForRenterBeforeMonth(
         selectedFlat.PropertyName,
         selectedFlat.FlatName,
@@ -2927,9 +3105,9 @@
       );
 
       if (existingBill) {
-        statusTag.innerText = `Existing Bill Found (${chosenMonth}) - Editing Overwrites`;
+        statusTag.innerText = `Existing Bill Found (${chosenMonth}) - Submitting Replaces Previous Bill`;
         statusTag.className = "calc-month-status-tag existing";
-        submitBtnText.innerText = `Overwrite Bill for ${chosenMonth}`;
+        submitBtnText.innerText = `Update & Replace Bill for ${chosenMonth}`;
 
         document.getElementById("calcRent").value = existingBill.BaseRent ?? selectedFlat.RentAmount ?? 0;
         document.getElementById("calcElecPrev").value = existingBill.ElecPrev ?? 0;
@@ -2949,7 +3127,6 @@
         document.getElementById("calcAddToggle").value = addAmtVal < 0 ? "-" : "+";
         document.getElementById("calcAddAmount").value = Math.abs(addAmtVal) || "";
 
-        // Use live recalculated prior carry balance so if prior month was paid later, it updates automatically
         document.getElementById("calcPrevCarryBalance").value = autoCarryBalance;
         document.getElementById("calcPaidNow").value = existingBill.PaidAmount ?? 0;
         document.getElementById("calcPayMode").value = existingBill.PaymentMode || "UPI";
@@ -2968,7 +3145,6 @@
         document.getElementById("calcPngRate").value = selectedFlat.PNGRate || 45;
         document.getElementById("calcWaterRate").value = selectedFlat.WaterRate || 15;
 
-        // Roll over final readings from immediately preceding billed month
         const priorBills = sortedBills.filter(b => String(b.MonthYear).trim() < String(chosenMonth).trim());
         const lastPriorBill = priorBills.length > 0 ? priorBills[priorBills.length - 1] : null;
 
@@ -3013,7 +3189,6 @@
       const currentYearMonth = new Date().toISOString().slice(0, 7);
       document.getElementById("calcMonthPicker").value = currentYearMonth;
 
-      // Populate Left Side Utilities from Flat Master + Active Renter
       document.getElementById("profRent").value = flat.RentAmount || renter?.RentAmount || 0;
       document.getElementById("profFlatNumber").value = flat.FlatName;
       document.getElementById("profElecRate").value = flat.ElecRate || renter?.ElecFixedRate || 9;
@@ -3030,7 +3205,6 @@
       document.getElementById("profUpiId").value = flat.UPIID || renter?.UPIID || "";
       document.getElementById("profContractMobile").value = flat.ContractMobile || renter?.ContractMobile || "";
 
-      // Populate Right Side Strictly from Active Renter Only (Never mixing with Past Renters)
       if (renter) {
         document.getElementById("renterName").value = renter.RenterName || "";
         document.getElementById("renterIdentityNum").value = renter.IdentityDocNumber || "";
@@ -3074,7 +3248,6 @@
       tabs.forEach((tab, i) => tab.classList.toggle("active", i === 2));
     }
 
-    // Bill Math Engine (Automatically Adds Pending Due or Deducts Advance Carry-Forward)
     function runBillMath() {
       const rent = parseFloat(document.getElementById("calcRent").value) || 0;
       document.getElementById("calcRentBadge").innerText = `₹ ${rent}`;
@@ -3105,7 +3278,6 @@
       const addCalculated = addToggle === "+" ? addAmt : -addAmt;
       document.getElementById("calcAddSummary").innerText = `₹ ${addCalculated}`;
 
-      // Carry-Forward Balance: Positive = Previous Due (Added), Negative = Previous Advance (Deducted)
       const prevCarry = parseFloat(document.getElementById("calcPrevCarryBalance").value) || 0;
       const carryTypeBadge = document.getElementById("calcCarryTypeBadge");
       const carryAmtBadge = document.getElementById("calcCarryAmountBadge");
@@ -3154,6 +3326,13 @@
       }
     }
 
+    /**
+     * ============================================================================
+     * AUTOMATIC SINGLE-BILL-PER-MONTH OVERWRITE:
+     * If a second bill is entered for the same month, it automatically replaces
+     * the previous bill for that month without creating a duplicate row.
+     * ============================================================================
+     */
     async function submitBillCalculation() {
       if (activeRole === "Viewer") return;
 
@@ -3170,13 +3349,6 @@
           : (String(b.TenantName || "").trim().toLowerCase() === String(currentTenantName).trim().toLowerCase());
         return sameMonth && sameRenter;
       });
-
-      if (existingBillIdx !== -1) {
-        const confirmOverwrite = confirm(
-          `A bill for ${chosenMonth} already exists for Flat ${selectedFlat.FlatName}.\n\nDo you want to overwrite the existing bill?`
-        );
-        if (!confirmOverwrite) return;
-      }
 
       const elecPrev = parseFloat(document.getElementById("calcElecPrev").value) || 0;
       const elecCurr = parseFloat(document.getElementById("calcElecCurr").value) || elecPrev;
@@ -3240,11 +3412,12 @@
       };
 
       if (existingBillIdx !== -1) {
+        // Automatically overwrite & replace the existing bill for that month
         DB.bills[existingBillIdx] = newBillObj;
-        triggerSideToast("Bill Overwritten", `Updated existing bill for ${chosenMonth}!`, true);
+        triggerSideToast("Bill Replaced & Updated", `Previous bill for ${chosenMonth} was overwritten with the new calculation!`, "warning");
       } else {
         DB.bills.push(newBillObj);
-        triggerSideToast("Bill Recorded", `Created new bill for ${chosenMonth}!`, true);
+        triggerSideToast("Bill Recorded", `Monthly bill for ${chosenMonth} saved to Google Sheet!`, true);
       }
 
       saveDbSnapshotToCache();
@@ -3325,16 +3498,11 @@
       });
     }
 
-    /**
-     * ============================================================================
-     * 8. STRICT RENTER HISTORY ISOLATION (EACH RENTER'S DATA SAVED & VIEWED SEPARATELY)
-     * ============================================================================
-     */
+    // 8. Strict Renter History Isolation
     function populateIsolatedRenterHistoryDropdown(prop, flat) {
       const select = document.getElementById("rhRenterSelectDropdown");
       if (!select) return;
 
-      // Get all renters (Active and Inactive) who ever stayed in this exact Property + Flat
       const flatRenters = DB.renters.filter(r => isSamePropAndFlat(r.PropertyName, r.FlatName, prop, flat));
 
       if (flatRenters.length === 0) {
@@ -3343,7 +3511,6 @@
         return;
       }
 
-      // Sort so Active renter is first, followed by Past/Inactive renters
       flatRenters.sort((a, b) => {
         const aAct = String(a.Status).toLowerCase() === "active" ? 0 : 1;
         const bAct = String(b.Status).toLowerCase() === "active" ? 0 : 1;
@@ -3393,7 +3560,6 @@
       document.getElementById("rhContact").innerText = `Phone: ${targetRenter.MobileNumber || '--'}`;
       document.getElementById("rhStay").innerText = `Stay: ${targetRenter.JoinDate || '--'} to ${isAct ? 'Present' : (targetRenter.EndDate || 'Archived')}`;
 
-      // Strictly pull bills ONLY for this selected Renter
       const bills = getBillsForSpecificRenter(selectedFlat.PropertyName, selectedFlat.FlatName, targetRenter);
       let totalStandaloneBilled = 0, totalPaid = 0, totalRent = 0, totalUtility = 0;
 
@@ -3496,7 +3662,6 @@
         return triggerSideToast("Renter Name Required", "Please enter the Renter Name.", false);
       }
 
-      // If an active renter already exists, use their RenterID; otherwise generate a brand new isolated RenterID
       const targetRenterId = activeFlatRenterObj?.RenterID || ("R-" + Date.now());
 
       const payload = {
@@ -3557,7 +3722,6 @@
           existingActiveRenter.IdentityImageURL = payload.identityImageUrl;
           activeFlatRenterObj = existingActiveRenter;
         } else {
-          // Brand new isolated renter record appended
           const createdRenter = {
             RenterID: targetRenterId,
             PropertyName: payload.propertyName,
@@ -3621,7 +3785,6 @@
       document.getElementById(id).classList.remove("active");
     }
 
-    // Pre-selects the currently clicked property when opening Add Flat Modal
     function openAddFlatModal() {
       syncPropertyDropdowns();
       const addFlatPropSelect = document.getElementById("addFlatPropDropdown");
@@ -3672,7 +3835,7 @@
       if (!name) return triggerSideToast("Required", "Property Name is mandatory!", false);
 
       if (DB.properties.some(p => String(p.PropertyName).trim().toLowerCase() === name.toLowerCase())) {
-        return alert("This property name is already added. Please use a different name.");
+        return triggerSideToast("Duplicate Property", "This property name is already added. Please use a different name.", false);
       }
 
       const newPropObj = {
@@ -3686,6 +3849,7 @@
       saveDbSnapshotToCache();
       renderAllDashboardUI();
       closeModal("addPropertyModal");
+      triggerSideToast("Property Added", `${name} has been added successfully!`, true);
 
       await sendGasPost({
         action: "addProperty",
@@ -3703,7 +3867,7 @@
       if (!newName) return triggerSideToast("Required", "Please enter a new name.", false);
 
       if (DB.properties.some(p => String(p.PropertyName).trim().toLowerCase() === newName.toLowerCase() && String(p.PropertyName).trim().toLowerCase() !== oldName.toLowerCase())) {
-        return alert("This property name is already taken. Please use a different name.");
+        return triggerSideToast("Duplicate Name", "This property name is already taken. Please use a different name.", false);
       }
 
       DB.properties.forEach(p => { if (p.PropertyName === oldName) p.PropertyName = newName; });
@@ -3718,6 +3882,7 @@
       saveDbSnapshotToCache();
       renderAllDashboardUI();
       closeModal("editPropertyModal");
+      triggerSideToast("Property Updated", `Renamed to ${newName}`, true);
 
       await sendGasPost({ action: "editProperty", oldName: oldName, newName: newName });
       syncDataLive();
@@ -3725,34 +3890,41 @@
 
     function triggerDeletePropertyCheck() {
       const p = document.getElementById("deletePropDropdown").value;
-      const conf = confirm("Are you sure you want to confirm delete this property? Yes or No?");
-      if (conf) {
-        DB.properties = DB.properties.filter(item => item.PropertyName !== p);
-        if (selectedProperty === p) {
-          selectedProperty = null;
-          sessionStorage.removeItem("active_selected_property");
-        }
-        saveDbSnapshotToCache();
-        renderAllDashboardUI();
-        closeModal("deletePropertyModal");
+      if (!p) return triggerSideToast("Select Property", "No property selected to delete.", false);
 
-        sendGasPost({ action: "deleteProperty", propertyName: p }).then(() => syncDataLive());
-      }
+      openCenteredConfirmModal(
+        "Delete Property",
+        `Are you sure you want to confirm delete this property (${p})? Yes or No?`,
+        () => {
+          DB.properties = DB.properties.filter(item => item.PropertyName !== p);
+          if (selectedProperty === p) {
+            selectedProperty = null;
+            sessionStorage.removeItem("active_selected_property");
+          }
+          saveDbSnapshotToCache();
+          renderAllDashboardUI();
+          closeModal("deletePropertyModal");
+          triggerSideToast("Property Deleted", `${p} was permanently removed.`, "warning");
+
+          sendGasPost({ action: "deleteProperty", propertyName: p }).then(() => syncDataLive());
+        }
+      );
     }
 
-    // Strictly adds the flat to the exact selected property only
+    // Strictly adds the flat to the exact selected property only, and requires Renter Name (*)
     async function submitAddFlat() {
       const targetProp = document.getElementById("addFlatPropDropdown").value.trim();
       const flat = document.getElementById("addFlatNumber").value.trim();
+      const rName = document.getElementById("addFlatRenter").value.trim();
 
       if (!targetProp) return triggerSideToast("Select Property", "Please select a property first.", false);
-      if (!flat) return triggerSideToast("Required", "Flat Name/Number is strictly mandatory.", false);
+      if (!flat) return triggerSideToast("Flat Number Required", "Flat Name/Number (*) is strictly mandatory.", false);
+      if (!rName) return triggerSideToast("Renter Name Required", "Renter Name (*) is strictly mandatory.", false);
 
       if (DB.flats.some(f => isSamePropAndFlat(f.PropertyName, f.FlatName, targetProp, flat))) {
         return triggerSideToast("Duplicate Flat", `Flat ${flat} already exists in ${targetProp}.`, false);
       }
 
-      const rName = document.getElementById("addFlatRenter").value.trim();
       const rentAmt = document.getElementById("addFlatRent").value || 0;
       const eRate = document.getElementById("addFlatElecRate").value || 9;
       const pRate = document.getElementById("addFlatPngRate").value || 45;
@@ -3769,25 +3941,22 @@
         Status: "Active"
       });
 
-      if (rName) {
-        DB.renters.push({
-          RenterID: generatedRenterId,
-          PropertyName: targetProp,
-          FlatName: flat,
-          RenterName: rName,
-          RentAmount: rentAmt,
-          JoinDate: new Date().toISOString().split('T')[0],
-          Status: "Active"
-        });
-      }
+      DB.renters.push({
+        RenterID: generatedRenterId,
+        PropertyName: targetProp,
+        FlatName: flat,
+        RenterName: rName,
+        RentAmount: rentAmt,
+        JoinDate: new Date().toISOString().split('T')[0],
+        Status: "Active"
+      });
 
-      // Focus the exact property where the flat was added
       selectedProperty = targetProp;
       sessionStorage.setItem("active_selected_property", targetProp);
       saveDbSnapshotToCache();
       renderAllDashboardUI();
       closeModal("addFlatModal");
-      triggerSideToast("Flat Added", `Flat ${flat} added strictly to ${targetProp}!`, true);
+      triggerSideToast("Flat Added", `Flat ${flat} (${rName}) added to ${targetProp}!`, true);
 
       await sendGasPost({
         action: "addFlat",
@@ -3803,18 +3972,25 @@
       syncDataLive();
     }
 
+    // Uses Centered Redesigned Confirmation Modal instead of top browser confirm()
     function triggerDeleteFlatCheck() {
       const p = document.getElementById("deleteFlatPropDropdown").value;
       const f = document.getElementById("deleteFlatTargetDropdown").value;
-      const conf = confirm("Are you sure you want to confirm delete this flat? Yes or No?");
-      if (conf) {
-        DB.flats = DB.flats.filter(item => !isSamePropAndFlat(item.PropertyName, item.FlatName, p, f));
-        saveDbSnapshotToCache();
-        renderAllDashboardUI();
-        closeModal("deleteFlatModal");
+      if (!p || !f) return triggerSideToast("Select Flat", "Please select a property and flat to delete.", false);
 
-        sendGasPost({ action: "deleteFlat", propertyName: p, flatName: f }).then(() => syncDataLive());
-      }
+      openCenteredConfirmModal(
+        "Delete Flat Confirmation",
+        `Are you sure you want to confirm delete this flat (Flat ${f} in ${p})? Yes or No?`,
+        () => {
+          DB.flats = DB.flats.filter(item => !isSamePropAndFlat(item.PropertyName, item.FlatName, p, f));
+          saveDbSnapshotToCache();
+          renderAllDashboardUI();
+          closeModal("deleteFlatModal");
+          triggerSideToast("Flat Deleted", `Flat ${f} was permanently removed from ${p}.`, "warning");
+
+          sendGasPost({ action: "deleteFlat", propertyName: p, flatName: f }).then(() => syncDataLive());
+        }
+      );
     }
 
     function handleLogout() {
