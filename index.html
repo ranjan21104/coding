@@ -879,9 +879,7 @@
       display: block;
     }
 
-    /* ==========================================================================
-       DETAILED CALCULATION TAB LAYOUT (WITH PENCIL LOCK / SAVE & AUTO ROLLOVER)
-       ========================================================================== */
+    /* Detailed Calculation Tab Layout */
     .calc-header-bar {
       display: flex;
       flex-wrap: wrap;
@@ -922,6 +920,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
     }
     .calc-utility-row {
       display: grid;
@@ -1256,7 +1256,7 @@
             <div class="menu-item" onclick="openModal('deletePropertyModal')">
               <i class="fa-solid fa-trash-can"></i> Delete Property
             </div>
-            <div class="menu-item" onclick="openModal('addFlatModal')">
+            <div class="menu-item" onclick="openAddFlatModal()">
               <i class="fa-solid fa-door-open"></i> Add Flat
             </div>
             <div class="menu-item" onclick="openModal('deleteFlatModal')">
@@ -1560,7 +1560,7 @@
       <button class="modal-close-btn" onclick="closeModal('addFlatModal')"><i class="fa-solid fa-xmark"></i></button>
       <h3 style="margin-bottom: 20px;">Add New Flat</h3>
       <div class="form-group">
-        <label>Property Selection</label>
+        <label>Property Selection * (Strict Target Property)</label>
         <select id="addFlatPropDropdown" class="form-control"></select>
       </div>
       <div class="form-group">
@@ -1630,9 +1630,6 @@
 
       <!-- ====================================================================
            TAB 1: CALCULATION WORKFLOW
-           - Month Selector with Smart Autofill & Previous Month Reading Rollover
-           - Locked Base Rent, Prev Readings & Rates with Pencil -> Save Icons
-           - Single-Bill-Per-Month Overwrite Protection
            ==================================================================== -->
       <div id="tabCalc" class="tab-content active">
         <div class="calc-header-bar">
@@ -1646,7 +1643,7 @@
           </div>
         </div>
 
-        <!-- B. Smart Base Rent Input Field (Locked by Default + Pencil -> Save Icon) -->
+        <!-- B. Smart Base Rent Input Field -->
         <div class="calc-grid-card">
           <div class="calc-grid-title">
             <span><i class="fa-solid fa-house-chimney"></i> Base Rent Configuration</span>
@@ -1673,7 +1670,7 @@
           </div>
         </div>
 
-        <!-- Electricity Consumption (Prev Reading & Rate Locked Until Pencil Clicked) -->
+        <!-- Electricity Consumption -->
         <div class="calc-grid-card">
           <div class="calc-grid-title">
             <span><i class="fa-solid fa-bolt"></i> Electricity Consumption</span>
@@ -1781,9 +1778,13 @@
           </div>
         </div>
 
-        <!-- Additional Charges & Payment Settlement -->
+        <!-- Additional Charges, Automatic Carry-Forward (Due / Advance), & Payment Settlement -->
         <div class="calc-grid-card">
-          <div class="calc-grid-title"><span><i class="fa-solid fa-sliders"></i> Additional Charges & Payment</span></div>
+          <div class="calc-grid-title">
+            <span><i class="fa-solid fa-sliders"></i> Additional Charges & Automatic Balance Carry-Forward</span>
+            <span id="carryForwardHint" style="font-size:0.72rem; font-weight:700;"></span>
+          </div>
+
           <div class="calc-utility-row" style="margin-bottom: 10px;">
             <div class="calc-field-col">
               <label>Custom Charge Name</label>
@@ -1806,9 +1807,30 @@
             </div>
           </div>
 
+          <!-- Automatic Previous Months Pending Due (+) or Advance Payment (-) Carry Forward Row -->
+          <div class="calc-utility-row" style="margin-bottom: 10px; grid-template-columns: 2fr 1fr 1fr;">
+            <div class="calc-field-col">
+              <label>Previous Months Carry-Forward (Due Added / Advance Deducted)</label>
+              <div class="editable-input-wrap">
+                <input type="number" id="calcPrevCarryBalance" class="form-control" readonly value="0" oninput="runBillMath()">
+                <button type="button" class="pencil-lock-btn admin-only" onclick="toggleCalcFieldLock('calcPrevCarryBalance', this, 'carry')" title="Edit / Lock Carry-Forward Balance">
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+              </div>
+            </div>
+            <div class="calc-field-col">
+              <label>Carry Type</label>
+              <div class="calc-auto-badge" id="calcCarryTypeBadge" style="font-size:0.75rem;">Settled (₹0)</div>
+            </div>
+            <div class="calc-field-col">
+              <label>Applied to Total</label>
+              <div class="calc-auto-badge" id="calcCarryAmountBadge">₹ 0</div>
+            </div>
+          </div>
+
           <div class="calc-utility-row">
             <div class="calc-field-col" style="grid-column: span 2;">
-              <label>Amount Paid by Renter (₹)</label>
+              <label>Amount Paid by Renter This Month (₹)</label>
               <input type="number" id="calcPaidNow" class="form-control" placeholder="0" oninput="runBillMath()">
             </div>
             <div class="calc-field-col">
@@ -1820,14 +1842,14 @@
               </select>
             </div>
             <div class="calc-field-col">
-              <label>Balance Adv / Due</label>
+              <label>Closing Balance Adv / Due</label>
               <div class="calc-auto-badge" id="calcDueBadge" style="color:var(--accent-red);">Due: ₹ 0</div>
             </div>
           </div>
         </div>
 
         <div style="display:flex; justify-content:space-between; align-items:center; margin: 12px 0; padding:12px 16px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:12px;">
-          <span style="font-weight:700;">Grand Total Billed:</span>
+          <span style="font-weight:700;">Grand Total Billed (Includes Carry-Forward):</span>
           <strong id="calcGrandTotal" style="font-size:1.2rem; color:var(--primary);">₹ 0</strong>
         </div>
 
@@ -1857,6 +1879,7 @@
                 <th>ELEC (PREV - CURR = CONSUMED)</th>
                 <th>PNG (PREV - CURR = CONSUMED)</th>
                 <th>WATER (PREV - CURR = CONSUMED)</th>
+                <th>CARRY BAL</th>
                 <th>TOTAL</th>
                 <th>PAID & MODE</th>
                 <th>STATUS</th>
@@ -1877,7 +1900,7 @@
           <div class="matrix-col">
             <div class="col-title">Rent & Utility Details</div>
             <div class="form-group"><label>Rent Amount</label><input type="number" id="profRent" class="form-control"></div>
-            <div class="form-group"><label>Flat Name/Number</label><input type="text" id="profFlatNumber" class="form-control"></div>
+            <div class="form-group"><label>Flat Name/Number</label><input type="text" id="profFlatNumber" class="form-control" readonly></div>
             <div class="form-group"><label>PNG Number</label><input type="text" id="profPngNumber" class="form-control"></div>
             <div class="form-group"><label>PNG Meter Number</label><input type="text" id="profPngMeter" class="form-control"></div>
             <div class="form-group"><label>Fixed PNG Cost</label><input type="number" id="profPngFixedCost" class="form-control"></div>
@@ -1907,9 +1930,9 @@
             </div>
           </div>
 
-          <!-- Right Column: Renter Profile Info -->
+          <!-- Right Column: Renter Profile Info (Strictly Isolated Per RenterID) -->
           <div class="matrix-col">
-            <div class="col-title">Renter Profile</div>
+            <div class="col-title">Renter Profile (Isolated Record)</div>
             <div class="form-group admin-only">
               <label>Profile Image Upload</label>
               <input type="file" id="fileProfilePic" class="form-control" accept="image/*" onchange="previewImageFile(this, 'profilePicturePreview')">
@@ -1928,7 +1951,7 @@
               <label>Renter Status</label>
               <select id="renterStatus" class="form-control">
                 <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
+                <option value="Inactive">Inactive (Archive & Clear for Next Renter)</option>
               </select>
             </div>
             <div class="form-group"><label>Join Date</label><input type="date" id="renterJoinDate" class="form-control"></div>
@@ -1938,19 +1961,35 @@
         </div>
       </div>
 
-      <!-- TAB 4: RENTER HISTORY -->
+      <!-- TAB 4: RENTER HISTORY (Strictly Isolated Records Per Renter with Selector) -->
       <div id="tabRenterHistory" class="tab-content">
+        <div class="calc-header-bar" style="margin-bottom:14px;">
+          <div>
+            <h4><i class="fa-solid fa-clock-rotate-left"></i> Renter History & Isolated Financial Records</h4>
+            <span style="font-size:0.74rem; color:var(--text-muted);">Each renter's profile & billing history is stored separately</span>
+          </div>
+          <div style="min-width:240px;">
+            <label style="font-size:0.75rem; font-weight:700; display:block; margin-bottom:4px;">Select Renter Record (Active / Past):</label>
+            <select id="rhRenterSelectDropdown" class="form-control" onchange="renderSelectedRenterHistoryRecord()"></select>
+          </div>
+        </div>
+
         <div class="stat-pill" style="display:flex; flex-wrap:wrap; align-items:center; gap:14px; text-align:left; margin-bottom:14px;">
-          <div class="renter-avatar" style="width:50px; height:50px;">
+          <div class="renter-avatar" style="width:54px; height:54px;">
             <img id="rhAvatar" src="https://via.placeholder.com/150" alt="Avatar">
           </div>
           <div style="flex:1;">
-            <h3 id="rhName">Tenant Name</h3>
-            <span id="rhStatusBadge" class="badge-paid">Active</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <h3 id="rhName">Tenant Name</h3>
+              <span id="rhStatusBadge" class="badge-paid">Active</span>
+            </div>
             <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">
               <span id="rhContact">Contact: --</span> | <span id="rhStay">Duration: --</span>
             </div>
           </div>
+          <button type="button" class="btn-primary" style="width:auto; padding:9px 14px; font-size:0.8rem;" onclick="switchFlatTabToProfile()">
+            <i class="fa-solid fa-id-card"></i> View Profile & Docs
+          </button>
         </div>
 
         <div class="renter-history-overview">
@@ -1961,10 +2000,10 @@
           <div class="stat-pill"><span>BALANCE STATUS</span><strong id="rhBalance" style="color:var(--accent-red);">Due: ₹ 0</strong></div>
         </div>
 
-        <details style="margin-top:16px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:8px; padding:12px;">
+        <details style="margin-top:16px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:8px; padding:12px;" open>
           <summary style="cursor:pointer; font-weight:700; color:var(--primary);">&gt; Show Stay-Specific Invoices</summary>
           <div id="rhInvoiceList" style="margin-top:12px; font-size:0.82rem;">
-            <!-- Generated rows -->
+            <!-- Generated rows strictly for the selected renter -->
           </div>
         </details>
       </div>
@@ -2037,22 +2076,33 @@
       }
     }
 
+    /**
+     * ============================================================================
+     * SESSION MANAGEMENT (AUTOMATIC LOGOUT ON TAB/BROWSER CLOSE):
+     * - Uses `sessionStorage` instead of `localStorage` for authentication state.
+     * - Survives F5 / Chrome Refresh button seamlessly.
+     * - Automatically logs the user out when the browser tab or window is closed!
+     * ============================================================================
+     */
     document.addEventListener("DOMContentLoaded", () => {
       window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
         if (activeThemePref === "system") applyVisualTheme("system");
       });
 
+      // Clean up any legacy persistent login flags from older versions
+      localStorage.removeItem("active_session_user");
+
       const savedTheme = localStorage.getItem("app_visual_theme") || "black";
       applyVisualTheme(savedTheme);
 
-      const savedSessionUser = localStorage.getItem("active_session_user");
-      const savedRole = localStorage.getItem("active_session_role") || "Admin";
-      const savedFullName = localStorage.getItem("active_session_fullname") || savedSessionUser;
-      const savedSelectedProp = localStorage.getItem("active_selected_property");
+      const savedSessionUser = sessionStorage.getItem("active_session_user");
+      const savedRole = sessionStorage.getItem("active_session_role") || "Admin";
+      const savedFullName = sessionStorage.getItem("active_session_fullname") || savedSessionUser;
+      const savedSelectedProp = sessionStorage.getItem("active_selected_property");
 
       if (savedSelectedProp) selectedProperty = savedSelectedProp;
 
-      const cachedSnapshot = localStorage.getItem("cached_db_snapshot");
+      const cachedSnapshot = sessionStorage.getItem("cached_db_snapshot");
       if (cachedSnapshot) {
         try {
           const parsed = JSON.parse(cachedSnapshot);
@@ -2075,8 +2125,16 @@
 
     function saveDbSnapshotToCache() {
       try {
-        localStorage.setItem("cached_db_snapshot", JSON.stringify(DB));
+        sessionStorage.setItem("cached_db_snapshot", JSON.stringify(DB));
       } catch (e) {}
+    }
+
+    // Strict helper for matching Property and Flat names without cross-property leakage
+    function isSamePropAndFlat(propA, flatA, propB, flatB) {
+      return (
+        String(propA || "").trim().toLowerCase() === String(propB || "").trim().toLowerCase() &&
+        String(flatA || "").trim().toLowerCase() === String(flatB || "").trim().toLowerCase()
+      );
     }
 
     function renderAllDashboardUI() {
@@ -2084,11 +2142,11 @@
       renderPropertiesRow();
 
       const flatsContainer = document.getElementById("flatsList");
-      if (selectedProperty && DB.properties.some(p => p.PropertyName === selectedProperty)) {
+      if (selectedProperty && DB.properties.some(p => String(p.PropertyName).trim() === String(selectedProperty).trim())) {
         renderFlatsGrid(selectedProperty);
       } else {
         selectedProperty = null;
-        localStorage.removeItem("active_selected_property");
+        sessionStorage.removeItem("active_selected_property");
         if (DB.properties.length > 0) {
           flatsContainer.innerHTML = `
             <div class="empty-flats-prompt">
@@ -2122,7 +2180,7 @@
 
     function applyRolePermissions(role) {
       activeRole = (role === "Viewer") ? "Viewer" : "Admin";
-      localStorage.setItem("active_session_role", activeRole);
+      sessionStorage.setItem("active_session_role", activeRole);
       document.body.classList.toggle("role-viewer", activeRole === "Viewer");
       const badge = document.getElementById("headerRoleBadge");
       if (badge) {
@@ -2156,11 +2214,11 @@
           const sheetTheme = res.theme || "black";
 
           selectedProperty = null;
-          localStorage.removeItem("active_selected_property");
+          sessionStorage.removeItem("active_selected_property");
 
-          localStorage.setItem("active_session_user", activeUser);
-          localStorage.setItem("active_session_fullname", activeUserFullName);
-          localStorage.setItem("active_session_role", activeRole);
+          sessionStorage.setItem("active_session_user", activeUser);
+          sessionStorage.setItem("active_session_fullname", activeUserFullName);
+          sessionStorage.setItem("active_session_role", activeRole);
 
           applyVisualTheme(sheetTheme);
           applyRolePermissions(activeRole);
@@ -2212,7 +2270,7 @@
           }
           if (res.userFullName) {
             activeUserFullName = res.userFullName;
-            localStorage.setItem("active_session_fullname", activeUserFullName);
+            sessionStorage.setItem("active_session_fullname", activeUserFullName);
           }
 
           renderAllDashboardUI();
@@ -2222,18 +2280,85 @@
       }
     }
 
-    function getBillsForCurrentRenter(propertyName, flatName, activeRenter) {
-      if (!activeRenter) return [];
+    /**
+     * ============================================================================
+     * STRICT RENTER DATA ISOLATION:
+     * Retrieves bills belonging strictly to a specific Renter object (by RenterID or isolated name)
+     * ============================================================================
+     */
+    function getBillsForSpecificRenter(propertyName, flatName, renterObj) {
+      if (!renterObj) return [];
       return DB.bills.filter(b => {
-        const sameProp = String(b.PropertyName).trim().toLowerCase() === String(propertyName).trim().toLowerCase();
-        const sameFlat = String(b.FlatName).trim().toLowerCase() === String(flatName).trim().toLowerCase();
-        if (!sameProp || !sameFlat) return false;
+        if (!isSamePropAndFlat(b.PropertyName, b.FlatName, propertyName, flatName)) return false;
 
-        if (b.RenterID && activeRenter.RenterID) {
-          return String(b.RenterID).trim() === String(activeRenter.RenterID).trim();
+        const billRenterId = String(b.RenterID || "").trim();
+        const targetRenterId = String(renterObj.RenterID || "").trim();
+
+        if (billRenterId && targetRenterId) {
+          return billRenterId === targetRenterId;
         }
-        return String(b.TenantName).trim().toLowerCase() === String(activeRenter.RenterName).trim().toLowerCase();
+        return String(b.TenantName || "").trim().toLowerCase() === String(renterObj.RenterName || "").trim().toLowerCase();
       });
+    }
+
+    /**
+     * ============================================================================
+     * NET CLOSING BALANCE CALCULATOR FOR ANY RENTER (INCLUDES CARRY-FORWARD):
+     * Because each month's TotalBilled already includes prior months' carry-forward,
+     * the net cumulative balance at any point is:
+     *   Sum(CurrentMonthOnlyCharges) - Sum(PaidAmount)
+     * Or equivalently from the latest chronological bill: (LatestBill.TotalBilled - LatestBill.PaidAmount)
+     * ============================================================================
+     */
+    function calculateNetBalanceForRenterBeforeMonth(propertyName, flatName, renterObj, targetMonthYear) {
+      const renterBills = getBillsForSpecificRenter(propertyName, flatName, renterObj);
+      const priorBills = renterBills
+        .filter(b => String(b.MonthYear).trim() < String(targetMonthYear).trim())
+        .sort((a, b) => String(a.MonthYear).localeCompare(String(b.MonthYear)));
+
+      if (priorBills.length === 0) return 0;
+
+      // Since each bill's TotalBilled incorporates its PrevCarryBalance, the closing balance
+      // of the most recent prior bill is the exact carry-forward into targetMonthYear.
+      // However, to handle out-of-order edits safely, we sum each prior month's standalone charges minus payments:
+      let cumulativeStandaloneCharges = 0;
+      let cumulativePaid = 0;
+
+      priorBills.forEach(b => {
+        const totalBilled = parseFloat(b.TotalBilled) || 0;
+        const prevCarryIncluded = parseFloat(b.PrevCarryBalance) || 0;
+        const standaloneMonthCharge = totalBilled - prevCarryIncluded;
+        const paid = parseFloat(b.PaidAmount) || 0;
+
+        cumulativeStandaloneCharges += standaloneMonthCharge;
+        cumulativePaid += paid;
+      });
+
+      // Positive value = Pending Due to be ADDED next month
+      // Negative value = Advance Payment to be DEDUCTED next month
+      return cumulativeStandaloneCharges - cumulativePaid;
+    }
+
+    function calculateCurrentNetBalanceForRenter(propertyName, flatName, renterObj) {
+      const renterBills = getBillsForSpecificRenter(propertyName, flatName, renterObj);
+      if (renterBills.length === 0) return { totalStandaloneBilled: 0, totalPaid: 0, netBalance: 0, billCount: 0 };
+
+      let totalStandaloneBilled = 0;
+      let totalPaid = 0;
+
+      renterBills.forEach(b => {
+        const totalBilled = parseFloat(b.TotalBilled) || 0;
+        const prevCarryIncluded = parseFloat(b.PrevCarryBalance) || 0;
+        totalStandaloneBilled += (totalBilled - prevCarryIncluded);
+        totalPaid += (parseFloat(b.PaidAmount) || 0);
+      });
+
+      return {
+        totalStandaloneBilled,
+        totalPaid,
+        netBalance: totalStandaloneBilled - totalPaid,
+        billCount: renterBills.length
+      };
     }
 
     function updateGlobalProfitAndLoss() {
@@ -2242,17 +2367,16 @@
 
       DB.flats.forEach(flat => {
         const activeRenter = DB.renters.find(r =>
-          String(r.PropertyName).trim().toLowerCase() === String(flat.PropertyName).trim().toLowerCase() &&
-          String(r.FlatName).trim().toLowerCase() === String(flat.FlatName).trim().toLowerCase() &&
+          isSamePropAndFlat(r.PropertyName, r.FlatName, flat.PropertyName, flat.FlatName) &&
           String(r.Status).trim().toLowerCase() === "active"
         );
-        const currentBills = getBillsForCurrentRenter(flat.PropertyName, flat.FlatName, activeRenter);
-        currentBills.forEach(bill => {
-          const billed = parseFloat(bill.TotalBilled) || 0;
-          const paid = parseFloat(bill.PaidAmount) || 0;
-          totalProfit += paid;
-          totalLoss += Math.max(0, billed - paid);
-        });
+        if (activeRenter) {
+          const summary = calculateCurrentNetBalanceForRenter(flat.PropertyName, flat.FlatName, activeRenter);
+          totalProfit += summary.totalPaid;
+          if (summary.netBalance > 0) {
+            totalLoss += summary.netBalance;
+          }
+        }
       });
 
       document.getElementById("topTotalProfit").innerText = `₹${totalProfit.toLocaleString('en-IN')}`;
@@ -2282,26 +2406,29 @@
     function selectProperty(name) {
       if (selectedProperty === name) {
         selectedProperty = null;
-        localStorage.removeItem("active_selected_property");
+        sessionStorage.removeItem("active_selected_property");
       } else {
         selectedProperty = name;
-        localStorage.setItem("active_selected_property", name);
+        sessionStorage.setItem("active_selected_property", name);
       }
       renderAllDashboardUI();
     }
 
-    // 4. Render Flat Cards with Full Green / Red Payment Design
+    // 4. Render Flat Cards Strictly Filtered by Selected Property Only
     function renderFlatsGrid(propertyName) {
       const container = document.getElementById("flatsList");
       container.innerHTML = "";
-      const flats = DB.flats.filter(f => String(f.PropertyName).toLowerCase() === String(propertyName).toLowerCase());
+      const targetPropClean = String(propertyName || "").trim().toLowerCase();
+
+      // Strictly filter flats belonging ONLY to this exact property
+      const flats = DB.flats.filter(f => String(f.PropertyName || "").trim().toLowerCase() === targetPropClean);
 
       if (flats.length === 0) {
         container.innerHTML = `
           <div class="empty-flats-prompt">
             <i class="fa-solid fa-door-closed"></i>
             <h3>No Flats in ${propertyName}</h3>
-            <p>Click the (+) button in the header and select "Add Flat" to create flats for this property.</p>
+            <p>Click the (+) button in the header and select "Add Flat" to create flats for ${propertyName}.</p>
           </div>
         `;
         return;
@@ -2309,19 +2436,12 @@
 
       flats.forEach(flat => {
         const renter = DB.renters.find(r => 
-          String(r.PropertyName).toLowerCase() === String(propertyName).toLowerCase() &&
-          String(r.FlatName).toLowerCase() === String(flat.FlatName).toLowerCase() &&
-          String(r.Status).toLowerCase() === "active"
+          isSamePropAndFlat(r.PropertyName, r.FlatName, flat.PropertyName, flat.FlatName) &&
+          String(r.Status).trim().toLowerCase() === "active"
         );
 
-        const renterBills = getBillsForCurrentRenter(propertyName, flat.FlatName, renter);
-        let currentBilled = 0;
-        let currentPaid = 0;
-        renterBills.forEach(b => {
-          currentBilled += parseFloat(b.TotalBilled) || 0;
-          currentPaid += parseFloat(b.PaidAmount) || 0;
-        });
-        const pendingDue = Math.max(0, currentBilled - currentPaid);
+        const summary = calculateCurrentNetBalanceForRenter(flat.PropertyName, flat.FlatName, renter);
+        const netBal = summary.netBalance; // > 0 means Pending Due; < 0 means Advance Paid; 0 means Settled
 
         let statusClass = "";
         let paymentBannerHTML = "";
@@ -2333,20 +2453,21 @@
               <span>Vacant / No Active Renter</span>
             </div>
           `;
-        } else if (pendingDue > 0) {
+        } else if (netBal > 0) {
           statusClass = "flat-card-due";
           paymentBannerHTML = `
             <div class="payment-banner">
               <span><i class="fa-solid fa-triangle-exclamation"></i> Needs to Pay:</span>
-              <span>₹${pendingDue.toLocaleString('en-IN')} Pending</span>
+              <span>₹${netBal.toLocaleString('en-IN')} Pending</span>
             </div>
           `;
-        } else if (currentBilled > 0 && pendingDue === 0) {
+        } else if (summary.billCount > 0 && netBal <= 0) {
           statusClass = "flat-card-paid";
+          const advLabel = netBal < 0 ? `Fully Paid (Adv: ₹${Math.abs(netBal).toLocaleString('en-IN')})` : `Fully Paid (₹0 Due)`;
           paymentBannerHTML = `
             <div class="payment-banner">
               <span><i class="fa-solid fa-circle-check"></i> Payment Status:</span>
-              <span>Fully Paid (₹0 Due)</span>
+              <span>${advLabel}</span>
             </div>
           `;
         } else {
@@ -2400,9 +2521,8 @@
 
       const matchingFlats = DB.flats.filter(flat => {
         const renter = DB.renters.find(r =>
-          String(r.PropertyName).toLowerCase() === String(flat.PropertyName).toLowerCase() &&
-          String(r.FlatName).toLowerCase() === String(flat.FlatName).toLowerCase() &&
-          String(r.Status).toLowerCase() === "active"
+          isSamePropAndFlat(r.PropertyName, r.FlatName, flat.PropertyName, flat.FlatName) &&
+          String(r.Status).trim().toLowerCase() === "active"
         );
         return (
           String(flat.PropertyName).toLowerCase().includes(q) ||
@@ -2413,29 +2533,23 @@
 
       matchingFlats.forEach(flat => {
         const renter = DB.renters.find(r =>
-          String(r.PropertyName).toLowerCase() === String(flat.PropertyName).toLowerCase() &&
-          String(r.FlatName).toLowerCase() === String(flat.FlatName).toLowerCase() &&
-          String(r.Status).toLowerCase() === "active"
+          isSamePropAndFlat(r.PropertyName, r.FlatName, flat.PropertyName, flat.FlatName) &&
+          String(r.Status).trim().toLowerCase() === "active"
         );
 
-        const renterBills = getBillsForCurrentRenter(flat.PropertyName, flat.FlatName, renter);
-        let currentBilled = 0, currentPaid = 0;
-        renterBills.forEach(b => {
-          currentBilled += parseFloat(b.TotalBilled) || 0;
-          currentPaid += parseFloat(b.PaidAmount) || 0;
-        });
-        const pendingDue = Math.max(0, currentBilled - currentPaid);
+        const summary = calculateCurrentNetBalanceForRenter(flat.PropertyName, flat.FlatName, renter);
+        const netBal = summary.netBalance;
 
         let statusClass = "";
         let paymentBannerHTML = "";
         if (!renter) {
           paymentBannerHTML = `<div class="payment-banner"><span>Status:</span><span>Vacant</span></div>`;
-        } else if (pendingDue > 0) {
+        } else if (netBal > 0) {
           statusClass = "flat-card-due";
-          paymentBannerHTML = `<div class="payment-banner"><span>Needs to Pay:</span><span>₹${pendingDue.toLocaleString('en-IN')} Pending</span></div>`;
-        } else if (currentBilled > 0 && pendingDue === 0) {
+          paymentBannerHTML = `<div class="payment-banner"><span>Needs to Pay:</span><span>₹${netBal.toLocaleString('en-IN')} Pending</span></div>`;
+        } else if (summary.billCount > 0 && netBal <= 0) {
           statusClass = "flat-card-paid";
-          paymentBannerHTML = `<div class="payment-banner"><span>Status:</span><span>Fully Paid (₹0 Due)</span></div>`;
+          paymentBannerHTML = `<div class="payment-banner"><span>Status:</span><span>Fully Paid</span></div>`;
         } else {
           const baseRent = parseFloat(flat.RentAmount || renter.RentAmount || 0);
           statusClass = baseRent > 0 ? "flat-card-due" : "";
@@ -2566,8 +2680,8 @@
       } else if (res.status === "success") {
         activeUser = res.newUsername;
         activeUserFullName = res.fullName;
-        localStorage.setItem("active_session_user", activeUser);
-        localStorage.setItem("active_session_fullname", activeUserFullName);
+        sessionStorage.setItem("active_session_user", activeUser);
+        sessionStorage.setItem("active_session_fullname", activeUserFullName);
 
         document.getElementById("profViewFullName").value = activeUserFullName;
         document.getElementById("profViewUsername").value = activeUser;
@@ -2717,16 +2831,14 @@
 
     /**
      * ============================================================================
-     * 7. DETAILED CALCULATION TAB WORKFLOW:
-     *    - Pencil Icon Unlock -> Save Icon Relock (Updates Master Rent/Rates for Future Months)
-     *    - Month Selector Smart Autofill & Previous Month Final Reading Rollover
-     *    - Single-Bill-Per-Month Overwrite Protection
+     * 7. DETAILED CALCULATION TAB WORKFLOW WITH AUTOMATIC DUE / ADVANCE CARRY-FORWARD
      * ============================================================================
      */
     function resetAllCalculatorLocks() {
       const lockableIds = [
         "calcRent", "calcElecPrev", "calcElecRate",
-        "calcPngPrev", "calcPngRate", "calcWaterPrev", "calcWaterRate"
+        "calcPngPrev", "calcPngRate", "calcWaterPrev", "calcWaterRate",
+        "calcPrevCarryBalance"
       ];
       lockableIds.forEach(id => {
         const input = document.getElementById(id);
@@ -2745,20 +2857,16 @@
 
       const isCurrentlyLocked = input.hasAttribute("readonly");
       if (isCurrentlyLocked) {
-        // Unlock field for editing and replace Pencil icon with Save icon
         input.removeAttribute("readonly");
         input.focus();
         btnEl.classList.add("unlocked-save");
         btnEl.innerHTML = `<i class="fa-solid fa-floppy-disk"></i>`;
       } else {
-        // Lock field again and swap back to Pencil icon
         input.setAttribute("readonly", true);
         btnEl.classList.remove("unlocked-save");
         btnEl.innerHTML = `<i class="fa-solid fa-pen"></i>`;
         runBillMath();
 
-        // If user edited Base Rent or Utility Rates, update master flat config for future months
-        // (Leaving past recorded bills in DB.bills untouched!)
         if (fieldCategory === "rent" || fieldCategory === "rate") {
           const newRent = parseFloat(document.getElementById("calcRent").value) || 0;
           const newElecRate = parseFloat(document.getElementById("calcElecRate").value) || 0;
@@ -2797,7 +2905,6 @@
       }
     }
 
-    // Automatically loads existing bill if month is already billed, OR rolls over prior month's final readings & master rent
     function handleBillingMonthChange() {
       if (!selectedFlat) return;
       resetAllCalculatorLocks();
@@ -2806,19 +2913,24 @@
       const statusTag = document.getElementById("calcMonthStatusTag");
       const submitBtnText = document.getElementById("calcSubmitBtnText");
 
-      const renterBills = getBillsForCurrentRenter(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj);
-      // Sort chronologically by MonthYear (YYYY-MM)
+      const renterBills = getBillsForSpecificRenter(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj);
       const sortedBills = [...renterBills].sort((a, b) => String(a.MonthYear).localeCompare(String(b.MonthYear)));
 
-      // Check if a bill already exists for the selected month
       const existingBill = sortedBills.find(b => String(b.MonthYear).trim() === String(chosenMonth).trim());
+
+      // Calculate exact Carry-Forward balance (Pending Due > 0 or Advance < 0) from all months prior to chosenMonth
+      const autoCarryBalance = calculateNetBalanceForRenterBeforeMonth(
+        selectedFlat.PropertyName,
+        selectedFlat.FlatName,
+        activeFlatRenterObj,
+        chosenMonth
+      );
 
       if (existingBill) {
         statusTag.innerText = `Existing Bill Found (${chosenMonth}) - Editing Overwrites`;
         statusTag.className = "calc-month-status-tag existing";
         submitBtnText.innerText = `Overwrite Bill for ${chosenMonth}`;
 
-        // Load exact historical figures from that month's bill
         document.getElementById("calcRent").value = existingBill.BaseRent ?? selectedFlat.RentAmount ?? 0;
         document.getElementById("calcElecPrev").value = existingBill.ElecPrev ?? 0;
         document.getElementById("calcElecCurr").value = existingBill.ElecCurr ?? "";
@@ -2836,6 +2948,9 @@
         document.getElementById("calcAddName").value = existingBill.AdditionalName || "";
         document.getElementById("calcAddToggle").value = addAmtVal < 0 ? "-" : "+";
         document.getElementById("calcAddAmount").value = Math.abs(addAmtVal) || "";
+
+        // Use live recalculated prior carry balance so if prior month was paid later, it updates automatically
+        document.getElementById("calcPrevCarryBalance").value = autoCarryBalance;
         document.getElementById("calcPaidNow").value = existingBill.PaidAmount ?? 0;
         document.getElementById("calcPayMode").value = existingBill.PaymentMode || "UPI";
         document.getElementById("calcNotes").value = existingBill.Notes || "";
@@ -2848,13 +2963,12 @@
         statusTag.className = "calc-month-status-tag";
         submitBtnText.innerText = "Calculate Bill";
 
-        // Autofill Master Base Rent & Master Rates for new/upcoming month
         document.getElementById("calcRent").value = selectedFlat.RentAmount || activeFlatRenterObj?.RentAmount || 0;
         document.getElementById("calcElecRate").value = selectedFlat.ElecRate || 9;
         document.getElementById("calcPngRate").value = selectedFlat.PNGRate || 45;
         document.getElementById("calcWaterRate").value = selectedFlat.WaterRate || 15;
 
-        // Find the most recent prior month bill (MonthYear < chosenMonth) to roll over final readings as starting point
+        // Roll over final readings from immediately preceding billed month
         const priorBills = sortedBills.filter(b => String(b.MonthYear).trim() < String(chosenMonth).trim());
         const lastPriorBill = priorBills.length > 0 ? priorBills[priorBills.length - 1] : null;
 
@@ -2882,6 +2996,7 @@
         document.getElementById("calcWaterCurr").value = "";
         document.getElementById("calcAddName").value = "";
         document.getElementById("calcAddAmount").value = "";
+        document.getElementById("calcPrevCarryBalance").value = autoCarryBalance;
         document.getElementById("calcPaidNow").value = 0;
         document.getElementById("calcNotes").value = "";
       }
@@ -2895,26 +3010,28 @@
       document.getElementById("modalHeaderTitle").innerText = `${flat.PropertyName} - Space Details`;
       document.getElementById("modalFlatTag").innerText = `Flat ${flat.FlatName}`;
 
-      // Default Month Picker to current YYYY-MM
       const currentYearMonth = new Date().toISOString().slice(0, 7);
       document.getElementById("calcMonthPicker").value = currentYearMonth;
 
-      // Populate Profile Tab Left Column
-      document.getElementById("profRent").value = flat.RentAmount || 0;
+      // Populate Left Side Utilities from Flat Master + Active Renter
+      document.getElementById("profRent").value = flat.RentAmount || renter?.RentAmount || 0;
       document.getElementById("profFlatNumber").value = flat.FlatName;
-      document.getElementById("profElecRate").value = flat.ElecRate || 9;
-      document.getElementById("profPngRate").value = flat.PNGRate || 45;
-      document.getElementById("profWaterRate").value = flat.WaterRate || 15;
+      document.getElementById("profElecRate").value = flat.ElecRate || renter?.ElecFixedRate || 9;
+      document.getElementById("profPngRate").value = flat.PNGRate || renter?.PNGFixedRate || 45;
+      document.getElementById("profWaterRate").value = flat.WaterRate || renter?.WaterFixedRate || 15;
+      document.getElementById("profPngNumber").value = flat.PNGNumber || renter?.PNGNumber || "";
+      document.getElementById("profPngMeter").value = flat.PNGMeterNumber || renter?.PNGMeterNumber || "";
+      document.getElementById("profPngFixedCost").value = flat.FixedPNGCost || renter?.FixedPNGCost || 0;
+      document.getElementById("profWaterNumber").value = flat.WaterNumber || renter?.WaterNumber || "";
+      document.getElementById("profWaterMeter").value = flat.WaterMeterNumber || renter?.WaterMeterNumber || "";
+      document.getElementById("profWaterFixedCost").value = flat.FixedWaterCost || renter?.FixedWaterCost || 0;
+      document.getElementById("profElecMeter").value = flat.ElecMeterNumber || renter?.ElecMeterNumber || "";
+      document.getElementById("profUpiName").value = flat.UPIName || renter?.UPIName || "";
+      document.getElementById("profUpiId").value = flat.UPIID || renter?.UPIID || "";
+      document.getElementById("profContractMobile").value = flat.ContractMobile || renter?.ContractMobile || "";
 
+      // Populate Right Side Strictly from Active Renter Only (Never mixing with Past Renters)
       if (renter) {
-        document.getElementById("profPngNumber").value = renter.PNGNumber || "";
-        document.getElementById("profPngMeter").value = renter.PNGMeterNumber || "";
-        document.getElementById("profWaterNumber").value = renter.WaterNumber || "";
-        document.getElementById("profElecMeter").value = renter.ElecMeterNumber || "";
-        document.getElementById("profUpiName").value = renter.UPIName || "";
-        document.getElementById("profUpiId").value = renter.UPIID || "";
-        document.getElementById("profContractMobile").value = renter.ContractMobile || "";
-
         document.getElementById("renterName").value = renter.RenterName || "";
         document.getElementById("renterIdentityNum").value = renter.IdentityDocNumber || "";
         document.getElementById("renterMobile").value = renter.MobileNumber || "";
@@ -2924,15 +3041,15 @@
         document.getElementById("renterStatus").value = renter.Status || "Active";
         document.getElementById("renterJoinDate").value = renter.JoinDate || "";
         document.getElementById("renterEndDate").value = renter.EndDate || "";
-        if (renter.ProfileImageURL) document.getElementById("profilePicturePreview").src = renter.ProfileImageURL;
-        if (renter.IdentityImageURL) document.getElementById("identityPicturePreview").src = renter.IdentityImageURL;
+        document.getElementById("profilePicturePreview").src = renter.ProfileImageURL || "https://via.placeholder.com/150?text=Profile+Pic";
+        document.getElementById("identityPicturePreview").src = renter.IdentityImageURL || "https://via.placeholder.com/300x150?text=ID+Document";
       } else {
         clearRenterRightForm();
       }
 
       handleBillingMonthChange();
       populateHistoryLedger(flat.PropertyName, flat.FlatName);
-      populateRenterHistory(flat.PropertyName, flat.FlatName, renter);
+      populateIsolatedRenterHistoryDropdown(flat.PropertyName, flat.FlatName);
 
       const modal = document.getElementById("flatDetailsModal");
       modal.querySelectorAll(".flat-nav-item").forEach((el, idx) => el.classList.toggle("active", idx === 0));
@@ -2949,6 +3066,15 @@
       document.getElementById(tabId).classList.add("active");
     }
 
+    function switchFlatTabToProfile() {
+      const modal = document.getElementById("flatDetailsModal");
+      const navItems = modal.querySelectorAll(".flat-nav-item");
+      const tabs = modal.querySelectorAll(".tab-content");
+      navItems.forEach((item, i) => item.classList.toggle("active", i === 2));
+      tabs.forEach((tab, i) => tab.classList.toggle("active", i === 2));
+    }
+
+    // Bill Math Engine (Automatically Adds Pending Due or Deducts Advance Carry-Forward)
     function runBillMath() {
       const rent = parseFloat(document.getElementById("calcRent").value) || 0;
       document.getElementById("calcRentBadge").innerText = `₹ ${rent}`;
@@ -2979,29 +3105,70 @@
       const addCalculated = addToggle === "+" ? addAmt : -addAmt;
       document.getElementById("calcAddSummary").innerText = `₹ ${addCalculated}`;
 
-      const grand = Math.max(0, rent + elecTotal + pngTotal + waterTotal + addCalculated);
+      // Carry-Forward Balance: Positive = Previous Due (Added), Negative = Previous Advance (Deducted)
+      const prevCarry = parseFloat(document.getElementById("calcPrevCarryBalance").value) || 0;
+      const carryTypeBadge = document.getElementById("calcCarryTypeBadge");
+      const carryAmtBadge = document.getElementById("calcCarryAmountBadge");
+      const carryHint = document.getElementById("carryForwardHint");
+
+      if (prevCarry > 0) {
+        carryTypeBadge.innerText = "Pending Due (+)";
+        carryTypeBadge.style.color = "var(--accent-red)";
+        carryAmtBadge.innerText = `+ ₹ ${prevCarry.toFixed(0)}`;
+        carryAmtBadge.style.color = "var(--accent-red)";
+        carryHint.innerText = `Auto-added ₹${prevCarry.toFixed(0)} pending due from previous month(s)`;
+        carryHint.style.color = "var(--accent-red)";
+      } else if (prevCarry < 0) {
+        carryTypeBadge.innerText = "Advance Credit (-)";
+        carryTypeBadge.style.color = "var(--accent-green)";
+        carryAmtBadge.innerText = `- ₹ ${Math.abs(prevCarry).toFixed(0)}`;
+        carryAmtBadge.style.color = "var(--accent-green)";
+        carryHint.innerText = `Auto-deducted ₹${Math.abs(prevCarry).toFixed(0)} advance payment from previous month(s)`;
+        carryHint.style.color = "var(--accent-green)";
+      } else {
+        carryTypeBadge.innerText = "Settled (₹0)";
+        carryTypeBadge.style.color = "var(--text-muted)";
+        carryAmtBadge.innerText = `₹ 0`;
+        carryAmtBadge.style.color = "var(--primary)";
+        carryHint.innerText = "No pending due or advance from prior months";
+        carryHint.style.color = "var(--text-muted)";
+      }
+
+      const rawGrand = rent + elecTotal + pngTotal + waterTotal + addCalculated + prevCarry;
+      const grand = Math.max(0, rawGrand);
       document.getElementById("calcGrandTotal").innerText = `₹ ${grand.toFixed(2)}`;
 
       const paidNow = parseFloat(document.getElementById("calcPaidNow").value) || 0;
-      const dueRem = Math.max(0, grand - paidNow);
-      document.getElementById("calcDueBadge").innerText = dueRem > 0 ? `Due: ₹ ${dueRem.toFixed(0)}` : `Fully Paid`;
-      document.getElementById("calcDueBadge").style.color = dueRem > 0 ? "var(--accent-red)" : "var(--accent-green)";
+      const netClosing = rawGrand - paidNow;
+      const dueBadge = document.getElementById("calcDueBadge");
+
+      if (netClosing > 0) {
+        dueBadge.innerText = `Due: ₹ ${netClosing.toFixed(0)}`;
+        dueBadge.style.color = "var(--accent-red)";
+      } else if (netClosing < 0) {
+        dueBadge.innerText = `Advance: ₹ ${Math.abs(netClosing).toFixed(0)}`;
+        dueBadge.style.color = "var(--accent-green)";
+      } else {
+        dueBadge.innerText = `Fully Paid (₹0)`;
+        dueBadge.style.color = "var(--accent-green)";
+      }
     }
 
-    // Submit Bill Calculation with Single-Bill-Per-Month Overwrite Option
     async function submitBillCalculation() {
       if (activeRole === "Viewer") return;
 
       const chosenMonth = document.getElementById("calcMonthPicker").value || new Date().toISOString().slice(0, 7);
       const currentRenterId = activeFlatRenterObj?.RenterID || "";
+      const currentTenantName = document.getElementById("renterName").value || activeFlatRenterObj?.RenterName || "Current Tenant";
 
-      // Check if a bill for this flat & month already exists
       const existingBillIdx = DB.bills.findIndex(b => {
-        const sameProp = String(b.PropertyName).trim().toLowerCase() === String(selectedFlat.PropertyName).trim().toLowerCase();
-        const sameFlat = String(b.FlatName).trim().toLowerCase() === String(selectedFlat.FlatName).trim().toLowerCase();
+        if (!isSamePropAndFlat(b.PropertyName, b.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName)) return false;
         const sameMonth = String(b.MonthYear).trim() === String(chosenMonth).trim();
-        const sameRenter = (!b.RenterID || !currentRenterId) ? true : (String(b.RenterID).trim() === String(currentRenterId).trim());
-        return sameProp && sameFlat && sameMonth && sameRenter;
+        const bRenterId = String(b.RenterID || "").trim();
+        const sameRenter = (bRenterId && currentRenterId)
+          ? (bRenterId === currentRenterId)
+          : (String(b.TenantName || "").trim().toLowerCase() === String(currentTenantName).trim().toLowerCase());
+        return sameMonth && sameRenter;
       });
 
       if (existingBillIdx !== -1) {
@@ -3030,19 +3197,21 @@
       const addAmt = parseFloat(document.getElementById("calcAddAmount").value) || 0;
       const netAddAmt = addToggle === "+" ? addAmt : -addAmt;
 
+      const prevCarryBalance = parseFloat(document.getElementById("calcPrevCarryBalance").value) || 0;
       const totalBilled = parseFloat(document.getElementById("calcGrandTotal").innerText.replace("₹ ","")) || 0;
       const paidAmount = parseFloat(document.getElementById("calcPaidNow").value) || 0;
 
       let billStatus = "Unpaid";
       if (paidAmount >= totalBilled && totalBilled > 0) billStatus = "Fully Paid";
       else if (paidAmount > 0 && paidAmount < totalBilled) billStatus = "Partial Paid";
+      else if (totalBilled === 0) billStatus = "Fully Paid";
 
       const newBillObj = {
         BillID: existingBillIdx !== -1 ? DB.bills[existingBillIdx].BillID : ("BILL-" + Date.now()),
         PropertyName: selectedFlat.PropertyName,
         FlatName: selectedFlat.FlatName,
         MonthYear: chosenMonth,
-        TenantName: document.getElementById("renterName").value || activeFlatRenterObj?.RenterName || "Current Tenant",
+        TenantName: currentTenantName,
         BaseRent: parseFloat(document.getElementById("calcRent").value) || 0,
         ElecPrev: elecPrev,
         ElecCurr: elecCurr,
@@ -3066,7 +3235,8 @@
         PaymentMode: document.getElementById("calcPayMode").value,
         Status: billStatus,
         Notes: document.getElementById("calcNotes").value,
-        RenterID: currentRenterId
+        RenterID: currentRenterId,
+        PrevCarryBalance: prevCarryBalance
       };
 
       if (existingBillIdx !== -1) {
@@ -3081,7 +3251,7 @@
       renderAllDashboardUI();
       handleBillingMonthChange();
       populateHistoryLedger(selectedFlat.PropertyName, selectedFlat.FlatName);
-      populateRenterHistory(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj);
+      populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName);
 
       await sendGasPost({
         action: "recordBill",
@@ -3112,7 +3282,8 @@
         paymentMode: newBillObj.PaymentMode,
         status: newBillObj.Status,
         notes: newBillObj.Notes,
-        renterId: currentRenterId
+        renterId: currentRenterId,
+        prevCarryBalance: prevCarryBalance
       });
       syncDataLive();
     }
@@ -3120,9 +3291,11 @@
     function populateHistoryLedger(prop, flat) {
       const tbody = document.getElementById("ledgerTableBody");
       tbody.innerHTML = "";
-      const bills = DB.bills.filter(b => String(b.PropertyName).toLowerCase() === String(prop).toLowerCase() && String(b.FlatName).toLowerCase() === String(flat).toLowerCase());
+      const bills = DB.bills.filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat));
 
       bills.forEach(bill => {
+        const carryVal = parseFloat(bill.PrevCarryBalance) || 0;
+        const carryText = carryVal > 0 ? `+₹${carryVal} (Due)` : (carryVal < 0 ? `-₹${Math.abs(carryVal)} (Adv)` : `₹0`);
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${bill.MonthYear}</td>
@@ -3131,6 +3304,7 @@
           <td>${bill.ElecRate} | ${bill.ElecPrev}-${bill.ElecCurr} = ${bill.ElecUnits}</td>
           <td>${bill.PNGRate} | ${bill.PNGPrev}-${bill.PNGCurr} = ${bill.PNGUnits}</td>
           <td>${bill.WaterRate} | ${bill.WaterPrev}-${bill.WaterCurr} = ${bill.WaterUnits}</td>
+          <td>${carryText}</td>
           <td><strong>₹${bill.TotalBilled}</strong></td>
           <td>₹${bill.PaidAmount} (${bill.PaymentMode})</td>
           <td><span class="badge-${String(bill.Status).toLowerCase().includes('fully') ? 'paid' : (String(bill.Status).toLowerCase().includes('partial') ? 'partial' : 'unpaid')}">${bill.Status}</span></td>
@@ -3151,33 +3325,123 @@
       });
     }
 
-    function populateRenterHistory(prop, flat, activeRenter) {
-      const bills = getBillsForCurrentRenter(prop, flat, activeRenter);
-      let totalBilled = 0, totalPaid = 0, totalRent = 0, totalUtility = 0;
+    /**
+     * ============================================================================
+     * 8. STRICT RENTER HISTORY ISOLATION (EACH RENTER'S DATA SAVED & VIEWED SEPARATELY)
+     * ============================================================================
+     */
+    function populateIsolatedRenterHistoryDropdown(prop, flat) {
+      const select = document.getElementById("rhRenterSelectDropdown");
+      if (!select) return;
 
-      bills.forEach(b => {
-        totalBilled += parseFloat(b.TotalBilled) || 0;
-        totalPaid += parseFloat(b.PaidAmount) || 0;
-        totalRent += parseFloat(b.BaseRent) || 0;
-        totalUtility += ((parseFloat(b.TotalBilled)||0) - (parseFloat(b.BaseRent)||0));
+      // Get all renters (Active and Inactive) who ever stayed in this exact Property + Flat
+      const flatRenters = DB.renters.filter(r => isSamePropAndFlat(r.PropertyName, r.FlatName, prop, flat));
+
+      if (flatRenters.length === 0) {
+        select.innerHTML = `<option value="">No Renter Records Found</option>`;
+        renderSelectedRenterHistoryRecord();
+        return;
+      }
+
+      // Sort so Active renter is first, followed by Past/Inactive renters
+      flatRenters.sort((a, b) => {
+        const aAct = String(a.Status).toLowerCase() === "active" ? 0 : 1;
+        const bAct = String(b.Status).toLowerCase() === "active" ? 0 : 1;
+        return aAct - bAct;
       });
 
-      document.getElementById("rhBilled").innerText = `₹ ${totalBilled}`;
-      document.getElementById("rhPaid").innerText = `₹ ${totalPaid}`;
-      document.getElementById("rhTotalRent").innerText = `₹ ${totalRent}`;
-      document.getElementById("rhUtility").innerText = `₹ ${totalUtility}`;
-      const due = Math.max(0, totalBilled - totalPaid);
-      document.getElementById("rhBalance").innerText = due > 0 ? `Due: ₹ ${due}` : `Settled`;
-      document.getElementById("rhBalance").style.color = due > 0 ? "var(--accent-red)" : "var(--accent-green)";
+      select.innerHTML = flatRenters.map((r, idx) => {
+        const rId = r.RenterID || `IDX-${idx}`;
+        const statusLabel = String(r.Status).toLowerCase() === "active" ? "ACTIVE" : "PAST / INACTIVE";
+        return `<option value="${rId}">${r.RenterName || 'Unnamed Tenant'} [${statusLabel}] (${r.JoinDate || 'N/A'})</option>`;
+      }).join("");
 
-      if (activeRenter) {
-        document.getElementById("rhName").innerText = activeRenter.RenterName || "Tenant";
-        document.getElementById("rhContact").innerText = `Contact: ${activeRenter.MobileNumber || '--'}`;
-        document.getElementById("rhStay").innerText = `Stay: ${activeRenter.JoinDate || '--'} to Present`;
+      renderSelectedRenterHistoryRecord();
+    }
+
+    function renderSelectedRenterHistoryRecord() {
+      if (!selectedFlat) return;
+      const select = document.getElementById("rhRenterSelectDropdown");
+      const chosenId = select?.value || "";
+
+      const flatRenters = DB.renters.filter(r =>
+        isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName)
+      );
+
+      const targetRenter = flatRenters.find((r, idx) => (r.RenterID || `IDX-${idx}`) === chosenId) || flatRenters[0] || null;
+
+      if (!targetRenter) {
+        document.getElementById("rhName").innerText = "No Renter Assigned";
+        document.getElementById("rhStatusBadge").innerText = "Vacant";
+        document.getElementById("rhStatusBadge").className = "badge-partial";
+        document.getElementById("rhContact").innerText = "Contact: --";
+        document.getElementById("rhStay").innerText = "Duration: --";
+        document.getElementById("rhBilled").innerText = "₹ 0";
+        document.getElementById("rhPaid").innerText = "₹ 0";
+        document.getElementById("rhTotalRent").innerText = "₹ 0";
+        document.getElementById("rhUtility").innerText = "₹ 0";
+        document.getElementById("rhBalance").innerText = "Settled (₹0)";
+        document.getElementById("rhInvoiceList").innerHTML = "<p>No invoices recorded for this renter.</p>";
+        return;
+      }
+
+      const isAct = String(targetRenter.Status).toLowerCase() === "active";
+      document.getElementById("rhAvatar").src = targetRenter.ProfileImageURL || "https://via.placeholder.com/150";
+      document.getElementById("rhName").innerText = targetRenter.RenterName || "Tenant";
+      document.getElementById("rhStatusBadge").innerText = isAct ? "Active" : "Inactive (Archived)";
+      document.getElementById("rhStatusBadge").className = isAct ? "badge-paid" : "badge-unpaid";
+      document.getElementById("rhContact").innerText = `Phone: ${targetRenter.MobileNumber || '--'}`;
+      document.getElementById("rhStay").innerText = `Stay: ${targetRenter.JoinDate || '--'} to ${isAct ? 'Present' : (targetRenter.EndDate || 'Archived')}`;
+
+      // Strictly pull bills ONLY for this selected Renter
+      const bills = getBillsForSpecificRenter(selectedFlat.PropertyName, selectedFlat.FlatName, targetRenter);
+      let totalStandaloneBilled = 0, totalPaid = 0, totalRent = 0, totalUtility = 0;
+
+      bills.forEach(b => {
+        const billed = parseFloat(b.TotalBilled) || 0;
+        const carry = parseFloat(b.PrevCarryBalance) || 0;
+        const standalone = billed - carry;
+        const rent = parseFloat(b.BaseRent) || 0;
+
+        totalStandaloneBilled += standalone;
+        totalPaid += parseFloat(b.PaidAmount) || 0;
+        totalRent += rent;
+        totalUtility += Math.max(0, standalone - rent);
+      });
+
+      const netBal = totalStandaloneBilled - totalPaid;
+
+      document.getElementById("rhBilled").innerText = `₹ ${totalStandaloneBilled.toLocaleString('en-IN')}`;
+      document.getElementById("rhPaid").innerText = `₹ ${totalPaid.toLocaleString('en-IN')}`;
+      document.getElementById("rhTotalRent").innerText = `₹ ${totalRent.toLocaleString('en-IN')}`;
+      document.getElementById("rhUtility").innerText = `₹ ${totalUtility.toLocaleString('en-IN')}`;
+
+      const balEl = document.getElementById("rhBalance");
+      if (netBal > 0) {
+        balEl.innerText = `Due: ₹ ${netBal.toLocaleString('en-IN')}`;
+        balEl.style.color = "var(--accent-red)";
+      } else if (netBal < 0) {
+        balEl.innerText = `Advance: ₹ ${Math.abs(netBal).toLocaleString('en-IN')}`;
+        balEl.style.color = "var(--accent-green)";
+      } else {
+        balEl.innerText = `Settled (₹0)`;
+        balEl.style.color = "var(--accent-green)";
+      }
+
+      const invContainer = document.getElementById("rhInvoiceList");
+      if (bills.length === 0) {
+        invContainer.innerHTML = `<p style="color:var(--text-muted);">No invoices recorded for ${targetRenter.RenterName}.</p>`;
+      } else {
+        invContainer.innerHTML = bills.map(b => `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--glass-border);">
+            <span><strong>${b.MonthYear}</strong> — Billed: ₹${b.TotalBilled} | Paid: ₹${b.PaidAmount} (${b.PaymentMode})</span>
+            <span class="badge-${String(b.Status).toLowerCase().includes('fully') ? 'paid' : (String(b.Status).toLowerCase().includes('partial') ? 'partial' : 'unpaid')}">${b.Status}</span>
+          </div>
+        `).join("");
       }
     }
 
-    // 8. Profile Form Logic & Optimistic Instant Update
+    // 9. Profile Form Logic & Strict Renter Separation
     async function saveUtilitiesLeft() {
       if (activeRole === "Viewer") return;
       const payload = {
@@ -3187,9 +3451,11 @@
         rentAmount: document.getElementById("profRent").value,
         pngNumber: document.getElementById("profPngNumber").value,
         pngMeterNumber: document.getElementById("profPngMeter").value,
+        fixedPngCost: document.getElementById("profPngFixedCost").value,
         pngFixedRate: document.getElementById("profPngRate").value,
         waterNumber: document.getElementById("profWaterNumber").value,
         waterMeterNumber: document.getElementById("profWaterMeter").value,
+        fixedWaterCost: document.getElementById("profWaterFixedCost").value,
         waterFixedRate: document.getElementById("profWaterRate").value,
         elecMeterNumber: document.getElementById("profElecMeter").value,
         elecFixedRate: document.getElementById("profElecRate").value,
@@ -3202,6 +3468,17 @@
       selectedFlat.ElecRate = payload.elecFixedRate;
       selectedFlat.PNGRate = payload.pngFixedRate;
       selectedFlat.WaterRate = payload.waterFixedRate;
+      selectedFlat.PNGNumber = payload.pngNumber;
+      selectedFlat.PNGMeterNumber = payload.pngMeterNumber;
+      selectedFlat.FixedPNGCost = payload.fixedPngCost;
+      selectedFlat.WaterNumber = payload.waterNumber;
+      selectedFlat.WaterMeterNumber = payload.waterMeterNumber;
+      selectedFlat.FixedWaterCost = payload.fixedWaterCost;
+      selectedFlat.ElecMeterNumber = payload.elecMeterNumber;
+      selectedFlat.UPIName = payload.upiName;
+      selectedFlat.UPIID = payload.upiId;
+      selectedFlat.ContractMobile = payload.contractMobile;
+
       saveDbSnapshotToCache();
       renderAllDashboardUI();
 
@@ -3213,62 +3490,100 @@
     async function submitRenterProfileRight() {
       if (activeRole === "Viewer") return;
       const statusVal = document.getElementById("renterStatus").value;
-      const newRenterId = activeFlatRenterObj?.RenterID || ("R-" + Date.now());
+      const rName = document.getElementById("renterName").value.trim();
+
+      if (statusVal === "Active" && !rName) {
+        return triggerSideToast("Renter Name Required", "Please enter the Renter Name.", false);
+      }
+
+      // If an active renter already exists, use their RenterID; otherwise generate a brand new isolated RenterID
+      const targetRenterId = activeFlatRenterObj?.RenterID || ("R-" + Date.now());
 
       const payload = {
         action: "updateRenterProfile",
-        renterId: newRenterId,
+        renterId: targetRenterId,
         propertyName: selectedFlat.PropertyName,
         flatName: selectedFlat.FlatName,
-        renterName: document.getElementById("renterName").value,
+        renterName: rName,
         identityDocNumber: document.getElementById("renterIdentityNum").value,
         mobileNumber: document.getElementById("renterMobile").value,
         altMobileNumber: document.getElementById("renterAltMobile").value,
         address: document.getElementById("renterAddress").value,
         familyMembers: document.getElementById("renterFamily").value,
         renterStatus: statusVal,
-        joinDate: document.getElementById("renterJoinDate").value,
+        joinDate: document.getElementById("renterJoinDate").value || new Date().toISOString().split('T')[0],
         endDate: document.getElementById("renterEndDate").value,
         profileImageUrl: document.getElementById("profilePicturePreview").src,
         identityImageUrl: document.getElementById("identityPicturePreview").src,
-        rentAmount: document.getElementById("profRent").value
+        rentAmount: document.getElementById("profRent").value,
+        pngNumber: document.getElementById("profPngNumber").value,
+        pngMeterNumber: document.getElementById("profPngMeter").value,
+        fixedPngCost: document.getElementById("profPngFixedCost").value,
+        pngFixedRate: document.getElementById("profPngRate").value,
+        waterNumber: document.getElementById("profWaterNumber").value,
+        waterMeterNumber: document.getElementById("profWaterMeter").value,
+        fixedWaterCost: document.getElementById("profWaterFixedCost").value,
+        waterFixedRate: document.getElementById("profWaterRate").value,
+        elecMeterNumber: document.getElementById("profElecMeter").value,
+        elecFixedRate: document.getElementById("profElecRate").value,
+        upiName: document.getElementById("profUpiName").value,
+        upiId: document.getElementById("profUpiId").value,
+        contractMobile: document.getElementById("profContractMobile").value
       };
 
-      let existingRenter = DB.renters.find(r =>
-        String(r.PropertyName).toLowerCase() === String(selectedFlat.PropertyName).toLowerCase() &&
-        String(r.FlatName).toLowerCase() === String(selectedFlat.FlatName).toLowerCase() &&
-        String(r.Status).toLowerCase() === "active"
+      let existingActiveRenter = DB.renters.find(r =>
+        isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName) &&
+        String(r.Status).trim().toLowerCase() === "active"
       );
 
       if (statusVal === "Inactive") {
-        if (existingRenter) existingRenter.Status = "Inactive";
+        if (existingActiveRenter) {
+          existingActiveRenter.Status = "Inactive";
+          existingActiveRenter.EndDate = payload.endDate || new Date().toISOString().split('T')[0];
+        }
         activeFlatRenterObj = null;
         clearRenterRightForm();
-        triggerSideToast("Archived", "Renter marked Inactive. Past bills archived.", true);
+        triggerSideToast("Renter Archived", "Past renter locked in history. Form cleared for new renter!", true);
       } else {
-        if (existingRenter) {
-          existingRenter.RenterName = payload.renterName;
-          existingRenter.MobileNumber = payload.mobileNumber;
-          existingRenter.ProfileImageURL = payload.profileImageUrl;
+        if (existingActiveRenter) {
+          existingActiveRenter.RenterName = payload.renterName;
+          existingActiveRenter.IdentityDocNumber = payload.identityDocNumber;
+          existingActiveRenter.MobileNumber = payload.mobileNumber;
+          existingActiveRenter.AltMobileNumber = payload.altMobileNumber;
+          existingActiveRenter.Address = payload.address;
+          existingActiveRenter.TotalFamilyMembers = payload.familyMembers;
+          existingActiveRenter.JoinDate = payload.joinDate;
+          existingActiveRenter.ProfileImageURL = payload.profileImageUrl;
+          existingActiveRenter.IdentityImageURL = payload.identityImageUrl;
+          activeFlatRenterObj = existingActiveRenter;
         } else {
+          // Brand new isolated renter record appended
           const createdRenter = {
-            RenterID: newRenterId,
+            RenterID: targetRenterId,
             PropertyName: payload.propertyName,
             FlatName: payload.flatName,
             RenterName: payload.renterName,
+            IdentityDocNumber: payload.identityDocNumber,
             MobileNumber: payload.mobileNumber,
+            AltMobileNumber: payload.altMobileNumber,
+            Address: payload.address,
+            TotalFamilyMembers: payload.familyMembers,
+            JoinDate: payload.joinDate,
+            EndDate: "",
             ProfileImageURL: payload.profileImageUrl,
+            IdentityImageURL: payload.identityImageUrl,
             RentAmount: payload.rentAmount,
             Status: "Active"
           };
           DB.renters.push(createdRenter);
           activeFlatRenterObj = createdRenter;
         }
-        triggerSideToast("Profile Saved", "Renter details updated immediately!", true);
+        triggerSideToast("Profile Saved", "Isolated renter record saved immediately!", true);
       }
 
       saveDbSnapshotToCache();
       renderAllDashboardUI();
+      populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName);
 
       await sendGasPost(payload);
       syncDataLive();
@@ -3282,13 +3597,13 @@
       document.getElementById("renterAddress").value = "";
       document.getElementById("renterFamily").value = "1";
       document.getElementById("renterStatus").value = "Active";
-      document.getElementById("renterJoinDate").value = "";
+      document.getElementById("renterJoinDate").value = new Date().toISOString().split('T')[0];
       document.getElementById("renterEndDate").value = "";
-      document.getElementById("profilePicturePreview").src = "https://via.placeholder.com/150";
-      document.getElementById("identityPicturePreview").src = "https://via.placeholder.com/300x150";
+      document.getElementById("profilePicturePreview").src = "https://via.placeholder.com/150?text=Profile+Pic";
+      document.getElementById("identityPicturePreview").src = "https://via.placeholder.com/300x150?text=ID+Document";
     }
 
-    // 9. Modals & Optimistic CRUD Actions
+    // 10. Modals & Strict Property-Targeted Flat Creation
     function toggleActionMenu() {
       document.getElementById("actionMenu").classList.toggle("show");
     }
@@ -3306,16 +3621,36 @@
       document.getElementById(id).classList.remove("active");
     }
 
+    // Pre-selects the currently clicked property when opening Add Flat Modal
+    function openAddFlatModal() {
+      syncPropertyDropdowns();
+      const addFlatPropSelect = document.getElementById("addFlatPropDropdown");
+      if (selectedProperty && addFlatPropSelect) {
+        addFlatPropSelect.value = selectedProperty;
+      }
+      document.getElementById("addFlatNumber").value = "";
+      document.getElementById("addFlatRenter").value = "";
+      openModal("addFlatModal");
+    }
+
     function syncPropertyDropdowns() {
       const editSelect = document.getElementById("editPropDropdown");
       const delSelect = document.getElementById("deletePropDropdown");
       const addFlatSelect = document.getElementById("addFlatPropDropdown");
       const delFlatPropSelect = document.getElementById("deleteFlatPropDropdown");
 
+      const currentAddPropVal = addFlatSelect?.value;
       const options = DB.properties.map(p => `<option value="${p.PropertyName}">${p.PropertyName}</option>`).join("");
       [editSelect, delSelect, addFlatSelect, delFlatPropSelect].forEach(sel => {
         if (sel) sel.innerHTML = options;
       });
+
+      if (selectedProperty && addFlatSelect) {
+        addFlatSelect.value = selectedProperty;
+      } else if (currentAddPropVal && addFlatSelect) {
+        addFlatSelect.value = currentAddPropVal;
+      }
+
       syncEditPropDisplay();
       populateDeleteFlatList();
     }
@@ -3328,7 +3663,7 @@
     function populateDeleteFlatList() {
       const p = document.getElementById("deleteFlatPropDropdown").value;
       const flatSelect = document.getElementById("deleteFlatTargetDropdown");
-      const filtered = DB.flats.filter(f => String(f.PropertyName).toLowerCase() === String(p).toLowerCase());
+      const filtered = DB.flats.filter(f => String(f.PropertyName || "").trim().toLowerCase() === String(p || "").trim().toLowerCase());
       flatSelect.innerHTML = filtered.map(f => `<option value="${f.FlatName}">${f.FlatName}</option>`).join("");
     }
 
@@ -3336,7 +3671,7 @@
       const name = document.getElementById("newPropName").value.trim();
       if (!name) return triggerSideToast("Required", "Property Name is mandatory!", false);
 
-      if (DB.properties.some(p => p.PropertyName.toLowerCase() === name.toLowerCase())) {
+      if (DB.properties.some(p => String(p.PropertyName).trim().toLowerCase() === name.toLowerCase())) {
         return alert("This property name is already added. Please use a different name.");
       }
 
@@ -3367,7 +3702,7 @@
       const newName = document.getElementById("editPropNewName").value.trim();
       if (!newName) return triggerSideToast("Required", "Please enter a new name.", false);
 
-      if (DB.properties.some(p => p.PropertyName.toLowerCase() === newName.toLowerCase() && p.PropertyName.toLowerCase() !== oldName.toLowerCase())) {
+      if (DB.properties.some(p => String(p.PropertyName).trim().toLowerCase() === newName.toLowerCase() && String(p.PropertyName).trim().toLowerCase() !== oldName.toLowerCase())) {
         return alert("This property name is already taken. Please use a different name.");
       }
 
@@ -3378,7 +3713,7 @@
 
       if (selectedProperty === oldName) {
         selectedProperty = newName;
-        localStorage.setItem("active_selected_property", newName);
+        sessionStorage.setItem("active_selected_property", newName);
       }
       saveDbSnapshotToCache();
       renderAllDashboardUI();
@@ -3395,7 +3730,7 @@
         DB.properties = DB.properties.filter(item => item.PropertyName !== p);
         if (selectedProperty === p) {
           selectedProperty = null;
-          localStorage.removeItem("active_selected_property");
+          sessionStorage.removeItem("active_selected_property");
         }
         saveDbSnapshotToCache();
         renderAllDashboardUI();
@@ -3405,13 +3740,16 @@
       }
     }
 
+    // Strictly adds the flat to the exact selected property only
     async function submitAddFlat() {
-      const p = document.getElementById("addFlatPropDropdown").value;
+      const targetProp = document.getElementById("addFlatPropDropdown").value.trim();
       const flat = document.getElementById("addFlatNumber").value.trim();
+
+      if (!targetProp) return triggerSideToast("Select Property", "Please select a property first.", false);
       if (!flat) return triggerSideToast("Required", "Flat Name/Number is strictly mandatory.", false);
 
-      if (DB.flats.some(f => String(f.PropertyName).toLowerCase() === String(p).toLowerCase() && String(f.FlatName).toLowerCase() === flat.toLowerCase())) {
-        return triggerSideToast("Duplicate Flat", "This flat number already exists in this property.", false);
+      if (DB.flats.some(f => isSamePropAndFlat(f.PropertyName, f.FlatName, targetProp, flat))) {
+        return triggerSideToast("Duplicate Flat", `Flat ${flat} already exists in ${targetProp}.`, false);
       }
 
       const rName = document.getElementById("addFlatRenter").value.trim();
@@ -3422,7 +3760,7 @@
       const generatedRenterId = "R-" + Date.now();
 
       DB.flats.push({
-        PropertyName: p,
+        PropertyName: targetProp,
         FlatName: flat,
         RentAmount: rentAmt,
         ElecRate: eRate,
@@ -3430,26 +3768,31 @@
         WaterRate: wRate,
         Status: "Active"
       });
+
       if (rName) {
         DB.renters.push({
           RenterID: generatedRenterId,
-          PropertyName: p,
+          PropertyName: targetProp,
           FlatName: flat,
           RenterName: rName,
           RentAmount: rentAmt,
+          JoinDate: new Date().toISOString().split('T')[0],
           Status: "Active"
         });
       }
-      selectedProperty = p;
-      localStorage.setItem("active_selected_property", p);
+
+      // Focus the exact property where the flat was added
+      selectedProperty = targetProp;
+      sessionStorage.setItem("active_selected_property", targetProp);
       saveDbSnapshotToCache();
       renderAllDashboardUI();
       closeModal("addFlatModal");
+      triggerSideToast("Flat Added", `Flat ${flat} added strictly to ${targetProp}!`, true);
 
       await sendGasPost({
         action: "addFlat",
         renterId: generatedRenterId,
-        propertyName: p,
+        propertyName: targetProp,
         flatName: flat,
         renterName: rName,
         rentAmount: rentAmt,
@@ -3465,7 +3808,7 @@
       const f = document.getElementById("deleteFlatTargetDropdown").value;
       const conf = confirm("Are you sure you want to confirm delete this flat? Yes or No?");
       if (conf) {
-        DB.flats = DB.flats.filter(item => !(String(item.PropertyName).toLowerCase() === String(p).toLowerCase() && String(item.FlatName).toLowerCase() === String(f).toLowerCase()));
+        DB.flats = DB.flats.filter(item => !isSamePropAndFlat(item.PropertyName, item.FlatName, p, f));
         saveDbSnapshotToCache();
         renderAllDashboardUI();
         closeModal("deleteFlatModal");
@@ -3478,11 +3821,8 @@
       activeUser = null;
       selectedProperty = null;
       selectedFlat = null;
+      sessionStorage.clear();
       localStorage.removeItem("active_session_user");
-      localStorage.removeItem("active_session_role");
-      localStorage.removeItem("active_session_fullname");
-      localStorage.removeItem("active_selected_property");
-      localStorage.removeItem("cached_db_snapshot");
       if (syncTimer) clearInterval(syncTimer);
 
       document.getElementById("dashboardScreen").classList.remove("active");
