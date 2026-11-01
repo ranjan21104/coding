@@ -80,7 +80,6 @@
     body.theme-white .bg-canvas {
       opacity: 0.06;
     }
-    /* Always keep login screen background vivid */
     #loginScreen.active ~ .bg-canvas,
     body:has(#loginScreen.active) .bg-canvas {
       opacity: 1 !important;
@@ -173,6 +172,37 @@
       outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
+    }
+
+    /* Password Wrapper & Eye Visibility Toggle Icon */
+    .password-field-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    .password-field-wrapper .form-control {
+      padding-right: 44px;
+    }
+    .eye-toggle-btn {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s;
+    }
+    #loginScreen .eye-toggle-btn {
+      color: #cbd5e1;
+    }
+    .eye-toggle-btn:hover {
+      color: var(--primary);
     }
 
     .btn-primary {
@@ -538,7 +568,7 @@
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-lg);
       width: 100%;
-      max-width: 540px;
+      max-width: 520px;
       max-height: 92vh;
       overflow-y: auto;
       padding: 24px 20px;
@@ -563,6 +593,13 @@
     .modal-close-btn:hover {
       background: rgba(239, 68, 68, 0.25);
       color: var(--accent-red);
+    }
+
+    /* Profile Section Divider */
+    .section-divider {
+      height: 1px;
+      background: var(--glass-border);
+      margin: 20px 0 16px 0;
     }
 
     /* Flat Detailed 4-Tab Navigation Modal */
@@ -735,7 +772,7 @@
       color: var(--text-main);
     }
 
-    /* Theme Selector Grid inside Profile Settings Modal */
+    /* Theme Selector Grid inside Settings Modal */
     .theme-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -832,7 +869,12 @@
         </div>
         <div class="form-group">
           <label>Password</label>
-          <input type="password" id="loginPassword" class="form-control" placeholder="Enter password" required autocomplete="off">
+          <div class="password-field-wrapper">
+            <input type="password" id="loginPassword" class="form-control" placeholder="Enter password" required autocomplete="off">
+            <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('loginPassword', this)" title="Show / Hide Password">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
         </div>
         <button type="submit" id="loginBtn" class="btn-primary">
           <span>Log In</span>
@@ -895,9 +937,14 @@
           </div>
         </div>
 
-        <!-- Dedicated Profile Icon (Opens Password, Username, Theme, Create User ID & Other) -->
-        <button class="nav-btn" onclick="openProfileSettingsModal()" title="Profile, Theme & User Management">
-          <i class="fa-solid fa-user-gear"></i>
+        <!-- Dedicated Profile Icon (Shows Name, Username, Password + Change Password at bottom) -->
+        <button class="nav-btn" onclick="openProfileModal()" title="My Profile">
+          <i class="fa-solid fa-user"></i>
+        </button>
+
+        <!-- Dedicated Settings Icon Next to Profile (Theme, Create User ID, Other) -->
+        <button class="nav-btn" onclick="openSettingsModal()" title="Settings">
+          <i class="fa-solid fa-gear"></i>
         </button>
 
         <!-- Dedicated Logout Icon -->
@@ -922,59 +969,93 @@
 
   <!-- ==================== POPUP MODALS ==================== -->
 
-  <!-- Profile Hub Modal: Password, Username, Theme, Create New User ID, Other -->
-  <div id="profileSettingsModal" class="modal-overlay">
+  <!-- 1. PROFILE MODAL (Name, Username, Password with Eye Toggle + Change Password at Bottom) -->
+  <div id="profileModal" class="modal-overlay">
     <div class="modal-window">
-      <button class="modal-close-btn" onclick="closeModal('profileSettingsModal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 12px;">Profile & System Settings</h3>
+      <button class="modal-close-btn" onclick="closeModal('profileModal')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 16px;"><i class="fa-solid fa-id-badge" style="color:var(--primary); margin-right:8px;"></i>User Profile</h3>
 
-      <!-- 5-Option Navigation inside Profile Modal -->
-      <div class="flat-nav-bar" style="grid-template-columns: repeat(5, 1fr); margin-top: 8px;">
-        <div class="flat-nav-item active" onclick="switchProfileSubTab(event, 'profSubPass')">Password</div>
-        <div class="flat-nav-item" onclick="switchProfileSubTab(event, 'profSubUser')">Username</div>
-        <div class="flat-nav-item" onclick="switchProfileSubTab(event, 'profSubTheme')">Theme</div>
-        <div class="flat-nav-item admin-only" onclick="switchProfileSubTab(event, 'profSubCreateUser')">Create User ID</div>
-        <div class="flat-nav-item" onclick="switchProfileSubTab(event, 'profSubOther')">Other</div>
+      <!-- Top Section: Name, Username & Live Password with Eye Icon -->
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" id="profViewFullName" class="form-control" placeholder="Your Full Name">
       </div>
 
-      <!-- Option 1: Change Password -->
-      <div id="profSubPass" class="tab-content active">
-        <div class="form-group">
-          <label>Current Password (Old Password)</label>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="profViewUsername" class="form-control" placeholder="Your Username">
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <div class="password-field-wrapper">
+          <input type="password" id="profViewPassword" class="form-control" readonly placeholder="Fetching live from sheet...">
+          <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('profViewPassword', this)" title="Show / Hide Password">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <button class="btn-primary" style="margin-bottom: 6px; padding: 11px;" onclick="submitProfileNameAndUsername()">
+        <i class="fa-solid fa-floppy-disk"></i> Save Name & Username
+      </button>
+
+      <div class="section-divider"></div>
+
+      <!-- Bottom Section: Change Password Option -->
+      <h4 style="margin-bottom: 12px; color: var(--primary);"><i class="fa-solid fa-key" style="margin-right:6px;"></i>Change Password</h4>
+
+      <div class="form-group">
+        <label>Current Password (Old Password)</label>
+        <div class="password-field-wrapper">
           <input type="password" id="oldPassInput" class="form-control" placeholder="Enter current password">
+          <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('oldPassInput', this)">
+            <i class="fa-solid fa-eye"></i>
+          </button>
         </div>
-        <div class="form-group">
-          <label>New Password</label>
+      </div>
+
+      <div class="form-group">
+        <label>New Password</label>
+        <div class="password-field-wrapper">
           <input type="password" id="newPassInput" class="form-control" placeholder="Mix of letters, numbers & symbols">
+          <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('newPassInput', this)">
+            <i class="fa-solid fa-eye"></i>
+          </button>
         </div>
-        <div class="form-group">
-          <label>Confirm New Password</label>
+      </div>
+
+      <div class="form-group">
+        <label>Confirm New Password</label>
+        <div class="password-field-wrapper">
           <input type="password" id="confirmNewPassInput" class="form-control" placeholder="Repeat new password">
+          <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('confirmNewPassInput', this)">
+            <i class="fa-solid fa-eye"></i>
+          </button>
         </div>
-        <button class="btn-primary" onclick="submitChangePassword()">Update Password</button>
       </div>
 
-      <!-- Option 2: Change Username -->
-      <div id="profSubUser" class="tab-content">
-        <div class="form-group">
-          <label>Current Username</label>
-          <input type="text" id="currentUsernameDisplay" class="form-control" readonly style="opacity: 0.7;">
-        </div>
-        <div class="form-group">
-          <label>New Username</label>
-          <input type="text" id="newUsernameInput" class="form-control" placeholder="Enter new username">
-        </div>
-        <div class="form-group">
-          <label>Confirm with Current Password</label>
-          <input type="password" id="usernameVerifyPass" class="form-control" placeholder="Enter password to confirm">
-        </div>
-        <button class="btn-primary" onclick="submitChangeUsername()">Update Username</button>
+      <button class="btn-primary" onclick="submitChangePassword()">Update Password</button>
+    </div>
+  </div>
+
+  <!-- 2. SETTINGS MODAL (Theme, Create User ID, Other) -->
+  <div id="settingsModal" class="modal-overlay">
+    <div class="modal-window">
+      <button class="modal-close-btn" onclick="closeModal('settingsModal')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 12px;"><i class="fa-solid fa-sliders" style="color:var(--primary); margin-right:8px;"></i>Settings</h3>
+
+      <!-- Navigation inside Settings Modal -->
+      <div class="flat-nav-bar" style="grid-template-columns: repeat(3, 1fr); margin-top: 8px;">
+        <div class="flat-nav-item active" onclick="switchSettingsSubTab(event, 'setSubTheme')">Theme</div>
+        <div class="flat-nav-item admin-only" onclick="switchSettingsSubTab(event, 'setSubCreateUser')">Create User ID</div>
+        <div class="flat-nav-item" onclick="switchSettingsSubTab(event, 'setSubOther')">Other</div>
       </div>
 
-      <!-- Option 3: Change Theme (Black, White, System -> Saved to Google Sheet) -->
-      <div id="profSubTheme" class="tab-content">
+      <!-- Settings Tab 1: Change Theme (Black, White, System -> Saved to Google Sheet) -->
+      <div id="setSubTheme" class="tab-content active">
         <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 10px;">
-          Choose your theme. Your selection is saved to Google Sheets and automatically applied on every login:
+          Select a theme. Your preference is saved directly to Google Sheets and automatically opens on every login:
         </p>
         <div class="theme-grid">
           <div class="theme-card" id="themeCardBlack" onclick="selectAndSaveTheme('black')">
@@ -1003,8 +1084,8 @@
         </div>
       </div>
 
-      <!-- Option 4: Create a New User ID (With Role Assignment: Admin / Viewer) -->
-      <div id="profSubCreateUser" class="tab-content">
+      <!-- Settings Tab 2: Create a New User ID (With Role Assignment: Admin / Viewer) -->
+      <div id="setSubCreateUser" class="tab-content">
         <div class="form-group">
           <label>Full Name *</label>
           <input type="text" id="createUserName" class="form-control" placeholder="Enter full name">
@@ -1015,7 +1096,12 @@
         </div>
         <div class="form-group">
           <label>Set Password *</label>
-          <input type="password" id="createUserPass" class="form-control" placeholder="Create strong password">
+          <div class="password-field-wrapper">
+            <input type="password" id="createUserPass" class="form-control" placeholder="Create strong password">
+            <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('createUserPass', this)">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
         </div>
         <div class="form-group">
           <label>Assign Role *</label>
@@ -1027,8 +1113,8 @@
         <button class="btn-primary" onclick="submitCreateNewUser()">Create New User ID</button>
       </div>
 
-      <!-- Option 5: Other (Account Summary, Directory & Sync Status) -->
-      <div id="profSubOther" class="tab-content">
+      <!-- Settings Tab 3: Other (Account Summary, Directory & Sync Status) -->
+      <div id="setSubOther" class="tab-content">
         <div class="stat-pill" style="text-align: left; margin-bottom: 12px;">
           <span>ACTIVE ACCOUNT DETAILS</span>
           <div style="margin-top: 6px; font-size: 0.88rem;">
@@ -1414,12 +1500,32 @@
 
     /**
      * ============================================================================
+     * PASSWORD EYE ICON VISIBILITY TOGGLE
+     * Works for any password field across Login, Profile, and Settings
+     * ============================================================================
+     */
+    function togglePasswordVisibility(inputId, btnEl) {
+      const input = document.getElementById(inputId);
+      const icon = btnEl.querySelector("i");
+      if (!input) return;
+      if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+      } else {
+        input.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+      }
+    }
+
+    /**
+     * ============================================================================
      * INSTANT ZERO-BLANK-SCREEN INITIALIZATION ON REFRESH
      * Restores cached snapshot at 0ms while fetching fresh Google Sheet updates
      * ============================================================================
      */
     document.addEventListener("DOMContentLoaded", () => {
-      // Listen for OS system theme changes when 'system' mode is active
       window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
         if (activeThemePref === "system") applyVisualTheme("system");
       });
@@ -1434,7 +1540,6 @@
 
       if (savedSelectedProp) selectedProperty = savedSelectedProp;
 
-      // Restore cached database snapshot immediately so refresh never shows blank screen
       const cachedSnapshot = localStorage.getItem("cached_db_snapshot");
       if (cachedSnapshot) {
         try {
@@ -1482,10 +1587,7 @@
       document.getElementById("loginScreen").classList.remove("active");
       document.getElementById("dashboardScreen").classList.add("active");
 
-      // Render immediately from memory/cache (0ms delay)
       renderAllDashboardUI();
-
-      // Sync latest Google Sheet state in background
       syncDataLive();
 
       if (syncTimer) clearInterval(syncTimer);
@@ -1503,7 +1605,7 @@
       }
     }
 
-    // 1. Single-Round-Trip Instant Login (Verifies + Pulls Theme, Role & Full Data)
+    // 1. Single-Round-Trip Instant Login
     async function handleLoginSubmit(e) {
       e.preventDefault();
       const user = document.getElementById("loginUsername").value.trim();
@@ -1531,11 +1633,9 @@
           localStorage.setItem("active_session_fullname", activeUserFullName);
           localStorage.setItem("active_session_role", activeRole);
 
-          // Apply last saved theme from Google Sheet immediately
           applyVisualTheme(sheetTheme);
           applyRolePermissions(activeRole);
 
-          // Populate DB immediately from login response (Zero 2nd-trip delay)
           DB.properties = res.properties || [];
           DB.flats = res.flats || [];
           DB.renters = res.renters || [];
@@ -1735,9 +1835,62 @@
       });
     }
 
-    // 5. Profile Hub Modal (Password, Username, Theme, Create User ID, Other)
-    function openProfileSettingsModal() {
-      document.getElementById("currentUsernameDisplay").value = activeUser || "admin";
+    // 5. Dedicated Profile Modal (Name, Username, Live Password + Change Password at Bottom)
+    async function openProfileModal() {
+      document.getElementById("profViewFullName").value = activeUserFullName || activeUser || "";
+      document.getElementById("profViewUsername").value = activeUser || "";
+      const passInput = document.getElementById("profViewPassword");
+      passInput.type = "password";
+      passInput.value = "";
+      passInput.placeholder = "Fetching live from Google Sheet...";
+
+      openModal("profileModal");
+
+      // Fetch live password from Google Sheet (never cached in localStorage)
+      try {
+        const gasUrl = getGasUrl();
+        const response = await fetch(`${gasUrl}?action=getUserProfile&username=${encodeURIComponent(activeUser)}&t=${Date.now()}`, {
+          method: "GET",
+          cache: "no-store"
+        });
+        const res = await response.json();
+        if (res.status === "success") {
+          document.getElementById("profViewFullName").value = res.fullName || activeUser;
+          document.getElementById("profViewUsername").value = res.username || activeUser;
+          passInput.value = res.password || "";
+        }
+      } catch (e) {
+        passInput.placeholder = "Unable to load password offline";
+      }
+    }
+
+    async function submitProfileNameAndUsername() {
+      const updatedFullName = document.getElementById("profViewFullName").value.trim();
+      const updatedUsername = document.getElementById("profViewUsername").value.trim();
+
+      if (!updatedUsername) return alert("Username cannot be empty.");
+
+      const res = await sendGasPost({
+        action: "changeUsername",
+        currentUsername: activeUser,
+        newUsername: updatedUsername,
+        fullName: updatedFullName
+      });
+
+      if (res.status === "success") {
+        activeUser = res.newUsername;
+        activeUserFullName = res.fullName;
+        localStorage.setItem("active_session_user", activeUser);
+        localStorage.setItem("active_session_fullname", activeUserFullName);
+        alert("Name and Username updated in Google Sheet!");
+        syncDataLive();
+      } else {
+        alert(res.message);
+      }
+    }
+
+    // 6. Dedicated Settings Modal (Theme, Create User ID, Other)
+    function openSettingsModal() {
       document.getElementById("otherProfileFullName").innerText = activeUserFullName || activeUser;
       document.getElementById("otherProfileUsername").innerText = activeUser || "--";
       document.getElementById("otherProfileRole").innerText = activeRole || "Admin";
@@ -1753,11 +1906,11 @@
         `).join("") || "No user list loaded.";
       }
 
-      openModal("profileSettingsModal");
+      openModal("settingsModal");
     }
 
-    function switchProfileSubTab(evt, subTabId) {
-      const parent = document.getElementById("profileSettingsModal");
+    function switchSettingsSubTab(evt, subTabId) {
+      const parent = document.getElementById("settingsModal");
       parent.querySelectorAll(".flat-nav-item").forEach(el => el.classList.remove("active"));
       parent.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
       evt.currentTarget.classList.add("active");
@@ -1807,7 +1960,6 @@
         return alert("Please fill in Full Name, Desired Username, and Password.");
       }
 
-      // Optimistic check
       if (DB.users && DB.users.some(u => String(u.Username).toLowerCase() === newU.toLowerCase())) {
         return alert("This username already exists. Please choose another.");
       }
@@ -1828,37 +1980,13 @@
         document.getElementById("createUserLoginId").value = "";
         document.getElementById("createUserPass").value = "";
         alert(res.message);
-        openProfileSettingsModal();
+        openSettingsModal();
       } else {
         alert(res.message);
       }
     }
 
-    async function submitChangeUsername() {
-      const newU = document.getElementById("newUsernameInput").value.trim();
-      const pass = document.getElementById("usernameVerifyPass").value;
-      if (!newU || !pass) return alert("Please enter both your new username and current password.");
-
-      const res = await sendGasPost({
-        action: "changeUsername",
-        currentUsername: activeUser,
-        newUsername: newU,
-        password: pass
-      });
-
-      if (res.status === "success") {
-        activeUser = res.newUsername;
-        localStorage.setItem("active_session_user", activeUser);
-        document.getElementById("currentUsernameDisplay").value = activeUser;
-        document.getElementById("newUsernameInput").value = "";
-        document.getElementById("usernameVerifyPass").value = "";
-        alert("Username updated in Google Sheet!");
-      } else {
-        alert(res.message);
-      }
-    }
-
-    // 6. Flat Details Navigation & Tabs
+    // 7. Flat Details Navigation & Tabs
     function openFlatDetailsModal(flat, renter) {
       selectedFlat = flat;
       document.getElementById("modalHeaderTitle").innerText = `${flat.PropertyName} - Space Details`;
@@ -1898,7 +2026,6 @@
         clearRenterRightForm();
       }
 
-      // Lock inputs if logged in as Viewer
       const isViewer = (activeRole === "Viewer");
       document.querySelectorAll("#flatDetailsModal input, #flatDetailsModal select, #flatDetailsModal textarea").forEach(inp => {
         if (inp.placeholder && inp.placeholder.includes("Search")) return;
@@ -2019,7 +2146,6 @@
         Notes: document.getElementById("calcNotes").value
       };
 
-      // Instant UI Update (0ms)
       DB.bills.push(newBillObj);
       saveDbSnapshotToCache();
       updateGlobalProfitAndLoss();
@@ -2027,7 +2153,6 @@
 
       alert("Bill calculated and reflected immediately!");
 
-      // Sync to Google Sheet in background
       await sendGasPost({
         action: "recordBill",
         propertyName: newBillObj.PropertyName,
@@ -2119,7 +2244,7 @@
       }
     }
 
-    // 7. Profile Form Logic & Optimistic Instant Update
+    // 8. Profile Form Logic & Optimistic Instant Update
     async function saveUtilitiesLeft() {
       if (activeRole === "Viewer") return;
       const payload = {
@@ -2173,7 +2298,6 @@
         rentAmount: document.getElementById("profRent").value
       };
 
-      // Optimistic local state update
       let existingRenter = DB.renters.find(r =>
         String(r.PropertyName).toLowerCase() === String(selectedFlat.PropertyName).toLowerCase() &&
         String(r.FlatName).toLowerCase() === String(selectedFlat.FlatName).toLowerCase() &&
@@ -2223,7 +2347,7 @@
       document.getElementById("identityPicturePreview").src = "https://via.placeholder.com/300x150";
     }
 
-    // 8. Modals & Optimistic CRUD Actions
+    // 9. Modals & Optimistic CRUD Actions
     function toggleActionMenu() {
       document.getElementById("actionMenu").classList.toggle("show");
     }
@@ -2282,7 +2406,6 @@
         ContractNumber: document.getElementById("newPropContract").value
       };
 
-      // Instant UI Update
       DB.properties.push(newPropObj);
       selectedProperty = name;
       saveDbSnapshotToCache();
@@ -2308,7 +2431,6 @@
         return alert("This property name is already taken. Please use a different name.");
       }
 
-      // Instant UI Update
       DB.properties.forEach(p => { if (p.PropertyName === oldName) p.PropertyName = newName; });
       DB.flats.forEach(f => { if (f.PropertyName === oldName) f.PropertyName = newName; });
       DB.renters.forEach(r => { if (r.PropertyName === oldName) r.PropertyName = newName; });
@@ -2357,7 +2479,6 @@
       const pRate = document.getElementById("addFlatPngRate").value || 45;
       const wRate = document.getElementById("addFlatWaterRate").value || 15;
 
-      // Instant UI Update
       DB.flats.push({
         PropertyName: p,
         FlatName: flat,
