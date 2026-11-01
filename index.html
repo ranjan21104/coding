@@ -2,28 +2,59 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Real Estate & Tenant Financial Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    /* Theme Variables */
     :root {
+      --bg-body: #0f172a;
+      --bg-header: rgba(15, 23, 42, 0.88);
+      --bg-card: rgba(30, 41, 59, 0.78);
+      --bg-modal: #1e293b;
+      --bg-input: rgba(15, 23, 42, 0.65);
       --primary: #4f46e5;
       --primary-hover: #4338ca;
       --accent-green: #10b981;
       --accent-red: #ef4444;
       --accent-orange: #f59e0b;
-      --glass-bg: rgba(255, 255, 255, 0.15);
-      --glass-border: rgba(255, 255, 255, 0.28);
+      --glass-bg: rgba(255, 255, 255, 0.14);
+      --glass-border: rgba(255, 255, 255, 0.24);
       --glass-blur: blur(20px);
-      --dark-card: rgba(17, 24, 39, 0.85);
       --text-main: #f9fafb;
       --text-muted: #9ca3af;
       --radius-lg: 20px;
       --radius-md: 12px;
       --shadow-elevation: 0 20px 45px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Oceanic Royal Theme */
+    body.theme-ocean {
+      --bg-body: #041f31;
+      --bg-header: rgba(4, 31, 49, 0.9);
+      --bg-card: rgba(11, 56, 84, 0.78);
+      --bg-modal: #082f49;
+      --bg-input: rgba(4, 31, 49, 0.7);
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+    }
+
+    /* Daylight Frost Theme */
+    body.theme-light {
+      --bg-body: #f1f5f9;
+      --bg-header: rgba(255, 255, 255, 0.92);
+      --bg-card: rgba(255, 255, 255, 0.9);
+      --bg-modal: #ffffff;
+      --bg-input: #f8fafc;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --glass-border: rgba(15, 23, 42, 0.12);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --shadow-elevation: 0 12px 30px rgba(0, 0, 0, 0.08);
     }
 
     * {
@@ -34,20 +65,26 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    body {
-      background: #0f172a;
+    html, body {
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden;
+      background: var(--bg-body);
       color: var(--text-main);
       min-height: 100vh;
-      overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     /* Full Background Cover */
     .bg-canvas {
       position: fixed;
       inset: 0;
-      background: linear-gradient(180deg, rgba(15, 23, 42, 0.72) 0%, rgba(15, 23, 42, 0.94) 100%),
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.65) 0%, rgba(15, 23, 42, 0.92) 100%),
                   url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=80') center/cover no-repeat;
       z-index: -1;
+    }
+    body.theme-light .bg-canvas {
+      opacity: 0.15;
     }
 
     /* Screen Management */
@@ -64,7 +101,7 @@
     #loginScreen {
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 16px;
     }
 
     .glass-card {
@@ -79,49 +116,58 @@
     .login-container {
       width: 100%;
       max-width: 420px;
-      padding: 44px 36px;
+      padding: 36px 28px;
       text-align: center;
+      color: #fff;
     }
 
     .login-brand {
-      margin-bottom: 30px;
+      margin-bottom: 26px;
     }
     .login-brand i {
-      font-size: 2.8rem;
+      font-size: 2.6rem;
       color: #818cf8;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     .login-brand h1 {
-      font-size: 1.8rem;
+      font-size: 1.7rem;
       font-weight: 800;
       letter-spacing: -0.5px;
     }
     .login-brand p {
-      font-size: 0.9rem;
-      color: var(--text-muted);
+      font-size: 0.88rem;
+      color: #cbd5e1;
       margin-top: 4px;
     }
 
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       text-align: left;
     }
     .form-group label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+    #loginScreen .form-group label {
       color: #e2e8f0;
     }
     .form-control {
       width: 100%;
-      padding: 14px 18px;
+      padding: 12px 15px;
       border-radius: var(--radius-md);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      background: rgba(15, 23, 42, 0.6);
-      color: #fff;
-      font-size: 0.95rem;
+      border: 1px solid var(--glass-border);
+      background: var(--bg-input);
+      color: var(--text-main);
+      font-size: 0.92rem;
       transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    #loginScreen .form-control {
+      background: rgba(15, 23, 42, 0.65);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.22);
     }
     .form-control:focus {
       outline: none;
@@ -131,29 +177,30 @@
 
     .btn-primary {
       width: 100%;
-      padding: 15px;
+      padding: 14px;
       border-radius: var(--radius-md);
       border: none;
-      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      background: linear-gradient(135deg, #6366f1 0%, var(--primary) 100%);
       color: #fff;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.95rem;
       cursor: pointer;
       transition: all 0.2s ease;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 10px;
-      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
     }
     .btn-primary:hover {
-      background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
       transform: translateY(-1px);
+      filter: brightness(1.06);
     }
 
     /* Main Dashboard Layout */
     #dashboardScreen {
       flex-direction: column;
+      width: 100%;
     }
 
     header.top-nav {
@@ -161,28 +208,31 @@
       top: 0;
       z-index: 100;
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      padding: 14px 28px;
-      background: rgba(15, 23, 42, 0.85);
+      gap: 12px;
+      padding: 12px 20px;
+      background: var(--bg-header);
       backdrop-filter: blur(15px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      border-bottom: 1px solid var(--glass-border);
     }
 
     .nav-left {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
     .nav-left h2 {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       font-weight: 800;
     }
     .pulse-dot {
-      width: 11px;
-      height: 11px;
+      width: 10px;
+      height: 10px;
       background-color: var(--accent-green);
       border-radius: 50%;
+      flex-shrink: 0;
       box-shadow: 0 0 0 rgba(16, 185, 129, 0.7);
       animation: pulse 1.8s infinite;
     }
@@ -192,56 +242,88 @@
       100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
     }
 
+    /* Search Bar */
     .nav-center {
       position: relative;
-      width: 44px;
-      transition: width 0.3s ease;
-    }
-    .nav-center.expanded, .nav-center:focus-within {
-      width: 280px;
+      flex: 1;
+      max-width: 260px;
+      min-width: 140px;
     }
     .search-input {
       width: 100%;
-      height: 40px;
+      height: 38px;
       border-radius: 20px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #fff;
-      padding: 0 15px 0 42px;
+      background: var(--bg-input);
+      border: 1px solid var(--glass-border);
+      color: var(--text-main);
+      padding: 0 14px 0 38px;
       outline: none;
-      font-size: 0.9rem;
-      transition: all 0.3s;
+      font-size: 0.85rem;
     }
     .search-icon {
       position: absolute;
-      left: 14px;
+      left: 13px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);
-      cursor: pointer;
+      font-size: 0.85rem;
     }
 
+    /* Right Controls & Live P&L Section */
     .nav-right {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 10px;
+      flex-wrap: wrap;
     }
+
+    /* Profit & Loss Live Tracker (Replaces Refresh Button) */
+    .pnl-tracker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-input);
+      border: 1px solid var(--glass-border);
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .pnl-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+    .pnl-profit {
+      color: var(--accent-green);
+    }
+    .pnl-loss {
+      color: var(--accent-red);
+    }
+    .pnl-divider {
+      width: 1px;
+      height: 16px;
+      background: var(--glass-border);
+    }
+
     .nav-btn {
-      width: 42px;
-      height: 42px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      background: rgba(255, 255, 255, 0.08);
-      color: #fff;
+      border: 1px solid var(--glass-border);
+      background: var(--bg-input);
+      color: var(--text-main);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       transition: all 0.2s;
+      flex-shrink: 0;
     }
     .nav-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: translateY(-2px);
+      border-color: var(--primary);
+      transform: translateY(-1px);
     }
 
     /* Plus Dropdown Menu */
@@ -251,31 +333,31 @@
     .action-menu {
       display: none;
       position: absolute;
-      top: 52px;
+      top: 46px;
       right: 0;
-      width: 230px;
-      background: #1e293b;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      width: 220px;
+      background: var(--bg-modal);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius-md);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.45);
       overflow: hidden;
-      z-index: 200;
+      z-index: 300;
     }
     .action-menu.show {
       display: block;
     }
     .menu-item {
-      padding: 12px 18px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       gap: 12px;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       cursor: pointer;
       transition: background 0.2s;
-      color: #e2e8f0;
+      color: var(--text-main);
     }
     .menu-item:hover {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(99, 102, 241, 0.15);
       color: #818cf8;
     }
     .menu-item i {
@@ -284,120 +366,111 @@
 
     /* Horizontal Properties Row */
     .properties-bar {
-      padding: 24px 28px 10px 28px;
+      padding: 18px 20px 8px 20px;
+      width: 100%;
     }
     .properties-scroller {
       display: flex;
-      gap: 14px;
+      gap: 12px;
       overflow-x: auto;
-      padding-bottom: 12px;
+      padding-bottom: 10px;
       scrollbar-width: thin;
-      scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+      -webkit-overflow-scrolling: touch;
     }
-    .properties-scroller::-webkit-scrollbar {
-      height: 6px;
-    }
-    .properties-scroller::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 3px;
-    }
-
     .prop-card {
-      min-width: 220px;
-      padding: 16px 20px;
-      background: rgba(30, 41, 59, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      min-width: 200px;
+      flex-shrink: 0;
+      padding: 14px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius-md);
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
       cursor: pointer;
       transition: all 0.2s ease;
       user-select: none;
     }
-    .prop-card:hover {
-      border-color: #818cf8;
-      background: rgba(30, 41, 59, 0.9);
-      transform: translateY(-2px);
-    }
     .prop-card.active {
-      background: linear-gradient(135deg, rgba(79, 70, 229, 0.35) 0%, rgba(30, 41, 59, 0.9) 100%);
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.32) 0%, var(--bg-card) 100%);
       border-color: #818cf8;
-      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.25);
     }
     .prop-icon {
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       background: rgba(99, 102, 241, 0.2);
-      color: #a5b4fc;
+      color: #818cf8;
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
+      font-size: 1rem;
+      flex-shrink: 0;
     }
     .prop-info h4 {
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 700;
     }
     .prop-info span {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
     }
 
     /* 3-Units Merged Wide Flat Cards */
     .flats-container {
-      padding: 16px 28px 40px 28px;
+      padding: 12px 20px 40px 20px;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-      gap: 22px;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 18px;
+      width: 100%;
     }
 
     .flat-card-merged {
-      background: rgba(30, 41, 59, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: var(--bg-card);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius-lg);
-      padding: 22px;
+      padding: 20px;
       cursor: pointer;
       transition: all 0.25s ease;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 175px;
+      min-height: 165px;
       backdrop-filter: blur(10px);
     }
     .flat-card-merged:hover {
       border-color: #818cf8;
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      transform: translateY(-2px);
     }
 
     .flat-top-row {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
+      gap: 8px;
     }
     .flat-name {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       font-weight: 800;
-      color: #fff;
     }
     .renter-identity {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-top: 6px;
+      gap: 10px;
+      margin-top: 8px;
     }
     .renter-avatar {
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: #475569;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      flex-shrink: 0;
+      border: 1.5px solid var(--glass-border);
     }
     .renter-avatar img {
       width: 100%;
@@ -405,32 +478,28 @@
       object-fit: cover;
     }
     .renter-name {
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 600;
-      color: #cbd5e1;
     }
 
     .flat-bottom-row {
-      margin-top: 20px;
-      padding-top: 14px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--glass-border);
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
-      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
     }
     .rent-status {
-      font-size: 0.85rem;
-      font-weight: 600;
+      font-size: 0.8rem;
+      font-weight: 700;
       padding: 4px 10px;
       border-radius: 8px;
-    }
-    .status-paid {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
-    }
-    .status-due {
-      background: rgba(239, 68, 68, 0.2);
-      color: #f87171;
+      background: rgba(16, 185, 129, 0.18);
+      color: var(--accent-green);
     }
 
     /* Global Modal Window */
@@ -443,64 +512,61 @@
       z-index: 1000;
       align-items: center;
       justify-content: center;
-      padding: 16px;
+      padding: 12px;
     }
     .modal-overlay.active {
       display: flex;
     }
 
     .modal-window {
-      background: #1e293b;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: var(--bg-modal);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius-lg);
       width: 100%;
-      max-width: 520px;
-      max-height: 90vh;
+      max-width: 500px;
+      max-height: 92vh;
       overflow-y: auto;
-      padding: 30px;
+      padding: 24px 20px;
       position: relative;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
     }
     .modal-close-btn {
       position: absolute;
-      top: 20px;
-      right: 20px;
+      top: 16px;
+      right: 16px;
       width: 32px;
       height: 32px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.1);
-      border: none;
-      color: #fff;
+      border: 1px solid var(--glass-border);
+      color: var(--text-main);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 1rem;
     }
     .modal-close-btn:hover {
-      background: rgba(239, 68, 68, 0.3);
-      color: #f87171;
+      background: rgba(239, 68, 68, 0.25);
+      color: var(--accent-red);
     }
 
     /* Flat Detailed 4-Tab Navigation Modal */
     .modal-flat-details {
-      max-width: 950px;
-      padding: 24px;
+      max-width: 960px;
     }
     .flat-nav-bar {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      background: rgba(15, 23, 42, 0.6);
+      gap: 6px;
+      background: var(--bg-input);
       padding: 6px;
       border-radius: var(--radius-md);
-      margin-bottom: 24px;
-      margin-top: 16px;
+      margin: 16px 0 20px 0;
     }
     .flat-nav-item {
       text-align: center;
-      padding: 10px;
-      font-size: 0.9rem;
+      padding: 9px 6px;
+      font-size: 0.82rem;
       font-weight: 700;
       border-radius: 8px;
       cursor: pointer;
@@ -522,20 +588,21 @@
     /* Calculator Tab Styling */
     .calc-row-metric {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-template-columns: 1.2fr 1fr 1fr 1fr;
       gap: 10px;
       align-items: center;
-      margin-bottom: 12px;
-      background: rgba(15, 23, 42, 0.4);
-      padding: 10px 14px;
+      margin-bottom: 10px;
+      background: var(--bg-input);
+      padding: 10px 12px;
       border-radius: var(--radius-md);
+      border: 1px solid var(--glass-border);
     }
-    .calc-row-metric input {
-      padding: 8px;
+    .calc-row-metric label {
       font-size: 0.85rem;
+      font-weight: 600;
     }
     .calc-auto-badge {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 700;
       color: #818cf8;
       text-align: right;
@@ -544,30 +611,30 @@
     /* Profile Tab Matrix */
     .profile-matrix {
       display: grid;
-      grid-template-columns: 1.1fr 1.2fr 1.1fr;
-      gap: 18px;
+      grid-template-columns: 1.1fr 1.1fr 1.1fr;
+      gap: 16px;
     }
     .matrix-col {
-      background: rgba(15, 23, 42, 0.5);
+      background: var(--bg-input);
       border-radius: var(--radius-md);
-      padding: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 14px;
+      border: 1px solid var(--glass-border);
     }
     .col-title {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 700;
-      margin-bottom: 14px;
-      color: #93c5fd;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 12px;
+      color: #818cf8;
+      border-bottom: 1px solid var(--glass-border);
       padding-bottom: 6px;
     }
     .image-frame-container {
       width: 100%;
-      height: 140px;
+      height: 135px;
       border-radius: 12px;
-      background: rgba(0,0,0,0.3);
-      border: 2px dashed rgba(255,255,255,0.2);
-      margin-bottom: 14px;
+      background: rgba(0,0,0,0.2);
+      border: 2px dashed var(--glass-border);
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -582,43 +649,44 @@
     /* Ledger History Table */
     .ledger-table-wrap {
       overflow-x: auto;
-      max-height: 480px;
+      max-height: 440px;
+      -webkit-overflow-scrolling: touch;
     }
     .ledger-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       text-align: left;
     }
     .ledger-table th, .ledger-table td {
-      padding: 12px 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--glass-border);
       white-space: nowrap;
     }
     .ledger-table th {
-      background: #0f172a;
+      background: var(--bg-modal);
       position: sticky;
       top: 0;
-      color: #94a3b8;
+      color: var(--text-muted);
       font-weight: 700;
     }
     .badge-paid {
       background: rgba(16, 185, 129, 0.2);
-      color: #10b981;
+      color: var(--accent-green);
       padding: 3px 8px;
       border-radius: 6px;
       font-weight: 700;
     }
     .badge-unpaid {
       background: rgba(239, 68, 68, 0.2);
-      color: #ef4444;
+      color: var(--accent-red);
       padding: 3px 8px;
       border-radius: 6px;
       font-weight: 700;
     }
     .badge-partial {
       background: rgba(245, 158, 11, 0.2);
-      color: #f59e0b;
+      color: var(--accent-orange);
       padding: 3px 8px;
       border-radius: 6px;
       font-weight: 700;
@@ -627,13 +695,13 @@
     /* Renter History Card */
     .renter-history-overview {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
       gap: 10px;
-      margin: 16px 0;
+      margin: 14px 0;
     }
     .stat-pill {
-      background: rgba(15, 23, 42, 0.5);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--bg-input);
+      border: 1px solid var(--glass-border);
       padding: 12px;
       border-radius: var(--radius-md);
       text-align: center;
@@ -645,37 +713,76 @@
       margin-bottom: 4px;
     }
     .stat-pill strong {
-      font-size: 1.05rem;
-      color: #fff;
+      font-size: 1rem;
     }
 
-    /* Toast Notification for Refresh */
-    #syncToast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: rgba(16, 185, 129, 0.95);
-      color: #fff;
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-      display: none;
-      z-index: 2000;
+    /* Theme Selector Grid inside Profile Settings Modal */
+    .theme-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .theme-card {
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--glass-border);
+      background: var(--bg-input);
+      display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .theme-card.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.35);
     }
 
-    @media (max-width: 820px) {
-      .profile-matrix {
+    /* Mobile Responsive Alignment (Zero Overflow) */
+    @media (max-width: 768px) {
+      header.top-nav {
+        padding: 10px 14px;
+        gap: 10px;
+      }
+      .nav-left {
+        order: 1;
+      }
+      .nav-right {
+        order: 2;
+        margin-left: auto;
+      }
+      .nav-center {
+        order: 3;
+        min-width: 100%;
+        max-width: 100%;
+      }
+      .pnl-tracker {
+        width: 100%;
+        justify-content: space-around;
+        order: 4;
+      }
+      .properties-bar {
+        padding: 14px 14px 6px 14px;
+      }
+      .flats-container {
+        padding: 10px 14px 30px 14px;
         grid-template-columns: 1fr;
+      }
+      .flat-nav-bar {
+        grid-template-columns: repeat(2, 1fr);
       }
       .calc-row-metric {
         grid-template-columns: 1fr 1fr;
       }
-      .flats-container {
+      .calc-row-metric label {
+        grid-column: span 2;
+      }
+      .profile-matrix {
         grid-template-columns: 1fr;
+      }
+      .modal-window {
+        padding: 18px 14px;
       }
     }
   </style>
@@ -684,13 +791,7 @@
 
   <div class="bg-canvas"></div>
 
-  <!-- Sync Notification Toast -->
-  <div id="syncToast">
-    <i class="fa-solid fa-arrows-rotate fa-spin"></i>
-    <span id="syncToastText">Refreshing data from Google Sheet...</span>
-  </div>
-
-  <!-- SCREEN 1: LOGIN SCREEN (Apps Script URL Completely Hidden from UI) -->
+  <!-- SCREEN 1: LOGIN SCREEN -->
   <section id="loginScreen" class="screen active">
     <div class="glass-card login-container">
       <div class="login-brand">
@@ -726,15 +827,23 @@
       </div>
 
       <div class="nav-center" id="searchContainer">
-        <i class="fa-solid fa-magnifying-glass search-icon" onclick="focusSearch()"></i>
-        <input type="text" id="globalSearch" class="search-input" placeholder="Search across all records..." oninput="handleGlobalSearch(this.value)">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="globalSearch" class="search-input" placeholder="Search properties, flats, tenants..." oninput="handleGlobalSearch(this.value)">
       </div>
 
       <div class="nav-right">
-        <!-- Reload Icon (Refreshes Google Sheet Data without logging out) -->
-        <button class="nav-btn" id="reloadBtn" onclick="syncDataLive(true)" title="Refresh Data">
-          <i class="fa-solid fa-rotate"></i>
-        </button>
+        <!-- Live Total Profit & Loss Section (Replaces Refresh Button) -->
+        <div class="pnl-tracker" title="Real-Time Total Profit (Collected) & Loss (Pending Dues)">
+          <div class="pnl-item pnl-profit">
+            <i class="fa-solid fa-arrow-trend-up"></i>
+            <span>Profit: <strong id="topTotalProfit">₹0</strong></span>
+          </div>
+          <div class="pnl-divider"></div>
+          <div class="pnl-item pnl-loss">
+            <i class="fa-solid fa-arrow-trend-down"></i>
+            <span>Loss/Due: <strong id="topTotalLoss">₹0</strong></span>
+          </div>
+        </div>
 
         <!-- Dynamic Add Plus (+) Icon -->
         <div class="dropdown-anchor">
@@ -760,9 +869,9 @@
           </div>
         </div>
 
-        <!-- Dedicated Profile Icon -->
-        <button class="nav-btn" onclick="openModal('changePasswordModal')" title="Change Password">
-          <i class="fa-solid fa-user-shield"></i>
+        <!-- Dedicated Profile Icon (Opens Password, Username & Theme Modal) -->
+        <button class="nav-btn" onclick="openProfileSettingsModal()" title="Account & Theme Settings">
+          <i class="fa-solid fa-user-gear"></i>
         </button>
 
         <!-- Dedicated Logout Icon -->
@@ -786,6 +895,85 @@
   </section>
 
   <!-- ==================== POPUP MODALS ==================== -->
+
+  <!-- Profile Hub Modal: Change Password, Change Username, Change Theme -->
+  <div id="profileSettingsModal" class="modal-overlay">
+    <div class="modal-window">
+      <button class="modal-close-btn" onclick="closeModal('profileSettingsModal')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 14px;">Profile & Appearance</h3>
+
+      <!-- Sub-navigation inside Profile Modal -->
+      <div class="flat-nav-bar" style="grid-template-columns: repeat(3, 1fr); margin-top: 8px;">
+        <div class="flat-nav-item active" onclick="switchProfileSubTab(event, 'profSubPass')">Password</div>
+        <div class="flat-nav-item" onclick="switchProfileSubTab(event, 'profSubUser')">Username</div>
+        <div class="flat-nav-item" onclick="switchProfileSubTab(event, 'profSubTheme')">Theme</div>
+      </div>
+
+      <!-- Option 1: Change Password -->
+      <div id="profSubPass" class="tab-content active">
+        <div class="form-group">
+          <label>Current Password (Old Password)</label>
+          <input type="password" id="oldPassInput" class="form-control" placeholder="Enter current password">
+        </div>
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" id="newPassInput" class="form-control" placeholder="Mix of letters, numbers & symbols">
+        </div>
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <input type="password" id="confirmNewPassInput" class="form-control" placeholder="Repeat new password">
+        </div>
+        <button class="btn-primary" onclick="submitChangePassword()">Update Password</button>
+      </div>
+
+      <!-- Option 2: Change Username -->
+      <div id="profSubUser" class="tab-content">
+        <div class="form-group">
+          <label>Current Username</label>
+          <input type="text" id="currentUsernameDisplay" class="form-control" readonly style="opacity: 0.65;">
+        </div>
+        <div class="form-group">
+          <label>New Username</label>
+          <input type="text" id="newUsernameInput" class="form-control" placeholder="Enter new username">
+        </div>
+        <div class="form-group">
+          <label>Confirm with Current Password</label>
+          <input type="password" id="usernameVerifyPass" class="form-control" placeholder="Enter password to confirm">
+        </div>
+        <button class="btn-primary" onclick="submitChangeUsername()">Update Username</button>
+      </div>
+
+      <!-- Option 3: Change Theme -->
+      <div id="profSubTheme" class="tab-content">
+        <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 10px;">Select your preferred visual theme:</p>
+        <div class="theme-grid">
+          <div class="theme-card" id="themeCardDark" onclick="applyAppTheme('dark')">
+            <div>
+              <strong>Midnight Slate (Default)</strong>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Deep dark glassmorphic interface</div>
+            </div>
+            <i class="fa-solid fa-moon" style="color: #818cf8; font-size: 1.2rem;"></i>
+          </div>
+
+          <div class="theme-card" id="themeCardOcean" onclick="applyAppTheme('ocean')">
+            <div>
+              <strong>Oceanic Royal</strong>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Rich sapphire & cyan glass tones</div>
+            </div>
+            <i class="fa-solid fa-water" style="color: #38bdf8; font-size: 1.2rem;"></i>
+          </div>
+
+          <div class="theme-card" id="themeCardLight" onclick="applyAppTheme('light')">
+            <div>
+              <strong>Daylight Frost</strong>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Clean, high-contrast light mode</div>
+            </div>
+            <i class="fa-solid fa-sun" style="color: #f59e0b; font-size: 1.2rem;"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Add Property Modal -->
   <div id="addPropertyModal" class="modal-overlay">
@@ -902,35 +1090,14 @@
     </div>
   </div>
 
-  <!-- Change Password Modal -->
-  <div id="changePasswordModal" class="modal-overlay">
-    <div class="modal-window">
-      <button class="modal-close-btn" onclick="closeModal('changePasswordModal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 20px;">Change Password</h3>
-      <div class="form-group">
-        <label>Current Password (Old Password)</label>
-        <input type="password" id="oldPassInput" class="form-control" placeholder="Enter existing password">
-      </div>
-      <div class="form-group">
-        <label>New Password</label>
-        <input type="password" id="newPassInput" class="form-control" placeholder="Alphabets, numbers & symbols allowed">
-      </div>
-      <div class="form-group">
-        <label>Confirm New Password</label>
-        <input type="password" id="confirmNewPassInput" class="form-control" placeholder="Repeat new password">
-      </div>
-      <button class="btn-primary" onclick="submitChangePassword()">Update</button>
-    </div>
-  </div>
-
   <!-- Detailed 4-Tab Flat Popup Modal -->
   <div id="flatDetailsModal" class="modal-overlay">
     <div class="modal-window modal-flat-details">
       <button class="modal-close-btn" onclick="closeModal('flatDetailsModal')"><i class="fa-solid fa-xmark"></i></button>
 
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h2 id="modalHeaderTitle">Flat Space</h2>
-        <span id="modalFlatTag" style="background:#4f46e5; padding:4px 12px; border-radius:20px; font-weight:700;">--</span>
+      <div style="display:flex; justify-content:space-between; align-items:center; padding-right: 36px;">
+        <h3 id="modalHeaderTitle">Flat Space</h3>
+        <span id="modalFlatTag" style="background:var(--primary); color:#fff; padding:4px 12px; border-radius:20px; font-size:0.82rem; font-weight:700;">--</span>
       </div>
 
       <!-- Navigation Bar -->
@@ -943,15 +1110,15 @@
 
       <!-- TAB 1: CALCULATION -->
       <div id="tabCalc" class="tab-content active">
-        <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
-          <h4 style="color:#a5b4fc;">Monthly Bill Calculator</h4>
-          <input type="month" id="calcMonthPicker" class="form-control" style="width:160px; padding:6px 10px;">
+        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px;">
+          <h4 style="color:#818cf8;">Monthly Bill Calculator</h4>
+          <input type="month" id="calcMonthPicker" class="form-control" style="width:165px; padding:6px 10px;">
         </div>
 
         <div class="calc-row-metric">
           <label>Base Rent (₹):</label>
           <input type="number" id="calcRent" class="form-control" oninput="runBillMath()">
-          <span>Fixed</span>
+          <span style="font-size:0.8rem; color:var(--text-muted);">Monthly</span>
           <span class="calc-auto-badge" id="calcRentBadge">₹ 0</span>
         </div>
 
@@ -978,7 +1145,7 @@
 
         <!-- Additional Charges -->
         <div class="calc-row-metric">
-          <input type="text" id="calcAddName" class="form-control" placeholder="Additional charge name">
+          <input type="text" id="calcAddName" class="form-control" placeholder="Custom Charge">
           <select id="calcAddToggle" class="form-control" onchange="runBillMath()">
             <option value="+">(+) Add</option>
             <option value="-">(-) Discount</option>
@@ -987,14 +1154,26 @@
           <span class="calc-auto-badge" id="calcAddSummary">₹ 0</span>
         </div>
 
-        <div style="display:flex; justify-content:space-between; margin: 16px 0; padding:12px; background:rgba(0,0,0,0.4); border-radius:12px;">
+        <!-- Paid Amount Input for Live Profit/Loss Accuracy -->
+        <div class="calc-row-metric">
+          <label>Amount Paid Now (₹):</label>
+          <input type="number" id="calcPaidNow" class="form-control" placeholder="0" oninput="runBillMath()">
+          <select id="calcPayMode" class="form-control">
+            <option value="UPI">UPI</option>
+            <option value="Cash">Cash</option>
+            <option value="Bank">Bank</option>
+          </select>
+          <span class="calc-auto-badge" id="calcDueBadge" style="color:var(--accent-red);">Due: ₹ 0</span>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin: 14px 0; padding:12px; background:rgba(0,0,0,0.25); border-radius:12px;">
           <span>Grand Total Billed:</span>
-          <strong id="calcGrandTotal" style="font-size:1.2rem; color:#38bdf8;">₹ 0</strong>
+          <strong id="calcGrandTotal" style="font-size:1.15rem; color:#38bdf8;">₹ 0</strong>
         </div>
 
         <div class="form-group">
           <label>Important Notes:</label>
-          <textarea id="calcNotes" class="form-control" rows="2" placeholder="Write any additional meter reading or transaction notes..."></textarea>
+          <textarea id="calcNotes" class="form-control" rows="2" placeholder="Write additional points..."></textarea>
         </div>
 
         <button class="btn-primary" onclick="submitBillCalculation()">Calculate Bill</button>
@@ -1002,9 +1181,9 @@
 
       <!-- TAB 2: HISTORY (Billed Ledger) -->
       <div id="tabHistory" class="tab-content">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px;">
           <h4><i class="fa-solid fa-receipt"></i> Billed History Ledger</h4>
-          <input type="text" class="form-control" style="width:250px;" placeholder="Search tenant, month, status..." oninput="filterLedgerTable(this.value)">
+          <input type="text" class="form-control" style="max-width:240px;" placeholder="Search tenant, month, status..." oninput="filterLedgerTable(this.value)">
         </div>
         <div class="ledger-table-wrap">
           <table class="ledger-table">
@@ -1060,9 +1239,9 @@
             <div class="image-frame-container">
               <img id="profilePicturePreview" src="https://via.placeholder.com/150?text=Profile+Pic" alt="Profile">
             </div>
-            <label style="font-size:0.75rem; color:var(--text-muted); margin-top:14px;">Identity Document (Aadhaar Card)</label>
+            <label style="font-size:0.75rem; color:var(--text-muted); margin-top:14px;">Uploaded ID Card Photo</label>
             <div class="image-frame-container">
-              <img id="aadhaarPicturePreview" src="https://via.placeholder.com/300x150?text=Aadhaar+Card" alt="ID Document">
+              <img id="identityPicturePreview" src="https://via.placeholder.com/300x150?text=ID+Document" alt="ID Document">
             </div>
           </div>
 
@@ -1074,10 +1253,10 @@
               <input type="file" id="fileProfilePic" class="form-control" accept="image/*" onchange="previewImageFile(this, 'profilePicturePreview')">
             </div>
             <div class="form-group"><label>Renter Name</label><input type="text" id="renterName" class="form-control"></div>
-            <div class="form-group"><label>Aadhaar Number (12-Digit)</label><input type="text" id="renterAadhaar" class="form-control" maxlength="12" placeholder="[Aadhaar Redacted]"></div>
+            <div class="form-group"><label>Identity Document Number</label><input type="text" id="renterIdentityNum" class="form-control" maxlength="12" placeholder="[ID Redacted]"></div>
             <div class="form-group">
-              <label>Aadhaar Card Upload</label>
-              <input type="file" id="fileAadhaarPic" class="form-control" accept="image/*" onchange="previewImageFile(this, 'aadhaarPicturePreview')">
+              <label>ID Card Image Upload</label>
+              <input type="file" id="fileIdentityPic" class="form-control" accept="image/*" onchange="previewImageFile(this, 'identityPicturePreview')">
             </div>
             <div class="form-group"><label>Mobile Number</label><input type="text" id="renterMobile" class="form-control"></div>
             <div class="form-group"><label>Alternative Mobile Number</label><input type="text" id="renterAltMobile" class="form-control"></div>
@@ -1099,14 +1278,14 @@
 
       <!-- TAB 4: RENTER HISTORY -->
       <div id="tabRenterHistory" class="tab-content">
-        <div class="stat-pill" style="display:flex; align-items:center; gap:16px; text-align:left; margin-bottom:16px;">
-          <div class="renter-avatar" style="width:54px; height:54px;">
+        <div class="stat-pill" style="display:flex; flex-wrap:wrap; align-items:center; gap:14px; text-align:left; margin-bottom:14px;">
+          <div class="renter-avatar" style="width:50px; height:50px;">
             <img id="rhAvatar" src="https://via.placeholder.com/150" alt="Avatar">
           </div>
-          <div>
+          <div style="flex:1;">
             <h3 id="rhName">Tenant Name</h3>
             <span id="rhStatusBadge" class="badge-paid">Active</span>
-            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">
+            <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">
               <span id="rhContact">Contact: --</span> | <span id="rhStay">Duration: --</span>
             </div>
           </div>
@@ -1120,9 +1299,9 @@
           <div class="stat-pill"><span>BALANCE STATUS</span><strong id="rhBalance" style="color:var(--accent-red);">Due: ₹ 0</strong></div>
         </div>
 
-        <details style="margin-top:20px; background:rgba(0,0,0,0.3); border-radius:8px; padding:12px;">
-          <summary style="cursor:pointer; font-weight:700; color:#93c5fd;">&gt; Show Stay-Specific Invoices</summary>
-          <div id="rhInvoiceList" style="margin-top:12px; font-size:0.85rem;">
+        <details style="margin-top:16px; background:rgba(0,0,0,0.22); border-radius:8px; padding:12px;">
+          <summary style="cursor:pointer; font-weight:700; color:#818cf8;">&gt; Show Stay-Specific Invoices</summary>
+          <div id="rhInvoiceList" style="margin-top:12px; font-size:0.82rem;">
             <!-- Generated rows -->
           </div>
         </details>
@@ -1158,12 +1337,13 @@
 
     /**
      * ============================================================================
-     * PERSISTENT SESSION & REFRESH HANDLER
-     * Checks if user is already logged in when browser refreshes (F5 / Chrome reload).
-     * Never stores passwords—only the active session username flag.
+     * INITIALIZATION: THEME & PERSISTENT LOGIN ACROSS BROWSER REFRESHES
      * ============================================================================
      */
     document.addEventListener("DOMContentLoaded", () => {
+      const savedTheme = localStorage.getItem("app_visual_theme") || "dark";
+      applyAppTheme(savedTheme);
+
       const savedSessionUser = localStorage.getItem("active_session_user");
       const savedSelectedProp = localStorage.getItem("active_selected_property");
 
@@ -1180,13 +1360,14 @@
     function unlockDashboardScreen() {
       document.getElementById("loginScreen").classList.remove("active");
       document.getElementById("dashboardScreen").classList.add("active");
-      syncDataLive(false);
+      syncDataLive();
 
       if (syncTimer) clearInterval(syncTimer);
-      syncTimer = setInterval(() => syncDataLive(false), 30000);
+      // Continuous background sync every 20 seconds
+      syncTimer = setInterval(() => syncDataLive(), 20000);
     }
 
-    // 1. Live Sub-2s Credential Verification (Never caches password)
+    // 1. Live Sub-2s Credential Verification
     async function handleLoginSubmit(e) {
       e.preventDefault();
       const user = document.getElementById("loginUsername").value.trim();
@@ -1206,9 +1387,7 @@
 
         if (res.status === "success") {
           activeUser = res.username;
-          // Persist ONLY username session flag so browser refresh does not log out
           localStorage.setItem("active_session_user", activeUser);
-          // Immediately wipe password from DOM memory
           document.getElementById("loginPassword").value = "";
           unlockDashboardScreen();
         } else {
@@ -1222,18 +1401,8 @@
       }
     }
 
-    // 2. Continuous Live Data Pull from Google Sheet (With Visual Toast on Manual Reload)
-    async function syncDataLive(isManual = false) {
-      const toast = document.getElementById("syncToast");
-      const toastText = document.getElementById("syncToastText");
-      const reloadIcon = document.querySelector("#reloadBtn i");
-
-      if (isManual) {
-        if (reloadIcon) reloadIcon.classList.add("fa-spin");
-        toastText.innerText = "Refreshing data from Google Sheet...";
-        toast.style.display = "flex";
-      }
-
+    // 2. Continuous Live Data Pull & Real-Time Profit/Loss Calculation
+    async function syncDataLive() {
       try {
         const gasUrl = getGasUrl();
         const response = await fetch(`${gasUrl}?action=getInitialData&t=${Date.now()}`, {
@@ -1248,7 +1417,9 @@
           DB.renters = res.renters || [];
           DB.bills = res.bills || [];
 
+          updateGlobalProfitAndLoss();
           renderPropertiesRow();
+
           if (DB.properties.length > 0) {
             const propExists = DB.properties.some(p => p.PropertyName === selectedProperty);
             if (!selectedProperty || !propExists) {
@@ -1259,21 +1430,28 @@
           } else {
             document.getElementById("flatsList").innerHTML = "";
           }
-
-          if (isManual) {
-            toastText.innerText = "Data updated from Google Sheet!";
-            setTimeout(() => { toast.style.display = "none"; }, 2000);
-          }
         }
       } catch (err) {
-        console.error("Continuous Sync Error:", err);
-        if (isManual) {
-          toastText.innerText = "Sync error. Check connection.";
-          setTimeout(() => { toast.style.display = "none"; }, 2500);
-        }
-      } finally {
-        if (reloadIcon) reloadIcon.classList.remove("fa-spin");
+        console.error("Background Sync Error:", err);
       }
+    }
+
+    // Calculate Total Profits (Paid Revenue) and Losses (Unpaid/Pending Dues)
+    function updateGlobalProfitAndLoss() {
+      let totalProfit = 0;
+      let totalBilledAll = 0;
+
+      DB.bills.forEach(bill => {
+        const billed = parseFloat(bill.TotalBilled) || 0;
+        const paid = parseFloat(bill.PaidAmount) || 0;
+        totalBilledAll += billed;
+        totalProfit += paid;
+      });
+
+      const totalLoss = Math.max(0, totalBilledAll - totalProfit);
+
+      document.getElementById("topTotalProfit").innerText = `₹${totalProfit.toLocaleString('en-IN')}`;
+      document.getElementById("topTotalLoss").innerText = `₹${totalLoss.toLocaleString('en-IN')}`;
     }
 
     // 3. Render Properties
@@ -1324,7 +1502,7 @@
           <div>
             <div class="flat-top-row">
               <div class="flat-name">Flat ${flat.FlatName}</div>
-              <span class="rent-status status-paid">₹${flat.RentAmount || renter?.RentAmount || 0} / mo</span>
+              <span class="rent-status">₹${flat.RentAmount || renter?.RentAmount || 0} / mo</span>
             </div>
             <div class="renter-identity">
               <div class="renter-avatar">
@@ -1334,9 +1512,9 @@
             </div>
           </div>
           <div class="flat-bottom-row">
-            <span style="font-size:0.8rem; color:var(--text-muted);"><i class="fa-solid fa-bolt"></i> Elec: ₹${flat.ElecRate || 9}/U</span>
-            <span style="font-size:0.8rem; color:var(--text-muted);"><i class="fa-solid fa-fire"></i> PNG: ₹${flat.PNGRate || 45}</span>
-            <span style="font-size:0.8rem; color:var(--text-muted);"><i class="fa-solid fa-faucet-drip"></i> Water: ₹${flat.WaterRate || 15}</span>
+            <span><i class="fa-solid fa-bolt"></i> Elec: ₹${flat.ElecRate || 9}/U</span>
+            <span><i class="fa-solid fa-fire"></i> PNG: ₹${flat.PNGRate || 45}</span>
+            <span><i class="fa-solid fa-faucet-drip"></i> Water: ₹${flat.WaterRate || 15}</span>
           </div>
         `;
         container.appendChild(card);
@@ -1344,10 +1522,6 @@
     }
 
     // Global Search Filter
-    function focusSearch() {
-      document.getElementById("globalSearch").focus();
-    }
-
     function handleGlobalSearch(query) {
       const q = query.trim().toLowerCase();
       if (!q) {
@@ -1385,7 +1559,7 @@
           <div>
             <div class="flat-top-row">
               <div class="flat-name">${flat.PropertyName} - Flat ${flat.FlatName}</div>
-              <span class="rent-status status-paid">₹${flat.RentAmount || 0} / mo</span>
+              <span class="rent-status">₹${flat.RentAmount || 0} / mo</span>
             </div>
             <div class="renter-identity">
               <div class="renter-avatar">
@@ -1395,16 +1569,65 @@
             </div>
           </div>
           <div class="flat-bottom-row">
-            <span style="font-size:0.8rem; color:var(--text-muted);"><i class="fa-solid fa-bolt"></i> Elec: ₹${flat.ElecRate || 9}/U</span>
-            <span style="font-size:0.8rem; color:var(--text-muted);"><i class="fa-solid fa-fire"></i> PNG: ₹${flat.PNGRate || 45}</span>
-            <span style="font-size:0.8rem; color:var(--text-muted);"><i class="fa-solid fa-faucet-drip"></i> Water: ₹${flat.WaterRate || 15}</span>
+            <span><i class="fa-solid fa-bolt"></i> Elec: ₹${flat.ElecRate || 9}/U</span>
+            <span><i class="fa-solid fa-fire"></i> PNG: ₹${flat.PNGRate || 45}</span>
+            <span><i class="fa-solid fa-faucet-drip"></i> Water: ₹${flat.WaterRate || 15}</span>
           </div>
         `;
         container.appendChild(card);
       });
     }
 
-    // 5. Flat Details Navigation & Tabs
+    // 5. Profile Hub Modal (Password, Username, Theme)
+    function openProfileSettingsModal() {
+      document.getElementById("currentUsernameDisplay").value = activeUser || "admin";
+      openModal("profileSettingsModal");
+    }
+
+    function switchProfileSubTab(evt, subTabId) {
+      const parent = document.getElementById("profileSettingsModal");
+      parent.querySelectorAll(".flat-nav-item").forEach(el => el.classList.remove("active"));
+      parent.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+      evt.currentTarget.classList.add("active");
+      document.getElementById(subTabId).classList.add("active");
+    }
+
+    function applyAppTheme(themeName) {
+      document.body.classList.remove("theme-ocean", "theme-light");
+      if (themeName === "ocean") document.body.classList.add("theme-ocean");
+      if (themeName === "light") document.body.classList.add("theme-light");
+      localStorage.setItem("app_visual_theme", themeName);
+
+      document.getElementById("themeCardDark")?.classList.toggle("active", themeName === "dark");
+      document.getElementById("themeCardOcean")?.classList.toggle("active", themeName === "ocean");
+      document.getElementById("themeCardLight")?.classList.toggle("active", themeName === "light");
+    }
+
+    async function submitChangeUsername() {
+      const newU = document.getElementById("newUsernameInput").value.trim();
+      const pass = document.getElementById("usernameVerifyPass").value;
+      if (!newU || !pass) return alert("Please enter both your new username and current password.");
+
+      const res = await sendGasPost({
+        action: "changeUsername",
+        currentUsername: activeUser,
+        newUsername: newU,
+        password: pass
+      });
+
+      if (res.status === "success") {
+        activeUser = res.newUsername;
+        localStorage.setItem("active_session_user", activeUser);
+        document.getElementById("currentUsernameDisplay").value = activeUser;
+        document.getElementById("newUsernameInput").value = "";
+        document.getElementById("usernameVerifyPass").value = "";
+        alert("Username updated in Google Sheet!");
+      } else {
+        alert(res.message);
+      }
+    }
+
+    // 6. Flat Details Navigation & Tabs
     function openFlatDetailsModal(flat, renter) {
       selectedFlat = flat;
       document.getElementById("modalHeaderTitle").innerText = `${flat.PropertyName} - Space Details`;
@@ -1412,6 +1635,7 @@
 
       document.getElementById("calcRent").value = flat.RentAmount || 0;
       document.getElementById("calcRentBadge").innerText = `₹ ${flat.RentAmount || 0}`;
+      document.getElementById("calcPaidNow").value = 0;
 
       document.getElementById("profRent").value = flat.RentAmount || 0;
       document.getElementById("profFlatNumber").value = flat.FlatName;
@@ -1429,7 +1653,7 @@
         document.getElementById("profContractMobile").value = renter.ContractMobile || "";
 
         document.getElementById("renterName").value = renter.RenterName || "";
-        document.getElementById("renterAadhaar").value = renter.AadhaarNumber || "";
+        document.getElementById("renterIdentityNum").value = renter.IdentityDocNumber || "";
         document.getElementById("renterMobile").value = renter.MobileNumber || "";
         document.getElementById("renterAltMobile").value = renter.AltMobileNumber || "";
         document.getElementById("renterAddress").value = renter.Address || "";
@@ -1438,27 +1662,26 @@
         document.getElementById("renterJoinDate").value = renter.JoinDate || "";
         document.getElementById("renterEndDate").value = renter.EndDate || "";
         if (renter.ProfileImageURL) document.getElementById("profilePicturePreview").src = renter.ProfileImageURL;
-        if (renter.AadhaarImageURL) document.getElementById("aadhaarPicturePreview").src = renter.AadhaarImageURL;
+        if (renter.IdentityImageURL) document.getElementById("identityPicturePreview").src = renter.IdentityImageURL;
       } else {
         clearRenterRightForm();
       }
 
+      runBillMath();
       populateHistoryLedger(flat.PropertyName, flat.FlatName);
       populateRenterHistory(flat.PropertyName, flat.FlatName, renter);
 
-      document.querySelectorAll(".flat-nav-item").forEach((el, idx) => {
-        el.classList.toggle("active", idx === 0);
-      });
-      document.querySelectorAll(".tab-content").forEach((el, idx) => {
-        el.classList.toggle("active", idx === 0);
-      });
+      const modal = document.getElementById("flatDetailsModal");
+      modal.querySelectorAll(".flat-nav-item").forEach((el, idx) => el.classList.toggle("active", idx === 0));
+      modal.querySelectorAll(".tab-content").forEach((el, idx) => el.classList.toggle("active", idx === 0));
 
       openModal('flatDetailsModal');
     }
 
     function switchFlatTab(evt, tabId) {
-      document.querySelectorAll(".flat-nav-item").forEach(item => item.classList.remove("active"));
-      document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
+      const modal = document.getElementById("flatDetailsModal");
+      modal.querySelectorAll(".flat-nav-item").forEach(item => item.classList.remove("active"));
+      modal.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
       evt.currentTarget.classList.add("active");
       document.getElementById(tabId).classList.add("active");
     }
@@ -1494,8 +1717,13 @@
       const addCalculated = addToggle === "+" ? addAmt : -addAmt;
       document.getElementById("calcAddSummary").innerText = `₹ ${addCalculated}`;
 
-      const grand = rent + elecTotal + pngTotal + waterTotal + addCalculated;
+      const grand = Math.max(0, rent + elecTotal + pngTotal + waterTotal + addCalculated);
       document.getElementById("calcGrandTotal").innerText = `₹ ${grand.toFixed(2)}`;
+
+      const paidNow = parseFloat(document.getElementById("calcPaidNow").value) || 0;
+      const dueRem = Math.max(0, grand - paidNow);
+      document.getElementById("calcDueBadge").innerText = dueRem > 0 ? `Due: ₹ ${dueRem.toFixed(0)}` : `Fully Paid`;
+      document.getElementById("calcDueBadge").style.color = dueRem > 0 ? "var(--accent-red)" : "var(--accent-green)";
     }
 
     async function submitBillCalculation() {
@@ -1513,6 +1741,13 @@
       const waterCurr = parseFloat(document.getElementById("calcWaterCurr").value) || 0;
       const waterRate = parseFloat(document.getElementById("profWaterRate").value) || 15;
       const waterUnits = Math.max(0, waterCurr - waterPrev);
+
+      const totalBilled = parseFloat(document.getElementById("calcGrandTotal").innerText.replace("₹ ","")) || 0;
+      const paidAmount = parseFloat(document.getElementById("calcPaidNow").value) || 0;
+
+      let billStatus = "Unpaid";
+      if (paidAmount >= totalBilled && totalBilled > 0) billStatus = "Fully Paid";
+      else if (paidAmount > 0 && paidAmount < totalBilled) billStatus = "Partial Paid";
 
       const payload = {
         action: "recordBill",
@@ -1536,15 +1771,16 @@
         waterUnits: waterUnits,
         waterRate: waterRate,
         waterTotal: waterUnits * waterRate,
-        totalBilled: parseFloat(document.getElementById("calcGrandTotal").innerText.replace("₹ ","")) || 0,
-        paidAmount: 0,
-        status: "Unpaid",
+        totalBilled: totalBilled,
+        paidAmount: paidAmount,
+        paymentMode: document.getElementById("calcPayMode").value,
+        status: billStatus,
         notes: document.getElementById("calcNotes").value
       };
 
       await sendGasPost(payload);
-      alert("Bill calculated and logged to Google Sheet!");
-      syncDataLive(false);
+      alert("Bill calculated and logged to Google Sheet! P&L updated.");
+      syncDataLive();
     }
 
     // Ledger Table Population
@@ -1607,7 +1843,7 @@
       }
     }
 
-    // 6. Profile Form Logic & Smart Append/Update
+    // 7. Profile Form Logic & Smart Append/Update
     async function saveUtilitiesLeft() {
       const payload = {
         action: "updateFlatUtilities",
@@ -1628,7 +1864,7 @@
       };
       await sendGasPost(payload);
       alert("Utility configuration updated successfully!");
-      syncDataLive(false);
+      syncDataLive();
     }
 
     async function submitRenterProfileRight() {
@@ -1638,7 +1874,7 @@
         propertyName: selectedFlat.PropertyName,
         flatName: selectedFlat.FlatName,
         renterName: document.getElementById("renterName").value,
-        aadhaarNumber: document.getElementById("renterAadhaar").value,
+        identityDocNumber: document.getElementById("renterIdentityNum").value,
         mobileNumber: document.getElementById("renterMobile").value,
         altMobileNumber: document.getElementById("renterAltMobile").value,
         address: document.getElementById("renterAddress").value,
@@ -1647,7 +1883,7 @@
         joinDate: document.getElementById("renterJoinDate").value,
         endDate: document.getElementById("renterEndDate").value,
         profileImageUrl: document.getElementById("profilePicturePreview").src,
-        aadhaarImageUrl: document.getElementById("aadhaarPicturePreview").src,
+        identityImageUrl: document.getElementById("identityPicturePreview").src,
         rentAmount: document.getElementById("profRent").value
       };
 
@@ -1658,12 +1894,12 @@
       } else {
         alert("Renter record successfully saved!");
       }
-      syncDataLive(false);
+      syncDataLive();
     }
 
     function clearRenterRightForm() {
       document.getElementById("renterName").value = "";
-      document.getElementById("renterAadhaar").value = "";
+      document.getElementById("renterIdentityNum").value = "";
       document.getElementById("renterMobile").value = "";
       document.getElementById("renterAltMobile").value = "";
       document.getElementById("renterAddress").value = "";
@@ -1672,10 +1908,10 @@
       document.getElementById("renterJoinDate").value = "";
       document.getElementById("renterEndDate").value = "";
       document.getElementById("profilePicturePreview").src = "https://via.placeholder.com/150";
-      document.getElementById("aadhaarPicturePreview").src = "https://via.placeholder.com/300x150";
+      document.getElementById("identityPicturePreview").src = "https://via.placeholder.com/300x150";
     }
 
-    // 7. Modals & Actions
+    // 8. Modals & Actions
     function toggleActionMenu() {
       document.getElementById("actionMenu").classList.toggle("show");
     }
@@ -1693,7 +1929,6 @@
       document.getElementById(id).classList.remove("active");
     }
 
-    // Property Dropdowns Synchronization
     function syncPropertyDropdowns() {
       const editSelect = document.getElementById("editPropDropdown");
       const delSelect = document.getElementById("deletePropDropdown");
@@ -1720,7 +1955,6 @@
       flatSelect.innerHTML = filtered.map(f => `<option value="${f.FlatName}">${f.FlatName}</option>`).join("");
     }
 
-    // Add Property with Duplicate Check
     async function submitAddProperty() {
       const name = document.getElementById("newPropName").value.trim();
       if (!name) return alert("Property Name is mandatory!");
@@ -1741,11 +1975,10 @@
         alert(res.message);
       } else {
         closeModal("addPropertyModal");
-        syncDataLive(false);
+        syncDataLive();
       }
     }
 
-    // Edit Property with Duplicate Check
     async function submitEditProperty() {
       const oldName = document.getElementById("editPropCurrentName").value;
       const newName = document.getElementById("editPropNewName").value.trim();
@@ -1768,11 +2001,10 @@
           localStorage.setItem("active_selected_property", newName);
         }
         closeModal("editPropertyModal");
-        syncDataLive(false);
+        syncDataLive();
       }
     }
 
-    // Double Confirmation Property Delete
     function triggerDeletePropertyCheck() {
       const p = document.getElementById("deletePropDropdown").value;
       const conf = confirm("Are you sure you want to confirm delete this property? Yes or No?");
@@ -1783,12 +2015,11 @@
             localStorage.removeItem("active_selected_property");
           }
           closeModal("deletePropertyModal");
-          syncDataLive(false);
+          syncDataLive();
         });
       }
     }
 
-    // Add Flat
     async function submitAddFlat() {
       const p = document.getElementById("addFlatPropDropdown").value;
       const flat = document.getElementById("addFlatNumber").value.trim();
@@ -1809,11 +2040,10 @@
         alert(res.message);
       } else {
         closeModal("addFlatModal");
-        syncDataLive(false);
+        syncDataLive();
       }
     }
 
-    // Double Confirmation Flat Delete
     function triggerDeleteFlatCheck() {
       const p = document.getElementById("deleteFlatPropDropdown").value;
       const f = document.getElementById("deleteFlatTargetDropdown").value;
@@ -1821,12 +2051,11 @@
       if (conf) {
         sendGasPost({ action: "deleteFlat", propertyName: p, flatName: f }).then(() => {
           closeModal("deleteFlatModal");
-          syncDataLive(false);
+          syncDataLive();
         });
       }
     }
 
-    // Change Password Workflow
     async function submitChangePassword() {
       const oldP = document.getElementById("oldPassInput").value;
       const newP = document.getElementById("newPassInput").value;
@@ -1850,7 +2079,6 @@
       }
     }
 
-    // Explicit Session Wipe Logout (Only runs when Logout button is clicked or password changes)
     function handleLogout() {
       activeUser = null;
       selectedProperty = null;
@@ -1864,7 +2092,6 @@
       document.querySelectorAll(".modal-overlay").forEach(m => m.classList.remove("active"));
     }
 
-    // Image Upload Preview Helper
     function previewImageFile(input, targetImgId) {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -1875,7 +2102,6 @@
       }
     }
 
-    // Network Request Wrapper
     async function sendGasPost(data) {
       const url = getGasUrl();
       const response = await fetch(url, {
