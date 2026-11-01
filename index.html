@@ -78,7 +78,7 @@
 
     .login-container {
       width: 100%;
-      max-width: 440px;
+      max-width: 420px;
       padding: 44px 36px;
       text-align: center;
     }
@@ -149,19 +149,6 @@
     .btn-primary:hover {
       background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
       transform: translateY(-1px);
-    }
-
-    /* URL Config Bar */
-    .appscript-bar {
-      margin-top: 24px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      font-size: 0.8rem;
-    }
-    .appscript-bar input {
-      font-size: 0.75rem;
-      padding: 8px 10px;
-      margin-top: 6px;
     }
 
     /* Main Dashboard Layout */
@@ -662,6 +649,24 @@
       color: #fff;
     }
 
+    /* Toast Notification for Refresh */
+    #syncToast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(16, 185, 129, 0.95);
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      display: none;
+      z-index: 2000;
+      align-items: center;
+      gap: 8px;
+    }
+
     @media (max-width: 820px) {
       .profile-matrix {
         grid-template-columns: 1fr;
@@ -679,7 +684,13 @@
 
   <div class="bg-canvas"></div>
 
-  <!-- SCREEN 1: LOGIN SCREEN -->
+  <!-- Sync Notification Toast -->
+  <div id="syncToast">
+    <i class="fa-solid fa-arrows-rotate fa-spin"></i>
+    <span id="syncToastText">Refreshing data from Google Sheet...</span>
+  </div>
+
+  <!-- SCREEN 1: LOGIN SCREEN (Apps Script URL Completely Hidden from UI) -->
   <section id="loginScreen" class="screen active">
     <div class="glass-card login-container">
       <div class="login-brand">
@@ -702,11 +713,6 @@
           <i class="fa-solid fa-arrow-right-to-bracket"></i>
         </button>
       </form>
-
-      <div class="appscript-bar">
-        <label style="color: var(--text-muted);">Apps Script Web App URL (Configured Inside HTML)</label>
-        <input type="text" id="gasUrlInput" class="form-control" placeholder="https://script.google.com/macros/s/.../exec">
-      </div>
     </div>
   </section>
 
@@ -725,8 +731,8 @@
       </div>
 
       <div class="nav-right">
-        <!-- Reload Icon -->
-        <button class="nav-btn" onclick="syncDataLive(true)" title="Reload without logout">
+        <!-- Reload Icon (Refreshes Google Sheet Data without logging out) -->
+        <button class="nav-btn" id="reloadBtn" onclick="syncDataLive(true)" title="Refresh Data">
           <i class="fa-solid fa-rotate"></i>
         </button>
 
@@ -760,7 +766,7 @@
         </button>
 
         <!-- Dedicated Logout Icon -->
-        <button class="nav-btn" onclick="handleLogout()" title="Instant Session Wipe">
+        <button class="nav-btn" onclick="handleLogout()" title="Logout">
           <i class="fa-solid fa-arrow-right-from-bracket"></i>
         </button>
       </div>
@@ -929,10 +935,10 @@
 
       <!-- Navigation Bar -->
       <nav class="flat-nav-bar">
-        <div class="flat-nav-item active" onclick="switchFlatTab('tabCalc')">1. Calculation</div>
-        <div class="flat-nav-item" onclick="switchFlatTab('tabHistory')">2. History</div>
-        <div class="flat-nav-item" onclick="switchFlatTab('tabProfile')">3. Profile</div>
-        <div class="flat-nav-item" onclick="switchFlatTab('tabRenterHistory')">4. Renter History</div>
+        <div class="flat-nav-item active" onclick="switchFlatTab(event, 'tabCalc')">1. Calculation</div>
+        <div class="flat-nav-item" onclick="switchFlatTab(event, 'tabHistory')">2. History</div>
+        <div class="flat-nav-item" onclick="switchFlatTab(event, 'tabProfile')">3. Profile</div>
+        <div class="flat-nav-item" onclick="switchFlatTab(event, 'tabRenterHistory')">4. Renter History</div>
       </nav>
 
       <!-- TAB 1: CALCULATION -->
@@ -1068,7 +1074,7 @@
               <input type="file" id="fileProfilePic" class="form-control" accept="image/*" onchange="previewImageFile(this, 'profilePicturePreview')">
             </div>
             <div class="form-group"><label>Renter Name</label><input type="text" id="renterName" class="form-control"></div>
-            <div class="form-group"><label>Aadhaar Number (12-Digit)</label><input type="text" id="renterAadhaar" class="form-control" maxlength="12" placeholder="XXXX XXXX XXXX"></div>
+            <div class="form-group"><label>Aadhaar Number (12-Digit)</label><input type="text" id="renterAadhaar" class="form-control" maxlength="12" placeholder="[Aadhaar Redacted]"></div>
             <div class="form-group">
               <label>Aadhaar Card Upload</label>
               <input type="file" id="fileAadhaarPic" class="form-control" accept="image/*" onchange="previewImageFile(this, 'aadhaarPicturePreview')">
@@ -1127,8 +1133,13 @@
 
   <script>
     /**
-     * App State & Live Sheets Sync Engine
+     * ============================================================================
+     * BACKEND CONFIGURATION (HIDDEN FROM UI)
+     * Paste your Google Apps Script Web App URL directly inside the quotes below:
+     * ============================================================================
      */
+    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzHSSs7xN9tlcZmwO1hpfdwwc8zdhvwRyP1294-RC-SFlj6QvfqtSyFrJH1c8VacYFZWQ/exec";
+
     let DB = {
       properties: [],
       flats: [],
@@ -1139,21 +1150,43 @@
     let activeUser = null;
     let selectedProperty = null;
     let selectedFlat = null;
-
-    // Load or seed default Apps Script URL inside HTML
-    const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbzHSSs7xN9tlcZmwO1hpfdwwc8zdhvwRyP1294-RC-SFlj6QvfqtSyFrJH1c8VacYFZWQ/exec";
-    document.addEventListener("DOMContentLoaded", () => {
-      const savedUrl = localStorage.getItem("gas_app_url") || DEFAULT_GAS_URL;
-      document.getElementById("gasUrlInput").value = savedUrl;
-    });
+    let syncTimer = null;
 
     function getGasUrl() {
-      const url = document.getElementById("gasUrlInput").value.trim();
-      localStorage.setItem("gas_app_url", url);
-      return url;
+      return GAS_WEB_APP_URL.trim();
     }
 
-    // 1. Live Sub-2s Credential Verification
+    /**
+     * ============================================================================
+     * PERSISTENT SESSION & REFRESH HANDLER
+     * Checks if user is already logged in when browser refreshes (F5 / Chrome reload).
+     * Never stores passwords—only the active session username flag.
+     * ============================================================================
+     */
+    document.addEventListener("DOMContentLoaded", () => {
+      const savedSessionUser = localStorage.getItem("active_session_user");
+      const savedSelectedProp = localStorage.getItem("active_selected_property");
+
+      if (savedSelectedProp) {
+        selectedProperty = savedSelectedProp;
+      }
+
+      if (savedSessionUser) {
+        activeUser = savedSessionUser;
+        unlockDashboardScreen();
+      }
+    });
+
+    function unlockDashboardScreen() {
+      document.getElementById("loginScreen").classList.remove("active");
+      document.getElementById("dashboardScreen").classList.add("active");
+      syncDataLive(false);
+
+      if (syncTimer) clearInterval(syncTimer);
+      syncTimer = setInterval(() => syncDataLive(false), 30000);
+    }
+
+    // 1. Live Sub-2s Credential Verification (Never caches password)
     async function handleLoginSubmit(e) {
       e.preventDefault();
       const user = document.getElementById("loginUsername").value.trim();
@@ -1165,20 +1198,19 @@
 
       try {
         const gasUrl = getGasUrl();
-        const response = await fetch(`${gasUrl}?action=login&username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}`, {
-          method: "GET"
+        const response = await fetch(`${gasUrl}?action=login&username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}&t=${Date.now()}`, {
+          method: "GET",
+          cache: "no-store"
         });
         const res = await response.json();
 
         if (res.status === "success") {
           activeUser = res.username;
-          document.getElementById("loginScreen").classList.remove("active");
-          document.getElementById("dashboardScreen").classList.add("active");
-          // Clear sensitive login inputs immediately (no memory caching)
+          // Persist ONLY username session flag so browser refresh does not log out
+          localStorage.setItem("active_session_user", activeUser);
+          // Immediately wipe password from DOM memory
           document.getElementById("loginPassword").value = "";
-          syncDataLive(false);
-          // Continuous live background sync loop (every 30 seconds)
-          setInterval(() => syncDataLive(false), 30000);
+          unlockDashboardScreen();
         } else {
           alert("Your Username or Password is wrong.");
         }
@@ -1190,12 +1222,26 @@
       }
     }
 
-    // 2. Continuous Live Data Pull from Google Sheet
+    // 2. Continuous Live Data Pull from Google Sheet (With Visual Toast on Manual Reload)
     async function syncDataLive(isManual = false) {
+      const toast = document.getElementById("syncToast");
+      const toastText = document.getElementById("syncToastText");
+      const reloadIcon = document.querySelector("#reloadBtn i");
+
+      if (isManual) {
+        if (reloadIcon) reloadIcon.classList.add("fa-spin");
+        toastText.innerText = "Refreshing data from Google Sheet...";
+        toast.style.display = "flex";
+      }
+
       try {
         const gasUrl = getGasUrl();
-        const response = await fetch(`${gasUrl}?action=getInitialData`);
+        const response = await fetch(`${gasUrl}?action=getInitialData&t=${Date.now()}`, {
+          method: "GET",
+          cache: "no-store"
+        });
         const res = await response.json();
+
         if (res.status === "success") {
           DB.properties = res.properties || [];
           DB.flats = res.flats || [];
@@ -1203,15 +1249,30 @@
           DB.bills = res.bills || [];
 
           renderPropertiesRow();
-          if (DB.properties.length > 0 && !selectedProperty) {
-            selectProperty(DB.properties[0].PropertyName);
-          } else if (selectedProperty) {
-            renderFlatsGrid(selectedProperty);
+          if (DB.properties.length > 0) {
+            const propExists = DB.properties.some(p => p.PropertyName === selectedProperty);
+            if (!selectedProperty || !propExists) {
+              selectProperty(DB.properties[0].PropertyName);
+            } else {
+              renderFlatsGrid(selectedProperty);
+            }
+          } else {
+            document.getElementById("flatsList").innerHTML = "";
           }
-          if (isManual) alert("Data successfully synchronized with Google Sheet.");
+
+          if (isManual) {
+            toastText.innerText = "Data updated from Google Sheet!";
+            setTimeout(() => { toast.style.display = "none"; }, 2000);
+          }
         }
       } catch (err) {
         console.error("Continuous Sync Error:", err);
+        if (isManual) {
+          toastText.innerText = "Sync error. Check connection.";
+          setTimeout(() => { toast.style.display = "none"; }, 2500);
+        }
+      } finally {
+        if (reloadIcon) reloadIcon.classList.remove("fa-spin");
       }
     }
 
@@ -1237,6 +1298,7 @@
 
     function selectProperty(name) {
       selectedProperty = name;
+      localStorage.setItem("active_selected_property", name);
       renderPropertiesRow();
       renderFlatsGrid(name);
     }
@@ -1248,7 +1310,6 @@
       const flats = DB.flats.filter(f => String(f.PropertyName).toLowerCase() === String(propertyName).toLowerCase());
 
       flats.forEach(flat => {
-        // Find active tenant info
         const renter = DB.renters.find(r => 
           String(r.PropertyName).toLowerCase() === String(propertyName).toLowerCase() &&
           String(r.FlatName).toLowerCase() === String(flat.FlatName).toLowerCase() &&
@@ -1282,17 +1343,76 @@
       });
     }
 
+    // Global Search Filter
+    function focusSearch() {
+      document.getElementById("globalSearch").focus();
+    }
+
+    function handleGlobalSearch(query) {
+      const q = query.trim().toLowerCase();
+      if (!q) {
+        if (selectedProperty) renderFlatsGrid(selectedProperty);
+        return;
+      }
+
+      const container = document.getElementById("flatsList");
+      container.innerHTML = "";
+
+      const matchingFlats = DB.flats.filter(flat => {
+        const renter = DB.renters.find(r =>
+          String(r.PropertyName).toLowerCase() === String(flat.PropertyName).toLowerCase() &&
+          String(r.FlatName).toLowerCase() === String(flat.FlatName).toLowerCase() &&
+          String(r.Status).toLowerCase() === "active"
+        );
+        return (
+          String(flat.PropertyName).toLowerCase().includes(q) ||
+          String(flat.FlatName).toLowerCase().includes(q) ||
+          (renter && String(renter.RenterName).toLowerCase().includes(q))
+        );
+      });
+
+      matchingFlats.forEach(flat => {
+        const renter = DB.renters.find(r =>
+          String(r.PropertyName).toLowerCase() === String(flat.PropertyName).toLowerCase() &&
+          String(r.FlatName).toLowerCase() === String(flat.FlatName).toLowerCase() &&
+          String(r.Status).toLowerCase() === "active"
+        );
+
+        const card = document.createElement("div");
+        card.className = "flat-card-merged";
+        card.onclick = () => openFlatDetailsModal(flat, renter);
+        card.innerHTML = `
+          <div>
+            <div class="flat-top-row">
+              <div class="flat-name">${flat.PropertyName} - Flat ${flat.FlatName}</div>
+              <span class="rent-status status-paid">₹${flat.RentAmount || 0} / mo</span>
+            </div>
+            <div class="renter-identity">
+              <div class="renter-avatar">
+                <img src="${renter?.ProfileImageURL || 'https://via.placeholder.com/80'}" alt="Avatar">
+              </div>
+              <div class="renter-name">${renter ? renter.RenterName : 'Vacant / Ready'}</div>
+            </div>
+          </div>
+          <div class="flat-bottom-row">
+            <span style="font-size:0.8rem; color:var(--text-muted);"><i class="fa-solid fa-bolt"></i> Elec: ₹${flat.ElecRate || 9}/U</span>
+            <span style="font-size:0.8rem; color:var(--text-muted);"><i class="fa-solid fa-fire"></i> PNG: ₹${flat.PNGRate || 45}</span>
+            <span style="font-size:0.8rem; color:var(--text-muted);"><i class="fa-solid fa-faucet-drip"></i> Water: ₹${flat.WaterRate || 15}</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
     // 5. Flat Details Navigation & Tabs
     function openFlatDetailsModal(flat, renter) {
       selectedFlat = flat;
       document.getElementById("modalHeaderTitle").innerText = `${flat.PropertyName} - Space Details`;
       document.getElementById("modalFlatTag").innerText = `Flat ${flat.FlatName}`;
 
-      // Populate Calculator Defaults
       document.getElementById("calcRent").value = flat.RentAmount || 0;
       document.getElementById("calcRentBadge").innerText = `₹ ${flat.RentAmount || 0}`;
 
-      // Populate Utilities Tab
       document.getElementById("profRent").value = flat.RentAmount || 0;
       document.getElementById("profFlatNumber").value = flat.FlatName;
       document.getElementById("profElecRate").value = flat.ElecRate || 9;
@@ -1308,7 +1428,6 @@
         document.getElementById("profUpiId").value = renter.UPIID || "";
         document.getElementById("profContractMobile").value = renter.ContractMobile || "";
 
-        // Renter Profile Fields
         document.getElementById("renterName").value = renter.RenterName || "";
         document.getElementById("renterAadhaar").value = renter.AadhaarNumber || "";
         document.getElementById("renterMobile").value = renter.MobileNumber || "";
@@ -1326,20 +1445,29 @@
 
       populateHistoryLedger(flat.PropertyName, flat.FlatName);
       populateRenterHistory(flat.PropertyName, flat.FlatName, renter);
-      switchFlatTab('tabCalc');
+
+      document.querySelectorAll(".flat-nav-item").forEach((el, idx) => {
+        el.classList.toggle("active", idx === 0);
+      });
+      document.querySelectorAll(".tab-content").forEach((el, idx) => {
+        el.classList.toggle("active", idx === 0);
+      });
+
       openModal('flatDetailsModal');
     }
 
-    function switchFlatTab(tabId) {
+    function switchFlatTab(evt, tabId) {
       document.querySelectorAll(".flat-nav-item").forEach(item => item.classList.remove("active"));
       document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
-      event.target.classList.add("active");
+      evt.currentTarget.classList.add("active");
       document.getElementById(tabId).classList.add("active");
     }
 
     // Bill Math Engine
     function runBillMath() {
       const rent = parseFloat(document.getElementById("calcRent").value) || 0;
+      document.getElementById("calcRentBadge").innerText = `₹ ${rent}`;
+
       const elecPrev = parseFloat(document.getElementById("calcElecPrev").value) || 0;
       const elecCurr = parseFloat(document.getElementById("calcElecCurr").value) || 0;
       const elecRate = parseFloat(document.getElementById("profElecRate").value) || 9;
@@ -1371,6 +1499,21 @@
     }
 
     async function submitBillCalculation() {
+      const elecPrev = parseFloat(document.getElementById("calcElecPrev").value) || 0;
+      const elecCurr = parseFloat(document.getElementById("calcElecCurr").value) || 0;
+      const elecRate = parseFloat(document.getElementById("profElecRate").value) || 9;
+      const elecUnits = Math.max(0, elecCurr - elecPrev);
+
+      const pngPrev = parseFloat(document.getElementById("calcPngPrev").value) || 0;
+      const pngCurr = parseFloat(document.getElementById("calcPngCurr").value) || 0;
+      const pngRate = parseFloat(document.getElementById("profPngRate").value) || 45;
+      const pngUnits = Math.max(0, pngCurr - pngPrev);
+
+      const waterPrev = parseFloat(document.getElementById("calcWaterPrev").value) || 0;
+      const waterCurr = parseFloat(document.getElementById("calcWaterCurr").value) || 0;
+      const waterRate = parseFloat(document.getElementById("profWaterRate").value) || 15;
+      const waterUnits = Math.max(0, waterCurr - waterPrev);
+
       const payload = {
         action: "recordBill",
         propertyName: selectedFlat.PropertyName,
@@ -1378,17 +1521,21 @@
         monthYear: document.getElementById("calcMonthPicker").value || new Date().toISOString().slice(0,7),
         tenantName: document.getElementById("renterName").value || "Current Tenant",
         baseRent: document.getElementById("calcRent").value,
-        elecPrev: document.getElementById("calcElecPrev").value,
-        elecCurr: document.getElementById("calcElecCurr").value,
-        elecUnits: Math.max(0, (parseFloat(document.getElementById("calcElecCurr").value)||0) - (parseFloat(document.getElementById("calcElecPrev").value)||0)),
-        elecRate: document.getElementById("profElecRate").value,
-        elecTotal: (parseFloat(document.getElementById("calcElecCurr").value)||0 - parseFloat(document.getElementById("calcElecPrev").value)||0) * (parseFloat(document.getElementById("profElecRate").value)||9),
-        pngPrev: document.getElementById("calcPngPrev").value,
-        pngCurr: document.getElementById("calcPngCurr").value,
-        pngUnits: Math.max(0, (parseFloat(document.getElementById("calcPngCurr").value)||0) - (parseFloat(document.getElementById("calcPngPrev").value)||0)),
-        pngRate: document.getElementById("profPngRate").value,
-        waterPrev: document.getElementById("calcWaterPrev").value,
-        waterCurr: document.getElementById("calcWaterCurr").value,
+        elecPrev: elecPrev,
+        elecCurr: elecCurr,
+        elecUnits: elecUnits,
+        elecRate: elecRate,
+        elecTotal: elecUnits * elecRate,
+        pngPrev: pngPrev,
+        pngCurr: pngCurr,
+        pngUnits: pngUnits,
+        pngRate: pngRate,
+        pngTotal: pngUnits * pngRate,
+        waterPrev: waterPrev,
+        waterCurr: waterCurr,
+        waterUnits: waterUnits,
+        waterRate: waterRate,
+        waterTotal: waterUnits * waterRate,
         totalBilled: parseFloat(document.getElementById("calcGrandTotal").innerText.replace("₹ ","")) || 0,
         paidAmount: 0,
         status: "Unpaid",
@@ -1424,6 +1571,14 @@
           </td>
         `;
         tbody.appendChild(tr);
+      });
+    }
+
+    function filterLedgerTable(query) {
+      const q = query.toLowerCase();
+      const rows = document.querySelectorAll("#ledgerTableBody tr");
+      rows.forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(q) ? "" : "none";
       });
     }
 
@@ -1570,7 +1725,6 @@
       const name = document.getElementById("newPropName").value.trim();
       if (!name) return alert("Property Name is mandatory!");
 
-      // Local check before hitting network
       if (DB.properties.some(p => p.PropertyName.toLowerCase() === name.toLowerCase())) {
         return alert("This property name is already added. Please use a different name.");
       }
@@ -1609,6 +1763,10 @@
       if (res.status === "duplicate") {
         alert(res.message);
       } else {
+        if (selectedProperty === oldName) {
+          selectedProperty = newName;
+          localStorage.setItem("active_selected_property", newName);
+        }
         closeModal("editPropertyModal");
         syncDataLive(false);
       }
@@ -1620,6 +1778,10 @@
       const conf = confirm("Are you sure you want to confirm delete this property? Yes or No?");
       if (conf) {
         sendGasPost({ action: "deleteProperty", propertyName: p }).then(() => {
+          if (selectedProperty === p) {
+            selectedProperty = null;
+            localStorage.removeItem("active_selected_property");
+          }
           closeModal("deletePropertyModal");
           syncDataLive(false);
         });
@@ -1681,18 +1843,22 @@
       });
 
       if (res.status === "success") {
-        alert("Password updated! Logging out for security.");
+        alert("Password updated! Logging out of current session.");
         handleLogout();
       } else {
         alert(res.message);
       }
     }
 
-    // Session Wipe Logout
+    // Explicit Session Wipe Logout (Only runs when Logout button is clicked or password changes)
     function handleLogout() {
       activeUser = null;
       selectedProperty = null;
       selectedFlat = null;
+      localStorage.removeItem("active_session_user");
+      localStorage.removeItem("active_selected_property");
+      if (syncTimer) clearInterval(syncTimer);
+
       document.getElementById("dashboardScreen").classList.remove("active");
       document.getElementById("loginScreen").classList.add("active");
       document.querySelectorAll(".modal-overlay").forEach(m => m.classList.remove("active"));
