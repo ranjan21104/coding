@@ -3,468 +3,1721 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Property & Renter Financial Manager</title>
+  <title>Real Estate & Tenant Financial Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --primary: #2563eb;
-      --success: #10b981;
-      --danger: #ef4444;
-      --warning: #f59e0b;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --accent-orange: #f59e0b;
       --glass-bg: rgba(255, 255, 255, 0.15);
-      --glass-border: rgba(255, 255, 255, 0.25);
-      --dark-card: rgba(20, 24, 39, 0.75);
+      --glass-border: rgba(255, 255, 255, 0.28);
+      --glass-blur: blur(20px);
+      --dark-card: rgba(17, 24, 39, 0.85);
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --radius-lg: 20px;
+      --radius-md: 12px;
+      --shadow-elevation: 0 20px 45px rgba(0, 0, 0, 0.35);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { min-height: 100vh; background-color: #0b0f19; color: #f3f4f6; overflow-x: hidden; }
 
-    /* Login Screen with Full House Background */
-    #loginScreen {
-      position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
-      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)),
-                  url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80") center/cover no-repeat;
-      z-index: 100;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
+
+    body {
+      background: #0f172a;
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Full Background Cover */
+    .bg-canvas {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.72) 0%, rgba(15, 23, 42, 0.94) 100%),
+                  url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=80') center/cover no-repeat;
+      z-index: -1;
+    }
+
+    /* Screen Management */
+    .screen {
+      display: none;
+      min-height: 100vh;
+      width: 100%;
+    }
+    .screen.active {
+      display: flex;
+    }
+
+    /* Glassmorphic Login */
+    #loginScreen {
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
     .glass-card {
       background: var(--glass-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: 2.5rem;
-      width: 90%; max-width: 420px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-elevation);
     }
-    .input-group { margin-bottom: 1.25rem; }
-    .input-group label { display: block; font-size: 0.875rem; margin-bottom: 0.5rem; color: #e5e7eb; }
-    .input-control {
-      width: 100%; padding: 0.75rem 1rem; border-radius: 8px;
-      border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.1);
-      color: #fff; font-size: 1rem; outline: none; transition: 0.2s;
-    }
-    .input-control:focus { border-color: #60a5fa; box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3); }
-    .btn {
-      width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: none;
-      background: var(--primary); color: #fff; font-weight: 600; font-size: 1rem; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-    }
-    .btn:hover { background: #1d4ed8; }
 
-    /* Dashboard Layout */
-    #appDashboard { display: none; min-height: 100vh; flex-direction: column; }
-    .top-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.75rem 1.5rem; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 50;
+    .login-container {
+      width: 100%;
+      max-width: 440px;
+      padding: 44px 36px;
+      text-align: center;
     }
-    .header-left { display: flex; align-items: center; gap: 0.75rem; }
+
+    .login-brand {
+      margin-bottom: 30px;
+    }
+    .login-brand i {
+      font-size: 2.8rem;
+      color: #818cf8;
+      margin-bottom: 12px;
+    }
+    .login-brand h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .login-brand p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #e2e8f0;
+    }
+    .form-control {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(15, 23, 42, 0.6);
+      color: #fff;
+      font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: #818cf8;
+      box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.25);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 15px;
+      border-radius: var(--radius-md);
+      border: none;
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+      transform: translateY(-1px);
+    }
+
+    /* URL Config Bar */
+    .appscript-bar {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.8rem;
+    }
+    .appscript-bar input {
+      font-size: 0.75rem;
+      padding: 8px 10px;
+      margin-top: 6px;
+    }
+
+    /* Main Dashboard Layout */
+    #dashboardScreen {
+      flex-direction: column;
+    }
+
+    header.top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 28px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .nav-left h2 {
+      font-size: 1.4rem;
+      font-weight: 800;
+    }
     .pulse-dot {
-      width: 12px; height: 12px; border-radius: 50%; background-color: var(--success);
-      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); animation: pulsing 1.6s infinite;
+      width: 11px;
+      height: 11px;
+      background-color: var(--accent-green);
+      border-radius: 50%;
+      box-shadow: 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse 1.8s infinite;
     }
-    @keyframes pulsing {
-      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
-      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
     }
-    .header-center { flex: 1; max-width: 450px; margin: 0 1rem; position: relative; }
-    .search-input { width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; }
-    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
-    .header-right { display: flex; align-items: center; gap: 1rem; position: relative; }
-    .icon-btn { background: none; border: none; color: #d1d5db; font-size: 1.25rem; cursor: pointer; padding: 0.5rem; border-radius: 50%; }
-    .icon-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+    .nav-center {
+      position: relative;
+      width: 44px;
+      transition: width 0.3s ease;
+    }
+    .nav-center.expanded, .nav-center:focus-within {
+      width: 280px;
+    }
+    .search-input {
+      width: 100%;
+      height: 40px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 0 15px 0 42px;
+      outline: none;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .nav-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Plus Dropdown Menu */
+    .dropdown-anchor {
+      position: relative;
+    }
+    .action-menu {
+      display: none;
+      position: absolute;
+      top: 52px;
+      right: 0;
+      width: 230px;
+      background: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-md);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+      overflow: hidden;
+      z-index: 200;
+    }
+    .action-menu.show {
+      display: block;
+    }
+    .menu-item {
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      color: #e2e8f0;
+    }
+    .menu-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #818cf8;
+    }
+    .menu-item i {
+      width: 16px;
+    }
 
     /* Horizontal Properties Row */
     .properties-bar {
-      display: flex; gap: 1rem; padding: 1rem 1.5rem; overflow-x: auto;
-      scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.2) transparent;
+      padding: 24px 28px 10px 28px;
     }
-    .property-pill {
-      display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.2rem;
-      border-radius: 12px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15);
-      cursor: pointer; white-space: nowrap; transition: 0.2s;
+    .properties-scroller {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
     }
-    .property-pill.active { background: var(--primary); border-color: #60a5fa; }
+    .properties-scroller::-webkit-scrollbar {
+      height: 6px;
+    }
+    .properties-scroller::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
 
-    /* Flats Grid - 3-Wide Merged Cards */
+    .prop-card {
+      min-width: 220px;
+      padding: 16px 20px;
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .prop-card:hover {
+      border-color: #818cf8;
+      background: rgba(30, 41, 59, 0.9);
+      transform: translateY(-2px);
+    }
+    .prop-card.active {
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.35) 0%, rgba(30, 41, 59, 0.9) 100%);
+      border-color: #818cf8;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+    }
+    .prop-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(99, 102, 241, 0.2);
+      color: #a5b4fc;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+    .prop-info h4 {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .prop-info span {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* 3-Units Merged Wide Flat Cards */
     .flats-container {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-      gap: 1.25rem; padding: 1.5rem; flex: 1;
+      padding: 16px 28px 40px 28px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 22px;
     }
-    .flat-card {
-      background: var(--dark-card); border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 14px; padding: 1.25rem; cursor: pointer; transition: 0.2s;
-    }
-    .flat-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.3); }
-    .flat-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
-    .flat-title { font-size: 1.15rem; font-weight: 700; color: #fff; }
-    .renter-info { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
-    .renter-avatar { width: 42px; height: 42px; border-radius: 50%; background: #374151; display: flex; align-items: center; justify-content: center; }
 
-    /* Modal Framework */
+    .flat-card-merged {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 175px;
+      backdrop-filter: blur(10px);
+    }
+    .flat-card-merged:hover {
+      border-color: #818cf8;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .flat-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .flat-name {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    .renter-identity {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 6px;
+    }
+    .renter-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #475569;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+    }
+    .renter-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .renter-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+
+    .flat-bottom-row {
+      margin-top: 20px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .rent-status {
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 8px;
+    }
+    .status-paid {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+    }
+    .status-due {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+    }
+
+    /* Global Modal Window */
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
-      display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1rem;
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
     }
-    .modal-box {
-      background: #111827; border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 16px; width: 100%; max-width: 900px; max-height: 90vh;
-      display: flex; flex-direction: column; overflow: hidden;
+    .modal-overlay.active {
+      display: flex;
     }
-    .modal-header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 1rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1);
+
+    .modal-window {
+      background: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 30px;
+      position: relative;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.6);
     }
-    .modal-body { padding: 1.5rem; overflow-y: auto; }
-    .nav-tabs { display: flex; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .tab-item {
-      flex: 1; padding: 0.85rem; text-align: center; cursor: pointer; font-weight: 600;
-      color: #9ca3af; border-bottom: 2px solid transparent;
+    .modal-close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
     }
-    .tab-item.active { color: #60a5fa; border-color: #60a5fa; }
-    
-    /* Plus Menu Dropdown */
-    .dropdown-menu {
-      position: absolute; right: 80px; top: 60px; background: #1f2937;
-      border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; width: 200px;
-      display: none; flex-direction: column; z-index: 100;
+    .modal-close-btn:hover {
+      background: rgba(239, 68, 68, 0.3);
+      color: #f87171;
     }
-    .dropdown-item { padding: 0.75rem 1rem; cursor: pointer; display: flex; gap: 0.5rem; align-items: center; color: #e5e7eb; }
-    .dropdown-item:hover { background: rgba(255,255,255,0.08); }
-    
-    /* Metrics Row */
-    .metrics-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
-    .metric-card { background: rgba(255,255,255,0.05); padding: 0.75rem; border-radius: 8px; text-align: center; }
-    .metric-value { font-size: 1.1rem; font-weight: 700; margin-top: 0.25rem; }
-    .due-alert { color: var(--danger); }
+
+    /* Flat Detailed 4-Tab Navigation Modal */
+    .modal-flat-details {
+      max-width: 950px;
+      padding: 24px;
+    }
+    .flat-nav-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 6px;
+      border-radius: var(--radius-md);
+      margin-bottom: 24px;
+      margin-top: 16px;
+    }
+    .flat-nav-item {
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-muted);
+    }
+    .flat-nav-item.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Calculator Tab Styling */
+    .calc-row-metric {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+      background: rgba(15, 23, 42, 0.4);
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+    }
+    .calc-row-metric input {
+      padding: 8px;
+      font-size: 0.85rem;
+    }
+    .calc-auto-badge {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #818cf8;
+      text-align: right;
+    }
+
+    /* Profile Tab Matrix */
+    .profile-matrix {
+      display: grid;
+      grid-template-columns: 1.1fr 1.2fr 1.1fr;
+      gap: 18px;
+    }
+    .matrix-col {
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .col-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #93c5fd;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 6px;
+    }
+    .image-frame-container {
+      width: 100%;
+      height: 140px;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.3);
+      border: 2px dashed rgba(255,255,255,0.2);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .image-frame-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Ledger History Table */
+    .ledger-table-wrap {
+      overflow-x: auto;
+      max-height: 480px;
+    }
+    .ledger-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      text-align: left;
+    }
+    .ledger-table th, .ledger-table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      white-space: nowrap;
+    }
+    .ledger-table th {
+      background: #0f172a;
+      position: sticky;
+      top: 0;
+      color: #94a3b8;
+      font-weight: 700;
+    }
+    .badge-paid {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+    .badge-unpaid {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+    .badge-partial {
+      background: rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+
+    /* Renter History Card */
+    .renter-history-overview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .stat-pill {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 12px;
+      border-radius: var(--radius-md);
+      text-align: center;
+    }
+    .stat-pill span {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .stat-pill strong {
+      font-size: 1.05rem;
+      color: #fff;
+    }
+
+    @media (max-width: 820px) {
+      .profile-matrix {
+        grid-template-columns: 1fr;
+      }
+      .calc-row-metric {
+        grid-template-columns: 1fr 1fr;
+      }
+      .flats-container {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Live Login Screen -->
-  <div id="loginScreen">
-    <div class="glass-card">
-      <h2 style="margin-bottom: 1.5rem; text-align: center; font-weight: 700;">Manager Portal</h2>
-      <div class="input-group">
-        <label>Username</label>
-        <input type="text" id="loginUsername" class="input-control" placeholder="Enter username">
-      </div>
-      <div class="input-group">
-        <label>Password</label>
-        <input type="password" id="loginPassword" class="input-control" placeholder="Enter password">
-      </div>
-      <button class="btn" onclick="executeLiveLogin()">
-        <span id="loginSpinner" style="display:none;"><i class="fa fa-spinner fa-spin"></i></span>
-        <span>Secure Login</span>
-      </button>
-    </div>
-  </div>
+  <div class="bg-canvas"></div>
 
-  <!-- Main Responsive Dashboard -->
-  <div id="appDashboard">
-    <header class="top-header">
-      <div class="header-left">
-        <span style="font-weight: 700; font-size: 1.25rem;">Dashboard</span>
-        <div class="pulse-dot" title="Live Synced to Google Sheet"></div>
+  <!-- SCREEN 1: LOGIN SCREEN -->
+  <section id="loginScreen" class="screen active">
+    <div class="glass-card login-container">
+      <div class="login-brand">
+        <i class="fa-solid fa-building-user"></i>
+        <h1>Property Cloud</h1>
+        <p>Live Sheets Synchronized Portal</p>
       </div>
-      <div class="header-center">
-        <i class="fa fa-search search-icon"></i>
-        <input type="text" id="globalSearch" class="search-input" placeholder="Search tenant, flat, month..." oninput="handleGlobalSearch()">
+
+      <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="loginUsername" class="form-control" placeholder="Enter username" required autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" class="form-control" placeholder="Enter password" required autocomplete="off">
+        </div>
+        <button type="submit" id="loginBtn" class="btn-primary">
+          <span>Log In</span>
+          <i class="fa-solid fa-arrow-right-to-bracket"></i>
+        </button>
+      </form>
+
+      <div class="appscript-bar">
+        <label style="color: var(--text-muted);">Apps Script Web App URL (Configured Inside HTML)</label>
+        <input type="text" id="gasUrlInput" class="form-control" placeholder="https://script.google.com/macros/s/.../exec">
       </div>
-      <div class="header-right">
-        <button class="icon-btn" title="Reload Sheet Data" onclick="refreshDashboard()"><i class="fa fa-rotate-right"></i></button>
-        <button class="icon-btn" title="Add / Manage" onclick="togglePlusMenu()"><i class="fa fa-plus"></i></button>
-        <button class="icon-btn" title="Profile Settings" onclick="openPasswordModal()"><i class="fa fa-user"></i></button>
-        <button class="icon-btn" title="Logout" onclick="executeLogout()"><i class="fa fa-arrow-right-from-bracket"></i></button>
+    </div>
+  </section>
+
+  <!-- SCREEN 2: MAIN DASHBOARD -->
+  <section id="dashboardScreen" class="screen">
+    <!-- Top Header -->
+    <header class="top-nav">
+      <div class="nav-left">
+        <h2>Dashboard</h2>
+        <div class="pulse-dot" title="Live Continuous Connection with Google Sheet"></div>
+      </div>
+
+      <div class="nav-center" id="searchContainer">
+        <i class="fa-solid fa-magnifying-glass search-icon" onclick="focusSearch()"></i>
+        <input type="text" id="globalSearch" class="search-input" placeholder="Search across all records..." oninput="handleGlobalSearch(this.value)">
+      </div>
+
+      <div class="nav-right">
+        <!-- Reload Icon -->
+        <button class="nav-btn" onclick="syncDataLive(true)" title="Reload without logout">
+          <i class="fa-solid fa-rotate"></i>
+        </button>
+
+        <!-- Dynamic Add Plus (+) Icon -->
+        <div class="dropdown-anchor">
+          <button class="nav-btn" onclick="toggleActionMenu()" title="Add / Manage">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+          <div id="actionMenu" class="action-menu">
+            <div class="menu-item" onclick="openModal('addPropertyModal')">
+              <i class="fa-solid fa-building"></i> Add Property
+            </div>
+            <div class="menu-item" onclick="openModal('editPropertyModal')">
+              <i class="fa-solid fa-pen-to-square"></i> Edit Property Name
+            </div>
+            <div class="menu-item" onclick="openModal('deletePropertyModal')">
+              <i class="fa-solid fa-trash-can"></i> Delete Property
+            </div>
+            <div class="menu-item" onclick="openModal('addFlatModal')">
+              <i class="fa-solid fa-door-open"></i> Add Flat
+            </div>
+            <div class="menu-item" onclick="openModal('deleteFlatModal')">
+              <i class="fa-solid fa-rectangle-xmark"></i> Delete Flat
+            </div>
+          </div>
+        </div>
+
+        <!-- Dedicated Profile Icon -->
+        <button class="nav-btn" onclick="openModal('changePasswordModal')" title="Change Password">
+          <i class="fa-solid fa-user-shield"></i>
+        </button>
+
+        <!-- Dedicated Logout Icon -->
+        <button class="nav-btn" onclick="handleLogout()" title="Instant Session Wipe">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
       </div>
     </header>
 
-    <!-- Plus Action Dropdown Menu -->
-    <div id="plusMenu" class="dropdown-menu">
-      <div class="dropdown-item" onclick="openAddPropertyModal()"><i class="fa fa-building"></i> Add Property</div>
-      <div class="dropdown-item" onclick="openEditPropertyModal()"><i class="fa fa-pen"></i> Edit Property</div>
-      <div class="dropdown-item" onclick="openDeletePropertyModal()"><i class="fa fa-trash"></i> Delete Property</div>
-      <div class="dropdown-item" onclick="openAddFlatModal()"><i class="fa fa-door-open"></i> Add Flat</div>
-      <div class="dropdown-item" onclick="openDeleteFlatModal()"><i class="fa fa-ban"></i> Delete Flat</div>
+    <!-- Centered Horizontal Scrollable Properties -->
+    <section class="properties-bar">
+      <div class="properties-scroller" id="propertiesList">
+        <!-- Rendered Dynamically -->
+      </div>
+    </section>
+
+    <!-- 3-Units Merged Wide Flat Cards Layout -->
+    <main class="flats-container" id="flatsList">
+      <!-- Rendered Dynamically -->
+    </main>
+  </section>
+
+  <!-- ==================== POPUP MODALS ==================== -->
+
+  <!-- Add Property Modal -->
+  <div id="addPropertyModal" class="modal-overlay">
+    <div class="modal-window">
+      <button class="modal-close-btn" onclick="closeModal('addPropertyModal')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 20px;">Add New Property</h3>
+      <div class="form-group">
+        <label>Property Name * (Mandatory)</label>
+        <input type="text" id="newPropName" class="form-control" placeholder="e.g. Sunrise Enclave">
+      </div>
+      <div class="form-group">
+        <label>UPI Name (Optional)</label>
+        <input type="text" id="newPropUpiName" class="form-control" placeholder="Account Holder Name">
+      </div>
+      <div class="form-group">
+        <label>UPI ID (Optional)</label>
+        <input type="text" id="newPropUpiId" class="form-control" placeholder="e.g. name@okhdfcbank">
+      </div>
+      <div class="form-group">
+        <label>Contract Number</label>
+        <input type="text" id="newPropContract" class="form-control" placeholder="+91 ...">
+      </div>
+      <button class="btn-primary" onclick="submitAddProperty()">Save Property</button>
     </div>
-
-    <!-- Horizontal Properties Navigation -->
-    <div class="properties-bar" id="propertiesList"></div>
-
-    <!-- 3-Wide Merged Flat Grid -->
-    <main class="flats-container" id="flatsContainer"></main>
   </div>
 
-  <!-- Flat Master Popup Modal -->
-  <div id="flatDetailModal" class="modal-overlay">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3 id="flatModalTitle">Flat Details</h3>
-        <button class="icon-btn" onclick="closeModal('flatDetailModal')"><i class="fa fa-xmark"></i></button>
+  <!-- Edit Property Name Modal -->
+  <div id="editPropertyModal" class="modal-overlay">
+    <div class="modal-window">
+      <button class="modal-close-btn" onclick="closeModal('editPropertyModal')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 20px;">Edit Property Name</h3>
+      <div class="form-group">
+        <label>Select Property</label>
+        <select id="editPropDropdown" class="form-control" onchange="syncEditPropDisplay()"></select>
       </div>
-      <div class="nav-tabs">
-        <div class="tab-item active" onclick="switchFlatTab('tabCalc', this)">1. Calculation</div>
-        <div class="tab-item" onclick="switchFlatTab('tabHistory', this)">2. History</div>
-        <div class="tab-item" onclick="switchFlatTab('tabProfile', this)">3. Profile</div>
-        <div class="tab-item" onclick="switchFlatTab('tabRenterHistory', this)">4. Renter History</div>
+      <div class="form-group">
+        <label>Current Name (Locked)</label>
+        <input type="text" id="editPropCurrentName" class="form-control" readonly style="opacity: 0.6;">
       </div>
-      <div class="modal-body">
-        
-        <!-- Tab 1: Monthly Bill Calculator -->
-        <div id="tabCalc" class="tab-content">
-          <div style="display:flex; justify-content:space-between; margin-bottom:1rem;">
-            <h4>Monthly Bill Calculator</h4>
-            <span id="calcFlatNumber" style="font-weight:700;">Flat #</span>
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-            <div class="input-group">
-              <label>Billing Month & Year</label>
-              <input type="month" id="calcBillingMonth" class="input-control">
-            </div>
-            <div class="input-group">
-              <label>Rent (₹)</label>
-              <input type="number" id="calcRentAmount" class="input-control" value="0">
-            </div>
-          </div>
-          <!-- Utility Row: Elec, PNG, Water -->
-          <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-            <h5>Electricity Reading & Rate</h5>
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem;">
-              <input type="number" id="calcElecPrev" placeholder="Prev Reading" class="input-control">
-              <input type="number" id="calcElecCurr" placeholder="Enter current" class="input-control" oninput="computeUtilityUnits()">
-              <input type="number" id="calcElecRate" placeholder="Rate/Unit" class="input-control" oninput="computeUtilityUnits()">
-            </div>
-          </div>
-          <button class="btn" style="margin-top: 1rem;" onclick="saveMonthlyBill()">Calculate & Save Bill</button>
-        </div>
-
-        <!-- Tab 2: History (Ledger) -->
-        <div id="tabHistory" class="tab-content" style="display:none;">
-          <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
-              <thead>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
-                  <th style="padding: 0.5rem;">MONTH</th>
-                  <th style="padding: 0.5rem;">RENT</th>
-                  <th style="padding: 0.5rem;">TOTAL</th>
-                  <th style="padding: 0.5rem;">STATUS</th>
-                  <th style="padding: 0.5rem;">ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody id="historyLedgerBody"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Tab 3: Renter Profile (Two-Column & Image Frames) -->
-        <div id="tabProfile" class="tab-content" style="display:none;">
-          <div style="display: grid; grid-template-columns: 1fr 200px 1fr; gap: 1rem;">
-            <!-- Left Column: Utility Defaults -->
-            <div>
-              <h5 style="margin-bottom: 0.75rem;">Rent & Utility Details</h5>
-              <div class="input-group"><label>Rent Amount</label><input type="number" id="profRentAmount" class="input-control"></div>
-              <div class="input-group"><label>PNG Meter No</label><input type="text" id="profPngMeter" class="input-control"></div>
-              <div class="input-group"><label>Water Meter No</label><input type="text" id="profWaterMeter" class="input-control"></div>
-              <div class="input-group"><label>Electricity Meter No</label><input type="text" id="profElecMeter" class="input-control"></div>
-              <div class="input-group"><label>Contract Mobile</label><input type="text" id="profContractMobile" class="input-control"></div>
-            </div>
-            <!-- Center Column: Image Slots -->
-            <div style="text-align: center;">
-              <h5>Renter Images</h5>
-              <div style="width: 100px; height: 100px; margin: 0.5rem auto; border: 1px dashed #fff; border-radius: 8px; overflow: hidden;">
-                <img id="imgPreviewProfile" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
-              </div>
-              <div style="width: 100px; height: 100px; margin: 0.5rem auto; border: 1px dashed #fff; border-radius: 8px; overflow: hidden;">
-                <img id="imgPreviewAadhaar" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
-              </div>
-            </div>
-            <!-- Right Column: Profile Form -->
-            <div>
-              <h5 style="margin-bottom: 0.75rem;">Renter Profile</h5>
-              <div class="input-group"><label>Renter Name</label><input type="text" id="profName" class="input-control"></div>
-              <div class="input-group"><label>Aadhaar Number</label><input type="text" id="profAadhaar" class="input-control" placeholder="12-digit number"></div>
-              <div class="input-group"><label>Mobile Number</label><input type="text" id="profMobile" class="input-control"></div>
-              <div class="input-group">
-                <label>Status</label>
-                <select id="profStatus" class="input-control">
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
-                </select>
-              </div>
-              <button class="btn" style="margin-top: 0.5rem;" onclick="saveRenterProfile()">Submit Profile</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tab 4: Renter History & Financial Records -->
-        <div id="tabRenterHistory" class="tab-content" style="display:none;">
-          <div class="metrics-bar">
-            <div class="metric-card"><div>TOTAL BILLED</div><div class="metric-value" id="rhTotalBilled">₹0</div></div>
-            <div class="metric-card"><div>TOTAL PAID</div><div class="metric-value" id="rhTotalPaid">₹0</div></div>
-            <div class="metric-card"><div>TOTAL RENT</div><div class="metric-value" id="rhTotalRent">₹0</div></div>
-            <div class="metric-card"><div>UTILITY</div><div class="metric-value" id="rhTotalUtility">₹0</div></div>
-            <div class="metric-card"><div>BALANCE STATUS</div><div class="metric-value due-alert" id="rhBalance">₹0</div></div>
-          </div>
-        </div>
-
+      <div class="form-group">
+        <label>New Property Name *</label>
+        <input type="text" id="editPropNewName" class="form-control" placeholder="Enter updated name">
       </div>
+      <button class="btn-primary" onclick="submitEditProperty()">Update Name</button>
+    </div>
+  </div>
+
+  <!-- Delete Property Modal -->
+  <div id="deletePropertyModal" class="modal-overlay">
+    <div class="modal-window">
+      <button class="modal-close-btn" onclick="closeModal('deletePropertyModal')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 20px;">Delete Property</h3>
+      <div class="form-group">
+        <label>Select Property</label>
+        <select id="deletePropDropdown" class="form-control"></select>
+      </div>
+      <button class="btn-primary" style="background: var(--accent-red);" onclick="triggerDeletePropertyCheck()">Delete Property</button>
+    </div>
+  </div>
+
+  <!-- Add Flat Modal -->
+  <div id="addFlatModal" class="modal-overlay">
+    <div class="modal-window">
+      <button class="modal-close-btn" onclick="closeModal('addFlatModal')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 20px;">Add New Flat</h3>
+      <div class="form-group">
+        <label>Property Selection</label>
+        <select id="addFlatPropDropdown" class="form-control"></select>
+      </div>
+      <div class="form-group">
+        <label>Flat Name/Number * (Mandatory)</label>
+        <input type="text" id="addFlatNumber" class="form-control" placeholder="e.g. 101 or 3B">
+      </div>
+      <div class="form-group">
+        <label>Renter Name (Optional)</label>
+        <input type="text" id="addFlatRenter" class="form-control" placeholder="Primary tenant">
+      </div>
+      <div class="form-group">
+        <label>Monthly Rent Bill Amount (₹)</label>
+        <input type="number" id="addFlatRent" class="form-control" placeholder="12000">
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+        <div class="form-group">
+          <label>Elec. Rate</label>
+          <input type="number" id="addFlatElecRate" class="form-control" placeholder="9">
+        </div>
+        <div class="form-group">
+          <label>PNG Rate</label>
+          <input type="number" id="addFlatPngRate" class="form-control" placeholder="45">
+        </div>
+        <div class="form-group">
+          <label>Water Rate</label>
+          <input type="number" id="addFlatWaterRate" class="form-control" placeholder="15">
+        </div>
+      </div>
+      <button class="btn-primary" onclick="submitAddFlat()">Add Flat</button>
+    </div>
+  </div>
+
+  <!-- Delete Flat Modal -->
+  <div id="deleteFlatModal" class="modal-overlay">
+    <div class="modal-window">
+      <button class="modal-close-btn" onclick="closeModal('deleteFlatModal')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 20px;">Delete Flat</h3>
+      <div class="form-group">
+        <label>Property</label>
+        <select id="deleteFlatPropDropdown" class="form-control" onchange="populateDeleteFlatList()"></select>
+      </div>
+      <div class="form-group">
+        <label>Select Flat</label>
+        <select id="deleteFlatTargetDropdown" class="form-control"></select>
+      </div>
+      <button class="btn-primary" style="background: var(--accent-red);" onclick="triggerDeleteFlatCheck()">Delete Flat</button>
+    </div>
+  </div>
+
+  <!-- Change Password Modal -->
+  <div id="changePasswordModal" class="modal-overlay">
+    <div class="modal-window">
+      <button class="modal-close-btn" onclick="closeModal('changePasswordModal')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 20px;">Change Password</h3>
+      <div class="form-group">
+        <label>Current Password (Old Password)</label>
+        <input type="password" id="oldPassInput" class="form-control" placeholder="Enter existing password">
+      </div>
+      <div class="form-group">
+        <label>New Password</label>
+        <input type="password" id="newPassInput" class="form-control" placeholder="Alphabets, numbers & symbols allowed">
+      </div>
+      <div class="form-group">
+        <label>Confirm New Password</label>
+        <input type="password" id="confirmNewPassInput" class="form-control" placeholder="Repeat new password">
+      </div>
+      <button class="btn-primary" onclick="submitChangePassword()">Update</button>
+    </div>
+  </div>
+
+  <!-- Detailed 4-Tab Flat Popup Modal -->
+  <div id="flatDetailsModal" class="modal-overlay">
+    <div class="modal-window modal-flat-details">
+      <button class="modal-close-btn" onclick="closeModal('flatDetailsModal')"><i class="fa-solid fa-xmark"></i></button>
+
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2 id="modalHeaderTitle">Flat Space</h2>
+        <span id="modalFlatTag" style="background:#4f46e5; padding:4px 12px; border-radius:20px; font-weight:700;">--</span>
+      </div>
+
+      <!-- Navigation Bar -->
+      <nav class="flat-nav-bar">
+        <div class="flat-nav-item active" onclick="switchFlatTab('tabCalc')">1. Calculation</div>
+        <div class="flat-nav-item" onclick="switchFlatTab('tabHistory')">2. History</div>
+        <div class="flat-nav-item" onclick="switchFlatTab('tabProfile')">3. Profile</div>
+        <div class="flat-nav-item" onclick="switchFlatTab('tabRenterHistory')">4. Renter History</div>
+      </nav>
+
+      <!-- TAB 1: CALCULATION -->
+      <div id="tabCalc" class="tab-content active">
+        <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+          <h4 style="color:#a5b4fc;">Monthly Bill Calculator</h4>
+          <input type="month" id="calcMonthPicker" class="form-control" style="width:160px; padding:6px 10px;">
+        </div>
+
+        <div class="calc-row-metric">
+          <label>Base Rent (₹):</label>
+          <input type="number" id="calcRent" class="form-control" oninput="runBillMath()">
+          <span>Fixed</span>
+          <span class="calc-auto-badge" id="calcRentBadge">₹ 0</span>
+        </div>
+
+        <div class="calc-row-metric">
+          <label>Electricity:</label>
+          <input type="number" id="calcElecPrev" class="form-control" placeholder="Prev" oninput="runBillMath()">
+          <input type="number" id="calcElecCurr" class="form-control" placeholder="Enter current" oninput="runBillMath()">
+          <span class="calc-auto-badge" id="calcElecSummary">0 Units</span>
+        </div>
+
+        <div class="calc-row-metric">
+          <label>PNG Gas:</label>
+          <input type="number" id="calcPngPrev" class="form-control" placeholder="Prev" oninput="runBillMath()">
+          <input type="number" id="calcPngCurr" class="form-control" placeholder="Enter current" oninput="runBillMath()">
+          <span class="calc-auto-badge" id="calcPngSummary">0 Units</span>
+        </div>
+
+        <div class="calc-row-metric">
+          <label>Water Charge:</label>
+          <input type="number" id="calcWaterPrev" class="form-control" placeholder="Prev" oninput="runBillMath()">
+          <input type="number" id="calcWaterCurr" class="form-control" placeholder="Enter current" oninput="runBillMath()">
+          <span class="calc-auto-badge" id="calcWaterSummary">0 Units</span>
+        </div>
+
+        <!-- Additional Charges -->
+        <div class="calc-row-metric">
+          <input type="text" id="calcAddName" class="form-control" placeholder="Additional charge name">
+          <select id="calcAddToggle" class="form-control" onchange="runBillMath()">
+            <option value="+">(+) Add</option>
+            <option value="-">(-) Discount</option>
+          </select>
+          <input type="number" id="calcAddAmount" class="form-control" placeholder="₹ Amount" oninput="runBillMath()">
+          <span class="calc-auto-badge" id="calcAddSummary">₹ 0</span>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin: 16px 0; padding:12px; background:rgba(0,0,0,0.4); border-radius:12px;">
+          <span>Grand Total Billed:</span>
+          <strong id="calcGrandTotal" style="font-size:1.2rem; color:#38bdf8;">₹ 0</strong>
+        </div>
+
+        <div class="form-group">
+          <label>Important Notes:</label>
+          <textarea id="calcNotes" class="form-control" rows="2" placeholder="Write any additional meter reading or transaction notes..."></textarea>
+        </div>
+
+        <button class="btn-primary" onclick="submitBillCalculation()">Calculate Bill</button>
+      </div>
+
+      <!-- TAB 2: HISTORY (Billed Ledger) -->
+      <div id="tabHistory" class="tab-content">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <h4><i class="fa-solid fa-receipt"></i> Billed History Ledger</h4>
+          <input type="text" class="form-control" style="width:250px;" placeholder="Search tenant, month, status..." oninput="filterLedgerTable(this.value)">
+        </div>
+        <div class="ledger-table-wrap">
+          <table class="ledger-table">
+            <thead>
+              <tr>
+                <th>MONTH</th>
+                <th>TENANT NAME</th>
+                <th>RENT</th>
+                <th>ELEC (PREV - CURR = CONSUMED)</th>
+                <th>PNG (PREV - CURR = CONSUMED)</th>
+                <th>WATER (PREV - CURR = CONSUMED)</th>
+                <th>TOTAL</th>
+                <th>PAID & MODE</th>
+                <th>STATUS</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="ledgerTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 3: PROFILE MATRIX -->
+      <div id="tabProfile" class="tab-content">
+        <div class="profile-matrix">
+          <!-- Left Column: Utilities -->
+          <div class="matrix-col">
+            <div class="col-title">Rent & Utility Details</div>
+            <div class="form-group"><label>Rent Amount</label><input type="number" id="profRent" class="form-control"></div>
+            <div class="form-group"><label>Flat Name/Number</label><input type="text" id="profFlatNumber" class="form-control"></div>
+            <div class="form-group"><label>PNG Number</label><input type="text" id="profPngNumber" class="form-control"></div>
+            <div class="form-group"><label>PNG Meter Number</label><input type="text" id="profPngMeter" class="form-control"></div>
+            <div class="form-group"><label>Fixed PNG Cost</label><input type="number" id="profPngFixedCost" class="form-control"></div>
+            <div class="form-group"><label>PNG Fixed Rate</label><input type="number" id="profPngRate" class="form-control"></div>
+            <div class="form-group"><label>Water Number</label><input type="text" id="profWaterNumber" class="form-control"></div>
+            <div class="form-group"><label>Water Meter Number</label><input type="text" id="profWaterMeter" class="form-control"></div>
+            <div class="form-group"><label>Fixed Water Cost</label><input type="number" id="profWaterFixedCost" class="form-control"></div>
+            <div class="form-group"><label>Water Fixed Rate</label><input type="number" id="profWaterRate" class="form-control"></div>
+            <div class="form-group"><label>Electricity Meter Number</label><input type="text" id="profElecMeter" class="form-control"></div>
+            <div class="form-group"><label>Electricity Fixed Rate</label><input type="number" id="profElecRate" class="form-control"></div>
+            <div class="form-group"><label>UPI Name</label><input type="text" id="profUpiName" class="form-control"></div>
+            <div class="form-group"><label>UPI ID</label><input type="text" id="profUpiId" class="form-control"></div>
+            <div class="form-group"><label>Contract Mobile Number</label><input type="text" id="profContractMobile" class="form-control"></div>
+            <button class="btn-primary" onclick="saveUtilitiesLeft()">Update Utilities</button>
+          </div>
+
+          <!-- Center Column: Renter Images -->
+          <div class="matrix-col" style="text-align: center;">
+            <div class="col-title">Renter Images</div>
+            <label style="font-size:0.75rem; color:var(--text-muted);">Renter Profile Picture</label>
+            <div class="image-frame-container">
+              <img id="profilePicturePreview" src="https://via.placeholder.com/150?text=Profile+Pic" alt="Profile">
+            </div>
+            <label style="font-size:0.75rem; color:var(--text-muted); margin-top:14px;">Identity Document (Aadhaar Card)</label>
+            <div class="image-frame-container">
+              <img id="aadhaarPicturePreview" src="https://via.placeholder.com/300x150?text=Aadhaar+Card" alt="ID Document">
+            </div>
+          </div>
+
+          <!-- Right Column: Renter Profile Info -->
+          <div class="matrix-col">
+            <div class="col-title">Renter Profile</div>
+            <div class="form-group">
+              <label>Profile Image Upload</label>
+              <input type="file" id="fileProfilePic" class="form-control" accept="image/*" onchange="previewImageFile(this, 'profilePicturePreview')">
+            </div>
+            <div class="form-group"><label>Renter Name</label><input type="text" id="renterName" class="form-control"></div>
+            <div class="form-group"><label>Aadhaar Number (12-Digit)</label><input type="text" id="renterAadhaar" class="form-control" maxlength="12" placeholder="XXXX XXXX XXXX"></div>
+            <div class="form-group">
+              <label>Aadhaar Card Upload</label>
+              <input type="file" id="fileAadhaarPic" class="form-control" accept="image/*" onchange="previewImageFile(this, 'aadhaarPicturePreview')">
+            </div>
+            <div class="form-group"><label>Mobile Number</label><input type="text" id="renterMobile" class="form-control"></div>
+            <div class="form-group"><label>Alternative Mobile Number</label><input type="text" id="renterAltMobile" class="form-control"></div>
+            <div class="form-group"><label>Address</label><input type="text" id="renterAddress" class="form-control"></div>
+            <div class="form-group"><label>Total Family Members</label><input type="number" id="renterFamily" class="form-control" value="1"></div>
+            <div class="form-group">
+              <label>Renter Status</label>
+              <select id="renterStatus" class="form-control">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Join Date</label><input type="date" id="renterJoinDate" class="form-control"></div>
+            <div class="form-group"><label>End Date</label><input type="date" id="renterEndDate" class="form-control"></div>
+            <button class="btn-primary" onclick="submitRenterProfileRight()">Save Renter Record</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: RENTER HISTORY -->
+      <div id="tabRenterHistory" class="tab-content">
+        <div class="stat-pill" style="display:flex; align-items:center; gap:16px; text-align:left; margin-bottom:16px;">
+          <div class="renter-avatar" style="width:54px; height:54px;">
+            <img id="rhAvatar" src="https://via.placeholder.com/150" alt="Avatar">
+          </div>
+          <div>
+            <h3 id="rhName">Tenant Name</h3>
+            <span id="rhStatusBadge" class="badge-paid">Active</span>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">
+              <span id="rhContact">Contact: --</span> | <span id="rhStay">Duration: --</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="renter-history-overview">
+          <div class="stat-pill"><span>TOTAL BILLED</span><strong id="rhBilled">₹ 0</strong></div>
+          <div class="stat-pill"><span>TOTAL PAID</span><strong id="rhPaid">₹ 0</strong></div>
+          <div class="stat-pill"><span>TOTAL RENT</span><strong id="rhTotalRent">₹ 0</strong></div>
+          <div class="stat-pill"><span>TOTAL UTILITY</span><strong id="rhUtility">₹ 0</strong></div>
+          <div class="stat-pill"><span>BALANCE STATUS</span><strong id="rhBalance" style="color:var(--accent-red);">Due: ₹ 0</strong></div>
+        </div>
+
+        <details style="margin-top:20px; background:rgba(0,0,0,0.3); border-radius:8px; padding:12px;">
+          <summary style="cursor:pointer; font-weight:700; color:#93c5fd;">&gt; Show Stay-Specific Invoices</summary>
+          <div id="rhInvoiceList" style="margin-top:12px; font-size:0.85rem;">
+            <!-- Generated rows -->
+          </div>
+        </details>
+      </div>
+
     </div>
   </div>
 
   <script>
-    // Embed your Apps Script Web App URL here
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzHSSs7xN9tlcZmwO1hpfdwwc8zdhvwRyP1294-RC-SFlj6QvfqtSyFrJH1c8VacYFZWQ/exec";
-
-    let state = {
-      user: null,
+    /**
+     * App State & Live Sheets Sync Engine
+     */
+    let DB = {
       properties: [],
       flats: [],
       renters: [],
-      bills: [],
-      selectedProperty: null,
-      activeFlat: null
+      bills: []
     };
 
-    // Fast verification under 2 seconds live against sheet
-    async function executeLiveLogin() {
-      const u = document.getElementById("loginUsername").value;
-      const p = document.getElementById("loginPassword").value;
-      const spinner = document.getElementById("loginSpinner");
+    let activeUser = null;
+    let selectedProperty = null;
+    let selectedFlat = null;
 
-      if (!u || !p) return alert("Your Username or Password is wrong.");
+    // Load or seed default Apps Script URL inside HTML
+    const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbzHSSs7xN9tlcZmwO1hpfdwwc8zdhvwRyP1294-RC-SFlj6QvfqtSyFrJH1c8VacYFZWQ/exec";
+    document.addEventListener("DOMContentLoaded", () => {
+      const savedUrl = localStorage.getItem("gas_app_url") || DEFAULT_GAS_URL;
+      document.getElementById("gasUrlInput").value = savedUrl;
+    });
 
-      spinner.style.display = "inline-block";
+    function getGasUrl() {
+      const url = document.getElementById("gasUrlInput").value.trim();
+      localStorage.setItem("gas_app_url", url);
+      return url;
+    }
+
+    // 1. Live Sub-2s Credential Verification
+    async function handleLoginSubmit(e) {
+      e.preventDefault();
+      const user = document.getElementById("loginUsername").value.trim();
+      const pass = document.getElementById("loginPassword").value;
+      const btn = document.getElementById("loginBtn");
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Checking...`;
+
       try {
-        const res = await fetch(`${SCRIPT_URL}?action=verifyLogin&username=${encodeURIComponent(u)}&password=${encodeURIComponent(p)}`);
-        const json = await res.json();
-        spinner.style.display = "none";
+        const gasUrl = getGasUrl();
+        const response = await fetch(`${gasUrl}?action=login&username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}`, {
+          method: "GET"
+        });
+        const res = await response.json();
 
-        if (json.status === "success") {
-          state.user = u;
-          document.getElementById("loginScreen").style.display = "none";
-          document.getElementById("appDashboard").style.display = "flex";
-          refreshDashboard();
+        if (res.status === "success") {
+          activeUser = res.username;
+          document.getElementById("loginScreen").classList.remove("active");
+          document.getElementById("dashboardScreen").classList.add("active");
+          // Clear sensitive login inputs immediately (no memory caching)
+          document.getElementById("loginPassword").value = "";
+          syncDataLive(false);
+          // Continuous live background sync loop (every 30 seconds)
+          setInterval(() => syncDataLive(false), 30000);
         } else {
           alert("Your Username or Password is wrong.");
         }
       } catch (err) {
-        spinner.style.display = "none";
-        alert("Your Username or Password is wrong.");
+        alert("Error verifying credentials live with Google Sheet: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Log In</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>`;
       }
     }
 
-    function executeLogout() {
-      state.user = null;
-      document.getElementById("loginUsername").value = "";
-      document.getElementById("loginPassword").value = "";
-      document.getElementById("appDashboard").style.display = "none";
-      document.getElementById("loginScreen").style.display = "flex";
-    }
-
-    async function refreshDashboard() {
+    // 2. Continuous Live Data Pull from Google Sheet
+    async function syncDataLive(isManual = false) {
       try {
-        const res = await fetch(`${SCRIPT_URL}?action=getDashboardData`);
-        const json = await res.json();
-        if (json.status === "success") {
-          state.properties = json.data.properties;
-          state.flats = json.data.flats;
-          state.renters = json.data.renters;
-          state.bills = json.data.bills;
-          renderProperties();
-          if (state.properties.length > 0 && !state.selectedProperty) {
-            selectProperty(state.properties[0][0]);
-          } else if (state.selectedProperty) {
-            renderFlats();
+        const gasUrl = getGasUrl();
+        const response = await fetch(`${gasUrl}?action=getInitialData`);
+        const res = await response.json();
+        if (res.status === "success") {
+          DB.properties = res.properties || [];
+          DB.flats = res.flats || [];
+          DB.renters = res.renters || [];
+          DB.bills = res.bills || [];
+
+          renderPropertiesRow();
+          if (DB.properties.length > 0 && !selectedProperty) {
+            selectProperty(DB.properties[0].PropertyName);
+          } else if (selectedProperty) {
+            renderFlatsGrid(selectedProperty);
           }
+          if (isManual) alert("Data successfully synchronized with Google Sheet.");
         }
       } catch (err) {
-        console.error(err);
+        console.error("Continuous Sync Error:", err);
       }
     }
 
-    function renderProperties() {
-      const bar = document.getElementById("propertiesList");
-      bar.innerHTML = "";
-      state.properties.forEach(p => {
+    // 3. Render Properties
+    function renderPropertiesRow() {
+      const container = document.getElementById("propertiesList");
+      container.innerHTML = "";
+      DB.properties.forEach(prop => {
         const div = document.createElement("div");
-        div.className = `property-pill ${state.selectedProperty === p[0] ? 'active' : ''}`;
-        div.innerHTML = `<i class="fa fa-building"></i> <span>${p[0]}</span>`;
-        div.onclick = () => selectProperty(p[0]);
-        bar.appendChild(div);
+        div.className = `prop-card ${selectedProperty === prop.PropertyName ? 'active' : ''}`;
+        div.onclick = () => selectProperty(prop.PropertyName);
+        div.innerHTML = `
+          <div class="prop-icon"><i class="fa-solid fa-hotel"></i></div>
+          <div class="prop-info">
+            <h4>${prop.PropertyName}</h4>
+            <span>UPI: ${prop.UPIID || 'Not set'}</span>
+          </div>
+        `;
+        container.appendChild(div);
       });
+      syncPropertyDropdowns();
     }
 
     function selectProperty(name) {
-      state.selectedProperty = name;
-      renderProperties();
-      renderFlats();
+      selectedProperty = name;
+      renderPropertiesRow();
+      renderFlatsGrid(name);
     }
 
-    function renderFlats() {
-      const container = document.getElementById("flatsContainer");
+    // 4. Render 3-Units Merged Wide Flat Cards
+    function renderFlatsGrid(propertyName) {
+      const container = document.getElementById("flatsList");
       container.innerHTML = "";
-      const filtered = state.flats.filter(f => String(f[0]).trim() === String(state.selectedProperty).trim());
+      const flats = DB.flats.filter(f => String(f.PropertyName).toLowerCase() === String(propertyName).toLowerCase());
 
-      filtered.forEach(f => {
+      flats.forEach(flat => {
+        // Find active tenant info
+        const renter = DB.renters.find(r => 
+          String(r.PropertyName).toLowerCase() === String(propertyName).toLowerCase() &&
+          String(r.FlatName).toLowerCase() === String(flat.FlatName).toLowerCase() &&
+          String(r.Status).toLowerCase() === "active"
+        );
+
         const card = document.createElement("div");
-        card.className = "flat-card";
+        card.className = "flat-card-merged";
+        card.onclick = () => openFlatDetailsModal(flat, renter);
+
         card.innerHTML = `
-          <div class="flat-header">
-            <span class="flat-title">Flat ${f[1]}</span>
-            <span style="font-size: 0.85rem; color: #9ca3af;">Rent: ₹${f[3]}</span>
-          </div>
-          <div class="renter-info">
-            <div class="renter-avatar"><i class="fa fa-user"></i></div>
-            <div>
-              <div style="font-weight: 600;">${f[2] || 'Vacant / Unassigned'}</div>
-              <div style="font-size: 0.75rem; color: #10b981;">Active</div>
+          <div>
+            <div class="flat-top-row">
+              <div class="flat-name">Flat ${flat.FlatName}</div>
+              <span class="rent-status status-paid">₹${flat.RentAmount || renter?.RentAmount || 0} / mo</span>
+            </div>
+            <div class="renter-identity">
+              <div class="renter-avatar">
+                <img src="${renter?.ProfileImageURL || 'https://via.placeholder.com/80'}" alt="Avatar">
+              </div>
+              <div class="renter-name">${renter ? renter.RenterName : 'Vacant / Ready'}</div>
             </div>
           </div>
+          <div class="flat-bottom-row">
+            <span style="font-size:0.8rem; color:var(--text-muted);"><i class="fa-solid fa-bolt"></i> Elec: ₹${flat.ElecRate || 9}/U</span>
+            <span style="font-size:0.8rem; color:var(--text-muted);"><i class="fa-solid fa-fire"></i> PNG: ₹${flat.PNGRate || 45}</span>
+            <span style="font-size:0.8rem; color:var(--text-muted);"><i class="fa-solid fa-faucet-drip"></i> Water: ₹${flat.WaterRate || 15}</span>
+          </div>
         `;
-        card.onclick = () => openFlatModal(f[1]);
         container.appendChild(card);
       });
     }
 
-    function openFlatModal(flatNo) {
-      state.activeFlat = flatNo;
-      document.getElementById("flatModalTitle").innerText = `Flat ${flatNo} Operations`;
-      document.getElementById("calcFlatNumber").innerText = `Flat #${flatNo}`;
-      document.getElementById("flatDetailModal").style.display = "flex";
-      loadFlatData(flatNo);
+    // 5. Flat Details Navigation & Tabs
+    function openFlatDetailsModal(flat, renter) {
+      selectedFlat = flat;
+      document.getElementById("modalHeaderTitle").innerText = `${flat.PropertyName} - Space Details`;
+      document.getElementById("modalFlatTag").innerText = `Flat ${flat.FlatName}`;
+
+      // Populate Calculator Defaults
+      document.getElementById("calcRent").value = flat.RentAmount || 0;
+      document.getElementById("calcRentBadge").innerText = `₹ ${flat.RentAmount || 0}`;
+
+      // Populate Utilities Tab
+      document.getElementById("profRent").value = flat.RentAmount || 0;
+      document.getElementById("profFlatNumber").value = flat.FlatName;
+      document.getElementById("profElecRate").value = flat.ElecRate || 9;
+      document.getElementById("profPngRate").value = flat.PNGRate || 45;
+      document.getElementById("profWaterRate").value = flat.WaterRate || 15;
+
+      if (renter) {
+        document.getElementById("profPngNumber").value = renter.PNGNumber || "";
+        document.getElementById("profPngMeter").value = renter.PNGMeterNumber || "";
+        document.getElementById("profWaterNumber").value = renter.WaterNumber || "";
+        document.getElementById("profElecMeter").value = renter.ElecMeterNumber || "";
+        document.getElementById("profUpiName").value = renter.UPIName || "";
+        document.getElementById("profUpiId").value = renter.UPIID || "";
+        document.getElementById("profContractMobile").value = renter.ContractMobile || "";
+
+        // Renter Profile Fields
+        document.getElementById("renterName").value = renter.RenterName || "";
+        document.getElementById("renterAadhaar").value = renter.AadhaarNumber || "";
+        document.getElementById("renterMobile").value = renter.MobileNumber || "";
+        document.getElementById("renterAltMobile").value = renter.AltMobileNumber || "";
+        document.getElementById("renterAddress").value = renter.Address || "";
+        document.getElementById("renterFamily").value = renter.TotalFamilyMembers || 1;
+        document.getElementById("renterStatus").value = renter.Status || "Active";
+        document.getElementById("renterJoinDate").value = renter.JoinDate || "";
+        document.getElementById("renterEndDate").value = renter.EndDate || "";
+        if (renter.ProfileImageURL) document.getElementById("profilePicturePreview").src = renter.ProfileImageURL;
+        if (renter.AadhaarImageURL) document.getElementById("aadhaarPicturePreview").src = renter.AadhaarImageURL;
+      } else {
+        clearRenterRightForm();
+      }
+
+      populateHistoryLedger(flat.PropertyName, flat.FlatName);
+      populateRenterHistory(flat.PropertyName, flat.FlatName, renter);
+      switchFlatTab('tabCalc');
+      openModal('flatDetailsModal');
     }
 
-    function closeModal(id) {
-      document.getElementById(id).style.display = "none";
+    function switchFlatTab(tabId) {
+      document.querySelectorAll(".flat-nav-item").forEach(item => item.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
+      event.target.classList.add("active");
+      document.getElementById(tabId).classList.add("active");
     }
 
-    function switchFlatTab(tabId, el) {
-      document.querySelectorAll(".tab-item").forEach(t => t.classList.remove("active"));
-      document.querySelectorAll(".tab-content").forEach(c => c.style.display = "none");
-      el.classList.add("active");
-      document.getElementById(tabId).style.display = "block";
+    // Bill Math Engine
+    function runBillMath() {
+      const rent = parseFloat(document.getElementById("calcRent").value) || 0;
+      const elecPrev = parseFloat(document.getElementById("calcElecPrev").value) || 0;
+      const elecCurr = parseFloat(document.getElementById("calcElecCurr").value) || 0;
+      const elecRate = parseFloat(document.getElementById("profElecRate").value) || 9;
+      const elecUnits = Math.max(0, elecCurr - elecPrev);
+      const elecTotal = elecUnits * elecRate;
+      document.getElementById("calcElecSummary").innerText = `${elecUnits} U (₹${elecTotal})`;
+
+      const pngPrev = parseFloat(document.getElementById("calcPngPrev").value) || 0;
+      const pngCurr = parseFloat(document.getElementById("calcPngCurr").value) || 0;
+      const pngRate = parseFloat(document.getElementById("profPngRate").value) || 45;
+      const pngUnits = Math.max(0, pngCurr - pngPrev);
+      const pngTotal = pngUnits * pngRate;
+      document.getElementById("calcPngSummary").innerText = `${pngUnits} U (₹${pngTotal})`;
+
+      const waterPrev = parseFloat(document.getElementById("calcWaterPrev").value) || 0;
+      const waterCurr = parseFloat(document.getElementById("calcWaterCurr").value) || 0;
+      const waterRate = parseFloat(document.getElementById("profWaterRate").value) || 15;
+      const waterUnits = Math.max(0, waterCurr - waterPrev);
+      const waterTotal = waterUnits * waterRate;
+      document.getElementById("calcWaterSummary").innerText = `${waterUnits} U (₹${waterTotal})`;
+
+      const addToggle = document.getElementById("calcAddToggle").value;
+      const addAmt = parseFloat(document.getElementById("calcAddAmount").value) || 0;
+      const addCalculated = addToggle === "+" ? addAmt : -addAmt;
+      document.getElementById("calcAddSummary").innerText = `₹ ${addCalculated}`;
+
+      const grand = rent + elecTotal + pngTotal + waterTotal + addCalculated;
+      document.getElementById("calcGrandTotal").innerText = `₹ ${grand.toFixed(2)}`;
     }
 
-    function togglePlusMenu() {
-      const m = document.getElementById("plusMenu");
-      m.style.display = m.style.display === "flex" ? "none" : "flex";
+    async function submitBillCalculation() {
+      const payload = {
+        action: "recordBill",
+        propertyName: selectedFlat.PropertyName,
+        flatName: selectedFlat.FlatName,
+        monthYear: document.getElementById("calcMonthPicker").value || new Date().toISOString().slice(0,7),
+        tenantName: document.getElementById("renterName").value || "Current Tenant",
+        baseRent: document.getElementById("calcRent").value,
+        elecPrev: document.getElementById("calcElecPrev").value,
+        elecCurr: document.getElementById("calcElecCurr").value,
+        elecUnits: Math.max(0, (parseFloat(document.getElementById("calcElecCurr").value)||0) - (parseFloat(document.getElementById("calcElecPrev").value)||0)),
+        elecRate: document.getElementById("profElecRate").value,
+        elecTotal: (parseFloat(document.getElementById("calcElecCurr").value)||0 - parseFloat(document.getElementById("calcElecPrev").value)||0) * (parseFloat(document.getElementById("profElecRate").value)||9),
+        pngPrev: document.getElementById("calcPngPrev").value,
+        pngCurr: document.getElementById("calcPngCurr").value,
+        pngUnits: Math.max(0, (parseFloat(document.getElementById("calcPngCurr").value)||0) - (parseFloat(document.getElementById("calcPngPrev").value)||0)),
+        pngRate: document.getElementById("profPngRate").value,
+        waterPrev: document.getElementById("calcWaterPrev").value,
+        waterCurr: document.getElementById("calcWaterCurr").value,
+        totalBilled: parseFloat(document.getElementById("calcGrandTotal").innerText.replace("₹ ","")) || 0,
+        paidAmount: 0,
+        status: "Unpaid",
+        notes: document.getElementById("calcNotes").value
+      };
+
+      await sendGasPost(payload);
+      alert("Bill calculated and logged to Google Sheet!");
+      syncDataLive(false);
     }
 
-    function loadFlatData(flatNo) {
-      const bills = state.bills.filter(b => String(b[1]) === String(flatNo));
-      const tbody = document.getElementById("historyLedgerBody");
+    // Ledger Table Population
+    function populateHistoryLedger(prop, flat) {
+      const tbody = document.getElementById("ledgerTableBody");
       tbody.innerHTML = "";
-      bills.forEach(b => {
+      const bills = DB.bills.filter(b => String(b.PropertyName).toLowerCase() === String(prop).toLowerCase() && String(b.FlatName).toLowerCase() === String(flat).toLowerCase());
+
+      bills.forEach(bill => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td style="padding: 0.5rem;">${b[0]}</td>
-          <td style="padding: 0.5rem;">₹${b[2]}</td>
-          <td style="padding: 0.5rem;">₹${b[6]}</td>
-          <td style="padding: 0.5rem;"><span style="color:${b[8] === 'Fully Paid' ? '#10b981' : '#ef4444'}">${b[8]}</span></td>
-          <td style="padding: 0.5rem;"><i class="fa fa-receipt" style="cursor:pointer;"></i></td>
+          <td>${bill.MonthYear}</td>
+          <td>${bill.TenantName}</td>
+          <td>₹${bill.BaseRent}</td>
+          <td>${bill.ElecRate} | ${bill.ElecPrev}-${bill.ElecCurr} = ${bill.ElecUnits}</td>
+          <td>${bill.PNGRate} | ${bill.PNGPrev}-${bill.PNGCurr} = ${bill.PNGUnits}</td>
+          <td>${bill.WaterRate} | ${bill.WaterPrev}-${bill.WaterCurr} = ${bill.WaterUnits}</td>
+          <td><strong>₹${bill.TotalBilled}</strong></td>
+          <td>₹${bill.PaidAmount} (${bill.PaymentMode})</td>
+          <td><span class="badge-${String(bill.Status).toLowerCase().includes('fully') ? 'paid' : (String(bill.Status).toLowerCase().includes('partial') ? 'partial' : 'unpaid')}">${bill.Status}</span></td>
+          <td>
+            <i class="fa-solid fa-file-pdf" style="cursor:pointer; margin-right:8px;" title="PDF"></i>
+            <i class="fa-brands fa-whatsapp" style="cursor:pointer; color:#22c55e;" title="Share"></i>
+          </td>
         `;
         tbody.appendChild(tr);
       });
+    }
+
+    function populateRenterHistory(prop, flat, activeRenter) {
+      const bills = DB.bills.filter(b => String(b.PropertyName).toLowerCase() === String(prop).toLowerCase() && String(b.FlatName).toLowerCase() === String(flat).toLowerCase());
+      let totalBilled = 0, totalPaid = 0, totalRent = 0, totalUtility = 0;
+
+      bills.forEach(b => {
+        totalBilled += parseFloat(b.TotalBilled) || 0;
+        totalPaid += parseFloat(b.PaidAmount) || 0;
+        totalRent += parseFloat(b.BaseRent) || 0;
+        totalUtility += ((parseFloat(b.TotalBilled)||0) - (parseFloat(b.BaseRent)||0));
+      });
+
+      document.getElementById("rhBilled").innerText = `₹ ${totalBilled}`;
+      document.getElementById("rhPaid").innerText = `₹ ${totalPaid}`;
+      document.getElementById("rhTotalRent").innerText = `₹ ${totalRent}`;
+      document.getElementById("rhUtility").innerText = `₹ ${totalUtility}`;
+      const due = totalBilled - totalPaid;
+      document.getElementById("rhBalance").innerText = due > 0 ? `Due: ₹ ${due}` : `Settled`;
+
+      if (activeRenter) {
+        document.getElementById("rhName").innerText = activeRenter.RenterName || "Tenant";
+        document.getElementById("rhContact").innerText = `Contact: ${activeRenter.MobileNumber || '--'}`;
+        document.getElementById("rhStay").innerText = `Stay: ${activeRenter.JoinDate || '--'} to Present`;
+      }
+    }
+
+    // 6. Profile Form Logic & Smart Append/Update
+    async function saveUtilitiesLeft() {
+      const payload = {
+        action: "updateFlatUtilities",
+        propertyName: selectedFlat.PropertyName,
+        flatName: selectedFlat.FlatName,
+        rentAmount: document.getElementById("profRent").value,
+        pngNumber: document.getElementById("profPngNumber").value,
+        pngMeterNumber: document.getElementById("profPngMeter").value,
+        pngFixedRate: document.getElementById("profPngRate").value,
+        waterNumber: document.getElementById("profWaterNumber").value,
+        waterMeterNumber: document.getElementById("profWaterMeter").value,
+        waterFixedRate: document.getElementById("profWaterRate").value,
+        elecMeterNumber: document.getElementById("profElecMeter").value,
+        elecFixedRate: document.getElementById("profElecRate").value,
+        upiName: document.getElementById("profUpiName").value,
+        upiId: document.getElementById("profUpiId").value,
+        contractMobile: document.getElementById("profContractMobile").value
+      };
+      await sendGasPost(payload);
+      alert("Utility configuration updated successfully!");
+      syncDataLive(false);
+    }
+
+    async function submitRenterProfileRight() {
+      const statusVal = document.getElementById("renterStatus").value;
+      const payload = {
+        action: "updateRenterProfile",
+        propertyName: selectedFlat.PropertyName,
+        flatName: selectedFlat.FlatName,
+        renterName: document.getElementById("renterName").value,
+        aadhaarNumber: document.getElementById("renterAadhaar").value,
+        mobileNumber: document.getElementById("renterMobile").value,
+        altMobileNumber: document.getElementById("renterAltMobile").value,
+        address: document.getElementById("renterAddress").value,
+        familyMembers: document.getElementById("renterFamily").value,
+        renterStatus: statusVal,
+        joinDate: document.getElementById("renterJoinDate").value,
+        endDate: document.getElementById("renterEndDate").value,
+        profileImageUrl: document.getElementById("profilePicturePreview").src,
+        aadhaarImageUrl: document.getElementById("aadhaarPicturePreview").src,
+        rentAmount: document.getElementById("profRent").value
+      };
+
+      const res = await sendGasPost(payload);
+      if (res.actionType === "archived") {
+        alert("Renter marked Inactive. Past records locked safely. Ready for next renter entry.");
+        clearRenterRightForm();
+      } else {
+        alert("Renter record successfully saved!");
+      }
+      syncDataLive(false);
+    }
+
+    function clearRenterRightForm() {
+      document.getElementById("renterName").value = "";
+      document.getElementById("renterAadhaar").value = "";
+      document.getElementById("renterMobile").value = "";
+      document.getElementById("renterAltMobile").value = "";
+      document.getElementById("renterAddress").value = "";
+      document.getElementById("renterFamily").value = "1";
+      document.getElementById("renterStatus").value = "Active";
+      document.getElementById("renterJoinDate").value = "";
+      document.getElementById("renterEndDate").value = "";
+      document.getElementById("profilePicturePreview").src = "https://via.placeholder.com/150";
+      document.getElementById("aadhaarPicturePreview").src = "https://via.placeholder.com/300x150";
+    }
+
+    // 7. Modals & Actions
+    function toggleActionMenu() {
+      document.getElementById("actionMenu").classList.toggle("show");
+    }
+    window.addEventListener("click", (e) => {
+      if (!e.target.closest(".dropdown-anchor")) {
+        document.getElementById("actionMenu")?.classList.remove("show");
+      }
+    });
+
+    function openModal(id) {
+      document.getElementById(id).classList.add("active");
+      document.getElementById("actionMenu")?.classList.remove("show");
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove("active");
+    }
+
+    // Property Dropdowns Synchronization
+    function syncPropertyDropdowns() {
+      const editSelect = document.getElementById("editPropDropdown");
+      const delSelect = document.getElementById("deletePropDropdown");
+      const addFlatSelect = document.getElementById("addFlatPropDropdown");
+      const delFlatPropSelect = document.getElementById("deleteFlatPropDropdown");
+
+      const options = DB.properties.map(p => `<option value="${p.PropertyName}">${p.PropertyName}</option>`).join("");
+      [editSelect, delSelect, addFlatSelect, delFlatPropSelect].forEach(sel => {
+        if (sel) sel.innerHTML = options;
+      });
+      syncEditPropDisplay();
+      populateDeleteFlatList();
+    }
+
+    function syncEditPropDisplay() {
+      const val = document.getElementById("editPropDropdown").value;
+      document.getElementById("editPropCurrentName").value = val || "";
+    }
+
+    function populateDeleteFlatList() {
+      const p = document.getElementById("deleteFlatPropDropdown").value;
+      const flatSelect = document.getElementById("deleteFlatTargetDropdown");
+      const filtered = DB.flats.filter(f => String(f.PropertyName).toLowerCase() === String(p).toLowerCase());
+      flatSelect.innerHTML = filtered.map(f => `<option value="${f.FlatName}">${f.FlatName}</option>`).join("");
+    }
+
+    // Add Property with Duplicate Check
+    async function submitAddProperty() {
+      const name = document.getElementById("newPropName").value.trim();
+      if (!name) return alert("Property Name is mandatory!");
+
+      // Local check before hitting network
+      if (DB.properties.some(p => p.PropertyName.toLowerCase() === name.toLowerCase())) {
+        return alert("This property name is already added. Please use a different name.");
+      }
+
+      const res = await sendGasPost({
+        action: "addProperty",
+        propertyName: name,
+        upiName: document.getElementById("newPropUpiName").value,
+        upiId: document.getElementById("newPropUpiId").value,
+        contractNumber: document.getElementById("newPropContract").value
+      });
+
+      if (res.status === "duplicate") {
+        alert(res.message);
+      } else {
+        closeModal("addPropertyModal");
+        syncDataLive(false);
+      }
+    }
+
+    // Edit Property with Duplicate Check
+    async function submitEditProperty() {
+      const oldName = document.getElementById("editPropCurrentName").value;
+      const newName = document.getElementById("editPropNewName").value.trim();
+      if (!newName) return alert("Please enter a new name.");
+
+      if (DB.properties.some(p => p.PropertyName.toLowerCase() === newName.toLowerCase() && p.PropertyName.toLowerCase() !== oldName.toLowerCase())) {
+        return alert("This property name is already taken. Please use a different name.");
+      }
+
+      const res = await sendGasPost({
+        action: "editProperty",
+        oldName: oldName,
+        newName: newName
+      });
+      if (res.status === "duplicate") {
+        alert(res.message);
+      } else {
+        closeModal("editPropertyModal");
+        syncDataLive(false);
+      }
+    }
+
+    // Double Confirmation Property Delete
+    function triggerDeletePropertyCheck() {
+      const p = document.getElementById("deletePropDropdown").value;
+      const conf = confirm("Are you sure you want to confirm delete this property? Yes or No?");
+      if (conf) {
+        sendGasPost({ action: "deleteProperty", propertyName: p }).then(() => {
+          closeModal("deletePropertyModal");
+          syncDataLive(false);
+        });
+      }
+    }
+
+    // Add Flat
+    async function submitAddFlat() {
+      const p = document.getElementById("addFlatPropDropdown").value;
+      const flat = document.getElementById("addFlatNumber").value.trim();
+      if (!flat) return alert("Flat Name/Number is strictly mandatory.");
+
+      const res = await sendGasPost({
+        action: "addFlat",
+        propertyName: p,
+        flatName: flat,
+        renterName: document.getElementById("addFlatRenter").value,
+        rentAmount: document.getElementById("addFlatRent").value,
+        elecRate: document.getElementById("addFlatElecRate").value,
+        pngRate: document.getElementById("addFlatPngRate").value,
+        waterRate: document.getElementById("addFlatWaterRate").value
+      });
+
+      if (res.status === "duplicate") {
+        alert(res.message);
+      } else {
+        closeModal("addFlatModal");
+        syncDataLive(false);
+      }
+    }
+
+    // Double Confirmation Flat Delete
+    function triggerDeleteFlatCheck() {
+      const p = document.getElementById("deleteFlatPropDropdown").value;
+      const f = document.getElementById("deleteFlatTargetDropdown").value;
+      const conf = confirm("Are you sure you want to confirm delete this flat? Yes or No?");
+      if (conf) {
+        sendGasPost({ action: "deleteFlat", propertyName: p, flatName: f }).then(() => {
+          closeModal("deleteFlatModal");
+          syncDataLive(false);
+        });
+      }
+    }
+
+    // Change Password Workflow
+    async function submitChangePassword() {
+      const oldP = document.getElementById("oldPassInput").value;
+      const newP = document.getElementById("newPassInput").value;
+      const confP = document.getElementById("confirmNewPassInput").value;
+
+      if (!oldP || !newP) return alert("All fields are mandatory.");
+      if (newP !== confP) return alert("New Password does not match Confirm New Password.");
+
+      const res = await sendGasPost({
+        action: "changePassword",
+        username: activeUser,
+        oldPassword: oldP,
+        newPassword: newP
+      });
+
+      if (res.status === "success") {
+        alert("Password updated! Logging out for security.");
+        handleLogout();
+      } else {
+        alert(res.message);
+      }
+    }
+
+    // Session Wipe Logout
+    function handleLogout() {
+      activeUser = null;
+      selectedProperty = null;
+      selectedFlat = null;
+      document.getElementById("dashboardScreen").classList.remove("active");
+      document.getElementById("loginScreen").classList.add("active");
+      document.querySelectorAll(".modal-overlay").forEach(m => m.classList.remove("active"));
+    }
+
+    // Image Upload Preview Helper
+    function previewImageFile(input, targetImgId) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById(targetImgId).src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    // Network Request Wrapper
+    async function sendGasPost(data) {
+      const url = getGasUrl();
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(data)
+      });
+      return await response.json();
     }
   </script>
 </body>
