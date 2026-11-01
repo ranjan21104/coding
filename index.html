@@ -3,980 +3,469 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PropMaster Pro - Rental & Finance Manager</title>
-  
-  <!-- Tailwind CSS & FontAwesome Icons -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Property & Renter Financial Manager</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
   <style>
+    :root {
+      --primary: #2563eb;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --glass-bg: rgba(255, 255, 255, 0.15);
+      --glass-border: rgba(255, 255, 255, 0.25);
+      --dark-card: rgba(20, 24, 39, 0.75);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { min-height: 100vh; background-color: #0b0f19; color: #f3f4f6; overflow-x: hidden; }
+
+    /* Login Screen with Full House Background */
+    #loginScreen {
+      position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)),
+                  url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80") center/cover no-repeat;
+      z-index: 100;
+    }
     .glass-card {
-      background: rgba(255, 255, 255, 0.12);
+      background: var(--glass-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.28);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 2.5rem;
+      width: 90%; max-width: 420px;
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     }
-    .glass-modal {
-      background: rgba(18, 24, 38, 0.88);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+    .input-group { margin-bottom: 1.25rem; }
+    .input-group label { display: block; font-size: 0.875rem; margin-bottom: 0.5rem; color: #e5e7eb; }
+    .input-control {
+      width: 100%; padding: 0.75rem 1rem; border-radius: 8px;
+      border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.1);
+      color: #fff; font-size: 1rem; outline: none; transition: 0.2s;
     }
-    .custom-scrollbar::-webkit-scrollbar {
-      height: 6px;
-      width: 6px;
+    .input-control:focus { border-color: #60a5fa; box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3); }
+    .btn {
+      width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: none;
+      background: var(--primary); color: #fff; font-weight: 600; font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
     }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 4px;
+    .btn:hover { background: #1d4ed8; }
+
+    /* Dashboard Layout */
+    #appDashboard { display: none; min-height: 100vh; flex-direction: column; }
+    .top-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.75rem 1.5rem; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 50;
     }
-    @keyframes pulse-green {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.3); opacity: 0.7; }
+    .header-left { display: flex; align-items: center; gap: 0.75rem; }
+    .pulse-dot {
+      width: 12px; height: 12px; border-radius: 50%; background-color: var(--success);
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); animation: pulsing 1.6s infinite;
     }
-    .animate-pulse-green {
-      animation: pulse-green 1.8s infinite ease-in-out;
+    @keyframes pulsing {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
     }
+    .header-center { flex: 1; max-width: 450px; margin: 0 1rem; position: relative; }
+    .search-input { width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
+    .header-right { display: flex; align-items: center; gap: 1rem; position: relative; }
+    .icon-btn { background: none; border: none; color: #d1d5db; font-size: 1.25rem; cursor: pointer; padding: 0.5rem; border-radius: 50%; }
+    .icon-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* Horizontal Properties Row */
+    .properties-bar {
+      display: flex; gap: 1rem; padding: 1rem 1.5rem; overflow-x: auto;
+      scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.2) transparent;
+    }
+    .property-pill {
+      display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.2rem;
+      border-radius: 12px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15);
+      cursor: pointer; white-space: nowrap; transition: 0.2s;
+    }
+    .property-pill.active { background: var(--primary); border-color: #60a5fa; }
+
+    /* Flats Grid - 3-Wide Merged Cards */
+    .flats-container {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 1.25rem; padding: 1.5rem; flex: 1;
+    }
+    .flat-card {
+      background: var(--dark-card); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px; padding: 1.25rem; cursor: pointer; transition: 0.2s;
+    }
+    .flat-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.3); }
+    .flat-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
+    .flat-title { font-size: 1.15rem; font-weight: 700; color: #fff; }
+    .renter-info { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+    .renter-avatar { width: 42px; height: 42px; border-radius: 50%; background: #374151; display: flex; align-items: center; justify-content: center; }
+
+    /* Modal Framework */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1rem;
+    }
+    .modal-box {
+      background: #111827; border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 16px; width: 100%; max-width: 900px; max-height: 90vh;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .modal-body { padding: 1.5rem; overflow-y: auto; }
+    .nav-tabs { display: flex; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .tab-item {
+      flex: 1; padding: 0.85rem; text-align: center; cursor: pointer; font-weight: 600;
+      color: #9ca3af; border-bottom: 2px solid transparent;
+    }
+    .tab-item.active { color: #60a5fa; border-color: #60a5fa; }
+    
+    /* Plus Menu Dropdown */
+    .dropdown-menu {
+      position: absolute; right: 80px; top: 60px; background: #1f2937;
+      border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; width: 200px;
+      display: none; flex-direction: column; z-index: 100;
+    }
+    .dropdown-item { padding: 0.75rem 1rem; cursor: pointer; display: flex; gap: 0.5rem; align-items: center; color: #e5e7eb; }
+    .dropdown-item:hover { background: rgba(255,255,255,0.08); }
+    
+    /* Metrics Row */
+    .metrics-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
+    .metric-card { background: rgba(255,255,255,0.05); padding: 0.75rem; border-radius: 8px; text-align: center; }
+    .metric-value { font-size: 1.1rem; font-weight: 700; margin-top: 0.25rem; }
+    .due-alert { color: var(--danger); }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen font-sans selection:bg-emerald-500 selection:text-white">
+<body>
 
-  <!-- ========================================== -->
-  <!-- SCREEN 1: LOGIN SCREEN                     -->
-  <!-- ========================================== -->
-  <section id="loginScreen" class="relative flex items-center justify-center min-h-screen w-full overflow-hidden bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=80');">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
-
-    <div class="relative z-10 w-11/12 max-w-md p-8 rounded-3xl glass-card text-white">
-      <div class="text-center mb-6">
-        <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white/20 flex items-center justify-center border border-white/30 shadow-inner">
-          <i class="fa-solid fa-house-chimney text-3xl text-emerald-400"></i>
-        </div>
-        <h1 class="text-2xl font-bold tracking-tight">PropMaster Portal</h1>
-        <p class="text-sm text-slate-300">Live Firebase Cloud Firestore</p>
+  <!-- Live Login Screen -->
+  <div id="loginScreen">
+    <div class="glass-card">
+      <h2 style="margin-bottom: 1.5rem; text-align: center; font-weight: 700;">Manager Portal</h2>
+      <div class="input-group">
+        <label>Username</label>
+        <input type="text" id="loginUsername" class="input-control" placeholder="Enter username">
       </div>
-
-      <form id="loginForm" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-200 mb-1">Username</label>
-          <input type="text" id="loginUsername" required class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="Enter username">
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-200 mb-1">Password</label>
-          <input type="password" id="loginPassword" required class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="Enter password">
-        </div>
-
-        <button type="submit" id="loginBtn" class="w-full py-3.5 mt-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 transition duration-200 font-semibold text-white shadow-lg shadow-emerald-500/30 flex items-center justify-center space-x-2">
-          <span>Login Securely</span>
-          <i class="fa-solid fa-arrow-right text-sm"></i>
-        </button>
-      </form>
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" class="input-control" placeholder="Enter password">
+      </div>
+      <button class="btn" onclick="executeLiveLogin()">
+        <span id="loginSpinner" style="display:none;"><i class="fa fa-spinner fa-spin"></i></span>
+        <span>Secure Login</span>
+      </button>
     </div>
-  </section>
+  </div>
 
-  <!-- ========================================== -->
-  <!-- SCREEN 2: MAIN DASHBOARD                   -->
-  <!-- ========================================== -->
-  <div id="mainDashboard" class="hidden min-h-screen flex flex-col bg-slate-900">
-    
-    <!-- Top Header -->
-    <header class="sticky top-0 z-40 w-full px-6 py-4 glass-card border-b border-white/10 flex items-center justify-between">
-      <!-- Left Side -->
-      <div class="flex items-center space-x-3">
-        <h1 class="text-xl font-bold tracking-tight text-white">Dashboard</h1>
-        <div class="relative flex items-center justify-center w-3 h-3">
-          <span class="absolute w-3 h-3 rounded-full bg-emerald-400 animate-pulse-green"></span>
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-        </div>
+  <!-- Main Responsive Dashboard -->
+  <div id="appDashboard">
+    <header class="top-header">
+      <div class="header-left">
+        <span style="font-weight: 700; font-size: 1.25rem;">Dashboard</span>
+        <div class="pulse-dot" title="Live Synced to Google Sheet"></div>
       </div>
-
-      <!-- Center: Search Bar -->
-      <div class="relative flex items-center">
-        <input type="text" id="globalSearch" placeholder="Search..." class="w-10 focus:w-64 transition-all duration-300 pl-9 pr-3 py-2 rounded-full bg-white/10 border border-white/20 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer focus:cursor-text">
-        <i class="fa-solid fa-magnifying-glass absolute left-3 text-slate-300 pointer-events-none"></i>
+      <div class="header-center">
+        <i class="fa fa-search search-icon"></i>
+        <input type="text" id="globalSearch" class="search-input" placeholder="Search tenant, flat, month..." oninput="handleGlobalSearch()">
       </div>
-
-      <!-- Right Side Action Icons -->
-      <div class="flex items-center space-x-4">
-        <!-- Live Reload Icon -->
-        <button id="reloadBtn" title="Sync Status" class="p-2.5 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition">
-          <i class="fa-solid fa-rotate text-lg"></i>
-        </button>
-
-        <!-- Plus Action Icon Dropdown -->
-        <div class="relative">
-          <button id="plusBtn" title="Manage" class="p-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white transition shadow-md shadow-emerald-500/20">
-            <i class="fa-solid fa-plus text-lg"></i>
-          </button>
-          <div id="plusMenu" class="hidden absolute right-0 mt-2 w-56 rounded-2xl glass-modal p-2 shadow-2xl z-50 border border-white/10 text-sm">
-            <button id="openAddProp" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center space-x-2 text-slate-200">
-              <i class="fa-solid fa-building text-emerald-400 w-5"></i><span>Add Property</span>
-            </button>
-            <button id="openEditProp" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center space-x-2 text-slate-200">
-              <i class="fa-solid fa-pen-to-square text-cyan-400 w-5"></i><span>Edit Property Name</span>
-            </button>
-            <button id="openDeleteProp" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center space-x-2 text-rose-400">
-              <i class="fa-solid fa-trash text-rose-400 w-5"></i><span>Delete Property</span>
-            </button>
-            <div class="my-1 border-t border-white/10"></div>
-            <button id="openAddFlat" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center space-x-2 text-slate-200">
-              <i class="fa-solid fa-door-open text-amber-400 w-5"></i><span>Add Flat</span>
-            </button>
-            <button id="openDeleteFlat" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/10 flex items-center space-x-2 text-rose-400">
-              <i class="fa-solid fa-rectangle-xmark text-rose-400 w-5"></i><span>Delete Flat</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Profile Icon -->
-        <button id="profileBtn" title="Profile & Password" class="p-2.5 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition">
-          <i class="fa-solid fa-user-gear text-lg"></i>
-        </button>
-
-        <!-- Logout Icon -->
-        <button id="logoutBtn" title="Logout" class="p-2.5 rounded-xl hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 transition">
-          <i class="fa-solid fa-arrow-right-from-bracket text-lg"></i>
-        </button>
+      <div class="header-right">
+        <button class="icon-btn" title="Reload Sheet Data" onclick="refreshDashboard()"><i class="fa fa-rotate-right"></i></button>
+        <button class="icon-btn" title="Add / Manage" onclick="togglePlusMenu()"><i class="fa fa-plus"></i></button>
+        <button class="icon-btn" title="Profile Settings" onclick="openPasswordModal()"><i class="fa fa-user"></i></button>
+        <button class="icon-btn" title="Logout" onclick="executeLogout()"><i class="fa fa-arrow-right-from-bracket"></i></button>
       </div>
     </header>
 
-    <!-- Main Workspace -->
-    <main class="flex-1 p-6 space-y-8 max-w-7xl mx-auto w-full">
-      <!-- Horizontal Scrollable Properties Row -->
-      <div>
-        <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-3">Properties</h2>
-        <div id="propertiesContainer" class="flex space-x-4 overflow-x-auto pb-3 custom-scrollbar"></div>
-      </div>
+    <!-- Plus Action Dropdown Menu -->
+    <div id="plusMenu" class="dropdown-menu">
+      <div class="dropdown-item" onclick="openAddPropertyModal()"><i class="fa fa-building"></i> Add Property</div>
+      <div class="dropdown-item" onclick="openEditPropertyModal()"><i class="fa fa-pen"></i> Edit Property</div>
+      <div class="dropdown-item" onclick="openDeletePropertyModal()"><i class="fa fa-trash"></i> Delete Property</div>
+      <div class="dropdown-item" onclick="openAddFlatModal()"><i class="fa fa-door-open"></i> Add Flat</div>
+      <div class="dropdown-item" onclick="openDeleteFlatModal()"><i class="fa fa-ban"></i> Delete Flat</div>
+    </div>
 
-      <!-- Selected Property Info -->
-      <div id="selectedPropertyInfo" class="p-4 rounded-2xl glass-card flex flex-wrap items-center justify-between text-sm">
-        <div class="flex items-center space-x-3">
-          <span class="text-slate-400">Active Property:</span>
-          <span id="activePropertyTitle" class="font-bold text-emerald-400 text-base">Select a Property</span>
-        </div>
-        <div class="flex items-center space-x-6 text-xs text-slate-300">
-          <div>UPI Name: <span id="propUpiName" class="font-medium text-white">-</span></div>
-          <div>UPI ID: <span id="propUpiId" class="font-medium text-emerald-400">-</span></div>
-          <div>Contact: <span id="propContact" class="font-medium text-white">-</span></div>
-        </div>
-      </div>
+    <!-- Horizontal Properties Navigation -->
+    <div class="properties-bar" id="propertiesList"></div>
 
-      <!-- Flats Grid -->
-      <div>
-        <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-3">Flats & Renters</h2>
-        <div id="flatsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-      </div>
-    </main>
+    <!-- 3-Wide Merged Flat Grid -->
+    <main class="flats-container" id="flatsContainer"></main>
   </div>
 
-  <!-- ========================================== -->
-  <!-- MODAL: FLAT DETAIL POPUP (4 SUB-TABS)       -->
-  <!-- ========================================== -->
-  <div id="flatDetailModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-    <div class="relative w-full max-w-5xl h-[88vh] rounded-3xl glass-modal flex flex-col overflow-hidden shadow-2xl">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/5">
-        <div class="flex space-x-1 sm:space-x-3 overflow-x-auto text-sm">
-          <button id="btn-calcTab" class="flat-tab-btn px-4 py-2 rounded-xl bg-emerald-500 text-white font-medium">1. Calculation</button>
-          <button id="btn-histTab" class="flat-tab-btn px-4 py-2 rounded-xl text-slate-300 hover:bg-white/10">2. History</button>
-          <button id="btn-profTab" class="flat-tab-btn px-4 py-2 rounded-xl text-slate-300 hover:bg-white/10">3. Profile</button>
-          <button id="btn-renterHistTab" class="flat-tab-btn px-4 py-2 rounded-xl text-slate-300 hover:bg-white/10">4. Renter History</button>
-        </div>
-        <button id="closeDetailModal" class="p-2 rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition">
-          <i class="fa-solid fa-xmark text-xl"></i>
-        </button>
+  <!-- Flat Master Popup Modal -->
+  <div id="flatDetailModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="flatModalTitle">Flat Details</h3>
+        <button class="icon-btn" onclick="closeModal('flatDetailModal')"><i class="fa fa-xmark"></i></button>
       </div>
-
-      <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
-        <!-- 1. Calculation Tab -->
-        <div id="calcTab" class="flat-tab-content space-y-6">
-          <div class="flex justify-between items-center border-b border-white/10 pb-3">
-            <h2 class="text-xl font-bold text-emerald-400">Monthly Bill Calculator</h2>
-            <span id="calcFlatName" class="px-3 py-1 rounded-lg bg-white/10 text-sm font-semibold">Flat -</span>
+      <div class="nav-tabs">
+        <div class="tab-item active" onclick="switchFlatTab('tabCalc', this)">1. Calculation</div>
+        <div class="tab-item" onclick="switchFlatTab('tabHistory', this)">2. History</div>
+        <div class="tab-item" onclick="switchFlatTab('tabProfile', this)">3. Profile</div>
+        <div class="tab-item" onclick="switchFlatTab('tabRenterHistory', this)">4. Renter History</div>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Tab 1: Monthly Bill Calculator -->
+        <div id="tabCalc" class="tab-content">
+          <div style="display:flex; justify-content:space-between; margin-bottom:1rem;">
+            <h4>Monthly Bill Calculator</h4>
+            <span id="calcFlatNumber" style="font-weight:700;">Flat #</span>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Billing Month & Year</label>
-              <input type="month" id="calcBillingMonth" class="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white text-sm">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="input-group">
+              <label>Billing Month & Year</label>
+              <input type="month" id="calcBillingMonth" class="input-control">
             </div>
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Rent (₹)</label>
-              <input type="number" id="calcRent" class="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white text-sm">
-            </div>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
-              <h3 class="text-xs font-bold uppercase text-amber-400 flex items-center justify-between">
-                <span>Electricity</span><i class="fa-solid fa-bolt"></i>
-              </h3>
-              <div class="text-xs flex justify-between"><span>Prev:</span><input type="number" id="calcElecPrev" value="0" class="w-20 bg-white/10 px-2 py-0.5 rounded text-right"></div>
-              <div class="text-xs flex justify-between"><span>Curr:</span><input type="number" id="calcElecCurr" placeholder="Enter current" class="w-20 bg-white/10 px-2 py-0.5 rounded text-right"></div>
-              <div class="text-xs flex justify-between"><span>Rate (₹):</span><input type="number" id="calcElecRate" value="9" class="w-20 bg-white/10 px-2 py-0.5 rounded text-right"></div>
-              <div class="pt-2 border-t border-white/10 flex justify-between text-xs font-semibold text-slate-200">
-                <span>Units Consumed:</span><span id="calcElecUnits">0</span>
-              </div>
-            </div>
-            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
-              <h3 class="text-xs font-bold uppercase text-orange-400 flex items-center justify-between">
-                <span>PNG Gas</span><i class="fa-solid fa-fire-burner"></i>
-              </h3>
-              <div class="text-xs flex justify-between"><span>Prev:</span><input type="number" id="calcPngPrev" value="0" class="w-20 bg-white/10 px-2 py-0.5 rounded text-right"></div>
-              <div class="text-xs flex justify-between"><span>Curr:</span><input type="number" id="calcPngCurr" placeholder="Enter current" class="w-20 bg-white/10 px-2 py-0.5 rounded text-right"></div>
-              <div class="text-xs flex justify-between"><span>Rate (₹):</span><input type="number" id="calcPngRate" value="45" class="w-20 bg-white/10 px-2 py-0.5 rounded text-right"></div>
-              <div class="pt-2 border-t border-white/10 flex justify-between text-xs font-semibold text-slate-200">
-                <span>Units Consumed:</span><span id="calcPngUnits">0</span>
-              </div>
-            </div>
-            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
-              <h3 class="text-xs font-bold uppercase text-cyan-400 flex items-center justify-between">
-                <span>Water</span><i class="fa-solid fa-droplet"></i>
-              </h3>
-              <div class="text-xs flex justify-between"><span>Prev:</span><input type="number" id="calcWaterPrev" value="0" class="w-20 bg-white/10 px-2 py-0.5 rounded text-right"></div>
-              <div class="text-xs flex justify-between"><span>Curr:</span><input type="number" id="calcWaterCurr" placeholder="Enter current" class="w-20 bg-white/10 px-2 py-0.5 rounded text-right"></div>
-              <div class="text-xs flex justify-between"><span>Rate (₹):</span><input type="number" id="calcWaterRate" value="15" class="w-20 bg-white/10 px-2 py-0.5 rounded text-right"></div>
-              <div class="pt-2 border-t border-white/10 flex justify-between text-xs font-semibold text-slate-200">
-                <span>Units Consumed:</span><span id="calcWaterUnits">0</span>
-              </div>
+            <div class="input-group">
+              <label>Rent (₹)</label>
+              <input type="number" id="calcRentAmount" class="input-control" value="0">
             </div>
           </div>
-          <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
-            <h3 class="text-xs font-bold uppercase text-slate-300">Additional Charges</h3>
-            <div class="flex flex-wrap items-center gap-3">
-              <input type="text" id="calcAddName" placeholder="Charge Name" class="flex-1 px-3 py-1.5 rounded-lg bg-white/10 text-sm">
-              <select id="calcAddSign" class="px-3 py-1.5 rounded-lg bg-slate-800 text-sm">
-                <option value="plus">+</option>
-                <option value="minus">-</option>
-              </select>
-              <input type="number" id="calcAddAmt" placeholder="₹ Amount" class="w-32 px-3 py-1.5 rounded-lg bg-white/10 text-sm">
-            </div>
-            <div class="flex justify-between items-center text-sm pt-2">
-              <span class="text-slate-400">Total Additional:</span>
-              <span id="calcTotalAdd" class="font-bold text-white">₹ 0</span>
+          <!-- Utility Row: Elec, PNG, Water -->
+          <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+            <h5>Electricity Reading & Rate</h5>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem;">
+              <input type="number" id="calcElecPrev" placeholder="Prev Reading" class="input-control">
+              <input type="number" id="calcElecCurr" placeholder="Enter current" class="input-control" oninput="computeUtilityUnits()">
+              <input type="number" id="calcElecRate" placeholder="Rate/Unit" class="input-control" oninput="computeUtilityUnits()">
             </div>
           </div>
-          <div class="space-y-2">
-            <label class="block text-xs text-slate-400">Important Notes</label>
-            <textarea id="calcNotes" rows="2" class="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white text-sm"></textarea>
-          </div>
-          <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex justify-between items-center">
-            <span class="text-base font-semibold">Balance Adv / Due:</span>
-            <span id="calcGrandTotal" class="text-2xl font-black text-rose-400">₹ 0</span>
-          </div>
-          <button id="submitBillBtn" class="w-full py-4 rounded-xl bg-emerald-500 hover:bg-emerald-600 font-bold text-white shadow-xl shadow-emerald-500/20">
-            Calculate Bill
-          </button>
+          <button class="btn" style="margin-top: 1rem;" onclick="saveMonthlyBill()">Calculate & Save Bill</button>
         </div>
 
-        <!-- 2. Ledger Tab -->
-        <div id="histTab" class="flat-tab-content hidden space-y-4">
-          <div class="flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-              <i class="fa-solid fa-clock-rotate-left text-emerald-400"></i>
-              <h2 class="text-lg font-bold">Billed History Ledger</h2>
-            </div>
-            <span id="histFlatName" class="px-3 py-1 rounded-lg bg-white/10 text-xs font-semibold">Flat -</span>
-          </div>
-          <div class="overflow-x-auto rounded-2xl border border-white/10">
-            <table class="w-full text-left text-xs whitespace-nowrap">
-              <thead class="bg-white/10 text-slate-300">
-                <tr>
-                  <th class="p-3">Month</th>
-                  <th class="p-3">Tenant Name</th>
-                  <th class="p-3">Rent</th>
-                  <th class="p-3">Elec Details</th>
-                  <th class="p-3">PNG Details</th>
-                  <th class="p-3">Water</th>
-                  <th class="p-3">Total</th>
-                  <th class="p-3">Paid & Mode</th>
-                  <th class="p-3">Status</th>
+        <!-- Tab 2: History (Ledger) -->
+        <div id="tabHistory" class="tab-content" style="display:none;">
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+              <thead>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
+                  <th style="padding: 0.5rem;">MONTH</th>
+                  <th style="padding: 0.5rem;">RENT</th>
+                  <th style="padding: 0.5rem;">TOTAL</th>
+                  <th style="padding: 0.5rem;">STATUS</th>
+                  <th style="padding: 0.5rem;">ACTIONS</th>
                 </tr>
               </thead>
-              <tbody id="ledgerTableBody" class="divide-y divide-white/5"></tbody>
+              <tbody id="historyLedgerBody"></tbody>
             </table>
           </div>
         </div>
 
-        <!-- 3. Profile Tab -->
-        <div id="profTab" class="flat-tab-content hidden space-y-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
-              <h4 class="text-xs font-bold uppercase text-slate-300">Rent & Utility Details</h4>
-              <input type="number" id="pRentAmt" placeholder="Rent Amount" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
-              <input type="text" id="pFlatName" readonly class="w-full px-3 py-1.5 rounded-lg bg-white/5 text-xs text-slate-400">
-              <input type="text" id="pPngNum" placeholder="PNG Consumer ID" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
-              <input type="text" id="pPngMeter" placeholder="PNG Meter Number" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
-              <input type="text" id="pWaterNum" placeholder="Water Number" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
-              <input type="text" id="pWaterMeter" placeholder="Water Meter Number" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
-              <input type="text" id="pElecMeter" placeholder="Electricity Meter Number" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
-              <button id="saveUtilitiesBtn" class="w-full py-2 mt-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-xs font-bold">
-                Update Core Utilities
-              </button>
-            </div>
-            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
-              <h4 class="text-xs font-bold uppercase text-slate-300">Renter Profile</h4>
-              <input type="text" id="pRenterName" placeholder="Renter Full Name" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
-              <input type="text" id="pAadhaarNum" placeholder="12-Digit Identity Mask" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
-              <input type="text" id="pMobile" placeholder="Primary Mobile" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
-              <input type="text" id="pAltMobile" placeholder="Alternative Mobile" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
-              <input type="text" id="pAddress" placeholder="Permanent Address" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
-              <input type="number" id="pMembers" placeholder="Total Family Members" class="w-full px-3 py-1.5 rounded-lg bg-white/10 text-xs">
-              <div class="grid grid-cols-2 gap-2">
-                <input type="date" id="pJoinDate" class="px-2 py-1.5 rounded-lg bg-white/10 text-xs">
-                <input type="date" id="pLeaveDate" class="px-2 py-1.5 rounded-lg bg-white/10 text-xs">
-              </div>
-              <select id="pStatus" class="w-full px-3 py-1.5 rounded-lg bg-slate-800 text-xs">
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-              </select>
-              <button id="saveProfileBtn" class="w-full py-2 mt-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-xs font-bold">
-                Submit Profile & Sync
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4. Renter History Tab -->
-        <div id="renterHistTab" class="flat-tab-content hidden space-y-6">
-          <div class="flex items-center space-x-2 border-b border-white/10 pb-3">
-            <i class="fa-solid fa-file-invoice-dollar text-emerald-400"></i>
-            <h2 class="text-base font-bold">Renter History & Financial Records</h2>
-          </div>
-          <div class="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-wrap items-center justify-between gap-4">
+        <!-- Tab 3: Renter Profile (Two-Column & Image Frames) -->
+        <div id="tabProfile" class="tab-content" style="display:none;">
+          <div style="display: grid; grid-template-columns: 1fr 200px 1fr; gap: 1rem;">
+            <!-- Left Column: Utility Defaults -->
             <div>
-              <div class="font-bold text-white text-sm" id="rhName">-</div>
-              <div class="text-xs text-slate-400 mt-0.5">Stay: <span id="rhStaySpan">-</span></div>
+              <h5 style="margin-bottom: 0.75rem;">Rent & Utility Details</h5>
+              <div class="input-group"><label>Rent Amount</label><input type="number" id="profRentAmount" class="input-control"></div>
+              <div class="input-group"><label>PNG Meter No</label><input type="text" id="profPngMeter" class="input-control"></div>
+              <div class="input-group"><label>Water Meter No</label><input type="text" id="profWaterMeter" class="input-control"></div>
+              <div class="input-group"><label>Electricity Meter No</label><input type="text" id="profElecMeter" class="input-control"></div>
+              <div class="input-group"><label>Contract Mobile</label><input type="text" id="profContractMobile" class="input-control"></div>
             </div>
-          </div>
-          <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-            <div class="p-3 rounded-xl bg-white/5 text-center">
-              <div class="text-[10px] uppercase text-slate-400">Total Billed</div>
-              <div id="rhBilled" class="text-sm font-bold text-white mt-1">₹ 0</div>
+            <!-- Center Column: Image Slots -->
+            <div style="text-align: center;">
+              <h5>Renter Images</h5>
+              <div style="width: 100px; height: 100px; margin: 0.5rem auto; border: 1px dashed #fff; border-radius: 8px; overflow: hidden;">
+                <img id="imgPreviewProfile" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+              </div>
+              <div style="width: 100px; height: 100px; margin: 0.5rem auto; border: 1px dashed #fff; border-radius: 8px; overflow: hidden;">
+                <img id="imgPreviewAadhaar" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+              </div>
             </div>
-            <div class="p-3 rounded-xl bg-white/5 text-center">
-              <div class="text-[10px] uppercase text-slate-400">Total Paid</div>
-              <div id="rhPaid" class="text-sm font-bold text-emerald-400 mt-1">₹ 0</div>
-            </div>
-            <div class="p-3 rounded-xl bg-white/5 text-center">
-              <div class="text-[10px] uppercase text-slate-400">Total Rent</div>
-              <div id="rhRent" class="text-sm font-bold text-white mt-1">₹ 0</div>
-            </div>
-            <div class="p-3 rounded-xl bg-white/5 text-center">
-              <div class="text-[10px] uppercase text-slate-400">Total Utility</div>
-              <div id="rhUtility" class="text-sm font-bold text-white mt-1">₹ 0</div>
-            </div>
-            <div class="p-3 rounded-xl bg-white/5 text-center col-span-2 md:col-span-1">
-              <div class="text-[10px] uppercase text-slate-400">Balance Status</div>
-              <div id="rhBalance" class="text-sm font-bold text-rose-400 mt-1">Due: ₹ 0</div>
+            <!-- Right Column: Profile Form -->
+            <div>
+              <h5 style="margin-bottom: 0.75rem;">Renter Profile</h5>
+              <div class="input-group"><label>Renter Name</label><input type="text" id="profName" class="input-control"></div>
+              <div class="input-group"><label>Aadhaar Number</label><input type="text" id="profAadhaar" class="input-control" placeholder="12-digit number"></div>
+              <div class="input-group"><label>Mobile Number</label><input type="text" id="profMobile" class="input-control"></div>
+              <div class="input-group">
+                <label>Status</label>
+                <select id="profStatus" class="input-control">
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+              </div>
+              <button class="btn" style="margin-top: 0.5rem;" onclick="saveRenterProfile()">Submit Profile</button>
             </div>
           </div>
         </div>
+
+        <!-- Tab 4: Renter History & Financial Records -->
+        <div id="tabRenterHistory" class="tab-content" style="display:none;">
+          <div class="metrics-bar">
+            <div class="metric-card"><div>TOTAL BILLED</div><div class="metric-value" id="rhTotalBilled">₹0</div></div>
+            <div class="metric-card"><div>TOTAL PAID</div><div class="metric-value" id="rhTotalPaid">₹0</div></div>
+            <div class="metric-card"><div>TOTAL RENT</div><div class="metric-value" id="rhTotalRent">₹0</div></div>
+            <div class="metric-card"><div>UTILITY</div><div class="metric-value" id="rhTotalUtility">₹0</div></div>
+            <div class="metric-card"><div>BALANCE STATUS</div><div class="metric-value due-alert" id="rhBalance">₹0</div></div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
 
-  <!-- Action Modals -->
-  <div id="addPropertyModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75">
-    <div class="w-full max-w-md p-6 rounded-3xl glass-modal space-y-4">
-      <div class="flex justify-between items-center">
-        <h3 class="font-bold text-emerald-400">Add Property</h3>
-        <button onclick="closeModal('addPropertyModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-      </div>
-      <input type="text" id="addPropName" placeholder="Property Name (Mandatory)" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
-      <input type="text" id="addPropUpiName" placeholder="UPI Name (Optional)" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
-      <input type="text" id="addPropUpiId" placeholder="UPI ID (Optional)" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
-      <input type="text" id="addPropContract" placeholder="Contract Number" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
-      <button id="submitPropBtn" class="w-full py-2.5 rounded-xl bg-emerald-500 font-bold text-sm">Save Property</button>
-    </div>
-  </div>
+  <script>
+    // Embed your Apps Script Web App URL here
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzHSSs7xN9tlcZmwO1hpfdwwc8zdhvwRyP1294-RC-SFlj6QvfqtSyFrJH1c8VacYFZWQ/exec";
 
-  <div id="editPropertyModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75">
-    <div class="w-full max-w-md p-6 rounded-3xl glass-modal space-y-4">
-      <div class="flex justify-between items-center">
-        <h3 class="font-bold text-cyan-400">Edit Property Name</h3>
-        <button onclick="closeModal('editPropertyModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-      </div>
-      <select id="editPropSelect" class="w-full px-3 py-2 rounded-xl bg-slate-800 text-sm"></select>
-      <input type="text" id="editPropCurrent" readonly placeholder="Current Name" class="w-full px-3 py-2 rounded-xl bg-white/5 text-slate-400 text-sm">
-      <input type="text" id="editPropNew" placeholder="New Property Name" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
-      <button id="submitEditPropBtn" class="w-full py-2.5 rounded-xl bg-cyan-600 font-bold text-sm">Update Name</button>
-    </div>
-  </div>
-
-  <div id="deletePropertyModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75">
-    <div class="w-full max-w-md p-6 rounded-3xl glass-modal space-y-4">
-      <div class="flex justify-between items-center">
-        <h3 class="font-bold text-rose-400">Delete Property</h3>
-        <button onclick="closeModal('deletePropertyModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-      </div>
-      <select id="deletePropSelect" class="w-full px-3 py-2 rounded-xl bg-slate-800 text-sm"></select>
-      <button id="confirmDelPropBtn" class="w-full py-2.5 rounded-xl bg-rose-600 font-bold text-sm">Proceed to Delete</button>
-    </div>
-  </div>
-
-  <div id="addFlatModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75">
-    <div class="w-full max-w-md p-6 rounded-3xl glass-modal space-y-3">
-      <div class="flex justify-between items-center">
-        <h3 class="font-bold text-amber-400">Add Flat</h3>
-        <button onclick="closeModal('addFlatModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-      </div>
-      <select id="addFlatPropSelect" class="w-full px-3 py-2 rounded-xl bg-slate-800 text-sm"></select>
-      <input type="text" id="addFlatName" placeholder="Flat Name/Number (Mandatory)" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
-      <input type="text" id="addFlatRenter" placeholder="Renter Name" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
-      <input type="number" id="addFlatRent" placeholder="Monthly Rent Bill Amount" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
-      <div class="grid grid-cols-3 gap-2">
-        <input type="number" id="addFlatWater" placeholder="Water Rate" class="px-2 py-1.5 rounded-lg bg-white/10 text-xs">
-        <input type="number" id="addFlatPng" placeholder="PNG Rate" class="px-2 py-1.5 rounded-lg bg-white/10 text-xs">
-        <input type="number" id="addFlatElec" placeholder="Elec Rate" class="px-2 py-1.5 rounded-lg bg-white/10 text-xs">
-      </div>
-      <button id="submitFlatBtn" class="w-full py-2.5 rounded-xl bg-amber-500 font-bold text-sm">Save Flat</button>
-    </div>
-  </div>
-
-  <div id="deleteFlatModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75">
-    <div class="w-full max-w-md p-6 rounded-3xl glass-modal space-y-4">
-      <div class="flex justify-between items-center">
-        <h3 class="font-bold text-rose-400">Delete Flat</h3>
-        <button onclick="closeModal('deleteFlatModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-      </div>
-      <select id="deleteFlatPropSelect" class="w-full px-3 py-2 rounded-xl bg-slate-800 text-sm"></select>
-      <select id="deleteFlatSelect" class="w-full px-3 py-2 rounded-xl bg-slate-800 text-sm"></select>
-      <button id="confirmDelFlatBtn" class="w-full py-2.5 rounded-xl bg-rose-600 font-bold text-sm">Proceed to Delete</button>
-    </div>
-  </div>
-
-  <div id="changePasswordModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75">
-    <div class="w-full max-w-md p-6 rounded-3xl glass-modal space-y-4">
-      <div class="flex justify-between items-center">
-        <h3 class="font-bold text-emerald-400">Change Password</h3>
-        <button onclick="closeModal('changePasswordModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-      </div>
-      <input type="password" id="oldPass" placeholder="Current Password" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
-      <input type="password" id="newPass" placeholder="New Password" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
-      <input type="password" id="confirmPass" placeholder="Confirm New Password" class="w-full px-3 py-2 rounded-xl bg-white/10 text-sm">
-      <button id="submitPasswordBtn" class="w-full py-2.5 rounded-xl bg-emerald-500 font-bold text-sm">Update Password</button>
-    </div>
-  </div>
-
-  <!-- ======================================================== -->
-  <!-- FIREBASE MODULE SDK BACKEND ENGINE                      -->
-  <!-- ======================================================== -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { 
-      getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, query, where, onSnapshot 
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    // Configure your Firebase project parameters here
-    const firebaseConfig = {
-      apiKey: "AIzaSyYOUR_ACTUAL_API_KEY",
-      authDomain: "your-app.firebaseapp.com",
-      projectId: "your-app-id",
-      storageBucket: "your-app.appspot.com",
-      messagingSenderId: "1234567890",
-      appId: "1:1234567890:web:abcdef123456"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // In-memory runtime state
     let state = {
-      username: "",
+      user: null,
       properties: [],
       flats: [],
       renters: [],
-      ledger: [],
+      bills: [],
       selectedProperty: null,
-      selectedFlat: null
+      activeFlat: null
     };
 
-    // Auto-create initial collections if empty
-    async function initFirebaseSchema() {
+    // Fast verification under 2 seconds live against sheet
+    async function executeLiveLogin() {
+      const u = document.getElementById("loginUsername").value;
+      const p = document.getElementById("loginPassword").value;
+      const spinner = document.getElementById("loginSpinner");
+
+      if (!u || !p) return alert("Your Username or Password is wrong.");
+
+      spinner.style.display = "inline-block";
       try {
-        const adminDoc = await getDoc(doc(db, "Auth", "admin"));
-        if (!adminDoc.exists()) {
-          await setDoc(doc(db, "Auth", "admin"), { username: "admin", password: "Admin@2026#Secure!" });
-        }
-        const pSnap = await getDocs(collection(db, "Properties"));
-        if (pSnap.empty) {
-          await addDoc(collection(db, "Properties"), {
-            propertyName: "Sunset Villa",
-            upiName: "John Doe",
-            upiId: "sunset@okhdfcbank",
-            contractNumber: "+91 9876543210"
-          });
-        }
-      } catch (e) {
-        console.warn("Schema initialization check:", e.message);
-      }
-    }
-    initFirebaseSchema();
+        const res = await fetch(`${SCRIPT_URL}?action=verifyLogin&username=${encodeURIComponent(u)}&password=${encodeURIComponent(p)}`);
+        const json = await res.json();
+        spinner.style.display = "none";
 
-    // 1. Live Authentication (<2s live check, zero caching)
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const u = document.getElementById('loginUsername').value.trim();
-      const p = document.getElementById('loginPassword').value;
-      const btn = document.getElementById('loginBtn');
-
-      btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i><span>Verifying...</span>`;
-
-      try {
-        const snap = await getDoc(doc(db, "Auth", u));
-        if (snap.exists() && snap.data().password === p) {
-          state.username = u;
-          document.getElementById('loginScreen').classList.add('hidden');
-          document.getElementById('mainDashboard').classList.remove('hidden');
-          setupRealtimeListeners();
+        if (json.status === "success") {
+          state.user = u;
+          document.getElementById("loginScreen").style.display = "none";
+          document.getElementById("appDashboard").style.display = "flex";
+          refreshDashboard();
         } else {
           alert("Your Username or Password is wrong.");
         }
       } catch (err) {
-        alert("Firestore Connection Error: " + err.message);
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = `<span>Login Securely</span><i class="fa-solid fa-arrow-right text-sm"></i>`;
+        spinner.style.display = "none";
+        alert("Your Username or Password is wrong.");
       }
-    });
-
-    // 2. Real-time Listeners (Continuous Firebase synchronization)
-    function setupRealtimeListeners() {
-      onSnapshot(collection(db, "Properties"), (snap) => {
-        state.properties = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        renderProperties();
-        if (!state.selectedProperty && state.properties.length > 0) {
-          selectProperty(state.properties[0].propertyName);
-        } else if (state.selectedProperty) {
-          selectProperty(state.selectedProperty);
-        }
-      });
-
-      onSnapshot(collection(db, "Flats"), (snap) => {
-        state.flats = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        renderFlats();
-      });
-
-      onSnapshot(collection(db, "Renters"), (snap) => {
-        state.renters = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      });
-
-      onSnapshot(collection(db, "Ledger"), (snap) => {
-        state.ledger = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        if (state.selectedFlat) renderLedgerTable();
-      });
     }
 
-    // 3. Render Properties
+    function executeLogout() {
+      state.user = null;
+      document.getElementById("loginUsername").value = "";
+      document.getElementById("loginPassword").value = "";
+      document.getElementById("appDashboard").style.display = "none";
+      document.getElementById("loginScreen").style.display = "flex";
+    }
+
+    async function refreshDashboard() {
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getDashboardData`);
+        const json = await res.json();
+        if (json.status === "success") {
+          state.properties = json.data.properties;
+          state.flats = json.data.flats;
+          state.renters = json.data.renters;
+          state.bills = json.data.bills;
+          renderProperties();
+          if (state.properties.length > 0 && !state.selectedProperty) {
+            selectProperty(state.properties[0][0]);
+          } else if (state.selectedProperty) {
+            renderFlats();
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
     function renderProperties() {
-      const container = document.getElementById('propertiesContainer');
-      container.innerHTML = "";
+      const bar = document.getElementById("propertiesList");
+      bar.innerHTML = "";
       state.properties.forEach(p => {
-        const isSel = p.propertyName === state.selectedProperty;
-        const div = document.createElement('div');
-        div.className = `flex-shrink-0 cursor-pointer px-5 py-3 rounded-2xl glass-card border transition flex items-center space-x-2.5 ${isSel ? 'border-emerald-400 bg-emerald-500/20' : 'border-white/10 hover:border-white/30'}`;
-        div.onclick = () => selectProperty(p.propertyName);
-        div.innerHTML = `<i class="fa-solid fa-hotel text-emerald-400"></i><span class="font-semibold text-sm whitespace-nowrap">${p.propertyName}</span>`;
-        container.appendChild(div);
+        const div = document.createElement("div");
+        div.className = `property-pill ${state.selectedProperty === p[0] ? 'active' : ''}`;
+        div.innerHTML = `<i class="fa fa-building"></i> <span>${p[0]}</span>`;
+        div.onclick = () => selectProperty(p[0]);
+        bar.appendChild(div);
       });
     }
 
     function selectProperty(name) {
       state.selectedProperty = name;
       renderProperties();
-      const p = state.properties.find(x => x.propertyName === name) || {};
-      document.getElementById('activePropertyTitle').innerText = name;
-      document.getElementById('propUpiName').innerText = p.upiName || "None";
-      document.getElementById('propUpiId').innerText = p.upiId || "None";
-      document.getElementById('propContact').innerText = p.contractNumber || "None";
       renderFlats();
     }
 
-    // 4. Render Flats
     function renderFlats() {
-      const grid = document.getElementById('flatsGrid');
-      grid.innerHTML = "";
-      const filtered = state.flats.filter(f => f.propertyName === state.selectedProperty);
-
-      if (filtered.length === 0) {
-        grid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-500">No flats found. Add one with (+).</div>`;
-        return;
-      }
+      const container = document.getElementById("flatsContainer");
+      container.innerHTML = "";
+      const filtered = state.flats.filter(f => String(f[0]).trim() === String(state.selectedProperty).trim());
 
       filtered.forEach(f => {
-        const card = document.createElement('div');
-        card.className = "cursor-pointer p-5 rounded-2xl glass-card border border-white/10 hover:border-emerald-400/50 transition transform hover:-translate-y-1 shadow-lg";
-        card.onclick = () => openFlatModal(f.flatName);
+        const card = document.createElement("div");
+        card.className = "flat-card";
         card.innerHTML = `
-          <div class="flex justify-between items-start">
-            <div>
-              <div class="text-lg font-bold text-white">${f.flatName}</div>
-              <div class="flex items-center space-x-2 mt-1">
-                <i class="fa-solid fa-circle-user text-slate-400"></i>
-                <span class="text-sm text-slate-300 font-medium">${f.renterName || "Vacant"}</span>
-              </div>
-            </div>
-            <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${f.renterName ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-700 text-slate-400'}">
-              ${f.renterName ? 'Occupied' : 'Vacant'}
-            </span>
+          <div class="flat-header">
+            <span class="flat-title">Flat ${f[1]}</span>
+            <span style="font-size: 0.85rem; color: #9ca3af;">Rent: ₹${f[3]}</span>
           </div>
-          <div class="mt-4 pt-3 border-t border-white/10 flex justify-between items-center text-xs">
-            <span class="text-slate-400">Rent: ₹${f.rentAmount || 0}</span>
-            <span class="text-emerald-400 font-semibold">Active</span>
+          <div class="renter-info">
+            <div class="renter-avatar"><i class="fa fa-user"></i></div>
+            <div>
+              <div style="font-weight: 600;">${f[2] || 'Vacant / Unassigned'}</div>
+              <div style="font-size: 0.75rem; color: #10b981;">Active</div>
+            </div>
           </div>
         `;
-        grid.appendChild(card);
+        card.onclick = () => openFlatModal(f[1]);
+        container.appendChild(card);
       });
     }
 
-    // 5. Flat Details Modal Controller
-    function openFlatModal(flatName) {
-      state.selectedFlat = flatName;
-      document.getElementById('calcFlatName').innerText = flatName;
-      document.getElementById('histFlatName').innerText = flatName;
-      document.getElementById('pFlatName').value = flatName;
-
-      const flat = state.flats.find(f => f.flatName === flatName) || {};
-      const renter = state.renters.find(r => r.flatName === flatName && r.status === "Active") || {};
-
-      document.getElementById('calcRent').value = flat.rentAmount || 0;
-      document.getElementById('calcWaterRate').value = flat.waterRate || 15;
-      document.getElementById('calcPngRate').value = flat.pngRate || 45;
-      document.getElementById('calcElecRate').value = flat.electricityRate || 9;
-
-      document.getElementById('pRentAmt').value = flat.rentAmount || 0;
-      document.getElementById('pRenterName').value = renter.renterName || "";
-      document.getElementById('pAadhaarNum').value = renter.aadhaarNumber || "";
-      document.getElementById('pMobile').value = renter.mobile || "";
-      document.getElementById('pAltMobile').value = renter.altMobile || "";
-      document.getElementById('pAddress').value = renter.address || "";
-      document.getElementById('pMembers').value = renter.totalMembers || "";
-      document.getElementById('pJoinDate').value = renter.joinDate || "";
-      document.getElementById('pLeaveDate').value = renter.leaveDate || "";
-      document.getElementById('pStatus').value = renter.status || "Active";
-
-      switchTab('calcTab');
-      window.openModal('flatDetailModal');
+    function openFlatModal(flatNo) {
+      state.activeFlat = flatNo;
+      document.getElementById("flatModalTitle").innerText = `Flat ${flatNo} Operations`;
+      document.getElementById("calcFlatNumber").innerText = `Flat #${flatNo}`;
+      document.getElementById("flatDetailModal").style.display = "flex";
+      loadFlatData(flatNo);
     }
 
-    function switchTab(tabId) {
-      document.querySelectorAll('.flat-tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.flat-tab-btn').forEach(b => {
-        b.classList.remove('bg-emerald-500', 'text-white');
-        b.classList.add('text-slate-300');
-      });
-
-      document.getElementById(tabId).classList.remove('hidden');
-      const b = document.getElementById(`btn-${tabId}`);
-      b.classList.remove('text-slate-300');
-      b.classList.add('bg-emerald-500', 'text-white');
-
-      if (tabId === 'histTab') renderLedgerTable();
-      if (tabId === 'renterHistTab') renderRenterHistory();
+    function closeModal(id) {
+      document.getElementById(id).style.display = "none";
     }
 
-    // Bill Math
-    function runBillMath() {
-      const rent = parseFloat(document.getElementById('calcRent').value) || 0;
-      const ePrev = parseFloat(document.getElementById('calcElecPrev').value) || 0;
-      const eCurr = parseFloat(document.getElementById('calcElecCurr').value) || 0;
-      const eUnits = Math.max(0, eCurr - ePrev);
-      document.getElementById('calcElecUnits').innerText = eUnits;
-      const eTotal = eUnits * (parseFloat(document.getElementById('calcElecRate').value) || 0);
-
-      const pPrev = parseFloat(document.getElementById('calcPngPrev').value) || 0;
-      const pCurr = parseFloat(document.getElementById('calcPngCurr').value) || 0;
-      const pUnits = Math.max(0, pCurr - pPrev);
-      document.getElementById('calcPngUnits').innerText = pUnits;
-      const pTotal = pUnits * (parseFloat(document.getElementById('calcPngRate').value) || 0);
-
-      const wPrev = parseFloat(document.getElementById('calcWaterPrev').value) || 0;
-      const wCurr = parseFloat(document.getElementById('calcWaterCurr').value) || 0;
-      const wUnits = Math.max(0, wCurr - wPrev);
-      document.getElementById('calcWaterUnits').innerText = wUnits;
-      const wTotal = wUnits * (parseFloat(document.getElementById('calcWaterRate').value) || 0);
-
-      const addAmt = parseFloat(document.getElementById('calcAddAmt').value) || 0;
-      const addSign = document.getElementById('calcAddSign').value;
-      const totalAdd = addSign === "plus" ? addAmt : -addAmt;
-      document.getElementById('calcTotalAdd').innerText = `₹ ${totalAdd}`;
-
-      const grand = rent + eTotal + pTotal + wTotal + totalAdd;
-      document.getElementById('calcGrandTotal').innerText = `₹ ${grand.toFixed(2)}`;
+    function switchFlatTab(tabId, el) {
+      document.querySelectorAll(".tab-item").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(c => c.style.display = "none");
+      el.classList.add("active");
+      document.getElementById(tabId).style.display = "block";
     }
 
-    ['calcElecCurr', 'calcPngCurr', 'calcWaterCurr', 'calcAddAmt', 'calcAddSign'].forEach(id => {
-      document.getElementById(id).addEventListener('input', runBillMath);
-    });
+    function togglePlusMenu() {
+      const m = document.getElementById("plusMenu");
+      m.style.display = m.style.display === "flex" ? "none" : "flex";
+    }
 
-    // Submit Bill to Firestore
-    document.getElementById('submitBillBtn').addEventListener('click', async () => {
-      runBillMath();
-      await addDoc(collection(db, "Ledger"), {
-        flatName: state.selectedFlat,
-        month: document.getElementById('calcBillingMonth').value,
-        tenantName: (state.flats.find(f => f.flatName === state.selectedFlat) || {}).renterName || "Tenant",
-        rent: document.getElementById('calcRent').value,
-        elecDetails: `${document.getElementById('calcElecRate').value}/U (${document.getElementById('calcElecUnits').innerText} consumed)`,
-        pngDetails: `${document.getElementById('calcPngRate').value}/U (${document.getElementById('calcPngUnits').innerText} consumed)`,
-        waterDetails: `${document.getElementById('calcWaterRate').value}/U (${document.getElementById('calcWaterUnits').innerText} consumed)`,
-        total: document.getElementById('calcGrandTotal').innerText,
-        paid: 0,
-        mode: "Pending",
-        status: "Unpaid",
-        timestamp: new Date().toISOString()
-      });
-      alert("Bill calculation saved directly into Firestore!");
-      switchTab('histTab');
-    });
-
-    function renderLedgerTable() {
-      const tbody = document.getElementById('ledgerTableBody');
+    function loadFlatData(flatNo) {
+      const bills = state.bills.filter(b => String(b[1]) === String(flatNo));
+      const tbody = document.getElementById("historyLedgerBody");
       tbody.innerHTML = "";
-      const bills = state.ledger.filter(l => l.flatName === state.selectedFlat);
-      bills.forEach(r => {
-        const tr = document.createElement('tr');
-        tr.className = "hover:bg-white/5";
+      bills.forEach(b => {
+        const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td class="p-3">${r.month || "-"}</td>
-          <td class="p-3 font-semibold">${r.tenantName || "-"}</td>
-          <td class="p-3">₹${r.rent || 0}</td>
-          <td class="p-3">${r.elecDetails || "-"}</td>
-          <td class="p-3">${r.pngDetails || "-"}</td>
-          <td class="p-3">${r.waterDetails || "-"}</td>
-          <td class="p-3 font-bold text-emerald-400">${r.total || 0}</td>
-          <td class="p-3">₹${r.paid || 0} (${r.mode || "-"})</td>
-          <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] ${r.status === 'Fully Paid' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">${r.status || 'Unpaid'}</span></td>
+          <td style="padding: 0.5rem;">${b[0]}</td>
+          <td style="padding: 0.5rem;">₹${b[2]}</td>
+          <td style="padding: 0.5rem;">₹${b[6]}</td>
+          <td style="padding: 0.5rem;"><span style="color:${b[8] === 'Fully Paid' ? '#10b981' : '#ef4444'}">${b[8]}</span></td>
+          <td style="padding: 0.5rem;"><i class="fa fa-receipt" style="cursor:pointer;"></i></td>
         `;
         tbody.appendChild(tr);
       });
     }
-
-    // Smart Renter Profile (Overwrite active / append inactive)
-    document.getElementById('saveProfileBtn').addEventListener('click', async () => {
-      const status = document.getElementById('pStatus').value;
-      const payload = {
-        flatName: state.selectedFlat,
-        renterName: document.getElementById('pRenterName').value,
-        aadhaarNumber: document.getElementById('pAadhaarNum').value,
-        mobile: document.getElementById('pMobile').value,
-        altMobile: document.getElementById('pAltMobile').value,
-        address: document.getElementById('pAddress').value,
-        totalMembers: document.getElementById('pMembers').value,
-        joinDate: document.getElementById('pJoinDate').value,
-        leaveDate: document.getElementById('pLeaveDate').value,
-        status: status
-      };
-
-      const q = query(collection(db, "Renters"), where("flatName", "==", state.selectedFlat), where("status", "==", "Active"));
-      const snap = await getDocs(q);
-
-      if (!snap.empty && status === "Active") {
-        await updateDoc(doc(db, "Renters", snap.docs[0].id), payload);
-      } else {
-        await addDoc(collection(db, "Renters"), payload);
-      }
-
-      // Update Flat renter name
-      const fSnap = await getDocs(query(collection(db, "Flats"), where("flatName", "==", state.selectedFlat)));
-      fSnap.forEach(async d => {
-        await updateDoc(doc(db, "Flats", d.id), { renterName: status === "Active" ? payload.renterName : "" });
-      });
-
-      if (status === "Inactive") {
-        document.getElementById('pRenterName').value = "";
-        document.getElementById('pAadhaarNum').value = "";
-        document.getElementById('pMobile').value = "";
-        document.getElementById('pAltMobile').value = "";
-        document.getElementById('pAddress').value = "";
-        document.getElementById('pMembers').value = "";
-        document.getElementById('pLeaveDate').value = "";
-        document.getElementById('pStatus').value = "Active";
-      }
-
-      alert("Profile updated in Firebase!");
-    });
-
-    function renderRenterHistory() {
-      const renter = state.renters.find(r => r.flatName === state.selectedFlat) || {};
-      document.getElementById('rhName').innerText = renter.renterName || "None";
-      document.getElementById('rhStaySpan').innerText = `${renter.joinDate || 'N/A'} to ${renter.leaveDate || 'Present'}`;
-      
-      const bills = state.ledger.filter(l => l.flatName === state.selectedFlat);
-      let totalBilled = 0, totalPaid = 0;
-      bills.forEach(b => {
-        totalBilled += parseFloat(String(b.total).replace(/[^0-9.-]+/g,"")) || 0;
-        totalPaid += parseFloat(b.paid) || 0;
-      });
-
-      document.getElementById('rhBilled').innerText = `₹ ${totalBilled}`;
-      document.getElementById('rhPaid').innerText = `₹ ${totalPaid}`;
-      document.getElementById('rhBalance').innerText = `Due: ₹ ${(totalBilled - totalPaid).toFixed(2)}`;
-    }
-
-    // Property Management Actions
-    document.getElementById('submitPropBtn').addEventListener('click', async () => {
-      const name = document.getElementById('addPropName').value.trim();
-      if (!name) return alert("Property name required");
-
-      const check = await getDocs(query(collection(db, "Properties"), where("propertyName", "==", name)));
-      if (!check.empty) {
-        alert("This property name is already added. Please use a different name.");
-        return;
-      }
-
-      await addDoc(collection(db, "Properties"), {
-        propertyName: name,
-        upiName: document.getElementById('addPropUpiName').value,
-        upiId: document.getElementById('addPropUpiId').value,
-        contractNumber: document.getElementById('addPropContract').value
-      });
-      window.closeModal('addPropertyModal');
-    });
-
-    document.getElementById('submitEditPropBtn').addEventListener('click', async () => {
-      const oldName = document.getElementById('editPropSelect').value;
-      const newName = document.getElementById('editPropNew').value.trim();
-      if (!newName) return;
-
-      const check = await getDocs(query(collection(db, "Properties"), where("propertyName", "==", newName)));
-      if (!check.empty && newName.toLowerCase() !== oldName.toLowerCase()) {
-        alert("This property name is already taken. Please use a different name.");
-        return;
-      }
-
-      const pSnap = await getDocs(query(collection(db, "Properties"), where("propertyName", "==", oldName)));
-      pSnap.forEach(async d => await updateDoc(doc(db, "Properties", d.id), { propertyName: newName }));
-
-      const fSnap = await getDocs(query(collection(db, "Flats"), where("propertyName", "==", oldName)));
-      fSnap.forEach(async d => await updateDoc(doc(db, "Flats", d.id), { propertyName: newName }));
-
-      window.closeModal('editPropertyModal');
-    });
-
-    document.getElementById('confirmDelPropBtn').addEventListener('click', async () => {
-      const name = document.getElementById('deletePropSelect').value;
-      if (confirm("Are you sure you want to confirm delete this property? Yes or No?")) {
-        const pSnap = await getDocs(query(collection(db, "Properties"), where("propertyName", "==", name)));
-        pSnap.forEach(async d => await deleteDoc(doc(db, "Properties", d.id)));
-
-        const fSnap = await getDocs(query(collection(db, "Flats"), where("propertyName", "==", name)));
-        fSnap.forEach(async d => await deleteDoc(doc(db, "Flats", d.id)));
-
-        window.closeModal('deletePropertyModal');
-      }
-    });
-
-    // Flat Management Actions
-    document.getElementById('submitFlatBtn').addEventListener('click', async () => {
-      const name = document.getElementById('addFlatName').value.trim();
-      if (!name) return alert("Flat Name is mandatory!");
-
-      await addDoc(collection(db, "Flats"), {
-        propertyName: document.getElementById('addFlatPropSelect').value,
-        flatName: name,
-        renterName: document.getElementById('addFlatRenter').value,
-        rentAmount: Number(document.getElementById('addFlatRent').value) || 0,
-        waterRate: Number(document.getElementById('addFlatWater').value) || 15,
-        pngRate: Number(document.getElementById('addFlatPng').value) || 45,
-        electricityRate: Number(document.getElementById('addFlatElec').value) || 9
-      });
-      window.closeModal('addFlatModal');
-    });
-
-    document.getElementById('confirmDelFlatBtn').addEventListener('click', async () => {
-      const prop = document.getElementById('deleteFlatPropSelect').value;
-      const flat = document.getElementById('deleteFlatSelect').value;
-      if (confirm("Are you sure you want to confirm delete this flat? Yes or No?")) {
-        const fSnap = await getDocs(query(collection(db, "Flats"), where("propertyName", "==", prop), where("flatName", "==", flat)));
-        fSnap.forEach(async d => await deleteDoc(doc(db, "Flats", d.id)));
-        window.closeModal('deleteFlatModal');
-      }
-    });
-
-    // Password Update
-    document.getElementById('submitPasswordBtn').addEventListener('click', async () => {
-      const oldP = document.getElementById('oldPass').value;
-      const newP = document.getElementById('newPass').value;
-      const confP = document.getElementById('confirmPass').value;
-
-      if (newP !== confP) return alert("New passwords do not match!");
-
-      const uRef = doc(db, "Auth", state.username);
-      const snap = await getDoc(uRef);
-      if (snap.exists() && snap.data().password === oldP) {
-        await updateDoc(uRef, { password: newP });
-        alert("Password updated successfully. Logging out now.");
-        handleLogout();
-      } else {
-        alert("Current password does not match!");
-      }
-    });
-
-    function handleLogout() {
-      state = { username: "", properties: [], flats: [], renters: [], ledger: [] };
-      document.getElementById('mainDashboard').classList.add('hidden');
-      document.getElementById('loginScreen').classList.remove('hidden');
-      document.getElementById('loginPassword').value = "";
-      window.closeModal('changePasswordModal');
-    }
-
-    // Modal helpers attached to window
-    window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
-    window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
-
-    document.getElementById('btn-calcTab').onclick = () => switchTab('calcTab');
-    document.getElementById('btn-histTab').onclick = () => switchTab('histTab');
-    document.getElementById('btn-profTab').onclick = () => switchTab('profTab');
-    document.getElementById('btn-renterHistTab').onclick = () => switchTab('renterHistTab');
-    document.getElementById('closeDetailModal').onclick = () => window.closeModal('flatDetailModal');
-    document.getElementById('plusBtn').onclick = () => document.getElementById('plusMenu').classList.toggle('hidden');
-    document.getElementById('logoutBtn').onclick = handleLogout;
-    document.getElementById('profileBtn').onclick = () => window.openModal('changePasswordModal');
-    document.getElementById('reloadBtn').onclick = () => alert("Continuous real-time synchronization is active.");
-
-    // Plus Menu Modals
-    document.getElementById('openAddProp').onclick = () => { window.closeModal('plusMenu'); window.openModal('addPropertyModal'); };
-    document.getElementById('openEditProp').onclick = () => {
-      const sel = document.getElementById('editPropSelect');
-      sel.innerHTML = state.properties.map(p => `<option value="${p.propertyName}">${p.propertyName}</option>`).join('');
-      document.getElementById('editPropCurrent').value = sel.value;
-      window.closeModal('plusMenu');
-      window.openModal('editPropertyModal');
-    };
-    document.getElementById('editPropSelect').onchange = (e) => document.getElementById('editPropCurrent').value = e.target.value;
-    document.getElementById('openDeleteProp').onclick = () => {
-      document.getElementById('deletePropSelect').innerHTML = state.properties.map(p => `<option value="${p.propertyName}">${p.propertyName}</option>`).join('');
-      window.closeModal('plusMenu');
-      window.openModal('deletePropertyModal');
-    };
-    document.getElementById('openAddFlat').onclick = () => {
-      document.getElementById('addFlatPropSelect').innerHTML = state.properties.map(p => `<option value="${p.propertyName}">${p.propertyName}</option>`).join('');
-      window.closeModal('plusMenu');
-      window.openModal('addFlatModal');
-    };
-    document.getElementById('openDeleteFlat').onclick = () => {
-      const pSel = document.getElementById('deleteFlatPropSelect');
-      pSel.innerHTML = state.properties.map(p => `<option value="${p.propertyName}">${p.propertyName}</option>`).join('');
-      populateDelFlats();
-      window.closeModal('plusMenu');
-      window.openModal('deleteFlatModal');
-    };
-    function populateDelFlats() {
-      const p = document.getElementById('deleteFlatPropSelect').value;
-      const fSel = document.getElementById('deleteFlatSelect');
-      fSel.innerHTML = state.flats.filter(f => f.propertyName === p).map(f => `<option value="${f.flatName}">${f.flatName}</option>`).join('');
-    }
-    document.getElementById('deleteFlatPropSelect').onchange = populateDelFlats;
-
-    // Global Search
-    document.getElementById('globalSearch').addEventListener('input', (e) => {
-      const q = e.target.value.toLowerCase();
-      document.querySelectorAll('#flatsGrid > div').forEach(c => {
-        c.style.display = c.innerText.toLowerCase().includes(q) ? 'block' : 'none';
-      });
-    });
   </script>
 </body>
 </html>
