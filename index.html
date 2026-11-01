@@ -11,23 +11,23 @@
   <style>
     /* ==========================================================================
        STRICT BLACK, WHITE & SYSTEM THEME ENGINE
-       - Black Theme -> Background Black, Text Strictly White (#ffffff)
-       - White Theme -> Background White, Text Strictly Black (#000000)
+       - Black Theme -> Dark Glass Over House Image, Text Strictly White (#ffffff)
+       - White Theme -> Light Frosted Glass Over House Image, Text Strictly Black (#000000)
        ========================================================================== */
     :root,
     body.theme-black {
-      --bg-body: #090d16;
-      --bg-header: rgba(9, 13, 22, 0.95);
-      --bg-card: rgba(20, 27, 45, 0.9);
+      --bg-overlay: linear-gradient(180deg, rgba(9, 13, 22, 0.70) 0%, rgba(9, 13, 22, 0.88) 100%);
+      --bg-header: rgba(9, 13, 22, 0.88);
+      --bg-card: rgba(17, 24, 39, 0.84);
       --bg-modal: #111827;
-      --bg-input: #1e293b;
+      --bg-input: rgba(30, 41, 59, 0.9);
       --primary: #4f46e5;
       --primary-hover: #4338ca;
       --accent-green: #10b981;
       --accent-red: #ef4444;
       --accent-orange: #f59e0b;
       --glass-bg: rgba(255, 255, 255, 0.14);
-      --glass-border: rgba(255, 255, 255, 0.22);
+      --glass-border: rgba(255, 255, 255, 0.24);
       --glass-blur: blur(20px);
       --text-main: #ffffff;
       --text-muted: #d1d5db;
@@ -37,9 +37,9 @@
     }
 
     body.theme-white {
-      --bg-body: #ffffff;
-      --bg-header: rgba(255, 255, 255, 0.96);
-      --bg-card: #f8fafc;
+      --bg-overlay: linear-gradient(180deg, rgba(255, 255, 255, 0.74) 0%, rgba(241, 245, 249, 0.88) 100%);
+      --bg-header: rgba(255, 255, 255, 0.92);
+      --bg-card: rgba(255, 255, 255, 0.88);
       --bg-modal: #ffffff;
       --bg-input: #f1f5f9;
       --primary: #4f46e5;
@@ -47,7 +47,7 @@
       --glass-border: rgba(0, 0, 0, 0.18);
       --text-main: #000000;
       --text-muted: #1f2937;
-      --shadow-elevation: 0 12px 30px rgba(0, 0, 0, 0.12);
+      --shadow-elevation: 0 12px 30px rgba(0, 0, 0, 0.14);
     }
 
     * {
@@ -62,11 +62,23 @@
       width: 100%;
       max-width: 100vw;
       overflow-x: hidden;
-      background: var(--bg-body);
       color: var(--text-main);
       min-height: 100vh;
       min-height: 100dvh;
-      transition: background 0.2s ease, color 0.2s ease;
+      background: transparent;
+      transition: color 0.2s ease;
+    }
+
+    /* ==========================================================================
+       PERMANENT HOUSE IMAGE BACKGROUND FOR BOTH HOME PAGE & LOGIN SCREEN
+       ========================================================================== */
+    .bg-canvas {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-overlay),
+                  url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=85') center/cover no-repeat fixed;
+      z-index: -1;
+      transition: background 0.3s ease;
     }
 
     /* Screen Management */
@@ -80,9 +92,7 @@
       display: flex;
     }
 
-    /* ==========================================================================
-       LOGIN / LOGOUT SCREEN: ALWAYS HAS HIGH-RES HOUSE IMAGE BACKGROUND
-       ========================================================================== */
+    /* Login Screen */
     #loginScreen {
       align-items: center;
       justify-content: center;
@@ -128,9 +138,7 @@
       margin-top: 4px;
     }
 
-    /* ==========================================================================
-       COLORFUL SIDE SLIDE-IN NOTIFICATION TOAST (FOR WRONG PASSWORD / ALERTS)
-       ========================================================================== */
+    /* Colorful Side Slide-In Notification Toast */
     .side-toast {
       position: fixed;
       top: 24px;
@@ -335,7 +343,6 @@
       display: block;
     }
 
-    /* Bottom Form Status Message (e.g. Username Taken) */
     .bottom-status-msg {
       display: none;
       margin-top: 12px;
@@ -375,7 +382,8 @@
       gap: 10px;
       padding: 12px 18px;
       background: var(--bg-header);
-      backdrop-filter: blur(15px);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       border-bottom: 1px solid var(--glass-border);
     }
 
@@ -537,7 +545,7 @@
 
     /* Horizontal Properties Row */
     .properties-bar {
-      padding: 16px 18px 8px 18px;
+      padding: 18px 18px 8px 18px;
       width: 100%;
     }
     .properties-scroller {
@@ -549,11 +557,13 @@
       -webkit-overflow-scrolling: touch;
     }
     .prop-card {
-      min-width: 195px;
+      min-width: 205px;
       flex-shrink: 0;
-      padding: 13px 15px;
+      padding: 14px 16px;
       background: var(--bg-card);
-      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1.5px solid var(--glass-border);
       border-radius: var(--radius-md);
       display: flex;
       align-items: center;
@@ -563,26 +573,30 @@
       user-select: none;
       color: var(--text-main);
     }
-    .prop-card.active {
-      background: linear-gradient(135deg, rgba(79, 70, 229, 0.28) 0%, var(--bg-card) 100%);
+    .prop-card:hover {
       border-color: var(--primary);
-      box-shadow: 0 4px 16px rgba(79, 70, 229, 0.25);
+      transform: translateY(-2px);
+    }
+    .prop-card.active {
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.42) 0%, var(--bg-card) 100%);
+      border-color: #818cf8;
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
     }
     .prop-icon {
-      width: 36px;
-      height: 36px;
-      background: rgba(79, 70, 229, 0.18);
-      color: var(--primary);
+      width: 38px;
+      height: 38px;
+      background: rgba(79, 70, 229, 0.22);
+      color: #818cf8;
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.95rem;
+      font-size: 1rem;
       flex-shrink: 0;
     }
     .prop-info h4 {
-      font-size: 0.92rem;
-      font-weight: 700;
+      font-size: 0.95rem;
+      font-weight: 800;
       color: var(--text-main);
     }
     .prop-info span {
@@ -590,31 +604,92 @@
       color: var(--text-muted);
     }
 
-    /* 3-Units Merged Wide Flat Cards */
+    /* ==========================================================================
+       3-UNITS MERGED WIDE FLAT CARDS WITH FULL GREEN / RED PAYMENT STATUS DESIGN
+       ========================================================================== */
     .flats-container {
-      padding: 10px 18px 40px 18px;
+      padding: 12px 18px 40px 18px;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 18px;
       width: 100%;
+    }
+
+    .empty-flats-prompt {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 46px 24px;
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1.5px dashed var(--glass-border);
+      border-radius: var(--radius-lg);
+      max-width: 520px;
+      margin: 24px auto;
+      color: var(--text-main);
+      box-shadow: var(--shadow-elevation);
+    }
+    .empty-flats-prompt i {
+      font-size: 2.4rem;
+      color: #818cf8;
+      margin-bottom: 12px;
+    }
+    .empty-flats-prompt h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .empty-flats-prompt p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
     }
 
     .flat-card-merged {
       background: var(--bg-card);
-      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1.5px solid var(--glass-border);
       border-radius: var(--radius-lg);
-      padding: 18px;
+      padding: 20px;
       cursor: pointer;
       transition: all 0.25s ease;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 160px;
+      min-height: 175px;
       color: var(--text-main);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
     }
     .flat-card-merged:hover {
-      border-color: var(--primary);
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+    }
+
+    /* ENTIRE FLAT CARD TURNS GREEN WHEN CURRENT RENTER IS FULLY PAID */
+    .flat-card-merged.flat-card-paid {
+      background: linear-gradient(135deg, rgba(6, 95, 70, 0.90) 0%, rgba(16, 185, 129, 0.78) 100%) !important;
+      border: 2px solid #34d399 !important;
+      box-shadow: 0 14px 32px rgba(16, 185, 129, 0.38) !important;
+      color: #ffffff !important;
+    }
+    .flat-card-merged.flat-card-paid .flat-name,
+    .flat-card-merged.flat-card-paid .renter-name,
+    .flat-card-merged.flat-card-paid .flat-bottom-row,
+    .flat-card-merged.flat-card-paid .payment-banner {
+      color: #ffffff !important;
+    }
+
+    /* ENTIRE FLAT CARD TURNS RED WHEN CURRENT RENTER HAS ANY PENDING DUE AMOUNT */
+    .flat-card-merged.flat-card-due {
+      background: linear-gradient(135deg, rgba(153, 27, 27, 0.92) 0%, rgba(239, 68, 68, 0.82) 100%) !important;
+      border: 2px solid #f87171 !important;
+      box-shadow: 0 14px 32px rgba(239, 68, 68, 0.42) !important;
+      color: #ffffff !important;
+    }
+    .flat-card-merged.flat-card-due .flat-name,
+    .flat-card-merged.flat-card-due .renter-name,
+    .flat-card-merged.flat-card-due .flat-bottom-row,
+    .flat-card-merged.flat-card-due .payment-banner {
+      color: #ffffff !important;
     }
 
     .flat-top-row {
@@ -624,7 +699,7 @@
       gap: 8px;
     }
     .flat-name {
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       font-weight: 800;
       color: var(--text-main);
     }
@@ -632,19 +707,19 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-top: 8px;
+      margin-top: 10px;
     }
     .renter-avatar {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      background: #475569;
+      background: rgba(15, 23, 42, 0.5);
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
       flex-shrink: 0;
-      border: 1.5px solid var(--glass-border);
+      border: 1.5px solid rgba(255, 255, 255, 0.4);
     }
     .renter-avatar img {
       width: 100%;
@@ -652,15 +727,29 @@
       object-fit: cover;
     }
     .renter-name {
-      font-size: 0.92rem;
-      font-weight: 600;
+      font-size: 0.95rem;
+      font-weight: 700;
       color: var(--text-main);
     }
 
-    .flat-bottom-row {
+    /* Prominent Renter Payment Banner Inside Flat Card */
+    .payment-banner {
       margin-top: 14px;
-      padding-top: 12px;
-      border-top: 1px solid var(--glass-border);
+      padding: 9px 12px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.26);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+
+    .flat-bottom-row {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
@@ -670,11 +759,12 @@
     }
     .rent-status {
       font-size: 0.78rem;
-      font-weight: 700;
+      font-weight: 800;
       padding: 4px 10px;
       border-radius: 8px;
-      background: rgba(16, 185, 129, 0.18);
-      color: var(--accent-green);
+      background: rgba(0, 0, 0, 0.28);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.22);
     }
 
     /* Global Modal Window */
@@ -926,9 +1016,7 @@
       display: none !important;
     }
 
-    /* ==========================================================================
-       MOBILE AUTO-FIT PERFECTION (ZERO CUTOFFS OR OVERFLOW)
-       ========================================================================== */
+    /* Mobile Auto-Fit Perfection */
     @media (max-width: 768px) {
       header.top-nav {
         padding: 10px 12px;
@@ -1009,6 +1097,9 @@
 </head>
 <body class="theme-black">
 
+  <!-- PERMANENT HOUSE BACKGROUND CANVAS FOR HOME PAGE & LOGIN -->
+  <div class="bg-canvas"></div>
+
   <!-- COLORFUL SIDE SLIDE-IN NOTIFICATION TOAST -->
   <div id="sideToast" class="side-toast">
     <div class="side-toast-icon">
@@ -1021,7 +1112,7 @@
     <div class="side-toast-progress"></div>
   </div>
 
-  <!-- SCREEN 1: LOGIN / LOGOUT SCREEN (House Image Always Visible) -->
+  <!-- SCREEN 1: LOGIN / LOGOUT SCREEN -->
   <section id="loginScreen" class="screen active">
     <div class="glass-card login-container">
       <div class="login-brand">
@@ -1052,7 +1143,7 @@
     </div>
   </section>
 
-  <!-- SCREEN 2: MAIN DASHBOARD -->
+  <!-- SCREEN 2: MAIN DASHBOARD / HOME PAGE (With House Image Background) -->
   <section id="dashboardScreen" class="screen">
     <!-- Top Header -->
     <header class="top-nav">
@@ -1129,23 +1220,21 @@
       </div>
     </section>
 
-    <!-- 3-Units Merged Wide Flat Cards Layout -->
+    <!-- 3-Units Merged Wide Flat Cards Layout (Hidden until a Property is clicked) -->
     <main class="flats-container" id="flatsList">
-      <!-- Rendered Instantly -->
+      <!-- Rendered Only When Property Is Clicked -->
     </main>
   </section>
 
   <!-- ==================== POPUP MODALS ==================== -->
 
-  <!-- 1. PROFILE MODAL:
-       - Top 3 Fields (Name, Username, Password) are strictly LOCKED/READ-ONLY.
-       - Below them: "Change Password" and "Change Username" options. -->
+  <!-- 1. PROFILE MODAL -->
   <div id="profileModal" class="modal-overlay">
     <div class="modal-window">
       <button class="modal-close-btn" onclick="closeModal('profileModal')"><i class="fa-solid fa-xmark"></i></button>
       <h3 style="margin-bottom: 14px;"><i class="fa-solid fa-id-badge" style="color:var(--primary); margin-right:8px;"></i>My Profile</h3>
 
-      <!-- Locked Display Fields (Cannot be edited directly here) -->
+      <!-- Locked Display Fields -->
       <div class="form-group">
         <label>Name (Locked)</label>
         <input type="text" id="profViewFullName" class="form-control" readonly>
@@ -1238,7 +1327,6 @@
         </div>
 
         <button class="btn-primary" onclick="submitChangeUsernameAndName()">Update Username & Name</button>
-        <!-- Duplicate or validation message shows right at the bottom -->
         <div id="userChangeBottomMsg" class="bottom-status-msg"></div>
       </div>
     </div>
@@ -1265,7 +1353,7 @@
           <div class="theme-card" id="themeCardBlack" onclick="selectAndSaveTheme('black')">
             <div>
               <strong>Black Theme</strong>
-              <div style="font-size: 0.75rem; color: var(--text-muted);">Black background with crisp White text</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Black glass theme with crisp White text</div>
             </div>
             <i class="fa-solid fa-moon" style="font-size: 1.2rem;"></i>
           </div>
@@ -1273,7 +1361,7 @@
           <div class="theme-card" id="themeCardWhite" onclick="selectAndSaveTheme('white')">
             <div>
               <strong>White Theme</strong>
-              <div style="font-size: 0.75rem; color: var(--text-muted);">White background with crisp Black text</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">White frosted theme with crisp Black text</div>
             </div>
             <i class="fa-solid fa-sun" style="color: #f59e0b; font-size: 1.2rem;"></i>
           </div>
@@ -1694,7 +1782,7 @@
     let activeUserFullName = "Administrator";
     let activeRole = "Admin";
     let activeThemePref = "black";
-    let selectedProperty = null;
+    let selectedProperty = null; // Starts null so flats only show when a user clicks a property
     let selectedFlat = null;
     let syncTimer = null;
     let sideToastTimeout = null;
@@ -1703,12 +1791,6 @@
       return GAS_WEB_APP_URL.trim();
     }
 
-    /**
-     * ============================================================================
-     * COLORFUL SIDE SLIDE-IN TOAST TRIGGER
-     * Slides in from the right side for wrong password or system alerts
-     * ============================================================================
-     */
     function triggerSideToast(title, message, isSuccess = false) {
       const toast = document.getElementById("sideToast");
       const icon = document.getElementById("sideToastIcon");
@@ -1719,7 +1801,7 @@
       icon.className = isSuccess ? "fa-solid fa-circle-check" : "fa-solid fa-triangle-exclamation";
 
       toast.classList.remove("show");
-      void toast.offsetWidth; // Force reflow to restart animation
+      void toast.offsetWidth;
       toast.classList.add("show");
 
       if (sideToastTimeout) clearTimeout(sideToastTimeout);
@@ -1728,11 +1810,6 @@
       }, 3800);
     }
 
-    /**
-     * ============================================================================
-     * PASSWORD EYE ICON VISIBILITY TOGGLE
-     * ============================================================================
-     */
     function togglePasswordVisibility(inputId, btnEl) {
       const input = document.getElementById(inputId);
       const icon = btnEl.querySelector("i");
@@ -1748,11 +1825,6 @@
       }
     }
 
-    /**
-     * ============================================================================
-     * INSTANT ZERO-BLANK-SCREEN INITIALIZATION ON REFRESH
-     * ============================================================================
-     */
     document.addEventListener("DOMContentLoaded", () => {
       window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
         if (activeThemePref === "system") applyVisualTheme("system");
@@ -1795,19 +1867,38 @@
       } catch (e) {}
     }
 
+    /**
+     * ============================================================================
+     * RENDER DASHBOARD UI (FLATS ONLY SHOWN IF A PROPERTY WAS CLICKED)
+     * ============================================================================
+     */
     function renderAllDashboardUI() {
       updateGlobalProfitAndLoss();
       renderPropertiesRow();
 
-      if (DB.properties.length > 0) {
-        const propExists = DB.properties.some(p => p.PropertyName === selectedProperty);
-        if (!selectedProperty || !propExists) {
-          selectProperty(DB.properties[0].PropertyName);
-        } else {
-          renderFlatsGrid(selectedProperty);
-        }
+      const flatsContainer = document.getElementById("flatsList");
+      if (selectedProperty && DB.properties.some(p => p.PropertyName === selectedProperty)) {
+        renderFlatsGrid(selectedProperty);
       } else {
-        document.getElementById("flatsList").innerHTML = "";
+        selectedProperty = null;
+        localStorage.removeItem("active_selected_property");
+        if (DB.properties.length > 0) {
+          flatsContainer.innerHTML = `
+            <div class="empty-flats-prompt">
+              <i class="fa-solid fa-hand-pointer"></i>
+              <h3>Select a Property Above</h3>
+              <p>Click on any property card above to view its flats and current renter payment status.</p>
+            </div>
+          `;
+        } else {
+          flatsContainer.innerHTML = `
+            <div class="empty-flats-prompt">
+              <i class="fa-solid fa-building-circle-exclamation"></i>
+              <h3>No Properties Added Yet</h3>
+              <p>Click the (+) icon in the top right header to add your first property.</p>
+            </div>
+          `;
+        }
       }
     }
 
@@ -1833,7 +1924,7 @@
       }
     }
 
-    // 1. Single-Round-Trip Instant Login (With Colorful Side Slide-In Error on Wrong Password)
+    // 1. Single-Round-Trip Instant Login
     async function handleLoginSubmit(e) {
       e.preventDefault();
       const user = document.getElementById("loginUsername").value.trim();
@@ -1857,6 +1948,10 @@
           activeRole = res.role || "Admin";
           const sheetTheme = res.theme || "black";
 
+          // Start with no property selected on fresh login so flats stay hidden until clicked
+          selectedProperty = null;
+          localStorage.removeItem("active_selected_property");
+
           localStorage.setItem("active_session_user", activeUser);
           localStorage.setItem("active_session_fullname", activeUserFullName);
           localStorage.setItem("active_session_role", activeRole);
@@ -1874,7 +1969,6 @@
           document.getElementById("loginPassword").value = "";
           unlockDashboardInstant();
         } else {
-          // Slide in colorful error notification from the right side
           triggerSideToast("Access Denied", "Incorrect Username or Password", false);
         }
       } catch (err) {
@@ -1922,18 +2016,47 @@
       }
     }
 
+    /**
+     * ============================================================================
+     * HELPER: GET BILLS BELONGING STRICTLY TO THE CURRENT ACTIVE RENTER
+     * Excludes historical/inactive renters' bills
+     * ============================================================================
+     */
+    function getBillsForCurrentRenter(propertyName, flatName, activeRenter) {
+      if (!activeRenter) return [];
+      return DB.bills.filter(b => {
+        const sameProp = String(b.PropertyName).trim().toLowerCase() === String(propertyName).trim().toLowerCase();
+        const sameFlat = String(b.FlatName).trim().toLowerCase() === String(flatName).trim().toLowerCase();
+        if (!sameProp || !sameFlat) return false;
+
+        // If RenterID is recorded on the bill, match exact RenterID
+        if (b.RenterID && activeRenter.RenterID) {
+          return String(b.RenterID).trim() === String(activeRenter.RenterID).trim();
+        }
+        // Fallback: Match current active RenterName
+        return String(b.TenantName).trim().toLowerCase() === String(activeRenter.RenterName).trim().toLowerCase();
+      });
+    }
+
     function updateGlobalProfitAndLoss() {
       let totalProfit = 0;
-      let totalBilledAll = 0;
+      let totalLoss = 0;
 
-      DB.bills.forEach(bill => {
-        const billed = parseFloat(bill.TotalBilled) || 0;
-        const paid = parseFloat(bill.PaidAmount) || 0;
-        totalBilledAll += billed;
-        totalProfit += paid;
+      // Calculate across all active renters' bills for accurate current P&L
+      DB.flats.forEach(flat => {
+        const activeRenter = DB.renters.find(r =>
+          String(r.PropertyName).trim().toLowerCase() === String(flat.PropertyName).trim().toLowerCase() &&
+          String(r.FlatName).trim().toLowerCase() === String(flat.FlatName).trim().toLowerCase() &&
+          String(r.Status).trim().toLowerCase() === "active"
+        );
+        const currentBills = getBillsForCurrentRenter(flat.PropertyName, flat.FlatName, activeRenter);
+        currentBills.forEach(bill => {
+          const billed = parseFloat(bill.TotalBilled) || 0;
+          const paid = parseFloat(bill.PaidAmount) || 0;
+          totalProfit += paid;
+          totalLoss += Math.max(0, billed - paid);
+        });
       });
-
-      const totalLoss = Math.max(0, totalBilledAll - totalProfit);
 
       document.getElementById("topTotalProfit").innerText = `₹${totalProfit.toLocaleString('en-IN')}`;
       document.getElementById("topTotalLoss").innerText = `₹${totalLoss.toLocaleString('en-IN')}`;
@@ -1960,17 +2083,38 @@
     }
 
     function selectProperty(name) {
-      selectedProperty = name;
-      localStorage.setItem("active_selected_property", name);
-      renderPropertiesRow();
-      renderFlatsGrid(name);
+      // Toggle property selection: clicking a property opens its flats; clicking again hides them
+      if (selectedProperty === name) {
+        selectedProperty = null;
+        localStorage.removeItem("active_selected_property");
+      } else {
+        selectedProperty = name;
+        localStorage.setItem("active_selected_property", name);
+      }
+      renderAllDashboardUI();
     }
 
-    // 4. Render 3-Units Merged Wide Flat Cards
+    /**
+     * ============================================================================
+     * 4. RENDER FLAT CARDS WITH FULL GREEN (FULLY PAID) OR FULL RED (DUE PENDING)
+     *    FOR CURRENT ACTIVE RENTER ONLY
+     * ============================================================================
+     */
     function renderFlatsGrid(propertyName) {
       const container = document.getElementById("flatsList");
       container.innerHTML = "";
       const flats = DB.flats.filter(f => String(f.PropertyName).toLowerCase() === String(propertyName).toLowerCase());
+
+      if (flats.length === 0) {
+        container.innerHTML = `
+          <div class="empty-flats-prompt">
+            <i class="fa-solid fa-door-closed"></i>
+            <h3>No Flats in ${propertyName}</h3>
+            <p>Click the (+) button in the header and select "Add Flat" to create flats for this property.</p>
+          </div>
+        `;
+        return;
+      }
 
       flats.forEach(flat => {
         const renter = DB.renters.find(r => 
@@ -1979,15 +2123,64 @@
           String(r.Status).toLowerCase() === "active"
         );
 
+        // Calculate current renter's billed & pending amounts only
+        const renterBills = getBillsForCurrentRenter(propertyName, flat.FlatName, renter);
+        let currentBilled = 0;
+        let currentPaid = 0;
+        renterBills.forEach(b => {
+          currentBilled += parseFloat(b.TotalBilled) || 0;
+          currentPaid += parseFloat(b.PaidAmount) || 0;
+        });
+        const pendingDue = Math.max(0, currentBilled - currentPaid);
+
+        // Determine Full-Card Design Class (Green if Fully Paid, Red if Pending Due)
+        let statusClass = "";
+        let paymentBannerHTML = "";
+
+        if (!renter) {
+          paymentBannerHTML = `
+            <div class="payment-banner">
+              <span><i class="fa-solid fa-circle-info"></i> Status:</span>
+              <span>Vacant / No Active Renter</span>
+            </div>
+          `;
+        } else if (pendingDue > 0) {
+          statusClass = "flat-card-due";
+          paymentBannerHTML = `
+            <div class="payment-banner">
+              <span><i class="fa-solid fa-triangle-exclamation"></i> Needs to Pay:</span>
+              <span>₹${pendingDue.toLocaleString('en-IN')} Pending</span>
+            </div>
+          `;
+        } else if (currentBilled > 0 && pendingDue === 0) {
+          statusClass = "flat-card-paid";
+          paymentBannerHTML = `
+            <div class="payment-banner">
+              <span><i class="fa-solid fa-circle-check"></i> Payment Status:</span>
+              <span>Fully Paid (₹0 Due)</span>
+            </div>
+          `;
+        } else {
+          // Active renter exists, but no bill has been generated yet
+          const baseRent = parseFloat(flat.RentAmount || renter.RentAmount || 0);
+          statusClass = baseRent > 0 ? "flat-card-due" : "";
+          paymentBannerHTML = `
+            <div class="payment-banner">
+              <span><i class="fa-solid fa-clock"></i> Needs to Pay:</span>
+              <span>₹${baseRent.toLocaleString('en-IN')} (Unbilled Rent)</span>
+            </div>
+          `;
+        }
+
         const card = document.createElement("div");
-        card.className = "flat-card-merged";
+        card.className = `flat-card-merged ${statusClass}`;
         card.onclick = () => openFlatDetailsModal(flat, renter);
 
         card.innerHTML = `
           <div>
             <div class="flat-top-row">
               <div class="flat-name">Flat ${flat.FlatName}</div>
-              <span class="rent-status">₹${flat.RentAmount || renter?.RentAmount || 0} / mo</span>
+              <span class="rent-status">Rent: ₹${flat.RentAmount || renter?.RentAmount || 0}/mo</span>
             </div>
             <div class="renter-identity">
               <div class="renter-avatar">
@@ -1995,6 +2188,7 @@
               </div>
               <div class="renter-name">${renter ? renter.RenterName : 'Vacant / Ready'}</div>
             </div>
+            ${paymentBannerHTML}
           </div>
           <div class="flat-bottom-row">
             <span><i class="fa-solid fa-bolt"></i> Elec: ₹${flat.ElecRate || 9}/U</span>
@@ -2009,7 +2203,7 @@
     function handleGlobalSearch(query) {
       const q = query.trim().toLowerCase();
       if (!q) {
-        if (selectedProperty) renderFlatsGrid(selectedProperty);
+        renderAllDashboardUI();
         return;
       }
 
@@ -2036,14 +2230,38 @@
           String(r.Status).toLowerCase() === "active"
         );
 
+        const renterBills = getBillsForCurrentRenter(flat.PropertyName, flat.FlatName, renter);
+        let currentBilled = 0, currentPaid = 0;
+        renterBills.forEach(b => {
+          currentBilled += parseFloat(b.TotalBilled) || 0;
+          currentPaid += parseFloat(b.PaidAmount) || 0;
+        });
+        const pendingDue = Math.max(0, currentBilled - currentPaid);
+
+        let statusClass = "";
+        let paymentBannerHTML = "";
+        if (!renter) {
+          paymentBannerHTML = `<div class="payment-banner"><span>Status:</span><span>Vacant</span></div>`;
+        } else if (pendingDue > 0) {
+          statusClass = "flat-card-due";
+          paymentBannerHTML = `<div class="payment-banner"><span>Needs to Pay:</span><span>₹${pendingDue.toLocaleString('en-IN')} Pending</span></div>`;
+        } else if (currentBilled > 0 && pendingDue === 0) {
+          statusClass = "flat-card-paid";
+          paymentBannerHTML = `<div class="payment-banner"><span>Status:</span><span>Fully Paid (₹0 Due)</span></div>`;
+        } else {
+          const baseRent = parseFloat(flat.RentAmount || renter.RentAmount || 0);
+          statusClass = baseRent > 0 ? "flat-card-due" : "";
+          paymentBannerHTML = `<div class="payment-banner"><span>Needs to Pay:</span><span>₹${baseRent.toLocaleString('en-IN')}</span></div>`;
+        }
+
         const card = document.createElement("div");
-        card.className = "flat-card-merged";
+        card.className = `flat-card-merged ${statusClass}`;
         card.onclick = () => openFlatDetailsModal(flat, renter);
         card.innerHTML = `
           <div>
             <div class="flat-top-row">
               <div class="flat-name">${flat.PropertyName} - Flat ${flat.FlatName}</div>
-              <span class="rent-status">₹${flat.RentAmount || 0} / mo</span>
+              <span class="rent-status">₹${flat.RentAmount || 0}/mo</span>
             </div>
             <div class="renter-identity">
               <div class="renter-avatar">
@@ -2051,6 +2269,7 @@
               </div>
               <div class="renter-name">${renter ? renter.RenterName : 'Vacant / Ready'}</div>
             </div>
+            ${paymentBannerHTML}
           </div>
           <div class="flat-bottom-row">
             <span><i class="fa-solid fa-bolt"></i> Elec: ₹${flat.ElecRate || 9}/U</span>
@@ -2064,7 +2283,6 @@
 
     // 5. Profile Modal: Locked Top Display + Toggleable Change Password / Change Username & Name
     async function openProfileModal() {
-      // Populate locked top fields
       document.getElementById("profViewFullName").value = activeUserFullName || activeUser || "";
       document.getElementById("profViewUsername").value = activeUser || "";
       document.getElementById("changeNameInput").value = activeUserFullName || activeUser || "";
@@ -2074,7 +2292,6 @@
       passInput.value = "";
       passInput.placeholder = "Fetching live from Google Sheet...";
 
-      // Clear bottom messages and inputs
       document.getElementById("passChangeBottomMsg").className = "bottom-status-msg";
       document.getElementById("userChangeBottomMsg").className = "bottom-status-msg";
       document.getElementById("oldPassInput").value = "";
@@ -2138,7 +2355,6 @@
         return;
       }
 
-      // Check local user list first for instant duplicate feedback
       if (DB.users && DB.users.some(u =>
         String(u.Username).toLowerCase() === newUser.toLowerCase() &&
         String(u.Username).toLowerCase() !== String(activeUser).toLowerCase()
@@ -2312,8 +2528,11 @@
     }
 
     // 7. Flat Details Navigation & Tabs
+    let activeFlatRenterObj = null;
+
     function openFlatDetailsModal(flat, renter) {
       selectedFlat = flat;
+      activeFlatRenterObj = renter || null;
       document.getElementById("modalHeaderTitle").innerText = `${flat.PropertyName} - Space Details`;
       document.getElementById("modalFlatTag").innerText = `Flat ${flat.FlatName}`;
 
@@ -2440,12 +2659,14 @@
       if (paidAmount >= totalBilled && totalBilled > 0) billStatus = "Fully Paid";
       else if (paidAmount > 0 && paidAmount < totalBilled) billStatus = "Partial Paid";
 
+      const currentRenterId = activeFlatRenterObj?.RenterID || "";
+
       const newBillObj = {
         BillID: "BILL-" + Date.now(),
         PropertyName: selectedFlat.PropertyName,
         FlatName: selectedFlat.FlatName,
         MonthYear: document.getElementById("calcMonthPicker").value || new Date().toISOString().slice(0,7),
-        TenantName: document.getElementById("renterName").value || "Current Tenant",
+        TenantName: document.getElementById("renterName").value || activeFlatRenterObj?.RenterName || "Current Tenant",
         BaseRent: document.getElementById("calcRent").value,
         ElecPrev: elecPrev,
         ElecCurr: elecCurr,
@@ -2466,15 +2687,17 @@
         PaidAmount: paidAmount,
         PaymentMode: document.getElementById("calcPayMode").value,
         Status: billStatus,
-        Notes: document.getElementById("calcNotes").value
+        Notes: document.getElementById("calcNotes").value,
+        RenterID: currentRenterId
       };
 
       DB.bills.push(newBillObj);
       saveDbSnapshotToCache();
-      updateGlobalProfitAndLoss();
+      renderAllDashboardUI();
       populateHistoryLedger(selectedFlat.PropertyName, selectedFlat.FlatName);
+      populateRenterHistory(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj);
 
-      triggerSideToast("Bill Recorded", "Monthly bill calculated and synced!", true);
+      triggerSideToast("Bill Recorded", "Flat card status & balance updated!", true);
 
       await sendGasPost({
         action: "recordBill",
@@ -2502,7 +2725,8 @@
         paidAmount: newBillObj.PaidAmount,
         paymentMode: newBillObj.PaymentMode,
         status: newBillObj.Status,
-        notes: newBillObj.Notes
+        notes: newBillObj.Notes,
+        renterId: currentRenterId
       });
       syncDataLive();
     }
@@ -2542,7 +2766,8 @@
     }
 
     function populateRenterHistory(prop, flat, activeRenter) {
-      const bills = DB.bills.filter(b => String(b.PropertyName).toLowerCase() === String(prop).toLowerCase() && String(b.FlatName).toLowerCase() === String(flat).toLowerCase());
+      // Calculate financial overview strictly for the current active renter
+      const bills = getBillsForCurrentRenter(prop, flat, activeRenter);
       let totalBilled = 0, totalPaid = 0, totalRent = 0, totalUtility = 0;
 
       bills.forEach(b => {
@@ -2556,8 +2781,9 @@
       document.getElementById("rhPaid").innerText = `₹ ${totalPaid}`;
       document.getElementById("rhTotalRent").innerText = `₹ ${totalRent}`;
       document.getElementById("rhUtility").innerText = `₹ ${totalUtility}`;
-      const due = totalBilled - totalPaid;
+      const due = Math.max(0, totalBilled - totalPaid);
       document.getElementById("rhBalance").innerText = due > 0 ? `Due: ₹ ${due}` : `Settled`;
+      document.getElementById("rhBalance").style.color = due > 0 ? "var(--accent-red)" : "var(--accent-green)";
 
       if (activeRenter) {
         document.getElementById("rhName").innerText = activeRenter.RenterName || "Tenant";
@@ -2592,7 +2818,7 @@
       selectedFlat.PNGRate = payload.pngFixedRate;
       selectedFlat.WaterRate = payload.waterFixedRate;
       saveDbSnapshotToCache();
-      renderFlatsGrid(selectedProperty);
+      renderAllDashboardUI();
 
       triggerSideToast("Utilities Saved", "Utility configuration updated!", true);
       await sendGasPost(payload);
@@ -2602,8 +2828,11 @@
     async function submitRenterProfileRight() {
       if (activeRole === "Viewer") return;
       const statusVal = document.getElementById("renterStatus").value;
+      const newRenterId = activeFlatRenterObj?.RenterID || ("R-" + Date.now());
+
       const payload = {
         action: "updateRenterProfile",
+        renterId: newRenterId,
         propertyName: selectedFlat.PropertyName,
         flatName: selectedFlat.FlatName,
         renterName: document.getElementById("renterName").value,
@@ -2628,28 +2857,33 @@
 
       if (statusVal === "Inactive") {
         if (existingRenter) existingRenter.Status = "Inactive";
+        activeFlatRenterObj = null;
         clearRenterRightForm();
-        triggerSideToast("Archived", "Renter marked Inactive and locked in history.", true);
+        triggerSideToast("Archived", "Renter marked Inactive. Past bills archived.", true);
       } else {
         if (existingRenter) {
           existingRenter.RenterName = payload.renterName;
           existingRenter.MobileNumber = payload.mobileNumber;
           existingRenter.ProfileImageURL = payload.profileImageUrl;
         } else {
-          DB.renters.push({
+          const createdRenter = {
+            RenterID: newRenterId,
             PropertyName: payload.propertyName,
             FlatName: payload.flatName,
             RenterName: payload.renterName,
             MobileNumber: payload.mobileNumber,
             ProfileImageURL: payload.profileImageUrl,
+            RentAmount: payload.rentAmount,
             Status: "Active"
-          });
+          };
+          DB.renters.push(createdRenter);
+          activeFlatRenterObj = createdRenter;
         }
         triggerSideToast("Profile Saved", "Renter details updated immediately!", true);
       }
 
       saveDbSnapshotToCache();
-      renderFlatsGrid(selectedProperty);
+      renderAllDashboardUI();
 
       await sendGasPost(payload);
       syncDataLive();
@@ -2729,7 +2963,6 @@
       };
 
       DB.properties.push(newPropObj);
-      selectedProperty = name;
       saveDbSnapshotToCache();
       renderAllDashboardUI();
       closeModal("addPropertyModal");
@@ -2776,7 +3009,8 @@
       if (conf) {
         DB.properties = DB.properties.filter(item => item.PropertyName !== p);
         if (selectedProperty === p) {
-          selectedProperty = DB.properties[0]?.PropertyName || null;
+          selectedProperty = null;
+          localStorage.removeItem("active_selected_property");
         }
         saveDbSnapshotToCache();
         renderAllDashboardUI();
@@ -2800,6 +3034,7 @@
       const eRate = document.getElementById("addFlatElecRate").value || 9;
       const pRate = document.getElementById("addFlatPngRate").value || 45;
       const wRate = document.getElementById("addFlatWaterRate").value || 15;
+      const generatedRenterId = "R-" + Date.now();
 
       DB.flats.push({
         PropertyName: p,
@@ -2812,6 +3047,7 @@
       });
       if (rName) {
         DB.renters.push({
+          RenterID: generatedRenterId,
           PropertyName: p,
           FlatName: flat,
           RenterName: rName,
@@ -2819,12 +3055,15 @@
           Status: "Active"
         });
       }
+      selectedProperty = p;
+      localStorage.setItem("active_selected_property", p);
       saveDbSnapshotToCache();
       renderAllDashboardUI();
       closeModal("addFlatModal");
 
       await sendGasPost({
         action: "addFlat",
+        renterId: generatedRenterId,
         propertyName: p,
         flatName: flat,
         renterName: rName,
