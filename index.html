@@ -67,7 +67,6 @@
       transition: color 0.2s ease;
     }
 
-    /* Permanent House Image Background for Home Page & Login Screen */
     .bg-canvas {
       position: fixed;
       inset: 0;
@@ -77,7 +76,6 @@
       transition: background 0.3s ease;
     }
 
-    /* Screen Management */
     .screen {
       display: none;
       min-height: 100vh;
@@ -134,9 +132,7 @@
       margin-top: 4px;
     }
 
-    /* ==========================================================================
-       UNIVERSAL COLORFUL SIDE SLIDE-IN NOTIFICATION TOAST
-       ========================================================================== */
+    /* Universal Colorful Side Slide-In Notification Toast */
     .side-toast {
       position: fixed;
       top: 22px;
@@ -347,9 +343,7 @@
       filter: brightness(1.06);
     }
 
-    /* ==========================================================================
-       PROFILE 3-OPTION ACTION SWITCH (Change Password | Change Username | Change Name)
-       ========================================================================== */
+    /* Profile 3-Option Action Switch */
     .profile-action-switch {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -961,6 +955,89 @@
       filter: brightness(1.08);
     }
 
+    /* ==========================================================================
+       RECEIPT VIEW MODAL (OPENED FROM HISTORY "RECEIPT" ACTION BUTTON)
+       ========================================================================== */
+    #receiptViewModal {
+      z-index: 2600;
+    }
+    .receipt-card {
+      max-width: 480px;
+      padding: 26px 22px;
+      background: var(--bg-modal);
+      border: 2px solid var(--primary);
+    }
+    .receipt-header {
+      text-align: center;
+      border-bottom: 1.5px dashed var(--glass-border);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .receipt-header h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .receipt-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 0;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .receipt-total-box {
+      margin: 14px 0;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--bg-input);
+      border: 1px solid var(--glass-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    /* History Action Buttons (Show Receipt & Edit Month) */
+    .history-actions-cell {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-ledger-action {
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--glass-border);
+      background: var(--bg-input);
+      color: var(--text-main);
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+    .btn-ledger-action.receipt-btn {
+      background: rgba(16, 185, 129, 0.16);
+      color: var(--accent-green);
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    .btn-ledger-action.receipt-btn:hover {
+      background: var(--accent-green);
+      color: #ffffff;
+    }
+    .btn-ledger-action.edit-btn {
+      background: rgba(79, 70, 229, 0.18);
+      color: #818cf8;
+      border-color: rgba(79, 70, 229, 0.45);
+    }
+    .btn-ledger-action.edit-btn:hover {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
     /* Flat Detailed 4-Tab Navigation Modal */
     .modal-flat-details {
       max-width: 980px;
@@ -1127,6 +1204,7 @@
       top: 0;
       color: var(--text-main);
       font-weight: 800;
+      z-index: 5;
     }
     .badge-paid {
       background: rgba(16, 185, 129, 0.2);
@@ -1332,6 +1410,31 @@
     </div>
   </div>
 
+  <!-- ==========================================================================
+       MONTHLY BILL RECEIPT POPUP MODAL (OPENED FROM HISTORY "RECEIPT" BUTTON)
+       ========================================================================== -->
+  <div id="receiptViewModal" class="modal-overlay">
+    <div class="modal-window receipt-card" id="printableReceiptArea">
+      <button class="modal-close-btn" onclick="closeModal('receiptViewModal')"><i class="fa-solid fa-xmark"></i></button>
+      <div class="receipt-header">
+        <i class="fa-solid fa-file-invoice-dollar" style="font-size:1.8rem; color:var(--primary); margin-bottom:6px;"></i>
+        <h3 id="recPropAndFlat">Property - Flat</h3>
+        <p id="recMonthLabel" style="font-size:0.84rem; color:var(--text-muted); font-weight:700;">Billing Month: --</p>
+      </div>
+
+      <div id="receiptBodyDetails">
+        <!-- Populated dynamically when Receipt button is clicked -->
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:16px;">
+        <button type="button" class="btn-confirm-cancel" onclick="closeModal('receiptViewModal')">Close</button>
+        <button type="button" class="btn-primary" onclick="printCurrentReceipt()">
+          <i class="fa-solid fa-print"></i> Print / Save PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- SCREEN 1: LOGIN / LOGOUT SCREEN -->
   <section id="loginScreen" class="screen active">
     <div class="glass-card login-container">
@@ -1451,17 +1554,12 @@
 
   <!-- ==================== POPUP MODALS ==================== -->
 
-  <!-- ==========================================================================
-       1. PROFILE MODAL:
-       - Top Locked Fields: Name, Mobile No., Username, Password
-       - Three Dedicated Buttons Below: Change Password | Change Username | Change Name
-       ========================================================================== -->
+  <!-- 1. PROFILE MODAL -->
   <div id="profileModal" class="modal-overlay">
     <div class="modal-window">
       <button class="modal-close-btn" onclick="closeModal('profileModal')"><i class="fa-solid fa-xmark"></i></button>
       <h3 style="margin-bottom: 14px;"><i class="fa-solid fa-id-badge" style="color:var(--primary); margin-right:8px;"></i>My Profile</h3>
 
-      <!-- Locked Display Fields (Cannot be edited directly here) -->
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
         <div class="form-group">
           <label>Name (Locked)</label>
@@ -1538,7 +1636,7 @@
         <div id="passChangeBottomMsg" class="bottom-status-msg"></div>
       </div>
 
-      <!-- Option B: Dedicated Change Username Drawer (Name option removed from here) -->
+      <!-- Option B: Dedicated Change Username Drawer -->
       <div id="drawerChangeUser" class="profile-sub-drawer">
         <h4 style="margin-bottom: 12px; font-size: 0.92rem; color: var(--primary);">Update Your Username</h4>
 
@@ -2052,10 +2150,10 @@
         </button>
       </div>
 
-      <!-- TAB 2: HISTORY (Billed Ledger) -->
+      <!-- TAB 2: HISTORY (Billed Ledger - Newest Entries Appear at the Top + Receipt & Edit Buttons) -->
       <div id="tabHistory" class="tab-content">
         <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px;">
-          <h4><i class="fa-solid fa-receipt"></i> Billed History Ledger</h4>
+          <h4><i class="fa-solid fa-receipt"></i> Billed History Ledger (Newest First)</h4>
           <input type="text" class="form-control" style="max-width:240px;" placeholder="Search tenant, month, status..." oninput="filterLedgerTable(this.value)">
         </div>
         <div class="ledger-table-wrap">
@@ -2076,7 +2174,7 @@
               </tr>
             </thead>
             <tbody id="ledgerTableBody">
-              <!-- Dynamically populated -->
+              <!-- Dynamically populated (Newest at the top) -->
             </tbody>
           </table>
         </div>
@@ -2233,6 +2331,49 @@
       return GAS_WEB_APP_URL.trim();
     }
 
+    /**
+     * ============================================================================
+     * STRICT MONTH NORMALIZER & FORMATTER (NO TIMESTAMPS OR SHIFTING DATES)
+     * Guarantees MonthYear is always "YYYY-MM" and displays cleanly (e.g., "Oct 2026")
+     * ============================================================================
+     */
+    function normalizeMonthYear(rawVal) {
+      if (!rawVal) return "";
+      const str = String(rawVal).replace(/^'+/, "").trim();
+      // Already clean YYYY-MM
+      if (/^\d{4}-\d{2}$/.test(str)) return str;
+
+      // If Google Sheets returned an ISO string (e.g., "2026-09-30T18:30:00.000Z"),
+      // parse it in local time (IST) so the month never shifts backward!
+      const parsed = new Date(str);
+      if (!isNaN(parsed.getTime())) {
+        const y = parsed.getFullYear();
+        const m = String(parsed.getMonth() + 1).padStart(2, "0");
+        return `${y}-${m}`;
+      }
+
+      if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
+        return str.substring(0, 7);
+      }
+      return str;
+    }
+
+    function formatMonthLabel(rawVal) {
+      const clean = normalizeMonthYear(rawVal);
+      if (!/^\d{4}-\d{2}$/.test(clean)) return clean || "--";
+      const [year, month] = clean.split("-");
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const mIdx = parseInt(month, 10) - 1;
+      return `${monthNames[mIdx] || month} ${year} (${clean})`;
+    }
+
+    function sanitizeAllBillsMonths(billsArray) {
+      return (billsArray || []).map(b => {
+        b.MonthYear = normalizeMonthYear(b.MonthYear);
+        return b;
+      });
+    }
+
     function triggerSideToast(title, message, type = false) {
       const toast = document.getElementById("sideToast");
       const icon = document.getElementById("sideToastIcon");
@@ -2320,7 +2461,7 @@
           DB.properties = parsed.properties || [];
           DB.flats = parsed.flats || [];
           DB.renters = parsed.renters || [];
-          DB.bills = parsed.bills || [];
+          DB.bills = sanitizeAllBillsMonths(parsed.bills || []);
           DB.users = parsed.users || [];
         } catch (e) {}
       }
@@ -2439,7 +2580,7 @@
           DB.properties = res.properties || [];
           DB.flats = res.flats || [];
           DB.renters = res.renters || [];
-          DB.bills = res.bills || [];
+          DB.bills = sanitizeAllBillsMonths(res.bills || []);
           DB.users = res.users || [];
           saveDbSnapshotToCache();
 
@@ -2472,7 +2613,7 @@
           DB.properties = res.properties || [];
           DB.flats = res.flats || [];
           DB.renters = res.renters || [];
-          DB.bills = res.bills || [];
+          DB.bills = sanitizeAllBillsMonths(res.bills || []);
           DB.users = res.users || [];
           saveDbSnapshotToCache();
 
@@ -2514,10 +2655,11 @@
     }
 
     function calculateNetBalanceForRenterBeforeMonth(propertyName, flatName, renterObj, targetMonthYear) {
+      const cleanTargetMonth = normalizeMonthYear(targetMonthYear);
       const renterBills = getBillsForSpecificRenter(propertyName, flatName, renterObj);
       const priorBills = renterBills
-        .filter(b => String(b.MonthYear).trim() < String(targetMonthYear).trim())
-        .sort((a, b) => String(a.MonthYear).localeCompare(String(b.MonthYear)));
+        .filter(b => normalizeMonthYear(b.MonthYear) < cleanTargetMonth)
+        .sort((a, b) => normalizeMonthYear(a.MonthYear).localeCompare(normalizeMonthYear(b.MonthYear)));
 
       if (priorBills.length === 0) return 0;
 
@@ -2780,14 +2922,7 @@
       });
     }
 
-    /**
-     * ============================================================================
-     * 5. PROFILE MODAL WITH 3 SEPARATED SECTIONS:
-     *    1. Change Password
-     *    2. Change Username (Name field removed from here)
-     *    3. Change Name & Mobile No. (Dedicated section)
-     * ============================================================================
-     */
+    // 5. Profile Modal
     async function openProfileModal() {
       document.getElementById("profViewFullName").value = activeUserFullName || activeUser || "";
       document.getElementById("profViewMobile").value = activeUserMobile || "";
@@ -2844,7 +2979,6 @@
       document.getElementById(btnId).classList.add("active");
     }
 
-    // Dedicated Change Username Handler
     async function submitChangeUsernameOnly() {
       const currUser = document.getElementById("currentUsernameVerifyInput").value.trim();
       const newUser = document.getElementById("newUsernameInput").value.trim();
@@ -2915,7 +3049,6 @@
       }
     }
 
-    // Dedicated Change Name & Mobile No. Handler
     async function submitChangeNameAndMobile() {
       const newFullName = document.getElementById("changeNameOnlyInput").value.trim();
       const newMobile = document.getElementById("changeMobileOnlyInput").value.trim();
@@ -2937,7 +3070,6 @@
         return;
       }
 
-      // Instant UI update
       activeUserFullName = newFullName;
       activeUserMobile = newMobile;
       sessionStorage.setItem("active_session_fullname", activeUserFullName);
@@ -3120,6 +3252,22 @@
       });
     }
 
+    function unlockAllCalculatorFieldsForEdit() {
+      const lockableIds = [
+        "calcRent", "calcElecPrev", "calcElecRate",
+        "calcPngPrev", "calcPngRate", "calcWaterPrev", "calcWaterRate",
+        "calcPrevCarryBalance"
+      ];
+      lockableIds.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.removeAttribute("readonly");
+      });
+      document.querySelectorAll("#tabCalc .pencil-lock-btn").forEach(btn => {
+        btn.classList.add("unlocked-save");
+        btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i>`;
+      });
+    }
+
     async function toggleCalcFieldLock(inputId, btnEl, fieldCategory) {
       if (activeRole === "Viewer") return;
       const input = document.getElementById(inputId);
@@ -3179,14 +3327,16 @@
       if (!selectedFlat) return;
       resetAllCalculatorLocks();
 
-      const chosenMonth = document.getElementById("calcMonthPicker").value;
+      const chosenMonth = normalizeMonthYear(document.getElementById("calcMonthPicker").value);
+      document.getElementById("calcMonthPicker").value = chosenMonth;
+
       const statusTag = document.getElementById("calcMonthStatusTag");
       const submitBtnText = document.getElementById("calcSubmitBtnText");
 
       const renterBills = getBillsForSpecificRenter(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj);
-      const sortedBills = [...renterBills].sort((a, b) => String(a.MonthYear).localeCompare(String(b.MonthYear)));
+      const sortedBills = [...renterBills].sort((a, b) => normalizeMonthYear(a.MonthYear).localeCompare(normalizeMonthYear(b.MonthYear)));
 
-      const existingBill = sortedBills.find(b => String(b.MonthYear).trim() === String(chosenMonth).trim());
+      const existingBill = sortedBills.find(b => normalizeMonthYear(b.MonthYear) === chosenMonth);
 
       const autoCarryBalance = calculateNetBalanceForRenterBeforeMonth(
         selectedFlat.PropertyName,
@@ -3196,9 +3346,9 @@
       );
 
       if (existingBill) {
-        statusTag.innerText = `Existing Bill Found (${chosenMonth}) - Submitting Replaces Previous Bill`;
+        statusTag.innerText = `Existing Bill Found (${formatMonthLabel(chosenMonth)}) - Submitting Replaces Previous Bill`;
         statusTag.className = "calc-month-status-tag existing";
-        submitBtnText.innerText = `Update & Replace Bill for ${chosenMonth}`;
+        submitBtnText.innerText = `Update & Replace Bill for ${formatMonthLabel(chosenMonth)}`;
 
         document.getElementById("calcRent").value = existingBill.BaseRent ?? selectedFlat.RentAmount ?? 0;
         document.getElementById("calcElecPrev").value = existingBill.ElecPrev ?? 0;
@@ -3227,7 +3377,7 @@
         document.getElementById("pngRolloverHint").innerText = "Loaded from saved bill";
         document.getElementById("waterRolloverHint").innerText = "Loaded from saved bill";
       } else {
-        statusTag.innerText = `New Month Calculation (${chosenMonth})`;
+        statusTag.innerText = `New Month Calculation (${formatMonthLabel(chosenMonth)})`;
         statusTag.className = "calc-month-status-tag";
         submitBtnText.innerText = "Calculate Bill";
 
@@ -3236,7 +3386,7 @@
         document.getElementById("calcPngRate").value = selectedFlat.PNGRate || 45;
         document.getElementById("calcWaterRate").value = selectedFlat.WaterRate || 15;
 
-        const priorBills = sortedBills.filter(b => String(b.MonthYear).trim() < String(chosenMonth).trim());
+        const priorBills = sortedBills.filter(b => normalizeMonthYear(b.MonthYear) < chosenMonth);
         const lastPriorBill = priorBills.length > 0 ? priorBills[priorBills.length - 1] : null;
 
         if (lastPriorBill) {
@@ -3244,7 +3394,7 @@
           document.getElementById("calcPngPrev").value = lastPriorBill.PNGCurr || 0;
           document.getElementById("calcWaterPrev").value = lastPriorBill.WaterCurr || 0;
 
-          const hintText = `Auto-loaded from ${lastPriorBill.MonthYear} final reading`;
+          const hintText = `Auto-loaded from ${formatMonthLabel(lastPriorBill.MonthYear)} final reading`;
           document.getElementById("elecRolloverHint").innerText = hintText;
           document.getElementById("pngRolloverHint").innerText = hintText;
           document.getElementById("waterRolloverHint").innerText = hintText;
@@ -3277,7 +3427,8 @@
       document.getElementById("modalHeaderTitle").innerText = `${flat.PropertyName} - Space Details`;
       document.getElementById("modalFlatTag").innerText = `Flat ${flat.FlatName}`;
 
-      const currentYearMonth = new Date().toISOString().slice(0, 7);
+      const now = new Date();
+      const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
       document.getElementById("calcMonthPicker").value = currentYearMonth;
 
       document.getElementById("profRent").value = flat.RentAmount || renter?.RentAmount || 0;
@@ -3420,13 +3571,16 @@
     async function submitBillCalculation() {
       if (activeRole === "Viewer") return;
 
-      const chosenMonth = document.getElementById("calcMonthPicker").value || new Date().toISOString().slice(0, 7);
+      const now = new Date();
+      const fallbackMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+      const chosenMonth = normalizeMonthYear(document.getElementById("calcMonthPicker").value || fallbackMonth);
+
       const currentRenterId = activeFlatRenterObj?.RenterID || "";
       const currentTenantName = document.getElementById("renterName").value || activeFlatRenterObj?.RenterName || "Current Tenant";
 
       const existingBillIdx = DB.bills.findIndex(b => {
         if (!isSamePropAndFlat(b.PropertyName, b.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName)) return false;
-        const sameMonth = String(b.MonthYear).trim() === String(chosenMonth).trim();
+        const sameMonth = normalizeMonthYear(b.MonthYear) === chosenMonth;
         const bRenterId = String(b.RenterID || "").trim();
         const sameRenter = (bRenterId && currentRenterId)
           ? (bRenterId === currentRenterId)
@@ -3491,16 +3645,19 @@
         PaymentMode: document.getElementById("calcPayMode").value,
         Status: billStatus,
         Notes: document.getElementById("calcNotes").value,
+        BillDate: new Date().toISOString(),
         RenterID: currentRenterId,
         PrevCarryBalance: prevCarryBalance
       };
 
       if (existingBillIdx !== -1) {
-        DB.bills[existingBillIdx] = newBillObj;
-        triggerSideToast("Bill Replaced & Updated", `Previous bill for ${chosenMonth} was overwritten with the new calculation!`, "warning");
+        // Remove old position and push to end so newest updated bill appears at the very top of History
+        DB.bills.splice(existingBillIdx, 1);
+        DB.bills.push(newBillObj);
+        triggerSideToast("Bill Replaced & Updated", `Bill for ${formatMonthLabel(chosenMonth)} was updated and moved to the top of History!`, "warning");
       } else {
         DB.bills.push(newBillObj);
-        triggerSideToast("Bill Recorded", `Monthly bill for ${chosenMonth} saved to Google Sheet!`, true);
+        triggerSideToast("Bill Recorded", `Monthly bill for ${formatMonthLabel(chosenMonth)} saved to top of History!`, true);
       }
 
       saveDbSnapshotToCache();
@@ -3513,7 +3670,7 @@
         action: "recordBill",
         propertyName: newBillObj.PropertyName,
         flatName: newBillObj.FlatName,
-        monthYear: newBillObj.MonthYear,
+        monthYear: chosenMonth,
         tenantName: newBillObj.TenantName,
         baseRent: newBillObj.BaseRent,
         elecPrev: newBillObj.ElecPrev,
@@ -3544,33 +3701,147 @@
       syncDataLive();
     }
 
+    /**
+     * ============================================================================
+     * HISTORY LEDGER:
+     * - Newest calculated bills appear at the TOP (reversed order)
+     * - Month column displays clean "Oct 2026 (2026-10)" without timestamps
+     * - Action Buttons: "Receipt" (opens Receipt Modal) & "Edit" (loads month in Calculator)
+     * ============================================================================
+     */
     function populateHistoryLedger(prop, flat) {
       const tbody = document.getElementById("ledgerTableBody");
       tbody.innerHTML = "";
-      const bills = DB.bills.filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat));
+      const matchingBills = DB.bills.filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat));
 
-      bills.forEach(bill => {
+      // Reverse order so the most recently calculated bill is always at the top
+      const newestFirstBills = [...matchingBills].reverse();
+
+      newestFirstBills.forEach(bill => {
+        const cleanMonth = normalizeMonthYear(bill.MonthYear);
+        const displayMonth = formatMonthLabel(cleanMonth);
         const carryVal = parseFloat(bill.PrevCarryBalance) || 0;
         const carryText = carryVal > 0 ? `+₹${carryVal} (Due)` : (carryVal < 0 ? `-₹${Math.abs(carryVal)} (Adv)` : `₹0`);
+
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td>${bill.MonthYear}</td>
+          <td><strong>${displayMonth}</strong></td>
           <td>${bill.TenantName}</td>
           <td>₹${bill.BaseRent}</td>
-          <td>${bill.ElecRate} | ${bill.ElecPrev}-${bill.ElecCurr} = ${bill.ElecUnits}</td>
-          <td>${bill.PNGRate} | ${bill.PNGPrev}-${bill.PNGCurr} = ${bill.PNGUnits}</td>
-          <td>${bill.WaterRate} | ${bill.WaterPrev}-${bill.WaterCurr} = ${bill.WaterUnits}</td>
+          <td>₹${bill.ElecRate}/U | ${bill.ElecPrev} - ${bill.ElecCurr} = <strong>${bill.ElecUnits}U</strong></td>
+          <td>₹${bill.PNGRate}/U | ${bill.PNGPrev} - ${bill.PNGCurr} = <strong>${bill.PNGUnits}U</strong></td>
+          <td>₹${bill.WaterRate}/U | ${bill.WaterPrev} - ${bill.WaterCurr} = <strong>${bill.WaterUnits}U</strong></td>
           <td>${carryText}</td>
           <td><strong>₹${bill.TotalBilled}</strong></td>
           <td>₹${bill.PaidAmount} (${bill.PaymentMode})</td>
           <td><span class="badge-${String(bill.Status).toLowerCase().includes('fully') ? 'paid' : (String(bill.Status).toLowerCase().includes('partial') ? 'partial' : 'unpaid')}">${bill.Status}</span></td>
           <td>
-            <i class="fa-solid fa-file-pdf" style="cursor:pointer; margin-right:8px;" title="PDF"></i>
-            <i class="fa-brands fa-whatsapp" style="cursor:pointer; color:#22c55e;" title="Share"></i>
+            <div class="history-actions-cell">
+              <button type="button" class="btn-ledger-action receipt-btn" onclick="openBillReceiptModal('${bill.BillID}', '${cleanMonth}')" title="Show Receipt">
+                <i class="fa-solid fa-receipt"></i> Receipt
+              </button>
+              <button type="button" class="btn-ledger-action edit-btn admin-only" onclick="editBillMonthFromHistory('${cleanMonth}')" title="Edit Everything for This Month">
+                <i class="fa-solid fa-pen-to-square"></i> Edit
+              </button>
+            </div>
           </td>
         `;
         tbody.appendChild(tr);
       });
+    }
+
+    // Action Button 1: Show Receipt Modal for a Specific Bill Row
+    function openBillReceiptModal(billId, monthYear) {
+      if (!selectedFlat) return;
+      const cleanM = normalizeMonthYear(monthYear);
+      const bill = DB.bills.find(b =>
+        (billId && String(b.BillID) === String(billId)) ||
+        (isSamePropAndFlat(b.PropertyName, b.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName) && normalizeMonthYear(b.MonthYear) === cleanM)
+      );
+
+      if (!bill) {
+        return triggerSideToast("Not Found", "Receipt details could not be found.", false);
+      }
+
+      document.getElementById("recPropAndFlat").innerText = `${bill.PropertyName} — Flat ${bill.FlatName}`;
+      document.getElementById("recMonthLabel").innerText = `Billing Month: ${formatMonthLabel(bill.MonthYear)}`;
+
+      const carryVal = parseFloat(bill.PrevCarryBalance) || 0;
+      const carryLine = carryVal > 0
+        ? `<span style="color:var(--accent-red);">+ ₹${carryVal} (Previous Due)</span>`
+        : (carryVal < 0 ? `<span style="color:var(--accent-green);">- ₹${Math.abs(carryVal)} (Advance Credit)</span>` : `₹0`);
+
+      const totalBilled = parseFloat(bill.TotalBilled) || 0;
+      const paidAmt = parseFloat(bill.PaidAmount) || 0;
+      const closingDue = Math.max(0, totalBilled - paidAmt);
+
+      document.getElementById("receiptBodyDetails").innerHTML = `
+        <div class="receipt-line"><span>Tenant Name:</span><strong>${bill.TenantName || '--'}</strong></div>
+        <div class="receipt-line"><span>Base Rent:</span><strong>₹${bill.BaseRent || 0}</strong></div>
+        <div class="receipt-line">
+          <span>Electricity (${bill.ElecPrev} to ${bill.ElecCurr} = ${bill.ElecUnits}U @ ₹${bill.ElecRate}):</span>
+          <strong>₹${bill.ElecTotal || 0}</strong>
+        </div>
+        <div class="receipt-line">
+          <span>PNG Gas (${bill.PNGPrev} to ${bill.PNGCurr} = ${bill.PNGUnits}U @ ₹${bill.PNGRate}):</span>
+          <strong>₹${bill.PNGTotal || 0}</strong>
+        </div>
+        <div class="receipt-line">
+          <span>Water (${bill.WaterPrev} to ${bill.WaterCurr} = ${bill.WaterUnits}U @ ₹${bill.WaterRate}):</span>
+          <strong>₹${bill.WaterTotal || 0}</strong>
+        </div>
+        <div class="receipt-line">
+          <span>Additional (${bill.AdditionalName || 'None'}):</span>
+          <strong>₹${bill.AdditionalAmount || 0}</strong>
+        </div>
+        <div class="receipt-line">
+          <span>Carry-Forward Balance:</span>
+          <strong>${carryLine}</strong>
+        </div>
+        <div class="receipt-total-box">
+          <span>Grand Total Billed:</span>
+          <span style="color:var(--primary);">₹${totalBilled.toLocaleString('en-IN')}</span>
+        </div>
+        <div class="receipt-line">
+          <span>Amount Paid (${bill.PaymentMode || 'UPI'}):</span>
+          <strong style="color:var(--accent-green);">₹${paidAmt.toLocaleString('en-IN')}</strong>
+        </div>
+        <div class="receipt-line">
+          <span>Remaining Balance / Status:</span>
+          <strong style="color:${closingDue > 0 ? 'var(--accent-red)' : 'var(--accent-green)'};">
+            ${closingDue > 0 ? 'Due: ₹' + closingDue.toLocaleString('en-IN') : 'Fully Paid (₹0 Due)'} [${bill.Status}]
+          </strong>
+        </div>
+        ${bill.Notes ? `<div class="receipt-line"><span>Notes:</span><span>${bill.Notes}</span></div>` : ''}
+      `;
+
+      openModal("receiptViewModal");
+    }
+
+    function printCurrentReceipt() {
+      window.print();
+    }
+
+    // Action Button 2: Edit Everything for That Month (Switches to Calculator & Unlocks All Fields)
+    function editBillMonthFromHistory(monthYear) {
+      if (activeRole === "Viewer") return;
+      const cleanM = normalizeMonthYear(monthYear);
+
+      // Switch to Tab 1 (Calculation)
+      const modal = document.getElementById("flatDetailsModal");
+      const navItems = modal.querySelectorAll(".flat-nav-item");
+      const tabs = modal.querySelectorAll(".tab-content");
+      navItems.forEach((item, i) => item.classList.toggle("active", i === 0));
+      tabs.forEach((tab, i) => tab.classList.toggle("active", i === 0));
+
+      // Set Month Picker to that exact month and load its saved values
+      const monthPicker = document.getElementById("calcMonthPicker");
+      monthPicker.value = cleanM;
+      handleBillingMonthChange();
+
+      // Unlock all fields so the user can edit everything for that month immediately
+      unlockAllCalculatorFieldsForEdit();
+      triggerSideToast("Edit Mode Active", `Editing bill for ${formatMonthLabel(cleanM)}. Modify any field and click Update!`, "warning");
     }
 
     function filterLedgerTable(query) {
@@ -3681,12 +3952,22 @@
       if (bills.length === 0) {
         invContainer.innerHTML = `<p style="color:var(--text-muted);">No invoices recorded for ${targetRenter.RenterName}.</p>`;
       } else {
-        invContainer.innerHTML = bills.map(b => `
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--glass-border);">
-            <span><strong>${b.MonthYear}</strong> — Billed: ₹${b.TotalBilled} | Paid: ₹${b.PaidAmount} (${b.PaymentMode})</span>
-            <span class="badge-${String(b.Status).toLowerCase().includes('fully') ? 'paid' : (String(b.Status).toLowerCase().includes('partial') ? 'partial' : 'unpaid')}">${b.Status}</span>
-          </div>
-        `).join("");
+        // Show newest invoices at the top as well
+        const newestFirstInvoices = [...bills].reverse();
+        invContainer.innerHTML = newestFirstInvoices.map(b => {
+          const cleanM = normalizeMonthYear(b.MonthYear);
+          return `
+            <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid var(--glass-border);">
+              <span><strong>${formatMonthLabel(cleanM)}</strong> — Billed: ₹${b.TotalBilled} | Paid: ₹${b.PaidAmount} (${b.PaymentMode})</span>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="badge-${String(b.Status).toLowerCase().includes('fully') ? 'paid' : (String(b.Status).toLowerCase().includes('partial') ? 'partial' : 'unpaid')}">${b.Status}</span>
+                <button type="button" class="btn-ledger-action receipt-btn" onclick="openBillReceiptModal('${b.BillID}', '${cleanM}')">
+                  <i class="fa-solid fa-receipt"></i> Receipt
+                </button>
+              </div>
+            </div>
+          `;
+        }).join("");
       }
     }
 
@@ -3971,7 +4252,6 @@
       syncDataLive();
     }
 
-    // Complete Cascade Delete for Property: Wipes Property + All Flats + All Renters + All Bills
     function triggerDeletePropertyCheck() {
       const p = document.getElementById("deletePropDropdown").value;
       if (!p) return triggerSideToast("Select Property", "No property selected to delete.", false);
@@ -3982,7 +4262,6 @@
         () => {
           const targetPropClean = String(p).trim().toLowerCase();
 
-          // Cascade delete in local state immediately (Properties, Flats, Renters, Bills)
           DB.properties = DB.properties.filter(item => String(item.PropertyName).trim().toLowerCase() !== targetPropClean);
           DB.flats = DB.flats.filter(item => String(item.PropertyName).trim().toLowerCase() !== targetPropClean);
           DB.renters = DB.renters.filter(item => String(item.PropertyName).trim().toLowerCase() !== targetPropClean);
@@ -4063,7 +4342,6 @@
       syncDataLive();
     }
 
-    // Complete Cascade Delete for Flat: Wipes Flat + All Renters/Rent Records + All Generated Bills for that Flat
     function triggerDeleteFlatCheck() {
       const p = document.getElementById("deleteFlatPropDropdown").value;
       const f = document.getElementById("deleteFlatTargetDropdown").value;
@@ -4073,7 +4351,6 @@
         "Delete Flat & All Associated Records",
         `Are you sure you want to confirm delete this flat (Flat ${f} in ${p})? All rent records and bills associated with this flat will be permanently deleted. Yes or No?`,
         () => {
-          // Cascade delete in local state immediately (Flats, Renters, Bills)
           DB.flats = DB.flats.filter(item => !isSamePropAndFlat(item.PropertyName, item.FlatName, p, f));
           DB.renters = DB.renters.filter(item => !isSamePropAndFlat(item.PropertyName, item.FlatName, p, f));
           DB.bills = DB.bills.filter(item => !isSamePropAndFlat(item.PropertyName, item.FlatName, p, f));
