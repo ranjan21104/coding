@@ -17,8 +17,8 @@
     :root,
     body.theme-black {
       --bg-body: #090d16;
-      --bg-header: rgba(9, 13, 22, 0.94);
-      --bg-card: rgba(20, 27, 45, 0.88);
+      --bg-header: rgba(9, 13, 22, 0.95);
+      --bg-card: rgba(20, 27, 45, 0.9);
       --bg-modal: #111827;
       --bg-input: #1e293b;
       --primary: #4f46e5;
@@ -65,50 +65,39 @@
       background: var(--bg-body);
       color: var(--text-main);
       min-height: 100vh;
+      min-height: 100dvh;
       transition: background 0.2s ease, color 0.2s ease;
-    }
-
-    /* Full Background Cover for Login & Ambient Backdrop */
-    .bg-canvas {
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(9, 13, 22, 0.65) 0%, rgba(9, 13, 22, 0.92) 100%),
-                  url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=80') center/cover no-repeat;
-      z-index: -1;
-    }
-    body.theme-white #dashboardScreen ~ .bg-canvas,
-    body.theme-white .bg-canvas {
-      opacity: 0.06;
-    }
-    #loginScreen.active ~ .bg-canvas,
-    body:has(#loginScreen.active) .bg-canvas {
-      opacity: 1 !important;
     }
 
     /* Screen Management */
     .screen {
       display: none;
       min-height: 100vh;
+      min-height: 100dvh;
       width: 100%;
     }
     .screen.active {
       display: flex;
     }
 
-    /* Glassmorphic Login */
+    /* ==========================================================================
+       LOGIN / LOGOUT SCREEN: ALWAYS HAS HIGH-RES HOUSE IMAGE BACKGROUND
+       ========================================================================== */
     #loginScreen {
       align-items: center;
       justify-content: center;
       padding: 16px;
+      background: linear-gradient(180deg, rgba(9, 13, 22, 0.55) 0%, rgba(9, 13, 22, 0.85) 100%),
+                  url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=85') center/cover no-repeat fixed !important;
     }
 
     .glass-card {
-      background: rgba(255, 255, 255, 0.14);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1.5px solid rgba(255, 255, 255, 0.32);
       border-radius: var(--radius-lg);
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 25px 55px rgba(0, 0, 0, 0.6);
     }
 
     .login-container {
@@ -135,10 +124,83 @@
     }
     .login-brand p {
       font-size: 0.88rem;
-      color: #cbd5e1;
+      color: #e2e8f0;
       margin-top: 4px;
     }
 
+    /* ==========================================================================
+       COLORFUL SIDE SLIDE-IN NOTIFICATION TOAST (FOR WRONG PASSWORD / ALERTS)
+       ========================================================================== */
+    .side-toast {
+      position: fixed;
+      top: 24px;
+      right: -420px;
+      z-index: 9999;
+      min-width: 290px;
+      max-width: 90vw;
+      background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 50%, #7928ca 100%);
+      color: #ffffff;
+      padding: 16px 20px;
+      border-radius: 16px;
+      box-shadow: 0 15px 35px rgba(255, 65, 108, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: right 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      overflow: hidden;
+    }
+    .side-toast.show {
+      right: 20px;
+    }
+    .side-toast.success-toast {
+      background: linear-gradient(135deg, #059669 0%, #10b981 55%, #3b82f6 100%);
+      box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+    }
+    .side-toast-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+    .side-toast-body {
+      flex: 1;
+      text-align: left;
+    }
+    .side-toast-body h5 {
+      font-size: 0.92rem;
+      font-weight: 800;
+      margin-bottom: 2px;
+      color: #ffffff;
+    }
+    .side-toast-body p {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.92);
+      font-weight: 500;
+    }
+    .side-toast-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.85);
+      width: 100%;
+      transform-origin: left;
+    }
+    .side-toast.show .side-toast-progress {
+      animation: progressShrink 3.8s linear forwards;
+    }
+    @keyframes progressShrink {
+      from { transform: scaleX(1); }
+      to { transform: scaleX(0); }
+    }
+
+    /* Form Controls */
     .form-group {
       margin-bottom: 14px;
       text-align: left;
@@ -163,12 +225,17 @@
       font-size: 0.92rem;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
-    #loginScreen .form-control {
-      background: rgba(15, 23, 42, 0.65);
-      color: #ffffff;
-      border-color: rgba(255, 255, 255, 0.25);
+    .form-control[readonly] {
+      opacity: 0.82;
+      cursor: not-allowed;
+      border-style: dashed;
     }
-    .form-control:focus {
+    #loginScreen .form-control {
+      background: rgba(15, 23, 42, 0.72);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.28);
+    }
+    .form-control:focus:not([readonly]) {
       outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
@@ -207,24 +274,88 @@
 
     .btn-primary {
       width: 100%;
-      padding: 14px;
+      padding: 13px 16px;
       border-radius: var(--radius-md);
       border: none;
       background: linear-gradient(135deg, #6366f1 0%, var(--primary) 100%);
       color: #ffffff;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       cursor: pointer;
       transition: all 0.2s ease;
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
     }
     .btn-primary:hover {
       transform: translateY(-1px);
       filter: brightness(1.06);
+    }
+
+    /* Profile Action Toggle Buttons */
+    .profile-action-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 18px 0 14px 0;
+    }
+    .btn-switch-option {
+      padding: 11px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--glass-border);
+      background: var(--bg-input);
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 0.84rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-switch-option.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+    }
+
+    .profile-sub-drawer {
+      display: none;
+      background: var(--bg-input);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-top: 8px;
+    }
+    .profile-sub-drawer.active {
+      display: block;
+    }
+
+    /* Bottom Form Status Message (e.g. Username Taken) */
+    .bottom-status-msg {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-align: center;
+    }
+    .bottom-status-msg.error {
+      display: block;
+      background: rgba(239, 68, 68, 0.18);
+      border: 1px solid var(--accent-red);
+      color: var(--accent-red);
+    }
+    .bottom-status-msg.success {
+      display: block;
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid var(--accent-green);
+      color: var(--accent-green);
     }
 
     /* Main Dashboard Layout */
@@ -241,8 +372,8 @@
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      padding: 12px 20px;
+      gap: 10px;
+      padding: 12px 18px;
       background: var(--bg-header);
       backdrop-filter: blur(15px);
       border-bottom: 1px solid var(--glass-border);
@@ -251,10 +382,10 @@
     .nav-left {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
     .nav-left h2 {
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       font-weight: 800;
       color: var(--text-main);
     }
@@ -274,7 +405,7 @@
     }
 
     .role-badge {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 800;
       padding: 3px 8px;
       border-radius: 6px;
@@ -315,7 +446,7 @@
     .nav-right {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
@@ -406,7 +537,7 @@
 
     /* Horizontal Properties Row */
     .properties-bar {
-      padding: 18px 20px 8px 20px;
+      padding: 16px 18px 8px 18px;
       width: 100%;
     }
     .properties-scroller {
@@ -418,9 +549,9 @@
       -webkit-overflow-scrolling: touch;
     }
     .prop-card {
-      min-width: 200px;
+      min-width: 195px;
       flex-shrink: 0;
-      padding: 14px 16px;
+      padding: 13px 15px;
       background: var(--bg-card);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-md);
@@ -438,19 +569,19 @@
       box-shadow: 0 4px 16px rgba(79, 70, 229, 0.25);
     }
     .prop-icon {
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
       background: rgba(79, 70, 229, 0.18);
       color: var(--primary);
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
+      font-size: 0.95rem;
       flex-shrink: 0;
     }
     .prop-info h4 {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 700;
       color: var(--text-main);
     }
@@ -461,10 +592,10 @@
 
     /* 3-Units Merged Wide Flat Cards */
     .flats-container {
-      padding: 12px 20px 40px 20px;
+      padding: 10px 18px 40px 18px;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 16px;
       width: 100%;
     }
 
@@ -472,13 +603,13 @@
       background: var(--bg-card);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-lg);
-      padding: 20px;
+      padding: 18px;
       cursor: pointer;
       transition: all 0.25s ease;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 165px;
+      min-height: 160px;
       color: var(--text-main);
     }
     .flat-card-merged:hover {
@@ -493,7 +624,7 @@
       gap: 8px;
     }
     .flat-name {
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       font-weight: 800;
       color: var(--text-main);
     }
@@ -521,24 +652,24 @@
       object-fit: cover;
     }
     .renter-name {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 600;
       color: var(--text-main);
     }
 
     .flat-bottom-row {
-      margin-top: 16px;
+      margin-top: 14px;
       padding-top: 12px;
       border-top: 1px solid var(--glass-border);
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      gap: 8px;
-      font-size: 0.78rem;
+      gap: 6px;
+      font-size: 0.76rem;
       color: var(--text-muted);
     }
     .rent-status {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       padding: 4px 10px;
       border-radius: 8px;
@@ -551,12 +682,12 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.72);
+      background: rgba(0, 0, 0, 0.75);
       backdrop-filter: blur(8px);
       z-index: 1000;
       align-items: center;
       justify-content: center;
-      padding: 12px;
+      padding: 10px;
     }
     .modal-overlay.active {
       display: flex;
@@ -570,15 +701,16 @@
       width: 100%;
       max-width: 520px;
       max-height: 92vh;
+      max-height: 92dvh;
       overflow-y: auto;
-      padding: 24px 20px;
+      padding: 22px 18px;
       position: relative;
       box-shadow: var(--shadow-elevation);
     }
     .modal-close-btn {
       position: absolute;
-      top: 16px;
-      right: 16px;
+      top: 14px;
+      right: 14px;
       width: 32px;
       height: 32px;
       border-radius: 50%;
@@ -595,13 +727,6 @@
       color: var(--accent-red);
     }
 
-    /* Profile Section Divider */
-    .section-divider {
-      height: 1px;
-      background: var(--glass-border);
-      margin: 20px 0 16px 0;
-    }
-
     /* Flat Detailed 4-Tab Navigation Modal */
     .modal-flat-details {
       max-width: 960px;
@@ -613,12 +738,12 @@
       background: var(--bg-input);
       padding: 6px;
       border-radius: var(--radius-md);
-      margin: 16px 0 20px 0;
+      margin: 14px 0 18px 0;
     }
     .flat-nav-item {
       text-align: center;
       padding: 9px 6px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       border-radius: 8px;
       cursor: pointer;
@@ -641,7 +766,7 @@
     .calc-row-metric {
       display: grid;
       grid-template-columns: 1.2fr 1fr 1fr 1fr;
-      gap: 10px;
+      gap: 8px;
       align-items: center;
       margin-bottom: 10px;
       background: var(--bg-input);
@@ -650,12 +775,12 @@
       border: 1px solid var(--glass-border);
     }
     .calc-row-metric label {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 700;
       color: var(--text-main);
     }
     .calc-auto-badge {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 800;
       color: var(--primary);
       text-align: right;
@@ -665,7 +790,7 @@
     .profile-matrix {
       display: grid;
       grid-template-columns: 1.1fr 1.1fr 1.1fr;
-      gap: 16px;
+      gap: 14px;
     }
     .matrix-col {
       background: var(--bg-input);
@@ -674,7 +799,7 @@
       border: 1px solid var(--glass-border);
     }
     .col-title {
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       font-weight: 800;
       margin-bottom: 12px;
       color: var(--primary);
@@ -683,7 +808,7 @@
     }
     .image-frame-container {
       width: 100%;
-      height: 135px;
+      height: 130px;
       border-radius: 12px;
       background: rgba(0,0,0,0.12);
       border: 2px dashed var(--glass-border);
@@ -702,13 +827,13 @@
     /* Ledger History Table */
     .ledger-table-wrap {
       overflow-x: auto;
-      max-height: 440px;
+      max-height: 420px;
       -webkit-overflow-scrolling: touch;
     }
     .ledger-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       text-align: left;
       color: var(--text-main);
     }
@@ -749,7 +874,7 @@
     /* Renter History Card */
     .renter-history-overview {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
       gap: 10px;
       margin: 14px 0;
     }
@@ -763,12 +888,12 @@
     }
     .stat-pill span {
       display: block;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       color: var(--text-muted);
       margin-bottom: 4px;
     }
     .stat-pill strong {
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: var(--text-main);
     }
 
@@ -801,18 +926,29 @@
       display: none !important;
     }
 
-    /* Mobile Responsive Alignment (Zero Overflow) */
+    /* ==========================================================================
+       MOBILE AUTO-FIT PERFECTION (ZERO CUTOFFS OR OVERFLOW)
+       ========================================================================== */
     @media (max-width: 768px) {
       header.top-nav {
-        padding: 10px 14px;
-        gap: 10px;
+        padding: 10px 12px;
+        gap: 8px;
       }
       .nav-left {
         order: 1;
       }
+      .nav-left h2 {
+        font-size: 1.1rem;
+      }
       .nav-right {
         order: 2;
         margin-left: auto;
+        gap: 6px;
+      }
+      .nav-btn {
+        width: 34px;
+        height: 34px;
+        font-size: 0.85rem;
       }
       .nav-center {
         order: 3;
@@ -823,13 +959,20 @@
         width: 100%;
         justify-content: space-around;
         order: 4;
+        padding: 6px 8px;
+        font-size: 0.74rem;
       }
       .properties-bar {
-        padding: 14px 14px 6px 14px;
+        padding: 12px 12px 6px 12px;
+      }
+      .prop-card {
+        min-width: 170px;
+        padding: 10px 12px;
       }
       .flats-container {
-        padding: 10px 14px 30px 14px;
+        padding: 8px 12px 28px 12px;
         grid-template-columns: 1fr;
+        gap: 12px;
       }
       .flat-nav-bar {
         grid-template-columns: repeat(2, 1fr);
@@ -843,17 +986,42 @@
       .profile-matrix {
         grid-template-columns: 1fr;
       }
+      .profile-action-switch {
+        grid-template-columns: 1fr;
+      }
       .modal-window {
-        padding: 18px 14px;
+        padding: 16px 12px;
+        max-height: 94dvh;
+      }
+      .login-container {
+        padding: 28px 20px;
+      }
+      .side-toast {
+        top: 14px;
+        min-width: 260px;
+        max-width: calc(100vw - 24px);
+      }
+      .side-toast.show {
+        right: 12px;
       }
     }
   </style>
 </head>
 <body class="theme-black">
 
-  <div class="bg-canvas"></div>
+  <!-- COLORFUL SIDE SLIDE-IN NOTIFICATION TOAST -->
+  <div id="sideToast" class="side-toast">
+    <div class="side-toast-icon">
+      <i id="sideToastIcon" class="fa-solid fa-shield-halved"></i>
+    </div>
+    <div class="side-toast-body">
+      <h5 id="sideToastTitle">Authentication Alert</h5>
+      <p id="sideToastMessage">Incorrect Username or Password</p>
+    </div>
+    <div class="side-toast-progress"></div>
+  </div>
 
-  <!-- SCREEN 1: LOGIN SCREEN -->
+  <!-- SCREEN 1: LOGIN / LOGOUT SCREEN (House Image Always Visible) -->
   <section id="loginScreen" class="screen active">
     <div class="glass-card login-container">
       <div class="login-brand">
@@ -937,12 +1105,12 @@
           </div>
         </div>
 
-        <!-- Dedicated Profile Icon (Shows Name, Username, Password + Change Password at bottom) -->
+        <!-- Dedicated Profile Icon -->
         <button class="nav-btn" onclick="openProfileModal()" title="My Profile">
           <i class="fa-solid fa-user"></i>
         </button>
 
-        <!-- Dedicated Settings Icon Next to Profile (Theme, Create User ID, Other) -->
+        <!-- Dedicated Settings Icon Next to Profile -->
         <button class="nav-btn" onclick="openSettingsModal()" title="Settings">
           <i class="fa-solid fa-gear"></i>
         </button>
@@ -969,73 +1137,110 @@
 
   <!-- ==================== POPUP MODALS ==================== -->
 
-  <!-- 1. PROFILE MODAL (Name, Username, Password with Eye Toggle + Change Password at Bottom) -->
+  <!-- 1. PROFILE MODAL:
+       - Top 3 Fields (Name, Username, Password) are strictly LOCKED/READ-ONLY.
+       - Below them: "Change Password" and "Change Username" options. -->
   <div id="profileModal" class="modal-overlay">
     <div class="modal-window">
       <button class="modal-close-btn" onclick="closeModal('profileModal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 16px;"><i class="fa-solid fa-id-badge" style="color:var(--primary); margin-right:8px;"></i>User Profile</h3>
+      <h3 style="margin-bottom: 14px;"><i class="fa-solid fa-id-badge" style="color:var(--primary); margin-right:8px;"></i>My Profile</h3>
 
-      <!-- Top Section: Name, Username & Live Password with Eye Icon -->
+      <!-- Locked Display Fields (Cannot be edited directly here) -->
       <div class="form-group">
-        <label>Name</label>
-        <input type="text" id="profViewFullName" class="form-control" placeholder="Your Full Name">
+        <label>Name (Locked)</label>
+        <input type="text" id="profViewFullName" class="form-control" readonly>
       </div>
 
       <div class="form-group">
-        <label>Username</label>
-        <input type="text" id="profViewUsername" class="form-control" placeholder="Your Username">
+        <label>Username (Locked)</label>
+        <input type="text" id="profViewUsername" class="form-control" readonly>
       </div>
 
       <div class="form-group">
-        <label>Password</label>
+        <label>Password (Locked)</label>
         <div class="password-field-wrapper">
-          <input type="password" id="profViewPassword" class="form-control" readonly placeholder="Fetching live from sheet...">
+          <input type="password" id="profViewPassword" class="form-control" readonly placeholder="Fetching live...">
           <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('profViewPassword', this)" title="Show / Hide Password">
             <i class="fa-solid fa-eye"></i>
           </button>
         </div>
       </div>
 
-      <button class="btn-primary" style="margin-bottom: 6px; padding: 11px;" onclick="submitProfileNameAndUsername()">
-        <i class="fa-solid fa-floppy-disk"></i> Save Name & Username
-      </button>
-
-      <div class="section-divider"></div>
-
-      <!-- Bottom Section: Change Password Option -->
-      <h4 style="margin-bottom: 12px; color: var(--primary);"><i class="fa-solid fa-key" style="margin-right:6px;"></i>Change Password</h4>
-
-      <div class="form-group">
-        <label>Current Password (Old Password)</label>
-        <div class="password-field-wrapper">
-          <input type="password" id="oldPassInput" class="form-control" placeholder="Enter current password">
-          <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('oldPassInput', this)">
-            <i class="fa-solid fa-eye"></i>
-          </button>
-        </div>
+      <!-- Action Switch Buttons Below Locked Fields -->
+      <div class="profile-action-switch">
+        <button type="button" id="btnShowChangePass" class="btn-switch-option active" onclick="switchProfileDrawer('drawerChangePass', 'btnShowChangePass')">
+          <i class="fa-solid fa-key"></i> Change Password
+        </button>
+        <button type="button" id="btnShowChangeUser" class="btn-switch-option" onclick="switchProfileDrawer('drawerChangeUser', 'btnShowChangeUser')">
+          <i class="fa-solid fa-user-pen"></i> Change Username
+        </button>
       </div>
 
-      <div class="form-group">
-        <label>New Password</label>
-        <div class="password-field-wrapper">
-          <input type="password" id="newPassInput" class="form-control" placeholder="Mix of letters, numbers & symbols">
-          <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('newPassInput', this)">
-            <i class="fa-solid fa-eye"></i>
-          </button>
+      <!-- Option A: Change Password Drawer -->
+      <div id="drawerChangePass" class="profile-sub-drawer active">
+        <h4 style="margin-bottom: 12px; font-size: 0.92rem; color: var(--primary);">Update Your Password</h4>
+        <div class="form-group">
+          <label>Current Password</label>
+          <div class="password-field-wrapper">
+            <input type="password" id="oldPassInput" class="form-control" placeholder="Enter current password">
+            <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('oldPassInput', this)">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
         </div>
+
+        <div class="form-group">
+          <label>New Password</label>
+          <div class="password-field-wrapper">
+            <input type="password" id="newPassInput" class="form-control" placeholder="Enter new password">
+            <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('newPassInput', this)">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <div class="password-field-wrapper">
+            <input type="password" id="confirmNewPassInput" class="form-control" placeholder="Confirm new password">
+            <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('confirmNewPassInput', this)">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="submitChangePassword()">Update Password</button>
+        <div id="passChangeBottomMsg" class="bottom-status-msg"></div>
       </div>
 
-      <div class="form-group">
-        <label>Confirm New Password</label>
-        <div class="password-field-wrapper">
-          <input type="password" id="confirmNewPassInput" class="form-control" placeholder="Repeat new password">
-          <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('confirmNewPassInput', this)">
-            <i class="fa-solid fa-eye"></i>
-          </button>
-        </div>
-      </div>
+      <!-- Option B: Change Username & Name Drawer -->
+      <div id="drawerChangeUser" class="profile-sub-drawer">
+        <h4 style="margin-bottom: 12px; font-size: 0.92rem; color: var(--primary);">Update Username & Name</h4>
 
-      <button class="btn-primary" onclick="submitChangePassword()">Update Password</button>
+        <div class="form-group">
+          <label>Change Name (Full Name)</label>
+          <input type="text" id="changeNameInput" class="form-control" placeholder="Enter your updated full name">
+        </div>
+
+        <div class="form-group">
+          <label>Current Username</label>
+          <input type="text" id="currentUsernameVerifyInput" class="form-control" placeholder="Enter your current username">
+        </div>
+
+        <div class="form-group">
+          <label>New Username</label>
+          <input type="text" id="newUsernameInput" class="form-control" placeholder="Enter new username">
+        </div>
+
+        <div class="form-group">
+          <label>Confirm New Username</label>
+          <input type="text" id="confirmNewUsernameInput" class="form-control" placeholder="Confirm new username">
+        </div>
+
+        <button class="btn-primary" onclick="submitChangeUsernameAndName()">Update Username & Name</button>
+        <!-- Duplicate or validation message shows right at the bottom -->
+        <div id="userChangeBottomMsg" class="bottom-status-msg"></div>
+      </div>
     </div>
   </div>
 
@@ -1045,14 +1250,13 @@
       <button class="modal-close-btn" onclick="closeModal('settingsModal')"><i class="fa-solid fa-xmark"></i></button>
       <h3 style="margin-bottom: 12px;"><i class="fa-solid fa-sliders" style="color:var(--primary); margin-right:8px;"></i>Settings</h3>
 
-      <!-- Navigation inside Settings Modal -->
       <div class="flat-nav-bar" style="grid-template-columns: repeat(3, 1fr); margin-top: 8px;">
         <div class="flat-nav-item active" onclick="switchSettingsSubTab(event, 'setSubTheme')">Theme</div>
         <div class="flat-nav-item admin-only" onclick="switchSettingsSubTab(event, 'setSubCreateUser')">Create User ID</div>
         <div class="flat-nav-item" onclick="switchSettingsSubTab(event, 'setSubOther')">Other</div>
       </div>
 
-      <!-- Settings Tab 1: Change Theme (Black, White, System -> Saved to Google Sheet) -->
+      <!-- Settings Tab 1: Change Theme -->
       <div id="setSubTheme" class="tab-content active">
         <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 10px;">
           Select a theme. Your preference is saved directly to Google Sheets and automatically opens on every login:
@@ -1084,7 +1288,7 @@
         </div>
       </div>
 
-      <!-- Settings Tab 2: Create a New User ID (With Role Assignment: Admin / Viewer) -->
+      <!-- Settings Tab 2: Create a New User ID -->
       <div id="setSubCreateUser" class="tab-content">
         <div class="form-group">
           <label>Full Name *</label>
@@ -1113,7 +1317,7 @@
         <button class="btn-primary" onclick="submitCreateNewUser()">Create New User ID</button>
       </div>
 
-      <!-- Settings Tab 3: Other (Account Summary, Directory & Sync Status) -->
+      <!-- Settings Tab 3: Other -->
       <div id="setSubOther" class="tab-content">
         <div class="stat-pill" style="text-align: left; margin-bottom: 12px;">
           <span>ACTIVE ACCOUNT DETAILS</span>
@@ -1170,7 +1374,7 @@
       </div>
       <div class="form-group">
         <label>Current Name (Locked)</label>
-        <input type="text" id="editPropCurrentName" class="form-control" readonly style="opacity: 0.6;">
+        <input type="text" id="editPropCurrentName" class="form-control" readonly>
       </div>
       <div class="form-group">
         <label>New Property Name *</label>
@@ -1493,6 +1697,7 @@
     let selectedProperty = null;
     let selectedFlat = null;
     let syncTimer = null;
+    let sideToastTimeout = null;
 
     function getGasUrl() {
       return GAS_WEB_APP_URL.trim();
@@ -1500,8 +1705,32 @@
 
     /**
      * ============================================================================
+     * COLORFUL SIDE SLIDE-IN TOAST TRIGGER
+     * Slides in from the right side for wrong password or system alerts
+     * ============================================================================
+     */
+    function triggerSideToast(title, message, isSuccess = false) {
+      const toast = document.getElementById("sideToast");
+      const icon = document.getElementById("sideToastIcon");
+      document.getElementById("sideToastTitle").innerText = title;
+      document.getElementById("sideToastMessage").innerText = message;
+
+      toast.classList.toggle("success-toast", isSuccess);
+      icon.className = isSuccess ? "fa-solid fa-circle-check" : "fa-solid fa-triangle-exclamation";
+
+      toast.classList.remove("show");
+      void toast.offsetWidth; // Force reflow to restart animation
+      toast.classList.add("show");
+
+      if (sideToastTimeout) clearTimeout(sideToastTimeout);
+      sideToastTimeout = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3800);
+    }
+
+    /**
+     * ============================================================================
      * PASSWORD EYE ICON VISIBILITY TOGGLE
-     * Works for any password field across Login, Profile, and Settings
      * ============================================================================
      */
     function togglePasswordVisibility(inputId, btnEl) {
@@ -1522,7 +1751,6 @@
     /**
      * ============================================================================
      * INSTANT ZERO-BLANK-SCREEN INITIALIZATION ON REFRESH
-     * Restores cached snapshot at 0ms while fetching fresh Google Sheet updates
      * ============================================================================
      */
     document.addEventListener("DOMContentLoaded", () => {
@@ -1605,7 +1833,7 @@
       }
     }
 
-    // 1. Single-Round-Trip Instant Login
+    // 1. Single-Round-Trip Instant Login (With Colorful Side Slide-In Error on Wrong Password)
     async function handleLoginSubmit(e) {
       e.preventDefault();
       const user = document.getElementById("loginUsername").value.trim();
@@ -1646,10 +1874,11 @@
           document.getElementById("loginPassword").value = "";
           unlockDashboardInstant();
         } else {
-          alert("Your Username or Password is wrong.");
+          // Slide in colorful error notification from the right side
+          triggerSideToast("Access Denied", "Incorrect Username or Password", false);
         }
       } catch (err) {
-        alert("Error verifying credentials live with Google Sheet: " + err.message);
+        triggerSideToast("Connection Error", "Unable to reach Google Sheet server.", false);
       } finally {
         btn.disabled = false;
         btn.innerHTML = `<span>Log In</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>`;
@@ -1693,7 +1922,6 @@
       }
     }
 
-    // Calculate Total Profits (Paid Revenue) and Losses (Unpaid/Pending Dues)
     function updateGlobalProfitAndLoss() {
       let totalProfit = 0;
       let totalBilledAll = 0;
@@ -1778,7 +2006,6 @@
       });
     }
 
-    // Global Search Filter
     function handleGlobalSearch(query) {
       const q = query.trim().toLowerCase();
       if (!q) {
@@ -1835,18 +2062,30 @@
       });
     }
 
-    // 5. Dedicated Profile Modal (Name, Username, Live Password + Change Password at Bottom)
+    // 5. Profile Modal: Locked Top Display + Toggleable Change Password / Change Username & Name
     async function openProfileModal() {
+      // Populate locked top fields
       document.getElementById("profViewFullName").value = activeUserFullName || activeUser || "";
       document.getElementById("profViewUsername").value = activeUser || "";
+      document.getElementById("changeNameInput").value = activeUserFullName || activeUser || "";
+
       const passInput = document.getElementById("profViewPassword");
       passInput.type = "password";
       passInput.value = "";
       passInput.placeholder = "Fetching live from Google Sheet...";
 
+      // Clear bottom messages and inputs
+      document.getElementById("passChangeBottomMsg").className = "bottom-status-msg";
+      document.getElementById("userChangeBottomMsg").className = "bottom-status-msg";
+      document.getElementById("oldPassInput").value = "";
+      document.getElementById("newPassInput").value = "";
+      document.getElementById("confirmNewPassInput").value = "";
+      document.getElementById("currentUsernameVerifyInput").value = "";
+      document.getElementById("newUsernameInput").value = "";
+      document.getElementById("confirmNewUsernameInput").value = "";
+
       openModal("profileModal");
 
-      // Fetch live password from Google Sheet (never cached in localStorage)
       try {
         const gasUrl = getGasUrl();
         const response = await fetch(`${gasUrl}?action=getUserProfile&username=${encodeURIComponent(activeUser)}&t=${Date.now()}`, {
@@ -1857,6 +2096,7 @@
         if (res.status === "success") {
           document.getElementById("profViewFullName").value = res.fullName || activeUser;
           document.getElementById("profViewUsername").value = res.username || activeUser;
+          document.getElementById("changeNameInput").value = res.fullName || activeUser;
           passInput.value = res.password || "";
         }
       } catch (e) {
@@ -1864,32 +2104,118 @@
       }
     }
 
-    async function submitProfileNameAndUsername() {
-      const updatedFullName = document.getElementById("profViewFullName").value.trim();
-      const updatedUsername = document.getElementById("profViewUsername").value.trim();
+    function switchProfileDrawer(drawerId, btnId) {
+      document.querySelectorAll(".profile-sub-drawer").forEach(d => d.classList.remove("active"));
+      document.querySelectorAll(".btn-switch-option").forEach(b => b.classList.remove("active"));
+      document.getElementById(drawerId).classList.add("active");
+      document.getElementById(btnId).classList.add("active");
+    }
 
-      if (!updatedUsername) return alert("Username cannot be empty.");
+    async function submitChangeUsernameAndName() {
+      const newFullName = document.getElementById("changeNameInput").value.trim();
+      const currUser = document.getElementById("currentUsernameVerifyInput").value.trim();
+      const newUser = document.getElementById("newUsernameInput").value.trim();
+      const confUser = document.getElementById("confirmNewUsernameInput").value.trim();
+      const msgBox = document.getElementById("userChangeBottomMsg");
+
+      msgBox.className = "bottom-status-msg";
+
+      if (!currUser || !newUser || !confUser) {
+        msgBox.innerText = "Please fill in Current Username, New Username, and Confirm New Username.";
+        msgBox.className = "bottom-status-msg error";
+        return;
+      }
+
+      if (currUser.toLowerCase() !== String(activeUser).toLowerCase()) {
+        msgBox.innerText = "Current Username entered does not match your active username.";
+        msgBox.className = "bottom-status-msg error";
+        return;
+      }
+
+      if (newUser !== confUser) {
+        msgBox.innerText = "New Username and Confirm New Username do not match.";
+        msgBox.className = "bottom-status-msg error";
+        return;
+      }
+
+      // Check local user list first for instant duplicate feedback
+      if (DB.users && DB.users.some(u =>
+        String(u.Username).toLowerCase() === newUser.toLowerCase() &&
+        String(u.Username).toLowerCase() !== String(activeUser).toLowerCase()
+      )) {
+        msgBox.innerText = "This username is already taken. Please select or write another username.";
+        msgBox.className = "bottom-status-msg error";
+        return;
+      }
 
       const res = await sendGasPost({
         action: "changeUsername",
-        currentUsername: activeUser,
-        newUsername: updatedUsername,
-        fullName: updatedFullName
+        loggedUsername: activeUser,
+        currentUsernameInput: currUser,
+        newUsername: newUser,
+        newFullName: newFullName
       });
 
-      if (res.status === "success") {
+      if (res.status === "duplicate") {
+        msgBox.innerText = "This username is already taken. Please select or write another username.";
+        msgBox.className = "bottom-status-msg error";
+      } else if (res.status === "success") {
         activeUser = res.newUsername;
         activeUserFullName = res.fullName;
         localStorage.setItem("active_session_user", activeUser);
         localStorage.setItem("active_session_fullname", activeUserFullName);
-        alert("Name and Username updated in Google Sheet!");
+
+        document.getElementById("profViewFullName").value = activeUserFullName;
+        document.getElementById("profViewUsername").value = activeUser;
+        document.getElementById("currentUsernameVerifyInput").value = "";
+        document.getElementById("newUsernameInput").value = "";
+        document.getElementById("confirmNewUsernameInput").value = "";
+
+        msgBox.innerText = "Username and Name updated successfully!";
+        msgBox.className = "bottom-status-msg success";
         syncDataLive();
       } else {
-        alert(res.message);
+        msgBox.innerText = res.message || "Could not update username.";
+        msgBox.className = "bottom-status-msg error";
       }
     }
 
-    // 6. Dedicated Settings Modal (Theme, Create User ID, Other)
+    async function submitChangePassword() {
+      const oldP = document.getElementById("oldPassInput").value;
+      const newP = document.getElementById("newPassInput").value;
+      const confP = document.getElementById("confirmNewPassInput").value;
+      const msgBox = document.getElementById("passChangeBottomMsg");
+
+      msgBox.className = "bottom-status-msg";
+
+      if (!oldP || !newP || !confP) {
+        msgBox.innerText = "All three password fields are required.";
+        msgBox.className = "bottom-status-msg error";
+        return;
+      }
+      if (newP !== confP) {
+        msgBox.innerText = "New Password does not match Confirm New Password.";
+        msgBox.className = "bottom-status-msg error";
+        return;
+      }
+
+      const res = await sendGasPost({
+        action: "changePassword",
+        username: activeUser,
+        oldPassword: oldP,
+        newPassword: newP
+      });
+
+      if (res.status === "success") {
+        triggerSideToast("Password Updated", "Logging out for security...", true);
+        setTimeout(() => handleLogout(), 900);
+      } else {
+        msgBox.innerText = res.message || "Current Password is incorrect.";
+        msgBox.className = "bottom-status-msg error";
+      }
+    }
+
+    // 6. Dedicated Settings Modal
     function openSettingsModal() {
       document.getElementById("otherProfileFullName").innerText = activeUserFullName || activeUser;
       document.getElementById("otherProfileUsername").innerText = activeUser || "--";
@@ -1917,7 +2243,6 @@
       document.getElementById(subTabId).classList.add("active");
     }
 
-    // Theme Engine: Black (White text), White (Black text), System (OS Auto)
     function applyVisualTheme(themePref) {
       activeThemePref = (themePref || "black").toLowerCase();
       localStorage.setItem("app_visual_theme", activeThemePref);
@@ -1957,11 +2282,11 @@
       const role = document.getElementById("createUserRole").value;
 
       if (!fullName || !newU || !newP) {
-        return alert("Please fill in Full Name, Desired Username, and Password.");
+        return triggerSideToast("Missing Fields", "Please fill in Name, Username, and Password.", false);
       }
 
       if (DB.users && DB.users.some(u => String(u.Username).toLowerCase() === newU.toLowerCase())) {
-        return alert("This username already exists. Please choose another.");
+        return triggerSideToast("Duplicate Username", "This username already exists. Please choose another.", false);
       }
 
       const res = await sendGasPost({
@@ -1979,10 +2304,10 @@
         document.getElementById("createUserName").value = "";
         document.getElementById("createUserLoginId").value = "";
         document.getElementById("createUserPass").value = "";
-        alert(res.message);
+        triggerSideToast("Account Created", res.message, true);
         openSettingsModal();
       } else {
-        alert(res.message);
+        triggerSideToast("Error", res.message, false);
       }
     }
 
@@ -2051,7 +2376,6 @@
       document.getElementById(tabId).classList.add("active");
     }
 
-    // Bill Math Engine
     function runBillMath() {
       const rent = parseFloat(document.getElementById("calcRent").value) || 0;
       document.getElementById("calcRentBadge").innerText = `₹ ${rent}`;
@@ -2091,7 +2415,6 @@
       document.getElementById("calcDueBadge").style.color = dueRem > 0 ? "var(--accent-red)" : "var(--accent-green)";
     }
 
-    // Optimistic Instant Bill Recording
     async function submitBillCalculation() {
       if (activeRole === "Viewer") return;
 
@@ -2151,7 +2474,7 @@
       updateGlobalProfitAndLoss();
       populateHistoryLedger(selectedFlat.PropertyName, selectedFlat.FlatName);
 
-      alert("Bill calculated and reflected immediately!");
+      triggerSideToast("Bill Recorded", "Monthly bill calculated and synced!", true);
 
       await sendGasPost({
         action: "recordBill",
@@ -2184,7 +2507,6 @@
       syncDataLive();
     }
 
-    // Ledger Table Population
     function populateHistoryLedger(prop, flat) {
       const tbody = document.getElementById("ledgerTableBody");
       tbody.innerHTML = "";
@@ -2272,7 +2594,7 @@
       saveDbSnapshotToCache();
       renderFlatsGrid(selectedProperty);
 
-      alert("Utility configuration updated immediately!");
+      triggerSideToast("Utilities Saved", "Utility configuration updated!", true);
       await sendGasPost(payload);
       syncDataLive();
     }
@@ -2307,7 +2629,7 @@
       if (statusVal === "Inactive") {
         if (existingRenter) existingRenter.Status = "Inactive";
         clearRenterRightForm();
-        alert("Renter marked Inactive. Past records locked safely. Ready for next renter entry.");
+        triggerSideToast("Archived", "Renter marked Inactive and locked in history.", true);
       } else {
         if (existingRenter) {
           existingRenter.RenterName = payload.renterName;
@@ -2323,7 +2645,7 @@
             Status: "Active"
           });
         }
-        alert("Renter record saved and reflected immediately!");
+        triggerSideToast("Profile Saved", "Renter details updated immediately!", true);
       }
 
       saveDbSnapshotToCache();
@@ -2393,7 +2715,7 @@
 
     async function submitAddProperty() {
       const name = document.getElementById("newPropName").value.trim();
-      if (!name) return alert("Property Name is mandatory!");
+      if (!name) return triggerSideToast("Required", "Property Name is mandatory!", false);
 
       if (DB.properties.some(p => p.PropertyName.toLowerCase() === name.toLowerCase())) {
         return alert("This property name is already added. Please use a different name.");
@@ -2425,7 +2747,7 @@
     async function submitEditProperty() {
       const oldName = document.getElementById("editPropCurrentName").value;
       const newName = document.getElementById("editPropNewName").value.trim();
-      if (!newName) return alert("Please enter a new name.");
+      if (!newName) return triggerSideToast("Required", "Please enter a new name.", false);
 
       if (DB.properties.some(p => p.PropertyName.toLowerCase() === newName.toLowerCase() && p.PropertyName.toLowerCase() !== oldName.toLowerCase())) {
         return alert("This property name is already taken. Please use a different name.");
@@ -2467,10 +2789,10 @@
     async function submitAddFlat() {
       const p = document.getElementById("addFlatPropDropdown").value;
       const flat = document.getElementById("addFlatNumber").value.trim();
-      if (!flat) return alert("Flat Name/Number is strictly mandatory.");
+      if (!flat) return triggerSideToast("Required", "Flat Name/Number is strictly mandatory.", false);
 
       if (DB.flats.some(f => String(f.PropertyName).toLowerCase() === String(p).toLowerCase() && String(f.FlatName).toLowerCase() === flat.toLowerCase())) {
-        return alert("This flat number already exists in this property.");
+        return triggerSideToast("Duplicate Flat", "This flat number already exists in this property.", false);
       }
 
       const rName = document.getElementById("addFlatRenter").value.trim();
@@ -2525,29 +2847,6 @@
         closeModal("deleteFlatModal");
 
         sendGasPost({ action: "deleteFlat", propertyName: p, flatName: f }).then(() => syncDataLive());
-      }
-    }
-
-    async function submitChangePassword() {
-      const oldP = document.getElementById("oldPassInput").value;
-      const newP = document.getElementById("newPassInput").value;
-      const confP = document.getElementById("confirmNewPassInput").value;
-
-      if (!oldP || !newP) return alert("All fields are mandatory.");
-      if (newP !== confP) return alert("New Password does not match Confirm New Password.");
-
-      const res = await sendGasPost({
-        action: "changePassword",
-        username: activeUser,
-        oldPassword: oldP,
-        newPassword: newP
-      });
-
-      if (res.status === "success") {
-        alert("Password updated! Logging out of current session.");
-        handleLogout();
-      } else {
-        alert(res.message);
       }
     }
 
