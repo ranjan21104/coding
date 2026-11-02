@@ -1769,21 +1769,10 @@
         <button class="btn-primary" onclick="submitCreateNewUser()">Create New User ID</button>
       </div>
 
-      <!-- Settings Tab 3: Other -->
+      <!-- Settings Tab 3: Other (Active Account Details Removed; Last Login History Locked & Admin-Only) -->
       <div id="setSubOther" class="tab-content">
-        <div class="stat-pill" style="text-align: left; margin-bottom: 12px;">
-          <span>ACTIVE ACCOUNT DETAILS</span>
-          <div style="margin-top: 6px; font-size: 0.88rem;">
-            <div><strong>Name:</strong> <span id="otherProfileFullName">--</span></div>
-            <div><strong>Mobile No.:</strong> <span id="otherProfileMobile">--</span></div>
-            <div><strong>Username:</strong> <span id="otherProfileUsername">--</span></div>
-            <div><strong>Assigned Role:</strong> <span id="otherProfileRole">--</span></div>
-            <div><strong>Saved Theme:</strong> <span id="otherProfileTheme">--</span></div>
-          </div>
-        </div>
-
-        <!-- Two Dedicated Options: Registered Users & Last Login History -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+        <!-- Two Dedicated Options: Registered Users & Admin-Only Last Login History -->
+        <div id="otherOptionsBtnGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
           <button
             type="button"
             id="btnOtherOptUsers"
@@ -1796,7 +1785,7 @@
           <button
             type="button"
             id="btnOtherOptLoginHistory"
-            class="btn-ledger-action"
+            class="btn-ledger-action admin-only"
             style="padding: 9px 12px; font-size: 0.8rem; justify-content: center; display: flex; align-items: center; gap: 6px;"
             onclick="switchOtherSubOption('history')"
           >
@@ -1812,14 +1801,14 @@
           </div>
         </div>
 
-        <!-- Option 2 Panel: Last Login History (12 Users Per Page with Pagination) -->
-        <div id="otherPanelLoginHistory" class="stat-pill" style="text-align: left; display: none;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <span>CONTINUOUS LAST LOGIN HISTORY (12 PER PAGE)</span>
+        <!-- Option 2 Panel: Last Login History (12 Users Per Page, Non-Editable, Strictly Admin-Only) -->
+        <div id="otherPanelLoginHistory" class="stat-pill admin-only" style="text-align: left; display: none; user-select: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 6px;">
+            <span><i class="fa-solid fa-lock" style="margin-right: 4px; color: var(--primary);"></i> CONTINUOUS LAST LOGIN HISTORY (12 PER PAGE • NON-EDITABLE • ADMIN ONLY)</span>
             <span id="loginHistTotalBadge" style="font-size: 0.72rem; color: var(--primary); font-weight: 700;">0 Logins</span>
           </div>
           <div id="otherLoginHistoryList" style="margin-top: 6px; font-size: 0.8rem; max-height: 270px; overflow-y: auto;">
-            <!-- Populated dynamically (12 per page) -->
+            <!-- Populated dynamically (12 per page, read-only) -->
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--glass-border);">
             <button
@@ -1850,7 +1839,7 @@
         <div class="stat-pill admin-only" style="text-align: left; margin-top: 12px;">
           <span>GOOGLE SHEET AUTO-CREATE (SHEETS, COLUMNS &amp; ROWS)</span>
           <p style="font-size: 0.76rem; color: var(--text-muted); margin: 4px 0 8px 0;">
-            Automatically creates any missing Google Sheet tabs (Auth, LoginHistory, Properties, Flats, Renters, Bills), column headers, and syncs all rows.
+            Missing sheets, columns, and rows are automatically recreated on every login. You can also trigger an instant repair &amp; sync below:
           </p>
           <button
             type="button"
@@ -2238,7 +2227,7 @@
         </button>
       </div>
 
-      <!-- TAB 2: HISTORY (Billed Ledger - Newest Entries Appear at the Top + Receipt & Edit Buttons) -->
+      <!-- TAB 2: HISTORY (Billed Ledger - Shows Prev Reading, Curr Reading, Total Consumption, Rate/Unit & Calculated Total for Electricity, PNG & Water) -->
       <div id="tabHistory" class="tab-content">
         <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px;">
           <h4><i class="fa-solid fa-receipt"></i> Billed History Ledger (Newest First)</h4>
@@ -2251,12 +2240,12 @@
                 <th>MONTH</th>
                 <th>TENANT NAME</th>
                 <th>RENT</th>
-                <th>ELEC (PREV - CURR = CONSUMED)</th>
-                <th>PNG (PREV - CURR = CONSUMED)</th>
-                <th>WATER (PREV - CURR = CONSUMED)</th>
+                <th>ELECTRICITY (PREV | CURR | CONSUMED | RATE | TOTAL)</th>
+                <th>PNG GAS (PREV | CURR | CONSUMED | RATE | TOTAL)</th>
+                <th>WATER (PREV | CURR | CONSUMED | RATE | TOTAL)</th>
                 <th>CARRY BAL</th>
                 <th>TOTAL</th>
-                <th>PAID & MODE</th>
+                <th>PAID &amp; MODE</th>
                 <th>STATUS</th>
                 <th>ACTIONS</th>
               </tr>
@@ -2271,38 +2260,38 @@
       <!-- TAB 3: PROFILE MATRIX -->
       <div id="tabProfile" class="tab-content">
         <div class="profile-matrix">
-          <!-- Left Column: Utilities (Strictly Isolated to Flat for Rent/Rates/Name; Single Unique Rate Field per Utility) -->
+          <!-- Left Column: Utilities (Auto-Saves & Applies Across Respective Flat; Past Bills Remain Locked) -->
           <div class="matrix-col">
-            <div class="col-title">Rent & Utility Details</div>
+            <div class="col-title">Rent &amp; Utility Details</div>
             <div class="form-group">
               <label>Rent Amount (₹)</label>
-              <input type="number" id="profRent" class="form-control" oninput="syncProfileRatesToLiveCalculator()">
+              <input type="number" id="profRent" class="form-control" oninput="syncProfileRatesToLiveCalculator()" onchange="saveUtilitiesLeft(true)">
             </div>
             <div class="form-group">
               <label>Flat Name/Number</label>
-              <input type="text" id="profFlatNumber" class="form-control" placeholder="e.g. 101 or 2B">
+              <input type="text" id="profFlatNumber" class="form-control" placeholder="e.g. 101 or 2B" onchange="saveUtilitiesLeft(true)">
             </div>
-            <div class="form-group"><label>PNG Number</label><input type="text" id="profPngNumber" class="form-control"></div>
-            <div class="form-group"><label>PNG Meter Number</label><input type="text" id="profPngMeter" class="form-control"></div>
+            <div class="form-group"><label>PNG Number</label><input type="text" id="profPngNumber" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
+            <div class="form-group"><label>PNG Meter Number</label><input type="text" id="profPngMeter" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
             <div class="form-group">
               <label>PNG Fixed Rate (₹/Unit)</label>
-              <input type="number" id="profPngRate" class="form-control" oninput="syncProfileRatesToLiveCalculator()">
+              <input type="number" id="profPngRate" class="form-control" oninput="syncProfileRatesToLiveCalculator()" onchange="saveUtilitiesLeft(true)">
             </div>
-            <div class="form-group"><label>Water Number</label><input type="text" id="profWaterNumber" class="form-control"></div>
-            <div class="form-group"><label>Water Meter Number</label><input type="text" id="profWaterMeter" class="form-control"></div>
+            <div class="form-group"><label>Water Number</label><input type="text" id="profWaterNumber" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
+            <div class="form-group"><label>Water Meter Number</label><input type="text" id="profWaterMeter" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
             <div class="form-group">
               <label>Water Fixed Rate (₹/Unit)</label>
-              <input type="number" id="profWaterRate" class="form-control" oninput="syncProfileRatesToLiveCalculator()">
+              <input type="number" id="profWaterRate" class="form-control" oninput="syncProfileRatesToLiveCalculator()" onchange="saveUtilitiesLeft(true)">
             </div>
-            <div class="form-group"><label>Electricity Meter Number</label><input type="text" id="profElecMeter" class="form-control"></div>
+            <div class="form-group"><label>Electricity Meter Number</label><input type="text" id="profElecMeter" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
             <div class="form-group">
               <label>Electricity Fixed Rate (₹/Unit)</label>
-              <input type="number" id="profElecRate" class="form-control" oninput="syncProfileRatesToLiveCalculator()">
+              <input type="number" id="profElecRate" class="form-control" oninput="syncProfileRatesToLiveCalculator()" onchange="saveUtilitiesLeft(true)">
             </div>
-            <div class="form-group"><label>UPI Name</label><input type="text" id="profUpiName" class="form-control"></div>
-            <div class="form-group"><label>UPI ID</label><input type="text" id="profUpiId" class="form-control"></div>
-            <div class="form-group"><label>Contract Mobile Number</label><input type="text" id="profContractMobile" class="form-control"></div>
-            <button class="btn-primary admin-only" onclick="saveUtilitiesLeft()">Update Utilities</button>
+            <div class="form-group"><label>UPI Name</label><input type="text" id="profUpiName" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
+            <div class="form-group"><label>UPI ID</label><input type="text" id="profUpiId" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
+            <div class="form-group"><label>Contract Mobile Number</label><input type="text" id="profContractMobile" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
+            <button class="btn-primary admin-only" onclick="saveUtilitiesLeft(false)">Update Utilities</button>
           </div>
 
           <!-- Center Column: Cloud Drive Renter Profile & Aadhaar Card Display + Delete Controls -->
@@ -2805,11 +2794,21 @@
 
     let isSyncingLive = false;
     let lastSyncedDataHash = "";
+    let pendingWriteCount = 0;
+    let lastWriteCompletedAt = 0;
 
     function saveDbSnapshotToCache() {
       try {
         const serialized = JSON.stringify(DB);
         sessionStorage.setItem("cached_db_snapshot", serialized);
+        if (
+          (DB.properties && DB.properties.length > 0) ||
+          (DB.flats && DB.flats.length > 0) ||
+          (DB.renters && DB.renters.length > 0) ||
+          (DB.bills && DB.bills.length > 0)
+        ) {
+          localStorage.setItem("portal_full_db_backup", serialized);
+        }
         lastSyncedDataHash = JSON.stringify({
           p: DB.properties,
           f: DB.flats,
@@ -2819,6 +2818,23 @@
           l: DB.loginHistory
         });
       } catch (e) {}
+    }
+
+    function rebindSelectedFlatAndRenterReferences() {
+      if (!selectedFlat) return;
+      const matchedFlat = (DB.flats || []).find(f =>
+        isSamePropAndFlat(f.PropertyName, f.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName)
+      );
+      if (matchedFlat) {
+        selectedFlat = matchedFlat;
+      }
+      const matchedActiveRenter = (DB.renters || []).find(r =>
+        isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName) &&
+        String(r.Status || "").trim().toLowerCase() === "active"
+      );
+      if (matchedActiveRenter) {
+        activeFlatRenterObj = matchedActiveRenter;
+      }
     }
 
     function isSamePropAndFlat(propA, flatA, propB, flatB) {
@@ -2880,9 +2896,20 @@
         badge.innerText = activeRole;
         badge.style.background = activeRole === "Admin" ? "rgba(16, 185, 129, 0.2)" : "rgba(245, 158, 11, 0.2)";
       }
+      const btnLoginHist = document.getElementById("btnOtherOptLoginHistory");
+      const panelLoginHist = document.getElementById("otherPanelLoginHistory");
+      const btnGrid = document.getElementById("otherOptionsBtnGrid");
+      if (activeRole !== "Admin") {
+        if (btnLoginHist) btnLoginHist.style.display = "none";
+        if (panelLoginHist) panelLoginHist.style.display = "none";
+        if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr";
+      } else {
+        if (btnLoginHist) btnLoginHist.style.display = "flex";
+        if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr 1fr";
+      }
     }
 
-    // 1. Single-Round-Trip Instant Login
+    // 1. Single-Round-Trip Instant Login + Automatic Recreation of Missing Sheets, Columns & Rows
     async function handleLoginSubmit(e) {
       e.preventDefault();
       const user = document.getElementById("loginUsername").value.trim();
@@ -2894,13 +2921,36 @@
 
       try {
         const gasUrl = getGasUrl();
-        const response = await fetch(`${gasUrl}?action=login&username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}&t=${Date.now()}`, {
-          method: "GET",
-          cache: "no-store"
-        });
-        const res = await response.json();
+        let clientBackup = null;
+        try {
+          const rawBackup = localStorage.getItem("portal_full_db_backup") || sessionStorage.getItem("cached_db_snapshot");
+          if (rawBackup) clientBackup = JSON.parse(rawBackup);
+        } catch (bkErr) {}
 
-        if (res.status === "success") {
+        let res = null;
+        try {
+          // Send POST login with clientBackup so backend auto-recreates any deleted sheets, columns, and rows immediately
+          const postResp = await fetch(gasUrl, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({
+              action: "login",
+              username: user,
+              password: pass,
+              clientBackup: clientBackup
+            })
+          });
+          res = await postResp.json();
+        } catch (postErr) {
+          // Fallback to GET login if POST fails
+          const response = await fetch(`${gasUrl}?action=login&username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}&t=${Date.now()}`, {
+            method: "GET",
+            cache: "no-store"
+          });
+          res = await response.json();
+        }
+
+        if (res && res.status === "success") {
           activeUser = res.username;
           activeUserFullName = res.fullName || res.username;
           activeUserMobile = res.mobile || "";
@@ -2924,7 +2974,7 @@
           DB.bills = sanitizeAllBillsMonths(res.bills || []);
           DB.users = res.users || [];
 
-          // Populate loginHistory from server or append current login event into local log
+          // Requirement 4: Continuous Login History saved to Google Sheet; strictly Admin-only view
           const localLogRaw = localStorage.getItem("portal_login_history_backup");
           let localBackupLogs = [];
           try { if (localLogRaw) localBackupLogs = JSON.parse(localLogRaw) || []; } catch (e) {}
@@ -2936,14 +2986,31 @@
             MobileNumber: activeUserMobile,
             LoginTimestamp: new Date().toISOString()
           };
-          if (Array.isArray(res.loginHistory) && res.loginHistory.length > 0) {
-            DB.loginHistory = res.loginHistory;
-          } else {
-            DB.loginHistory = [newLoginEntry, ...localBackupLogs];
-          }
+          const combinedLogs = Array.isArray(res.loginHistory) && res.loginHistory.length > 0
+            ? res.loginHistory
+            : [newLoginEntry, ...localBackupLogs];
           try {
-            localStorage.setItem("portal_login_history_backup", JSON.stringify(DB.loginHistory.slice(0, 500)));
+            localStorage.setItem("portal_login_history_backup", JSON.stringify(combinedLogs.slice(0, 500)));
           } catch (e) {}
+          DB.loginHistory = (String(activeRole).toLowerCase() === "admin") ? combinedLogs : [];
+
+          // Requirement 3: If any rows from local backup were missing on the Google Sheet, restore them automatically on login
+          if (clientBackup) {
+            let needsRowRestore = false;
+            if (Array.isArray(clientBackup.properties) && clientBackup.properties.length > DB.properties.length) needsRowRestore = true;
+            if (Array.isArray(clientBackup.flats) && clientBackup.flats.length > DB.flats.length) needsRowRestore = true;
+            if (Array.isArray(clientBackup.renters) && clientBackup.renters.length > DB.renters.length) needsRowRestore = true;
+            if (Array.isArray(clientBackup.bills) && clientBackup.bills.length > DB.bills.length) needsRowRestore = true;
+            if (needsRowRestore) {
+              sendGasPost({
+                action: "syncAllData",
+                properties: clientBackup.properties || [],
+                flats: clientBackup.flats || [],
+                renters: clientBackup.renters || [],
+                bills: clientBackup.bills || []
+              }).then(() => syncDataLive(true)).catch(() => {});
+            }
+          }
 
           saveDbSnapshotToCache();
 
@@ -2961,9 +3028,12 @@
       }
     }
 
-    // 2. Continuous Live Background Sync (Optimized with Deduplication & Change Detection)
+    // 2. Continuous Live Background Sync (Skips while writes are in flight & Rebinds Selected Flat)
     async function syncDataLive(forceRender = false) {
       if (!activeUser || isSyncingLive) return;
+      if (!forceRender && (pendingWriteCount > 0 || (Date.now() - lastWriteCompletedAt < 4000))) {
+        return;
+      }
       isSyncingLive = true;
       try {
         const gasUrl = getGasUrl();
@@ -2974,6 +3044,11 @@
         const res = await response.json();
 
         if (res.status === "success") {
+          // Guard again in case a write started while GET was in flight
+          if (!forceRender && (pendingWriteCount > 0 || (Date.now() - lastWriteCompletedAt < 4000))) {
+            return;
+          }
+
           const incomingProperties = res.properties || [];
           const incomingFlats = res.flats || [];
           const incomingRenters = res.renters || [];
@@ -2990,6 +3065,9 @@
             try {
               localStorage.setItem("portal_login_history_backup", JSON.stringify(incomingLoginHistory.slice(0, 500)));
             } catch (e) {}
+          }
+          if (String(activeRole).toLowerCase() !== "admin") {
+            incomingLoginHistory = [];
           }
 
           const incomingHash = JSON.stringify({
@@ -3009,6 +3087,7 @@
           DB.bills = incomingBills;
           DB.users = incomingUsers;
           DB.loginHistory = incomingLoginHistory;
+          rebindSelectedFlatAndRenterReferences();
           saveDbSnapshotToCache();
 
           if (res.userTheme && res.userTheme !== activeThemePref) {
@@ -3553,23 +3632,29 @@
       const historyPanel = document.getElementById("otherPanelLoginHistory");
       const btnUsers = document.getElementById("btnOtherOptUsers");
       const btnHistory = document.getElementById("btnOtherOptLoginHistory");
+      const isAdmin = String(activeRole || "").trim().toLowerCase() === "admin";
 
       if (optionMode === "history") {
+        if (!isAdmin) {
+          triggerSideToast("Admin Permission Required", "Only Admin users have permission to view Last Login History.", false);
+          return;
+        }
         if (usersPanel) usersPanel.style.display = "none";
         if (historyPanel) historyPanel.style.display = "block";
         if (btnUsers) btnUsers.className = "btn-ledger-action";
-        if (btnHistory) btnHistory.className = "btn-primary";
+        if (btnHistory) btnHistory.className = "btn-primary admin-only";
         currentLoginHistoryPage = 1;
         renderLoginHistoryPage();
       } else {
         if (usersPanel) usersPanel.style.display = "block";
         if (historyPanel) historyPanel.style.display = "none";
         if (btnUsers) btnUsers.className = "btn-primary";
-        if (btnHistory) btnHistory.className = "btn-ledger-action";
+        if (btnHistory) btnHistory.className = "btn-ledger-action admin-only";
       }
     }
 
     function changeLoginHistoryPage(delta) {
+      if (String(activeRole || "").trim().toLowerCase() !== "admin") return;
       const logs = Array.isArray(DB.loginHistory) ? DB.loginHistory : [];
       const totalPages = Math.max(1, Math.ceil(logs.length / LOGIN_HISTORY_PAGE_SIZE));
       const nextPage = currentLoginHistoryPage + delta;
@@ -3585,6 +3670,12 @@
       const prevBtn = document.getElementById("btnLoginHistPrev");
       const nextBtn = document.getElementById("btnLoginHistNext");
       if (!container) return;
+
+      const isAdmin = String(activeRole || "").trim().toLowerCase() === "admin";
+      if (!isAdmin) {
+        container.innerHTML = `<div style="padding:12px 0; color:var(--accent-red); text-align:center;">Restricted: Only Admin has permission to view Last Login History.</div>`;
+        return;
+      }
 
       const logs = Array.isArray(DB.loginHistory) ? DB.loginHistory : [];
       const totalRecords = logs.length;
@@ -3625,7 +3716,7 @@
         const role = entry.Role || "Admin";
         const timeStr = formatLoginTimestampDisplay(entry.LoginTimestamp);
         return `
-          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; padding:7px 4px; border-bottom:1px solid var(--glass-border);">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; padding:7px 4px; border-bottom:1px solid var(--glass-border); user-select:none;">
             <div style="display:flex; align-items:center; gap:8px;">
               <span style="font-size:0.72rem; font-weight:800; color:var(--primary); min-width:26px;">#${serialNum}</span>
               <div>
@@ -3633,7 +3724,7 @@
                 <div style="font-size:0.72rem; color:var(--text-muted);"><i class="fa-regular fa-clock"></i> ${timeStr}</div>
               </div>
             </div>
-            <span class="role-badge">${role}</span>
+            <span class="role-badge"><i class="fa-solid fa-lock" style="font-size:0.65rem; margin-right:3px;"></i>${role}</span>
           </div>
         `;
       }).join("");
@@ -3674,11 +3765,21 @@
     }
 
     function openSettingsModal() {
-      document.getElementById("otherProfileFullName").innerText = activeUserFullName || activeUser;
-      document.getElementById("otherProfileMobile").innerText = activeUserMobile || "Not set";
-      document.getElementById("otherProfileUsername").innerText = activeUser || "--";
-      document.getElementById("otherProfileRole").innerText = activeRole || "Admin";
-      document.getElementById("otherProfileTheme").innerText = activeThemePref.toUpperCase();
+      const isAdmin = String(activeRole || "").trim().toLowerCase() === "admin";
+      const btnLoginHist = document.getElementById("btnOtherOptLoginHistory");
+      const panelLoginHist = document.getElementById("otherPanelLoginHistory");
+      const btnGrid = document.getElementById("otherOptionsBtnGrid");
+
+      if (!isAdmin) {
+        if (btnLoginHist) btnLoginHist.style.display = "none";
+        if (panelLoginHist) panelLoginHist.style.display = "none";
+        if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr";
+        switchOtherSubOption("users");
+      } else {
+        if (btnLoginHist) btnLoginHist.style.display = "flex";
+        if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr 1fr";
+        renderLoginHistoryPage();
+      }
 
       const usersContainer = document.getElementById("otherUsersList");
       if (usersContainer) {
@@ -3690,7 +3791,6 @@
         `).join("") || "No user list loaded.";
       }
 
-      renderLoginHistoryPage();
       openModal("settingsModal");
     }
 
@@ -4351,14 +4451,50 @@
         const carryVal = parseFloat(bill.PrevCarryBalance) || 0;
         const carryText = carryVal > 0 ? `+₹${carryVal} (Due)` : (carryVal < 0 ? `-₹${Math.abs(carryVal)} (Adv)` : `₹0`);
 
+        const elecPrev = parseFloat(bill.ElecPrev) || 0;
+        const elecCurr = parseFloat(bill.ElecCurr) || 0;
+        const elecUnits = bill.ElecUnits !== undefined && bill.ElecUnits !== "" ? (parseFloat(bill.ElecUnits) || 0) : Math.max(0, elecCurr - elecPrev);
+        const elecRate = parseFloat(bill.ElecRate) || 0;
+        const elecTotal = bill.ElecTotal !== undefined && bill.ElecTotal !== "" ? (parseFloat(bill.ElecTotal) || 0) : (elecUnits * elecRate);
+
+        const pngPrev = parseFloat(bill.PNGPrev) || 0;
+        const pngCurr = parseFloat(bill.PNGCurr) || 0;
+        const pngUnits = bill.PNGUnits !== undefined && bill.PNGUnits !== "" ? (parseFloat(bill.PNGUnits) || 0) : Math.max(0, pngCurr - pngPrev);
+        const pngRate = parseFloat(bill.PNGRate) || 0;
+        const pngTotal = bill.PNGTotal !== undefined && bill.PNGTotal !== "" ? (parseFloat(bill.PNGTotal) || 0) : (pngUnits * pngRate);
+
+        const waterPrev = parseFloat(bill.WaterPrev) || 0;
+        const waterCurr = parseFloat(bill.WaterCurr) || 0;
+        const waterUnits = bill.WaterUnits !== undefined && bill.WaterUnits !== "" ? (parseFloat(bill.WaterUnits) || 0) : Math.max(0, waterCurr - waterPrev);
+        const waterRate = parseFloat(bill.WaterRate) || 0;
+        const waterTotal = bill.WaterTotal !== undefined && bill.WaterTotal !== "" ? (parseFloat(bill.WaterTotal) || 0) : (waterUnits * waterRate);
+
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td><strong>${displayMonth}</strong></td>
           <td>${bill.TenantName}</td>
           <td>₹${bill.BaseRent}</td>
-          <td>₹${bill.ElecRate}/U | ${bill.ElecPrev} - ${bill.ElecCurr} = <strong>${bill.ElecUnits}U</strong></td>
-          <td>₹${bill.PNGRate}/U | ${bill.PNGPrev} - ${bill.PNGCurr} = <strong>${bill.PNGUnits}U</strong></td>
-          <td>₹${bill.WaterRate}/U | ${bill.WaterPrev} - ${bill.WaterCurr} = <strong>${bill.WaterUnits}U</strong></td>
+          <td>
+            <div style="line-height:1.35; font-size:0.76rem;">
+              <div>Prev: <strong>${elecPrev}</strong> | Curr: <strong>${elecCurr}</strong></div>
+              <div>Consumed: <strong>${elecUnits} U</strong> @ ₹${elecRate}/U</div>
+              <div style="color:var(--primary); font-weight:800;">Total: ₹${elecTotal.toLocaleString('en-IN')}</div>
+            </div>
+          </td>
+          <td>
+            <div style="line-height:1.35; font-size:0.76rem;">
+              <div>Prev: <strong>${pngPrev}</strong> | Curr: <strong>${pngCurr}</strong></div>
+              <div>Consumed: <strong>${pngUnits} U</strong> @ ₹${pngRate}/U</div>
+              <div style="color:var(--primary); font-weight:800;">Total: ₹${pngTotal.toLocaleString('en-IN')}</div>
+            </div>
+          </td>
+          <td>
+            <div style="line-height:1.35; font-size:0.76rem;">
+              <div>Prev: <strong>${waterPrev}</strong> | Curr: <strong>${waterCurr}</strong></div>
+              <div>Consumed: <strong>${waterUnits} U</strong> @ ₹${waterRate}/U</div>
+              <div style="color:var(--primary); font-weight:800;">Total: ₹${waterTotal.toLocaleString('en-IN')}</div>
+            </div>
+          </td>
           <td>${carryText}</td>
           <td><strong>₹${bill.TotalBilled}</strong></td>
           <td>₹${bill.PaidAmount} (${bill.PaymentMode})</td>
@@ -5065,14 +5201,39 @@
         const newestFirstInvoices = [...bills].reverse();
         invContainer.innerHTML = newestFirstInvoices.map(b => {
           const cleanM = normalizeMonthYear(b.MonthYear);
+          const ePrev = parseFloat(b.ElecPrev) || 0;
+          const eCurr = parseFloat(b.ElecCurr) || 0;
+          const eUnits = b.ElecUnits !== undefined && b.ElecUnits !== "" ? (parseFloat(b.ElecUnits) || 0) : Math.max(0, eCurr - ePrev);
+          const eRate = parseFloat(b.ElecRate) || 0;
+          const eTotal = b.ElecTotal !== undefined && b.ElecTotal !== "" ? (parseFloat(b.ElecTotal) || 0) : (eUnits * eRate);
+
+          const pPrev = parseFloat(b.PNGPrev) || 0;
+          const pCurr = parseFloat(b.PNGCurr) || 0;
+          const pUnits = b.PNGUnits !== undefined && b.PNGUnits !== "" ? (parseFloat(b.PNGUnits) || 0) : Math.max(0, pCurr - pPrev);
+          const pRate = parseFloat(b.PNGRate) || 0;
+          const pTotal = b.PNGTotal !== undefined && b.PNGTotal !== "" ? (parseFloat(b.PNGTotal) || 0) : (pUnits * pRate);
+
+          const wPrev = parseFloat(b.WaterPrev) || 0;
+          const wCurr = parseFloat(b.WaterCurr) || 0;
+          const wUnits = b.WaterUnits !== undefined && b.WaterUnits !== "" ? (parseFloat(b.WaterUnits) || 0) : Math.max(0, wCurr - wPrev);
+          const wRate = parseFloat(b.WaterRate) || 0;
+          const wTotal = b.WaterTotal !== undefined && b.WaterTotal !== "" ? (parseFloat(b.WaterTotal) || 0) : (wUnits * wRate);
+
           return `
-            <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid var(--glass-border);">
-              <span><strong>${formatMonthLabel(cleanM)}</strong> — Billed: ₹${b.TotalBilled} | Paid: ₹${b.PaidAmount} (${b.PaymentMode})</span>
-              <div style="display:flex; align-items:center; gap:8px;">
-                <span class="badge-${String(b.Status).toLowerCase().includes('fully') ? 'paid' : (String(b.Status).toLowerCase().includes('partial') ? 'partial' : 'unpaid')}">${b.Status}</span>
-                <button type="button" class="btn-ledger-action receipt-btn" onclick="openBillReceiptModal('${b.BillID}', '${cleanM}')">
-                  <i class="fa-solid fa-receipt"></i> Receipt
-                </button>
+            <div style="padding:10px 0; border-bottom:1px solid var(--glass-border);">
+              <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px;">
+                <span><strong>${formatMonthLabel(cleanM)}</strong> — Rent: ₹${b.BaseRent || 0} | Total Billed: <strong>₹${b.TotalBilled}</strong> | Paid: ₹${b.PaidAmount} (${b.PaymentMode})</span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="badge-${String(b.Status).toLowerCase().includes('fully') ? 'paid' : (String(b.Status).toLowerCase().includes('partial') ? 'partial' : 'unpaid')}">${b.Status}</span>
+                  <button type="button" class="btn-ledger-action receipt-btn" onclick="openBillReceiptModal('${b.BillID}', '${cleanM}')">
+                    <i class="fa-solid fa-receipt"></i> Receipt
+                  </button>
+                </div>
+              </div>
+              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:8px; margin-top:6px; font-size:0.75rem; color:var(--text-muted); background:rgba(255,255,255,0.03); padding:6px 8px; border-radius:6px;">
+                <div><i class="fa-solid fa-bolt" style="color:var(--primary);"></i> <strong>Elec:</strong> Prev ${ePrev} → Curr ${eCurr} (${eUnits}U @ ₹${eRate}/U) = <strong>₹${eTotal.toLocaleString('en-IN')}</strong></div>
+                <div><i class="fa-solid fa-fire" style="color:var(--primary);"></i> <strong>PNG:</strong> Prev ${pPrev} → Curr ${pCurr} (${pUnits}U @ ₹${pRate}/U) = <strong>₹${pTotal.toLocaleString('en-IN')}</strong></div>
+                <div><i class="fa-solid fa-faucet-drip" style="color:var(--primary);"></i> <strong>Water:</strong> Prev ${wPrev} → Curr ${wCurr} (${wUnits}U @ ₹${wRate}/U) = <strong>₹${wTotal.toLocaleString('en-IN')}</strong></div>
               </div>
             </div>
           `;
@@ -5114,14 +5275,16 @@
     }
 
     // 9. Profile Form Logic & Strict Flat-Isolated Rent, Rates & Flat Name Updates
-    async function saveUtilitiesLeft() {
+    async function saveUtilitiesLeft(isAutoSave = false) {
       if (activeRole === "Viewer" || !selectedFlat) return;
+      rebindSelectedFlatAndRenterReferences();
 
       const oldFlatName = String(selectedFlat.FlatName || "").trim();
-      const newFlatName = String(document.getElementById("profFlatNumber").value || "").trim();
+      const newFlatName = String(document.getElementById("profFlatNumber").value || "").trim() || oldFlatName;
 
       if (!newFlatName) {
-        return triggerSideToast("Flat Name Required", "Flat Name/Number cannot be empty.", false);
+        if (!isAutoSave) triggerSideToast("Flat Name Required", "Flat Name/Number cannot be empty.", false);
+        return;
       }
 
       if (oldFlatName.toLowerCase() !== newFlatName.toLowerCase()) {
@@ -5130,6 +5293,7 @@
           isSamePropAndFlat(f.PropertyName, f.FlatName, selectedFlat.PropertyName, newFlatName)
         );
         if (duplicateFlat) {
+          document.getElementById("profFlatNumber").value = oldFlatName;
           return triggerSideToast("Duplicate Flat Name", `Flat ${newFlatName} already exists in ${selectedFlat.PropertyName}.`, false);
         }
       }
@@ -5156,7 +5320,28 @@
         contractMobile: document.getElementById("profContractMobile").value.trim()
       };
 
-      // Strictly isolated to selectedFlat (never alters any other flat's rent, rates, or name)
+      // Update both selectedFlat and the matching entry in DB.flats so changes always persist across the flat
+      DB.flats.forEach(f => {
+        if (isSamePropAndFlat(f.PropertyName, f.FlatName, selectedFlat.PropertyName, oldFlatName)) {
+          f.FlatName = newFlatName;
+          f.RentAmount = payload.rentAmount;
+          f.ElecRate = payload.elecFixedRate;
+          f.PNGRate = payload.pngFixedRate;
+          f.WaterRate = payload.waterFixedRate;
+          f.PNGNumber = payload.pngNumber;
+          f.PNGMeterNumber = payload.pngMeterNumber;
+          f.FixedPNGCost = 0;
+          f.WaterNumber = payload.waterNumber;
+          f.WaterMeterNumber = payload.waterMeterNumber;
+          f.FixedWaterCost = 0;
+          f.ElecMeterNumber = payload.elecMeterNumber;
+          f.UPIName = payload.upiName;
+          f.UPIID = payload.upiId;
+          f.ContractMobile = payload.contractMobile;
+          selectedFlat = f;
+        }
+      });
+
       selectedFlat.FlatName = newFlatName;
       selectedFlat.RentAmount = payload.rentAmount;
       selectedFlat.ElecRate = payload.elecFixedRate;
@@ -5178,13 +5363,20 @@
 
       // Keep renters of this specific flat linked to the updated flat name & active rates
       DB.renters.forEach(r => {
-        if (isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, oldFlatName)) {
+        if (isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, oldFlatName) ||
+            isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, newFlatName)) {
           r.FlatName = newFlatName;
           if (String(r.Status).trim().toLowerCase() === "active") {
             r.RentAmount = payload.rentAmount;
+            r.PNGNumber = payload.pngNumber;
+            r.PNGMeterNumber = payload.pngMeterNumber;
             r.PNGFixedRate = payload.pngFixedRate;
+            r.WaterNumber = payload.waterNumber;
+            r.WaterMeterNumber = payload.waterMeterNumber;
             r.WaterFixedRate = payload.waterFixedRate;
+            r.ElecMeterNumber = payload.elecMeterNumber;
             r.ElecFixedRate = payload.elecFixedRate;
+            activeFlatRenterObj = r;
           }
         }
       });
@@ -5208,7 +5400,7 @@
         payload.contractMobile
       );
 
-      // Immediately reflect updated rates in the live calculation area (if viewing an unbilled month)
+      // Immediately reflect updated rates in the live calculation area (if viewing an unbilled month; past bills stay locked!)
       handleBillingMonthChange();
       populateHistoryLedger(selectedFlat.PropertyName, selectedFlat.FlatName);
       populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
@@ -5216,12 +5408,17 @@
       saveDbSnapshotToCache();
       renderAllDashboardUI();
 
-      triggerSideToast("Utilities & Live Calc Updated", "Updated flat profile & live calculator! Past bills remain locked.", true);
+      triggerSideToast(
+        isAutoSave ? "Saved Across Flat" : "Utilities & Live Calc Updated",
+        "Rent & Fixed Utility Rates saved across this flat for new bills! Past bills remain locked.",
+        true
+      );
       await sendGasPost(payload);
     }
 
     async function submitRenterProfileRight() {
       if (activeRole === "Viewer" || !selectedFlat) return;
+      rebindSelectedFlatAndRenterReferences();
       const statusVal = document.getElementById("renterStatus").value;
       const rName = document.getElementById("renterName").value.trim();
 
@@ -5265,6 +5462,25 @@
         contractMobile: document.getElementById("profContractMobile").value.trim()
       };
 
+      // Also apply Rent & Fixed Utility Rates to the Flat record in DB.flats so saving Renter Record saves left-column edits too!
+      DB.flats.forEach(f => {
+        if (isSamePropAndFlat(f.PropertyName, f.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName)) {
+          f.RentAmount = payload.rentAmount;
+          f.ElecRate = payload.elecFixedRate;
+          f.PNGRate = payload.pngFixedRate;
+          f.WaterRate = payload.waterFixedRate;
+          f.PNGNumber = payload.pngNumber;
+          f.PNGMeterNumber = payload.pngMeterNumber;
+          f.WaterNumber = payload.waterNumber;
+          f.WaterMeterNumber = payload.waterMeterNumber;
+          f.ElecMeterNumber = payload.elecMeterNumber;
+          f.UPIName = payload.upiName;
+          f.UPIID = payload.upiId;
+          f.ContractMobile = payload.contractMobile;
+          selectedFlat = f;
+        }
+      });
+
       let existingActiveRenter = DB.renters.find(r =>
         isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName) &&
         String(r.Status).trim().toLowerCase() === "active"
@@ -5289,6 +5505,15 @@
           existingActiveRenter.JoinDate = payload.joinDate;
           existingActiveRenter.ProfileImageURL = payload.profileImageUrl;
           existingActiveRenter.IdentityImageURL = payload.identityImageUrl;
+          existingActiveRenter.RentAmount = payload.rentAmount;
+          existingActiveRenter.PNGNumber = payload.pngNumber;
+          existingActiveRenter.PNGMeterNumber = payload.pngMeterNumber;
+          existingActiveRenter.PNGFixedRate = payload.pngFixedRate;
+          existingActiveRenter.WaterNumber = payload.waterNumber;
+          existingActiveRenter.WaterMeterNumber = payload.waterMeterNumber;
+          existingActiveRenter.WaterFixedRate = payload.waterFixedRate;
+          existingActiveRenter.ElecMeterNumber = payload.elecMeterNumber;
+          existingActiveRenter.ElecFixedRate = payload.elecFixedRate;
           existingActiveRenter.UPIName = payload.upiName;
           existingActiveRenter.UPIID = payload.upiId;
           existingActiveRenter.ContractMobile = payload.contractMobile;
@@ -5309,6 +5534,14 @@
             ProfileImageURL: payload.profileImageUrl,
             IdentityImageURL: payload.identityImageUrl,
             RentAmount: payload.rentAmount,
+            PNGNumber: payload.pngNumber,
+            PNGMeterNumber: payload.pngMeterNumber,
+            PNGFixedRate: payload.pngFixedRate,
+            WaterNumber: payload.waterNumber,
+            WaterMeterNumber: payload.waterMeterNumber,
+            WaterFixedRate: payload.waterFixedRate,
+            ElecMeterNumber: payload.elecMeterNumber,
+            ElecFixedRate: payload.elecFixedRate,
             UPIName: payload.upiName,
             UPIID: payload.upiId,
             ContractMobile: payload.contractMobile,
@@ -5317,7 +5550,7 @@
           DB.renters.push(createdRenter);
           activeFlatRenterObj = createdRenter;
         }
-        triggerSideToast("Profile Saved", "Renter record saved & UPI/Contact synced across property!", true);
+        triggerSideToast("Profile & Rates Saved", "Renter record & flat utility rates saved! Past bills remain locked.", true);
       }
 
       propagatePropertyWideUpiAndContactLocal(
@@ -5738,12 +5971,18 @@
 
     async function sendGasPost(data) {
       const url = getGasUrl();
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(data)
-      });
-      return await response.json();
+      pendingWriteCount++;
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(data)
+        });
+        return await response.json();
+      } finally {
+        pendingWriteCount = Math.max(0, pendingWriteCount - 1);
+        lastWriteCompletedAt = Date.now();
+      }
     }
   </script>
 </body>
