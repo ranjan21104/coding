@@ -3896,7 +3896,11 @@
 
 
 
-   // Bug 1, Bug 2 & Bug 3: Show Receipt Modal with Checkboxes, Exact-Amount UPI QR Code, Hidden Unchecked Rows, and Image WhatsApp Share
+
+
+
+
+// Bug 1, Bug 2 & Bug 3: Show Receipt Modal with Checkboxes, Exact-Amount UPI QR Code, Hidden Unchecked Rows, and Image WhatsApp Share
     function openBillReceiptModal(billId, monthYear) {
       if (!selectedFlat) return;
       injectReceiptWhatsAppStyles();
@@ -4051,6 +4055,7 @@
       recalculateReceiptSelection();
       openModal("receiptViewModal");
     }
+
 
     // Bug 3: Hide unchecked rows entirely via CSS class toggle and update exact QR amount (Bug 2)
     function recalculateReceiptSelection() {
