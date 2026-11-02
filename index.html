@@ -2298,7 +2298,7 @@
     </div>
   </div>
 
-  <script>
+<script>
     /**
      * ============================================================================
      * BACKEND CONFIGURATION (HIDDEN FROM UI)
@@ -2327,6 +2327,11 @@
     let sideToastTimeout = null;
     let pendingConfirmCallback = null;
 
+    // Receipt WhatsApp & Checkbox State
+    let currentOpenedReceiptBill = null;
+    let currentOpenedReceiptRenter = null;
+    let currentOpenedReceiptFlat = null;
+
     function getGasUrl() {
       return GAS_WEB_APP_URL.trim();
     }
@@ -2340,11 +2345,8 @@
     function normalizeMonthYear(rawVal) {
       if (!rawVal) return "";
       const str = String(rawVal).replace(/^'+/, "").trim();
-      // Already clean YYYY-MM
       if (/^\d{4}-\d{2}$/.test(str)) return str;
 
-      // If Google Sheets returned an ISO string (e.g., "2026-09-30T18:30:00.000Z"),
-      // parse it in local time (IST) so the month never shifts backward!
       const parsed = new Date(str);
       if (!isNaN(parsed.getTime())) {
         const y = parsed.getFullYear();
@@ -2436,7 +2438,123 @@
       }
     }
 
+    // Inject Receipt Checkbox & WhatsApp Styles Automatically
+    function injectReceiptWhatsAppStyles() {
+      if (document.getElementById("waReceiptDynamicStyles")) return;
+      const style = document.createElement("style");
+      style.id = "waReceiptDynamicStyles";
+      style.innerHTML = `
+        .receipt-select-bar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background: var(--bg-input);
+          border: 1px solid var(--glass-border);
+          padding: 8px 12px;
+          border-radius: 10px;
+          margin-bottom: 10px;
+          font-size: 0.78rem;
+          font-weight: 700;
+        }
+        .receipt-select-bar label {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
+          color: var(--primary);
+        }
+        .receipt-line.unchecked-row,
+        .receipt-total-box.unchecked-row {
+          opacity: 0.38;
+          text-decoration: line-through;
+        }
+        .receipt-line-left {
+          display: flex;
+          align-items: center;
+          gap: 9px;
+          cursor: pointer;
+          flex: 1;
+        }
+        .rec-item-check {
+          width: 17px;
+          height: 17px;
+          accent-color: var(--primary);
+          cursor: pointer;
+          flex-shrink: 0;
+        }
+        .wa-recipient-bar {
+          margin-top: 12px;
+          padding: 10px 12px;
+          border-radius: 10px;
+          background: rgba(16, 185, 129, 0.12);
+          border: 1px solid rgba(16, 185, 129, 0.35);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 8px;
+          font-size: 0.8rem;
+        }
+        .wa-recipient-bar input {
+          max-width: 165px;
+          padding: 6px 10px;
+          font-size: 0.82rem;
+          font-weight: 700;
+          border-radius: 8px;
+          border: 1px solid var(--glass-border);
+          background: var(--bg-modal);
+          color: var(--text-main);
+        }
+        .btn-whatsapp-share {
+          width: 100%;
+          padding: 12px 14px;
+          border-radius: var(--radius-md);
+          border: none;
+          background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+          color: #ffffff;
+          font-weight: 800;
+          font-size: 0.9rem;
+          cursor: pointer;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 8px;
+          box-shadow: 0 6px 18px rgba(37, 211, 102, 0.35);
+          transition: all 0.2s ease;
+          margin-top: 10px;
+        }
+        .btn-whatsapp-share:hover {
+          transform: translateY(-1px);
+          filter: brightness(1.06);
+        }
+        @media print {
+          body * { visibility: hidden; }
+          #printableReceiptArea, #printableReceiptArea * { visibility: visible; }
+          #printableReceiptArea {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            max-width: 100%;
+            border: none;
+            box-shadow: none;
+          }
+          .no-print,
+          .rec-item-check,
+          .receipt-select-bar,
+          .wa-recipient-bar,
+          .btn-whatsapp-share,
+          .receipt-line.unchecked-row,
+          .receipt-total-box.unchecked-row {
+            display: none !important;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
+      injectReceiptWhatsAppStyles();
+
       window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
         if (activeThemePref === "system") applyVisualTheme("system");
       });
@@ -3651,7 +3769,6 @@
       };
 
       if (existingBillIdx !== -1) {
-        // Remove old position and push to end so newest updated bill appears at the very top of History
         DB.bills.splice(existingBillIdx, 1);
         DB.bills.push(newBillObj);
         triggerSideToast("Bill Replaced & Updated", `Bill for ${formatMonthLabel(chosenMonth)} was updated and moved to the top of History!`, "warning");
@@ -3703,18 +3820,13 @@
 
     /**
      * ============================================================================
-     * HISTORY LEDGER:
-     * - Newest calculated bills appear at the TOP (reversed order)
-     * - Month column displays clean "Oct 2026 (2026-10)" without timestamps
-     * - Action Buttons: "Receipt" (opens Receipt Modal) & "Edit" (loads month in Calculator)
+     * HISTORY LEDGER & INTERACTIVE WHATSAPP RECEIPT SYSTEM
      * ============================================================================
      */
     function populateHistoryLedger(prop, flat) {
       const tbody = document.getElementById("ledgerTableBody");
       tbody.innerHTML = "";
       const matchingBills = DB.bills.filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat));
-
-      // Reverse order so the most recently calculated bill is always at the top
       const newestFirstBills = [...matchingBills].reverse();
 
       newestFirstBills.forEach(bill => {
@@ -3737,7 +3849,7 @@
           <td><span class="badge-${String(bill.Status).toLowerCase().includes('fully') ? 'paid' : (String(bill.Status).toLowerCase().includes('partial') ? 'partial' : 'unpaid')}">${bill.Status}</span></td>
           <td>
             <div class="history-actions-cell">
-              <button type="button" class="btn-ledger-action receipt-btn" onclick="openBillReceiptModal('${bill.BillID}', '${cleanMonth}')" title="Show Receipt">
+              <button type="button" class="btn-ledger-action receipt-btn" onclick="openBillReceiptModal('${bill.BillID}', '${cleanMonth}')" title="Show Receipt & Share on WhatsApp">
                 <i class="fa-solid fa-receipt"></i> Receipt
               </button>
               <button type="button" class="btn-ledger-action edit-btn admin-only" onclick="editBillMonthFromHistory('${cleanMonth}')" title="Edit Everything for This Month">
@@ -3750,9 +3862,39 @@
       });
     }
 
-    // Action Button 1: Show Receipt Modal for a Specific Bill Row
+    // Helper: Finds the matching renter profile and extracts their saved mobile number
+    function findRenterForBill(bill) {
+      if (!bill) return null;
+      if (bill.RenterID) {
+        const byId = DB.renters.find(r => String(r.RenterID || "").trim() === String(bill.RenterID).trim());
+        if (byId) return byId;
+      }
+      const byNameAndFlat = DB.renters.find(r =>
+        isSamePropAndFlat(r.PropertyName, r.FlatName, bill.PropertyName, bill.FlatName) &&
+        String(r.RenterName || "").trim().toLowerCase() === String(bill.TenantName || "").trim().toLowerCase()
+      );
+      if (byNameAndFlat) return byNameAndFlat;
+
+      return DB.renters.find(r =>
+        isSamePropAndFlat(r.PropertyName, r.FlatName, bill.PropertyName, bill.FlatName) &&
+        String(r.Status || "").trim().toLowerCase() === "active"
+      ) || null;
+    }
+
+    // Helper: Formats phone number for WhatsApp API (automatically adds 91 for 10-digit numbers)
+    function formatWhatsAppPhone(rawPhone) {
+      const digits = String(rawPhone || "").replace(/\D/g, "");
+      if (!digits) return "";
+      if (digits.length === 10) return "91" + digits;
+      if (digits.length === 11 && digits.startsWith("0")) return "91" + digits.substring(1);
+      return digits;
+    }
+
+    // Action Button 1: Show Receipt Modal with Checkboxes & Auto WhatsApp Number Lookup
     function openBillReceiptModal(billId, monthYear) {
       if (!selectedFlat) return;
+      injectReceiptWhatsAppStyles();
+
       const cleanM = normalizeMonthYear(monthYear);
       const bill = DB.bills.find(b =>
         (billId && String(b.BillID) === String(billId)) ||
@@ -3763,59 +3905,305 @@
         return triggerSideToast("Not Found", "Receipt details could not be found.", false);
       }
 
+      currentOpenedReceiptBill = bill;
+      currentOpenedReceiptRenter = findRenterForBill(bill);
+      currentOpenedReceiptFlat = DB.flats.find(f => isSamePropAndFlat(f.PropertyName, f.FlatName, bill.PropertyName, bill.FlatName)) || selectedFlat;
+
       document.getElementById("recPropAndFlat").innerText = `${bill.PropertyName} — Flat ${bill.FlatName}`;
       document.getElementById("recMonthLabel").innerText = `Billing Month: ${formatMonthLabel(bill.MonthYear)}`;
 
+      const savedPhone = currentOpenedReceiptRenter?.MobileNumber || currentOpenedReceiptRenter?.AltMobileNumber || "";
       const carryVal = parseFloat(bill.PrevCarryBalance) || 0;
       const carryLine = carryVal > 0
         ? `<span style="color:var(--accent-red);">+ ₹${carryVal} (Previous Due)</span>`
         : (carryVal < 0 ? `<span style="color:var(--accent-green);">- ₹${Math.abs(carryVal)} (Advance Credit)</span>` : `₹0`);
 
-      const totalBilled = parseFloat(bill.TotalBilled) || 0;
-      const paidAmt = parseFloat(bill.PaidAmount) || 0;
-      const closingDue = Math.max(0, totalBilled - paidAmt);
+      const upiId = currentOpenedReceiptFlat?.UPIID || currentOpenedReceiptRenter?.UPIID || "";
+      const upiName = currentOpenedReceiptFlat?.UPIName || currentOpenedReceiptRenter?.UPIName || "";
 
+      // Dynamically inject Select-All bar, Checkboxes, WhatsApp Bar, and WhatsApp Button inside #receiptBodyDetails
       document.getElementById("receiptBodyDetails").innerHTML = `
-        <div class="receipt-line"><span>Tenant Name:</span><strong>${bill.TenantName || '--'}</strong></div>
-        <div class="receipt-line"><span>Base Rent:</span><strong>₹${bill.BaseRent || 0}</strong></div>
-        <div class="receipt-line">
-          <span>Electricity (${bill.ElecPrev} to ${bill.ElecCurr} = ${bill.ElecUnits}U @ ₹${bill.ElecRate}):</span>
-          <strong>₹${bill.ElecTotal || 0}</strong>
+        <div class="receipt-select-bar no-print">
+          <label>
+            <input type="checkbox" id="recSelectAllToggle" class="rec-item-check" checked onchange="toggleAllReceiptItems(this.checked)">
+            <span>Select / Deselect All Items</span>
+          </label>
+          <span style="color:var(--text-muted); font-size:0.73rem;">Only ticked items are sent</span>
         </div>
-        <div class="receipt-line">
-          <span>PNG Gas (${bill.PNGPrev} to ${bill.PNGCurr} = ${bill.PNGUnits}U @ ₹${bill.PNGRate}):</span>
-          <strong>₹${bill.PNGTotal || 0}</strong>
+
+        <div id="receiptItemsListContainer">
+          <div class="receipt-line" id="row_rec_tenant">
+            <label class="receipt-line-left">
+              <input type="checkbox" class="rec-item-check" data-key="tenant" checked onchange="recalculateReceiptSelection()">
+              <span>Tenant Name:</span>
+            </label>
+            <strong>${bill.TenantName || '--'}</strong>
+          </div>
+
+          <div class="receipt-line" id="row_rec_rent">
+            <label class="receipt-line-left">
+              <input type="checkbox" class="rec-item-check" data-key="rent" data-amount="${parseFloat(bill.BaseRent) || 0}" checked onchange="recalculateReceiptSelection()">
+              <span>Base Rent:</span>
+            </label>
+            <strong>₹${bill.BaseRent || 0}</strong>
+          </div>
+
+          <div class="receipt-line" id="row_rec_elec">
+            <label class="receipt-line-left">
+              <input type="checkbox" class="rec-item-check" data-key="elec" data-amount="${parseFloat(bill.ElecTotal) || 0}" checked onchange="recalculateReceiptSelection()">
+              <span>Electricity (${bill.ElecPrev} to ${bill.ElecCurr} = ${bill.ElecUnits}U @ ₹${bill.ElecRate}):</span>
+            </label>
+            <strong>₹${bill.ElecTotal || 0}</strong>
+          </div>
+
+          <div class="receipt-line" id="row_rec_png">
+            <label class="receipt-line-left">
+              <input type="checkbox" class="rec-item-check" data-key="png" data-amount="${parseFloat(bill.PNGTotal) || 0}" checked onchange="recalculateReceiptSelection()">
+              <span>PNG Gas (${bill.PNGPrev} to ${bill.PNGCurr} = ${bill.PNGUnits}U @ ₹${bill.PNGRate}):</span>
+            </label>
+            <strong>₹${bill.PNGTotal || 0}</strong>
+          </div>
+
+          <div class="receipt-line" id="row_rec_water">
+            <label class="receipt-line-left">
+              <input type="checkbox" class="rec-item-check" data-key="water" data-amount="${parseFloat(bill.WaterTotal) || 0}" checked onchange="recalculateReceiptSelection()">
+              <span>Water (${bill.WaterPrev} to ${bill.WaterCurr} = ${bill.WaterUnits}U @ ₹${bill.WaterRate}):</span>
+            </label>
+            <strong>₹${bill.WaterTotal || 0}</strong>
+          </div>
+
+          <div class="receipt-line" id="row_rec_additional">
+            <label class="receipt-line-left">
+              <input type="checkbox" class="rec-item-check" data-key="additional" data-amount="${parseFloat(bill.AdditionalAmount) || 0}" checked onchange="recalculateReceiptSelection()">
+              <span>Additional (${bill.AdditionalName || 'None'}):</span>
+            </label>
+            <strong>₹${bill.AdditionalAmount || 0}</strong>
+          </div>
+
+          <div class="receipt-line" id="row_rec_carry">
+            <label class="receipt-line-left">
+              <input type="checkbox" class="rec-item-check" data-key="carry" data-amount="${carryVal}" checked onchange="recalculateReceiptSelection()">
+              <span>Carry-Forward Balance:</span>
+            </label>
+            <strong>${carryLine}</strong>
+          </div>
+
+          <div class="receipt-total-box" id="row_rec_total">
+            <label class="receipt-line-left" style="font-weight:800;">
+              <input type="checkbox" class="rec-item-check" data-key="total" checked onchange="recalculateReceiptSelection()">
+              <span>Selected Total Billed:</span>
+            </label>
+            <span id="recDynamicTotalDisplay" style="color:var(--primary);">₹0</span>
+          </div>
+
+          <div class="receipt-line" id="row_rec_paid">
+            <label class="receipt-line-left">
+              <input type="checkbox" class="rec-item-check" data-key="paid" checked onchange="recalculateReceiptSelection()">
+              <span>Amount Paid (${bill.PaymentMode || 'UPI'}):</span>
+            </label>
+            <strong style="color:var(--accent-green);">₹${(parseFloat(bill.PaidAmount) || 0).toLocaleString('en-IN')}</strong>
+          </div>
+
+          <div class="receipt-line" id="row_rec_balance">
+            <label class="receipt-line-left">
+              <input type="checkbox" class="rec-item-check" data-key="balance" checked onchange="recalculateReceiptSelection()">
+              <span>Remaining Balance / Status:</span>
+            </label>
+            <strong id="recDynamicBalanceDisplay">--</strong>
+          </div>
+
+          ${upiId ? `
+          <div class="receipt-line" id="row_rec_upi">
+            <label class="receipt-line-left">
+              <input type="checkbox" class="rec-item-check" data-key="upi" checked onchange="recalculateReceiptSelection()">
+              <span>Pay via UPI (${upiName || 'Account'}):</span>
+            </label>
+            <strong style="color:var(--primary);">${upiId}</strong>
+          </div>` : ''}
+
+          ${bill.Notes ? `
+          <div class="receipt-line" id="row_rec_notes">
+            <label class="receipt-line-left">
+              <input type="checkbox" class="rec-item-check" data-key="notes" checked onchange="recalculateReceiptSelection()">
+              <span>Notes:</span>
+            </label>
+            <span>${bill.Notes}</span>
+          </div>` : ''}
         </div>
-        <div class="receipt-line">
-          <span>Water (${bill.WaterPrev} to ${bill.WaterCurr} = ${bill.WaterUnits}U @ ₹${bill.WaterRate}):</span>
-          <strong>₹${bill.WaterTotal || 0}</strong>
+
+        <div class="wa-recipient-bar no-print">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i class="fa-brands fa-whatsapp" style="color:#25D366; font-size:1.25rem;"></i>
+            <div>
+              <div style="font-weight:800; color:var(--text-main);">Tenant WhatsApp No.</div>
+              <div id="recWaSourceHint" style="font-size:0.7rem; color:${savedPhone ? 'var(--accent-green)' : 'var(--accent-orange)'};">
+                ${savedPhone ? `Auto-fetched from ${currentOpenedReceiptRenter?.RenterName || 'Tenant'}'s Profile` : 'Not set in profile — enter number manually'}
+              </div>
+            </div>
+          </div>
+          <input type="tel" id="recWhatsappNumberInput" value="${savedPhone}" placeholder="e.g. 9876543210">
         </div>
-        <div class="receipt-line">
-          <span>Additional (${bill.AdditionalName || 'None'}):</span>
-          <strong>₹${bill.AdditionalAmount || 0}</strong>
-        </div>
-        <div class="receipt-line">
-          <span>Carry-Forward Balance:</span>
-          <strong>${carryLine}</strong>
-        </div>
-        <div class="receipt-total-box">
-          <span>Grand Total Billed:</span>
-          <span style="color:var(--primary);">₹${totalBilled.toLocaleString('en-IN')}</span>
-        </div>
-        <div class="receipt-line">
-          <span>Amount Paid (${bill.PaymentMode || 'UPI'}):</span>
-          <strong style="color:var(--accent-green);">₹${paidAmt.toLocaleString('en-IN')}</strong>
-        </div>
-        <div class="receipt-line">
-          <span>Remaining Balance / Status:</span>
-          <strong style="color:${closingDue > 0 ? 'var(--accent-red)' : 'var(--accent-green)'};">
-            ${closingDue > 0 ? 'Due: ₹' + closingDue.toLocaleString('en-IN') : 'Fully Paid (₹0 Due)'} [${bill.Status}]
-          </strong>
-        </div>
-        ${bill.Notes ? `<div class="receipt-line"><span>Notes:</span><span>${bill.Notes}</span></div>` : ''}
+
+        <button type="button" class="btn-whatsapp-share no-print" onclick="shareSelectedReceiptOnWhatsApp()">
+          <i class="fa-brands fa-whatsapp" style="font-size:1.15rem;"></i> Send Selected Receipt on WhatsApp
+        </button>
       `;
 
+      recalculateReceiptSelection();
       openModal("receiptViewModal");
+    }
+
+    // Dynamically updates row styling and recalculates Total & Balance based on ticked items
+    function recalculateReceiptSelection() {
+      if (!currentOpenedReceiptBill) return;
+      const checkboxes = document.querySelectorAll("#receiptItemsListContainer .rec-item-check");
+      let selectedChargesSum = 0;
+      let allChecked = true;
+
+      checkboxes.forEach(cb => {
+        const parentRow = cb.closest(".receipt-line, .receipt-total-box");
+        if (parentRow) {
+          parentRow.classList.toggle("unchecked-row", !cb.checked);
+        }
+        if (!cb.checked) allChecked = false;
+
+        if (cb.checked && cb.dataset.amount !== undefined) {
+          selectedChargesSum += parseFloat(cb.dataset.amount) || 0;
+        }
+      });
+
+      const selectAllToggle = document.getElementById("recSelectAllToggle");
+      if (selectAllToggle) selectAllToggle.checked = allChecked;
+
+      const selectedTotal = Math.max(0, selectedChargesSum);
+      const paidCheck = document.querySelector('#receiptItemsListContainer .rec-item-check[data-key="paid"]');
+      const paidAmt = (paidCheck && paidCheck.checked) ? (parseFloat(currentOpenedReceiptBill.PaidAmount) || 0) : 0;
+      const netClosing = selectedTotal - paidAmt;
+
+      const totalDisplay = document.getElementById("recDynamicTotalDisplay");
+      if (totalDisplay) {
+        totalDisplay.innerText = `₹${selectedTotal.toLocaleString('en-IN')}`;
+      }
+
+      const balDisplay = document.getElementById("recDynamicBalanceDisplay");
+      if (balDisplay) {
+        if (netClosing > 0) {
+          balDisplay.innerText = `Due: ₹${netClosing.toLocaleString('en-IN')} [Pending]`;
+          balDisplay.style.color = "var(--accent-red)";
+        } else if (netClosing < 0) {
+          balDisplay.innerText = `Advance: ₹${Math.abs(netClosing).toLocaleString('en-IN')} [Paid]`;
+          balDisplay.style.color = "var(--accent-green)";
+        } else {
+          balDisplay.innerText = `Fully Paid (₹0 Due)`;
+          balDisplay.style.color = "var(--accent-green)";
+        }
+      }
+
+      return { selectedTotal, paidAmt, netClosing };
+    }
+
+    function toggleAllReceiptItems(isChecked) {
+      document.querySelectorAll("#receiptItemsListContainer .rec-item-check").forEach(cb => {
+        cb.checked = isChecked;
+      });
+      recalculateReceiptSelection();
+    }
+
+    // Generates a formatted receipt containing ONLY the ticked items and sends to WhatsApp
+    function shareSelectedReceiptOnWhatsApp() {
+      if (!currentOpenedReceiptBill) return;
+      const bill = currentOpenedReceiptBill;
+
+      const checkedKeys = new Set();
+      document.querySelectorAll("#receiptItemsListContainer .rec-item-check:checked").forEach(cb => {
+        checkedKeys.add(cb.dataset.key);
+      });
+
+      if (checkedKeys.size === 0) {
+        return triggerSideToast("No Items Selected", "Please tick at least one item in the receipt to send on WhatsApp.", false);
+      }
+
+      const rawPhone = document.getElementById("recWhatsappNumberInput")?.value.trim() || "";
+      const formattedPhone = formatWhatsAppPhone(rawPhone);
+
+      if (!formattedPhone || formattedPhone.length < 10) {
+        return triggerSideToast("WhatsApp Number Required", "Please save the tenant's mobile number in Profile or type it in the WhatsApp field.", false);
+      }
+
+      const { selectedTotal, paidAmt, netClosing } = recalculateReceiptSelection();
+
+      const lines = [];
+      lines.push(`*🧾 MONTHLY RENT & UTILITY RECEIPT*`);
+      lines.push(`🏢 *Property:* ${bill.PropertyName} (Flat ${bill.FlatName})`);
+      lines.push(`📅 *Billing Month:* ${formatMonthLabel(bill.MonthYear)}`);
+      lines.push(`--------------------------------`);
+
+      if (checkedKeys.has("tenant")) {
+        lines.push(`👤 *Tenant:* ${bill.TenantName || '--'}`);
+      }
+      if (checkedKeys.has("rent")) {
+        lines.push(`🏠 *Base Rent:* ₹${(parseFloat(bill.BaseRent) || 0).toLocaleString('en-IN')}`);
+      }
+      if (checkedKeys.has("elec")) {
+        lines.push(`⚡ *Electricity:* ₹${(parseFloat(bill.ElecTotal) || 0).toLocaleString('en-IN')} _(${bill.ElecPrev} → ${bill.ElecCurr} = ${bill.ElecUnits}U @ ₹${bill.ElecRate}/U)_`);
+      }
+      if (checkedKeys.has("png")) {
+        lines.push(`🔥 *PNG Gas:* ₹${(parseFloat(bill.PNGTotal) || 0).toLocaleString('en-IN')} _(${bill.PNGPrev} → ${bill.PNGCurr} = ${bill.PNGUnits}U @ ₹${bill.PNGRate}/U)_`);
+      }
+      if (checkedKeys.has("water")) {
+        lines.push(`🚰 *Water:* ₹${(parseFloat(bill.WaterTotal) || 0).toLocaleString('en-IN')} _(${bill.WaterPrev} → ${bill.WaterCurr} = ${bill.WaterUnits}U @ ₹${bill.WaterRate}/U)_`);
+      }
+      if (checkedKeys.has("additional")) {
+        const addAmt = parseFloat(bill.AdditionalAmount) || 0;
+        const sign = addAmt >= 0 ? "+" : "-";
+        lines.push(`➕ *Additional (${bill.AdditionalName || 'Misc'}):* ${sign}₹${Math.abs(addAmt).toLocaleString('en-IN')}`);
+      }
+      if (checkedKeys.has("carry")) {
+        const carryVal = parseFloat(bill.PrevCarryBalance) || 0;
+        if (carryVal > 0) {
+          lines.push(`📌 *Previous Month Due:* +₹${carryVal.toLocaleString('en-IN')}`);
+        } else if (carryVal < 0) {
+          lines.push(`📌 *Previous Advance Credit:* -₹${Math.abs(carryVal).toLocaleString('en-IN')}`);
+        } else {
+          lines.push(`📌 *Carry-Forward Balance:* ₹0`);
+        }
+      }
+
+      lines.push(`--------------------------------`);
+
+      if (checkedKeys.has("total")) {
+        lines.push(`💰 *Total Billed:* *₹${selectedTotal.toLocaleString('en-IN')}*`);
+      }
+      if (checkedKeys.has("paid")) {
+        lines.push(`✅ *Amount Paid (${bill.PaymentMode || 'UPI'}):* ₹${paidAmt.toLocaleString('en-IN')}`);
+      }
+      if (checkedKeys.has("balance")) {
+        if (netClosing > 0) {
+          lines.push(`⚠️ *Net Payable / Pending Due:* *₹${netClosing.toLocaleString('en-IN')}*`);
+        } else if (netClosing < 0) {
+          lines.push(`🎉 *Status:* Fully Paid (Advance Credit: ₹${Math.abs(netClosing).toLocaleString('en-IN')})`);
+        } else {
+          lines.push(`🎉 *Status:* *Fully Paid (₹0 Due)*`);
+        }
+      }
+
+      if (checkedKeys.has("upi")) {
+        const upiId = currentOpenedReceiptFlat?.UPIID || currentOpenedReceiptRenter?.UPIID || "";
+        const upiName = currentOpenedReceiptFlat?.UPIName || currentOpenedReceiptRenter?.UPIName || "";
+        if (upiId) {
+          lines.push(`💳 *Pay via UPI:* ${upiId}${upiName ? ' (' + upiName + ')' : ''}`);
+        }
+      }
+
+      if (checkedKeys.has("notes") && bill.Notes) {
+        lines.push(`📝 *Note:* ${bill.Notes}`);
+      }
+
+      const messageText = lines.join("\n");
+      const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(messageText)}`;
+
+      window.open(whatsappUrl, "_blank");
+      triggerSideToast("Opening WhatsApp", `Sending selected receipt items to +${formattedPhone}`, true);
     }
 
     function printCurrentReceipt() {
@@ -3827,19 +4215,16 @@
       if (activeRole === "Viewer") return;
       const cleanM = normalizeMonthYear(monthYear);
 
-      // Switch to Tab 1 (Calculation)
       const modal = document.getElementById("flatDetailsModal");
       const navItems = modal.querySelectorAll(".flat-nav-item");
       const tabs = modal.querySelectorAll(".tab-content");
       navItems.forEach((item, i) => item.classList.toggle("active", i === 0));
       tabs.forEach((tab, i) => tab.classList.toggle("active", i === 0));
 
-      // Set Month Picker to that exact month and load its saved values
       const monthPicker = document.getElementById("calcMonthPicker");
       monthPicker.value = cleanM;
       handleBillingMonthChange();
 
-      // Unlock all fields so the user can edit everything for that month immediately
       unlockAllCalculatorFieldsForEdit();
       triggerSideToast("Edit Mode Active", `Editing bill for ${formatMonthLabel(cleanM)}. Modify any field and click Update!`, "warning");
     }
@@ -3952,7 +4337,6 @@
       if (bills.length === 0) {
         invContainer.innerHTML = `<p style="color:var(--text-muted);">No invoices recorded for ${targetRenter.RenterName}.</p>`;
       } else {
-        // Show newest invoices at the top as well
         const newestFirstInvoices = [...bills].reverse();
         invContainer.innerHTML = newestFirstInvoices.map(b => {
           const cleanM = normalizeMonthYear(b.MonthYear);
