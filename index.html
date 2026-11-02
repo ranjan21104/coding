@@ -2266,11 +2266,58 @@
         <div class="calc-header-bar" style="margin-bottom:14px;">
           <div>
             <h4><i class="fa-solid fa-clock-rotate-left"></i> Renter History & Isolated Financial Records</h4>
-            <span style="font-size:0.74rem; color:var(--text-muted);">Each renter's profile & billing history is stored separately</span>
+            <span style="font-size:0.74rem; color:var(--text-muted);">Search by tenant name, phone, status, or filter records & invoices by date range</span>
           </div>
-          <div style="min-width:240px;">
-            <label style="font-size:0.75rem; font-weight:700; display:block; margin-bottom:4px;">Select Renter Record (Active / Past):</label>
+          <div style="min-width:250px;">
+            <label style="font-size:0.75rem; font-weight:700; display:block; margin-bottom:4px;">
+              Select Renter Record (<span id="rhFilteredCountLabel">All</span>):
+            </label>
             <select id="rhRenterSelectDropdown" class="form-control" onchange="renderSelectedRenterHistoryRecord()"></select>
+          </div>
+        </div>
+
+        <!-- Dedicated Search & Date-Range Filter Bar -->
+        <div class="calc-grid-card" style="margin-bottom:14px; padding:12px 14px;">
+          <div style="display:grid; grid-template-columns: 2fr 1fr 1fr auto; gap:10px; align-items:end;">
+            <div class="calc-field-col">
+              <label style="font-size:0.74rem; font-weight:700;"><i class="fa-solid fa-magnifying-glass"></i> Search Tenant Name / Phone / Invoice Month</label>
+              <input
+                type="text"
+                id="rhSearchInput"
+                class="form-control"
+                placeholder="Type tenant name, mobile, status, or month (e.g. Oct 2026)..."
+                oninput="filterRenterHistoryRecords()"
+              >
+            </div>
+            <div class="calc-field-col">
+              <label style="font-size:0.74rem; font-weight:700;"><i class="fa-regular fa-calendar"></i> From Date</label>
+              <input
+                type="date"
+                id="rhDateFrom"
+                class="form-control"
+                onchange="filterRenterHistoryRecords()"
+              >
+            </div>
+            <div class="calc-field-col">
+              <label style="font-size:0.74rem; font-weight:700;"><i class="fa-regular fa-calendar-check"></i> To Date</label>
+              <input
+                type="date"
+                id="rhDateTo"
+                class="form-control"
+                onchange="filterRenterHistoryRecords()"
+              >
+            </div>
+            <div class="calc-field-col">
+              <button
+                type="button"
+                class="btn-ledger-action"
+                style="height:38px; padding:0 12px; font-weight:700;"
+                onclick="clearRenterHistoryFilters()"
+                title="Clear Search & Date Filters"
+              >
+                <i class="fa-solid fa-rotate-left"></i> Reset
+              </button>
+            </div>
           </div>
         </div>
 
@@ -3664,6 +3711,13 @@
         clearRenterRightForm();
       }
 
+      const rhSearchEl = document.getElementById("rhSearchInput");
+      const rhFromEl = document.getElementById("rhDateFrom");
+      const rhToEl = document.getElementById("rhDateTo");
+      if (rhSearchEl) rhSearchEl.value = "";
+      if (rhFromEl) rhFromEl.value = "";
+      if (rhToEl) rhToEl.value = "";
+
       handleBillingMonthChange();
       populateHistoryLedger(flat.PropertyName, flat.FlatName);
       populateIsolatedRenterHistoryDropdown(flat.PropertyName, flat.FlatName);
@@ -4426,30 +4480,122 @@
       });
     }
 
-    // 8. Strict Renter History Isolation
-    function populateIsolatedRenterHistoryDropdown(prop, flat) {
+    // 8. Strict Renter History Isolation + Search & Date-Range Filtering
+    function doesRenterMatchHistoryFilters(renter, prop, flat, searchQuery, fromDateStr, toDateStr) {
+      const q = String(searchQuery || "").trim().toLowerCase();
+      const renterBills = getBillsForSpecificRenter(prop, flat, renter);
+
+      if (q) {
+        const nameMatch = String(renter.RenterName || "").toLowerCase().includes(q);
+        const phoneMatch = String(renter.MobileNumber || "").toLowerCase().includes(q) ||
+                           String(renter.AltMobileNumber || "").toLowerCase().includes(q);
+        const statusMatch = String(renter.Status || "").toLowerCase().includes(q);
+        const joinEndMatch = String(renter.JoinDate || "").toLowerCase().includes(q) ||
+                             String(renter.EndDate || "").toLowerCase().includes(q);
+        const billMatch = renterBills.some(b => {
+          const mLabel = formatMonthLabel(b.MonthYear).toLowerCase();
+          const mRaw = normalizeMonthYear(b.MonthYear).toLowerCase();
+          const pMode = String(b.PaymentMode || "").toLowerCase();
+          const bStatus = String(b.Status || "").toLowerCase();
+          return mLabel.includes(q) || mRaw.includes(q) || pMode.includes(q) || bStatus.includes(q);
+        });
+
+        if (!nameMatch && !phoneMatch && !statusMatch && !joinEndMatch && !billMatch) {
+          return false;
+        }
+      }
+
+      if (fromDateStr || toDateStr) {
+        const joinStr = String(renter.JoinDate || "").trim();
+        const isAct = String(renter.Status || "").trim().toLowerCase() === "active";
+        const endStr = isAct ? "9999-12-31" : (String(renter.EndDate || "").trim() || "9999-12-31");
+        const startStr = joinStr || "0000-01-01";
+
+        const stayOverlapsRange =
+          (!fromDateStr || endStr >= fromDateStr) &&
+          (!toDateStr || startStr <= toDateStr);
+
+        const fromMonth = fromDateStr ? fromDateStr.substring(0, 7) : "";
+        const toMonth = toDateStr ? toDateStr.substring(0, 7) : "";
+        const hasBillInRange = renterBills.some(b => {
+          const bm = normalizeMonthYear(b.MonthYear);
+          if (!bm) return false;
+          if (fromMonth && bm < fromMonth) return false;
+          if (toMonth && bm > toMonth) return false;
+          return true;
+        });
+
+        if (!stayOverlapsRange && !hasBillInRange) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    function filterRenterHistoryRecords() {
+      if (!selectedFlat) return;
+      populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
+    }
+
+    function clearRenterHistoryFilters() {
+      const rhSearchEl = document.getElementById("rhSearchInput");
+      const rhFromEl = document.getElementById("rhDateFrom");
+      const rhToEl = document.getElementById("rhDateTo");
+      if (rhSearchEl) rhSearchEl.value = "";
+      if (rhFromEl) rhFromEl.value = "";
+      if (rhToEl) rhToEl.value = "";
+      if (selectedFlat) {
+        populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, false);
+      }
+    }
+
+    function populateIsolatedRenterHistoryDropdown(prop, flat, preserveSelection = false) {
       const select = document.getElementById("rhRenterSelectDropdown");
+      const countLabel = document.getElementById("rhFilteredCountLabel");
       if (!select) return;
 
-      const flatRenters = DB.renters.filter(r => isSamePropAndFlat(r.PropertyName, r.FlatName, prop, flat));
+      const previousValue = preserveSelection ? select.value : "";
+      const searchQuery = document.getElementById("rhSearchInput")?.value || "";
+      const fromDateStr = document.getElementById("rhDateFrom")?.value || "";
+      const toDateStr = document.getElementById("rhDateTo")?.value || "";
 
-      if (flatRenters.length === 0) {
-        select.innerHTML = `<option value="">No Renter Records Found</option>`;
+      const allFlatRenters = DB.renters
+        .map((r, originalIdx) => ({ r, rId: r.RenterID || `IDX-${originalIdx}` }))
+        .filter(item => isSamePropAndFlat(item.r.PropertyName, item.r.FlatName, prop, flat));
+
+      const filteredRenters = allFlatRenters.filter(item =>
+        doesRenterMatchHistoryFilters(item.r, prop, flat, searchQuery, fromDateStr, toDateStr)
+      );
+
+      if (countLabel) {
+        const hasFilters = Boolean(searchQuery.trim() || fromDateStr || toDateStr);
+        countLabel.innerText = hasFilters
+          ? `${filteredRenters.length} of ${allFlatRenters.length} Matched`
+          : `${allFlatRenters.length} Total`;
+      }
+
+      if (filteredRenters.length === 0) {
+        select.innerHTML = `<option value="">No Matching Renter Records</option>`;
         renderSelectedRenterHistoryRecord();
         return;
       }
 
-      flatRenters.sort((a, b) => {
-        const aAct = String(a.Status).toLowerCase() === "active" ? 0 : 1;
-        const bAct = String(b.Status).toLowerCase() === "active" ? 0 : 1;
+      filteredRenters.sort((a, b) => {
+        const aAct = String(a.r.Status).toLowerCase() === "active" ? 0 : 1;
+        const bAct = String(b.r.Status).toLowerCase() === "active" ? 0 : 1;
         return aAct - bAct;
       });
 
-      select.innerHTML = flatRenters.map((r, idx) => {
-        const rId = r.RenterID || `IDX-${idx}`;
+      select.innerHTML = filteredRenters.map(item => {
+        const r = item.r;
         const statusLabel = String(r.Status).toLowerCase() === "active" ? "ACTIVE" : "PAST / INACTIVE";
-        return `<option value="${rId}">${r.RenterName || 'Unnamed Tenant'} [${statusLabel}] (${r.JoinDate || 'N/A'})</option>`;
+        return `<option value="${item.rId}">${r.RenterName || 'Unnamed Tenant'} [${statusLabel}] (${r.JoinDate || 'N/A'})</option>`;
       }).join("");
+
+      if (previousValue && filteredRenters.some(item => item.rId === previousValue)) {
+        select.value = previousValue;
+      }
 
       renderSelectedRenterHistoryRecord();
     }
@@ -4458,16 +4604,20 @@
       if (!selectedFlat) return;
       const select = document.getElementById("rhRenterSelectDropdown");
       const chosenId = select?.value || "";
+      const searchQuery = (document.getElementById("rhSearchInput")?.value || "").trim().toLowerCase();
+      const fromDateStr = document.getElementById("rhDateFrom")?.value || "";
+      const toDateStr = document.getElementById("rhDateTo")?.value || "";
 
-      const flatRenters = DB.renters.filter(r =>
-        isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName)
-      );
+      const flatRenters = DB.renters
+        .map((r, originalIdx) => ({ r, rId: r.RenterID || `IDX-${originalIdx}` }))
+        .filter(item => isSamePropAndFlat(item.r.PropertyName, item.r.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName));
 
-      const targetRenter = flatRenters.find((r, idx) => (r.RenterID || `IDX-${idx}`) === chosenId) || flatRenters[0] || null;
+      const matchedEntry = flatRenters.find(item => item.rId === chosenId);
+      const targetRenter = matchedEntry ? matchedEntry.r : null;
 
       if (!targetRenter) {
-        document.getElementById("rhName").innerText = "No Renter Assigned";
-        document.getElementById("rhStatusBadge").innerText = "Vacant";
+        document.getElementById("rhName").innerText = chosenId === "" && flatRenters.length > 0 ? "No Renter Matches Filter" : "No Renter Assigned";
+        document.getElementById("rhStatusBadge").innerText = "N/A";
         document.getElementById("rhStatusBadge").className = "badge-partial";
         document.getElementById("rhContact").innerText = "Contact: --";
         document.getElementById("rhStay").innerText = "Duration: --";
@@ -4476,7 +4626,7 @@
         document.getElementById("rhTotalRent").innerText = "₹ 0";
         document.getElementById("rhUtility").innerText = "₹ 0";
         document.getElementById("rhBalance").innerText = "Settled (₹0)";
-        document.getElementById("rhInvoiceList").innerHTML = "<p>No invoices recorded for this renter.</p>";
+        document.getElementById("rhInvoiceList").innerHTML = "<p style='color:var(--text-muted);'>No renter records match your current search or date range filter.</p>";
         return;
       }
 
@@ -4488,7 +4638,33 @@
       document.getElementById("rhContact").innerText = `Phone: ${targetRenter.MobileNumber || '--'}`;
       document.getElementById("rhStay").innerText = `Stay: ${targetRenter.JoinDate || '--'} to ${isAct ? 'Present' : (targetRenter.EndDate || 'Archived')}`;
 
-      const bills = getBillsForSpecificRenter(selectedFlat.PropertyName, selectedFlat.FlatName, targetRenter);
+      const allBills = getBillsForSpecificRenter(selectedFlat.PropertyName, selectedFlat.FlatName, targetRenter);
+
+      // Filter invoices by active date range or invoice-specific search terms
+      const fromMonth = fromDateStr ? fromDateStr.substring(0, 7) : "";
+      const toMonth = toDateStr ? toDateStr.substring(0, 7) : "";
+      const renterMetaMatchesQuery = searchQuery && (
+        String(targetRenter.RenterName || "").toLowerCase().includes(searchQuery) ||
+        String(targetRenter.MobileNumber || "").toLowerCase().includes(searchQuery) ||
+        String(targetRenter.AltMobileNumber || "").toLowerCase().includes(searchQuery) ||
+        String(targetRenter.Status || "").toLowerCase().includes(searchQuery)
+      );
+
+      const bills = allBills.filter(b => {
+        const cleanM = normalizeMonthYear(b.MonthYear);
+        if (fromMonth && cleanM && cleanM < fromMonth) return false;
+        if (toMonth && cleanM && cleanM > toMonth) return false;
+
+        if (searchQuery && !renterMetaMatchesQuery) {
+          const mLabel = formatMonthLabel(cleanM).toLowerCase();
+          const pMode = String(b.PaymentMode || "").toLowerCase();
+          const bStatus = String(b.Status || "").toLowerCase();
+          const bNotes = String(b.Notes || "").toLowerCase();
+          return mLabel.includes(searchQuery) || cleanM.toLowerCase().includes(searchQuery) || pMode.includes(searchQuery) || bStatus.includes(searchQuery) || bNotes.includes(searchQuery);
+        }
+        return true;
+      });
+
       let totalStandaloneBilled = 0, totalPaid = 0, totalRent = 0, totalUtility = 0;
 
       bills.forEach(b => {
@@ -4524,7 +4700,7 @@
 
       const invContainer = document.getElementById("rhInvoiceList");
       if (bills.length === 0) {
-        invContainer.innerHTML = `<p style="color:var(--text-muted);">No invoices recorded for ${targetRenter.RenterName}.</p>`;
+        invContainer.innerHTML = `<p style="color:var(--text-muted);">No invoices found for ${targetRenter.RenterName} matching the selected filter criteria.</p>`;
       } else {
         const newestFirstInvoices = [...bills].reverse();
         invContainer.innerHTML = newestFirstInvoices.map(b => {
