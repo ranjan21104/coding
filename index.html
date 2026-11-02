@@ -1375,7 +1375,7 @@
       }
     }
   </style>
-</head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body class="theme-black">
 
   <!-- PERMANENT HOUSE BACKGROUND CANVAS FOR HOME PAGE & LOGIN -->
@@ -1417,7 +1417,7 @@
        ========================================================================== -->
   <div id="receiptViewModal" class="modal-overlay">
     <div class="modal-window receipt-card" id="printableReceiptArea">
-      <button class="modal-close-btn" onclick="closeModal('receiptViewModal')"><i class="fa-solid fa-xmark"></i></button>
+      <button class="modal-close-btn no-print" onclick="closeModal('receiptViewModal')"><i class="fa-solid fa-xmark"></i></button>
       <div class="receipt-header">
         <i class="fa-solid fa-file-invoice-dollar" style="font-size:1.8rem; color:var(--primary); margin-bottom:6px;"></i>
         <h3 id="recPropAndFlat">Property - Flat</h3>
@@ -1428,7 +1428,7 @@
         <!-- Populated dynamically when Receipt button is clicked -->
       </div>
 
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:16px;">
+      <div class="no-print" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:16px;">
         <button type="button" class="btn-confirm-cancel" onclick="closeModal('receiptViewModal')">Close</button>
         <button type="button" class="btn-primary" onclick="printCurrentReceipt()">
           <i class="fa-solid fa-print"></i> Print / Save PDF
@@ -2378,6 +2378,20 @@
       });
     }
 
+    function findPropertyObject(propertyName) {
+      const target = String(propertyName || "").trim().toLowerCase();
+      return (DB.properties || []).find(p => String(p.PropertyName || "").trim().toLowerCase() === target) || null;
+    }
+
+    function resolveFlatUpiAndContact(propertyName, flatObj, renterObj) {
+      const propObj = findPropertyObject(propertyName || flatObj?.PropertyName || renterObj?.PropertyName);
+      return {
+        upiName: flatObj?.UPIName || renterObj?.UPIName || propObj?.UPIName || "",
+        upiId: flatObj?.UPIID || renterObj?.UPIID || propObj?.UPIID || "",
+        contractMobile: flatObj?.ContractMobile || renterObj?.ContractMobile || propObj?.ContractNumber || ""
+      };
+    }
+
     function triggerSideToast(title, message, type = false) {
       const toast = document.getElementById("sideToast");
       const icon = document.getElementById("sideToastIcon");
@@ -2467,8 +2481,17 @@
         }
         .receipt-line.unchecked-row,
         .receipt-total-box.unchecked-row {
-          opacity: 0.38;
+          opacity: 0.35;
           text-decoration: line-through;
+        }
+        #printableReceiptArea.capturing-receipt .no-print,
+        #printableReceiptArea.capturing-receipt .rec-item-check,
+        #printableReceiptArea.capturing-receipt .receipt-select-bar,
+        #printableReceiptArea.capturing-receipt .btn-whatsapp-share,
+        #printableReceiptArea.capturing-receipt .modal-close-btn,
+        #printableReceiptArea.capturing-receipt .receipt-line.unchecked-row,
+        #printableReceiptArea.capturing-receipt .receipt-total-box.unchecked-row {
+          display: none !important;
         }
         .receipt-line-left {
           display: flex;
@@ -2483,28 +2506,6 @@
           accent-color: var(--primary);
           cursor: pointer;
           flex-shrink: 0;
-        }
-        .wa-recipient-bar {
-          margin-top: 12px;
-          padding: 10px 12px;
-          border-radius: 10px;
-          background: rgba(16, 185, 129, 0.12);
-          border: 1px solid rgba(16, 185, 129, 0.35);
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 8px;
-          font-size: 0.8rem;
-        }
-        .wa-recipient-bar input {
-          max-width: 165px;
-          padding: 6px 10px;
-          font-size: 0.82rem;
-          font-weight: 700;
-          border-radius: 8px;
-          border: 1px solid var(--glass-border);
-          background: var(--bg-modal);
-          color: var(--text-main);
         }
         .btn-whatsapp-share {
           width: 100%;
@@ -2543,8 +2544,8 @@
           .no-print,
           .rec-item-check,
           .receipt-select-bar,
-          .wa-recipient-bar,
           .btn-whatsapp-share,
+          .modal-close-btn,
           .receipt-line.unchecked-row,
           .receipt-total-box.unchecked-row {
             display: none !important;
@@ -3551,6 +3552,8 @@
       const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
       document.getElementById("calcMonthPicker").value = currentYearMonth;
 
+      const resolvedContact = resolveFlatUpiAndContact(flat.PropertyName, flat, renter);
+
       document.getElementById("profRent").value = flat.RentAmount || renter?.RentAmount || 0;
       document.getElementById("profFlatNumber").value = flat.FlatName;
       document.getElementById("profElecRate").value = flat.ElecRate || renter?.ElecFixedRate || 9;
@@ -3563,9 +3566,9 @@
       document.getElementById("profWaterMeter").value = flat.WaterMeterNumber || renter?.WaterMeterNumber || "";
       document.getElementById("profWaterFixedCost").value = flat.FixedWaterCost || renter?.FixedWaterCost || 0;
       document.getElementById("profElecMeter").value = flat.ElecMeterNumber || renter?.ElecMeterNumber || "";
-      document.getElementById("profUpiName").value = flat.UPIName || renter?.UPIName || "";
-      document.getElementById("profUpiId").value = flat.UPIID || renter?.UPIID || "";
-      document.getElementById("profContractMobile").value = flat.ContractMobile || renter?.ContractMobile || "";
+      document.getElementById("profUpiName").value = resolvedContact.upiName;
+      document.getElementById("profUpiId").value = resolvedContact.upiId;
+      document.getElementById("profContractMobile").value = resolvedContact.contractMobile;
 
       if (renter) {
         document.getElementById("renterName").value = renter.RenterName || "";
@@ -3900,7 +3903,7 @@
 
 
 
-// Bug 1, Bug 2 & Bug 3: Show Receipt Modal with Checkboxes, Exact-Amount UPI QR Code, Hidden Unchecked Rows, and Image WhatsApp Share
+    // Bug 1, Bug 2 & Bug 3: Show Receipt Modal with Checkboxes, Exact-Amount UPI QR Code, Hidden Unchecked Rows, and Image WhatsApp Share
     function openBillReceiptModal(billId, monthYear) {
       if (!selectedFlat) return;
       injectReceiptWhatsAppStyles();
@@ -3927,17 +3930,17 @@
         ? `<span style="color:var(--accent-red);">+ ₹${carryVal} (Previous Due)</span>`
         : (carryVal < 0 ? `<span style="color:var(--accent-green);">- ₹${Math.abs(carryVal)} (Advance Credit)</span>` : `₹0`);
 
-      const upiId = currentOpenedReceiptFlat?.UPIID || currentOpenedReceiptRenter?.UPIID || "";
-      const upiName = currentOpenedReceiptFlat?.UPIName || currentOpenedReceiptRenter?.UPIName || "";
+      const resolvedContact = resolveFlatUpiAndContact(bill.PropertyName, currentOpenedReceiptFlat, currentOpenedReceiptRenter);
+      const upiId = resolvedContact.upiId;
+      const upiName = resolvedContact.upiName;
 
-      // Dynamically inject Select-All bar, Checkboxes, QR Code Box, and WhatsApp Button inside #receiptBodyDetails (Manual WhatsApp input removed for Bug 1)
       document.getElementById("receiptBodyDetails").innerHTML = `
         <div class="receipt-select-bar no-print">
           <label>
             <input type="checkbox" id="recSelectAllToggle" class="rec-item-check" checked onchange="toggleAllReceiptItems(this.checked)">
             <span>Select / Deselect All Items</span>
           </label>
-          <span style="color:var(--text-muted); font-size:0.73rem;">Unchecked items are hidden entirely</span>
+          <span style="color:var(--text-muted); font-size:0.73rem;">Unchecked items are hidden in receipt</span>
         </div>
 
         <div id="receiptItemsListContainer">
@@ -4040,10 +4043,10 @@
           </div>` : ''}
         </div>
 
-        <!-- Bug 2: Dynamic Exact-Amount UPI QR Code Box -->
+        <!-- Dynamic Exact-Amount UPI QR Code Box -->
         <div id="receiptUpiQrBox" class="receipt-line" style="display:flex; flex-direction:column; align-items:center; justify-content:center; margin: 14px 0; padding: 12px; background:var(--bg-input); border-radius:12px; border:1px solid var(--glass-border);">
           <div style="font-size:0.78rem; font-weight:700; margin-bottom:8px; color:var(--text-muted);">Scan QR to Pay Exact Bill Amount via UPI</div>
-          <img id="receiptUpiQrImg" src="" alt="UPI QR Code" style="width:140px; height:140px; border-radius:8px; background:#fff; padding:6px; display:none;">
+          <img id="receiptUpiQrImg" crossOrigin="anonymous" src="" alt="UPI QR Code" style="width:140px; height:140px; border-radius:8px; background:#fff; padding:6px; display:none;">
           <div id="receiptUpiTextHint" style="font-size:0.75rem; color:var(--text-muted); margin-top:6px;">--</div>
         </div>
 
@@ -4056,8 +4059,7 @@
       openModal("receiptViewModal");
     }
 
-
-    // Bug 3: Hide unchecked rows entirely via CSS class toggle and update exact QR amount (Bug 2)
+    // Bug 3: Hide unchecked rows via CSS class toggle and update exact QR amount (Bug 2)
     function recalculateReceiptSelection() {
       if (!currentOpenedReceiptBill) return;
       const checkboxes = document.querySelectorAll("#receiptItemsListContainer .rec-item-check");
@@ -4103,13 +4105,14 @@
         }
       }
 
-      // Bug 2: Generate exact-amount UPI QR Code
-      updateReceiptUpiQr(selectedTotal);
+      // Generate exact-amount UPI QR Code (uses payable balance if partial paid, or selectedTotal)
+      const qrPayableAmount = netClosing > 0 ? netClosing : selectedTotal;
+      updateReceiptUpiQr(qrPayableAmount);
 
       return { selectedTotal, paidAmt, netClosing };
     }
 
-    // Bug 2: Update exact bill amount QR code using UPI ID
+    // Bug 2: Update exact bill amount QR code using UPI ID (with automatic Property fallback)
     function updateReceiptUpiQr(exactAmount) {
       const qrBox = document.getElementById("receiptUpiQrBox");
       const qrImg = document.getElementById("receiptUpiQrImg");
@@ -4118,25 +4121,30 @@
 
       if (!qrBox || !qrImg || !qrHint) return;
 
-      // Hide QR box entirely if UPI row is unchecked (Bug 3)
       if (upiCheckbox && !upiCheckbox.checked) {
         qrBox.style.display = "none";
         return;
       }
       qrBox.style.display = "flex";
 
-      const upiId = currentOpenedReceiptFlat?.UPIID || currentOpenedReceiptRenter?.UPIID || "";
-      const upiName = currentOpenedReceiptFlat?.UPIName || currentOpenedReceiptRenter?.UPIName || "";
+      const resolvedContact = resolveFlatUpiAndContact(
+        currentOpenedReceiptBill?.PropertyName,
+        currentOpenedReceiptFlat,
+        currentOpenedReceiptRenter
+      );
+      const upiId = resolvedContact.upiId;
+      const upiName = resolvedContact.upiName;
 
       if (!upiId) {
         qrImg.style.display = "none";
-        qrHint.innerText = "No UPI ID configured in property details.";
+        qrHint.innerText = "No UPI ID configured in property or flat details.";
         return;
       }
 
       const upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(upiName || 'Rental Payment')}&am=${exactAmount.toFixed(2)}&cu=INR`;
       const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(upiUri)}`;
 
+      qrImg.crossOrigin = "anonymous";
       qrImg.src = qrApiUrl;
       qrImg.style.display = "inline-block";
       qrHint.innerText = `Scan to pay exact ₹${exactAmount.toLocaleString('en-IN')} to ${upiId}`;
@@ -4164,40 +4172,17 @@
 
       const { selectedTotal, paidAmt, netClosing } = recalculateReceiptSelection();
 
-      // Step 1: Generate receipt image using html2canvas (Unchecked items are hidden via display: none !important)
-      let imageBlobUrl = null;
-      try {
-        const receiptCardEl = document.getElementById("printableReceiptArea");
-        const canvas = await html2canvas(receiptCardEl, {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: null
-        });
-        
-        await new Promise((resolve) => {
-          canvas.toBlob((blob) => {
-            if (blob) {
-              const file = new File([blob], `Receipt_${bill.FlatName}_${bill.MonthYear}.png`, { type: "image/png" });
-              if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                navigator.share({
-                  title: `Receipt - Flat ${bill.FlatName}`,
-                  text: `Monthly bill receipt for ${formatMonthLabel(bill.MonthYear)}`,
-                  files: [file]
-                }).catch(() => {});
-              }
-            }
-            resolve();
-          }, "image/png");
-        });
-      } catch (err) {
-        console.warn("Image capture note:", err);
-      }
-
-      // Step 2: Build WhatsApp text summary omitting unchecked items (Bug 3)
+      // Build WhatsApp text summary omitting unchecked items (Bug 3)
       const checkedKeys = new Set();
       document.querySelectorAll("#receiptItemsListContainer .rec-item-check:checked").forEach(cb => {
         checkedKeys.add(cb.dataset.key);
       });
+
+      const resolvedContact = resolveFlatUpiAndContact(
+        bill.PropertyName,
+        currentOpenedReceiptFlat,
+        currentOpenedReceiptRenter
+      );
 
       const lines = [];
       lines.push(`*🧾 MONTHLY RENT & UTILITY RECEIPT*`);
@@ -4255,8 +4240,8 @@
       }
 
       if (checkedKeys.has("upi")) {
-        const upiId = currentOpenedReceiptFlat?.UPIID || currentOpenedReceiptRenter?.UPIID || "";
-        const upiName = currentOpenedReceiptFlat?.UPIName || currentOpenedReceiptRenter?.UPIName || "";
+        const upiId = resolvedContact.upiId;
+        const upiName = resolvedContact.upiName;
         if (upiId) {
           lines.push(`💳 *Pay via UPI:* ${upiId}${upiName ? ' (' + upiName + ')' : ''}`);
         }
@@ -4269,8 +4254,42 @@
       const messageText = lines.join("\n");
       const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(messageText)}`;
 
+      // Generate clean receipt image using html2canvas with unchecked rows & buttons hidden
+      const receiptCardEl = document.getElementById("printableReceiptArea");
+      try {
+        receiptCardEl.classList.add("capturing-receipt");
+        const canvas = await html2canvas(receiptCardEl, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: getComputedStyle(document.body).getPropertyValue("--bg-modal").trim() || "#111827"
+        });
+        receiptCardEl.classList.remove("capturing-receipt");
+
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+        if (blob) {
+          if (navigator.clipboard && window.ClipboardItem) {
+            try {
+              await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+            } catch (clipErr) {}
+          }
+
+          const downloadUrl = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = downloadUrl;
+          a.download = `Receipt_${bill.FlatName}_${bill.MonthYear}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(downloadUrl), 5000);
+        }
+      } catch (err) {
+        receiptCardEl.classList.remove("capturing-receipt");
+        console.warn("Image capture note:", err);
+      }
+
       window.open(whatsappUrl, "_blank");
-      triggerSideToast("Opening WhatsApp", `Sending receipt to +${formattedPhone}`, true);
+      triggerSideToast("Opening WhatsApp", `Receipt image saved/copied & opening WhatsApp for +${formattedPhone}`, true);
     }
 
 
@@ -4753,6 +4772,11 @@
       const wRate = document.getElementById("addFlatWaterRate").value || 15;
       const generatedRenterId = "R-" + Date.now();
 
+      const propObj = findPropertyObject(targetProp);
+      const inheritedUpiName = propObj?.UPIName || "";
+      const inheritedUpiId = propObj?.UPIID || "";
+      const inheritedContract = propObj?.ContractNumber || "";
+
       DB.flats.push({
         PropertyName: targetProp,
         FlatName: flat,
@@ -4760,7 +4784,10 @@
         ElecRate: eRate,
         PNGRate: pRate,
         WaterRate: wRate,
-        Status: "Active"
+        Status: "Active",
+        UPIName: inheritedUpiName,
+        UPIID: inheritedUpiId,
+        ContractMobile: inheritedContract
       });
 
       DB.renters.push({
@@ -4769,6 +4796,9 @@
         FlatName: flat,
         RenterName: rName,
         RentAmount: rentAmt,
+        UPIName: inheritedUpiName,
+        UPIID: inheritedUpiId,
+        ContractMobile: inheritedContract,
         JoinDate: new Date().toISOString().split('T')[0],
         Status: "Active"
       });
@@ -4789,7 +4819,10 @@
         rentAmount: rentAmt,
         elecRate: eRate,
         pngRate: pRate,
-        waterRate: wRate
+        waterRate: wRate,
+        upiName: inheritedUpiName,
+        upiId: inheritedUpiId,
+        contractMobile: inheritedContract
       });
       syncDataLive();
     }
