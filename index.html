@@ -256,6 +256,17 @@
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
     }
 
+    /* Disable Number Input Spinners to Prevent Accidental Scroll Value Changes */
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
     /* Inline Pencil / Save Edit Wrapper for Calculator Locked Fields */
     .editable-input-wrap {
       position: relative;
@@ -2558,6 +2569,29 @@
     document.addEventListener("DOMContentLoaded", () => {
       injectReceiptWhatsAppStyles();
 
+      // Prevent mouse scroll wheel and up/down arrow keys from accidentally changing monetary values or meter readings
+      document.addEventListener("wheel", (e) => {
+        const target = e.target;
+        if (target && target.tagName === "INPUT" && target.type === "number") {
+          target.blur();
+        }
+      }, { passive: true });
+
+      document.addEventListener("keydown", (e) => {
+        const target = e.target;
+        if (target && target.tagName === "INPUT" && target.type === "number") {
+          if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+            e.preventDefault();
+          }
+        }
+      });
+
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden && activeUser) {
+          syncDataLive(false);
+        }
+      });
+
       window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
         if (activeThemePref === "system") applyVisualTheme("system");
       });
@@ -2584,6 +2618,13 @@
           DB.renters = parsed.renters || [];
           DB.bills = sanitizeAllBillsMonths(parsed.bills || []);
           DB.users = parsed.users || [];
+          lastSyncedDataHash = JSON.stringify({
+            p: DB.properties,
+            f: DB.flats,
+            r: DB.renters,
+            b: DB.bills,
+            u: DB.users
+          });
         } catch (e) {}
       }
 
@@ -2597,9 +2638,20 @@
       }
     });
 
+    let isSyncingLive = false;
+    let lastSyncedDataHash = "";
+
     function saveDbSnapshotToCache() {
       try {
-        sessionStorage.setItem("cached_db_snapshot", JSON.stringify(DB));
+        const serialized = JSON.stringify(DB);
+        sessionStorage.setItem("cached_db_snapshot", serialized);
+        lastSyncedDataHash = JSON.stringify({
+          p: DB.properties,
+          f: DB.flats,
+          r: DB.renters,
+          b: DB.bills,
+          u: DB.users
+        });
       } catch (e) {}
     }
 
@@ -2645,10 +2697,12 @@
       document.getElementById("dashboardScreen").classList.add("active");
 
       renderAllDashboardUI();
-      syncDataLive();
+      syncDataLive(false);
 
       if (syncTimer) clearInterval(syncTimer);
-      syncTimer = setInterval(() => syncDataLive(), 15000);
+      syncTimer = setInterval(() => {
+        if (!document.hidden) syncDataLive(false);
+      }, 25000);
     }
 
     function applyRolePermissions(role) {
@@ -2719,9 +2773,10 @@
       }
     }
 
-    // 2. Continuous Live Background Sync
-    async function syncDataLive() {
-      if (!activeUser) return;
+    // 2. Continuous Live Background Sync (Optimized with Deduplication & Change Detection)
+    async function syncDataLive(forceRender = false) {
+      if (!activeUser || isSyncingLive) return;
+      isSyncingLive = true;
       try {
         const gasUrl = getGasUrl();
         const response = await fetch(`${gasUrl}?action=getInitialData&username=${encodeURIComponent(activeUser)}&t=${Date.now()}`, {
@@ -2731,11 +2786,27 @@
         const res = await response.json();
 
         if (res.status === "success") {
-          DB.properties = res.properties || [];
-          DB.flats = res.flats || [];
-          DB.renters = res.renters || [];
-          DB.bills = sanitizeAllBillsMonths(res.bills || []);
-          DB.users = res.users || [];
+          const incomingProperties = res.properties || [];
+          const incomingFlats = res.flats || [];
+          const incomingRenters = res.renters || [];
+          const incomingBills = sanitizeAllBillsMonths(res.bills || []);
+          const incomingUsers = res.users || [];
+
+          const incomingHash = JSON.stringify({
+            p: incomingProperties,
+            f: incomingFlats,
+            r: incomingRenters,
+            b: incomingBills,
+            u: incomingUsers
+          });
+
+          const hasDataChanged = incomingHash !== lastSyncedDataHash;
+
+          DB.properties = incomingProperties;
+          DB.flats = incomingFlats;
+          DB.renters = incomingRenters;
+          DB.bills = incomingBills;
+          DB.users = incomingUsers;
           saveDbSnapshotToCache();
 
           if (res.userTheme && res.userTheme !== activeThemePref) {
@@ -2753,10 +2824,14 @@
             sessionStorage.setItem("active_session_mobile", activeUserMobile);
           }
 
-          renderAllDashboardUI();
+          if (hasDataChanged || forceRender) {
+            renderAllDashboardUI();
+          }
         }
       } catch (err) {
         console.error("Background Sync Error:", err);
+      } finally {
+        isSyncingLive = false;
       }
     }
 
@@ -3467,36 +3542,39 @@
       );
 
       if (existingBill) {
-        statusTag.innerText = `Existing Bill Found (${formatMonthLabel(chosenMonth)}) - Submitting Replaces Previous Bill`;
+        statusTag.innerText = `Existing Bill Found (${formatMonthLabel(chosenMonth)}) - Locked Snapshot (Submitting Replaces Bill)`;
         statusTag.className = "calc-month-status-tag existing";
         submitBtnText.innerText = `Update & Replace Bill for ${formatMonthLabel(chosenMonth)}`;
 
-        document.getElementById("calcRent").value = existingBill.BaseRent ?? selectedFlat.RentAmount ?? 0;
+        document.getElementById("calcRent").value = existingBill.BaseRent !== undefined && existingBill.BaseRent !== "" ? existingBill.BaseRent : 0;
         document.getElementById("calcElecPrev").value = existingBill.ElecPrev ?? 0;
         document.getElementById("calcElecCurr").value = existingBill.ElecCurr ?? "";
-        document.getElementById("calcElecRate").value = existingBill.ElecRate ?? selectedFlat.ElecRate ?? 9;
+        document.getElementById("calcElecRate").value = existingBill.ElecRate !== undefined && existingBill.ElecRate !== "" ? existingBill.ElecRate : 9;
 
         document.getElementById("calcPngPrev").value = existingBill.PNGPrev ?? 0;
         document.getElementById("calcPngCurr").value = existingBill.PNGCurr ?? "";
-        document.getElementById("calcPngRate").value = existingBill.PNGRate ?? selectedFlat.PNGRate ?? 45;
+        document.getElementById("calcPngRate").value = existingBill.PNGRate !== undefined && existingBill.PNGRate !== "" ? existingBill.PNGRate : 45;
 
         document.getElementById("calcWaterPrev").value = existingBill.WaterPrev ?? 0;
         document.getElementById("calcWaterCurr").value = existingBill.WaterCurr ?? "";
-        document.getElementById("calcWaterRate").value = existingBill.WaterRate ?? selectedFlat.WaterRate ?? 15;
+        document.getElementById("calcWaterRate").value = existingBill.WaterRate !== undefined && existingBill.WaterRate !== "" ? existingBill.WaterRate : 15;
 
         const addAmtVal = parseFloat(existingBill.AdditionalAmount) || 0;
         document.getElementById("calcAddName").value = existingBill.AdditionalName || "";
         document.getElementById("calcAddToggle").value = addAmtVal < 0 ? "-" : "+";
         document.getElementById("calcAddAmount").value = Math.abs(addAmtVal) || "";
 
-        document.getElementById("calcPrevCarryBalance").value = autoCarryBalance;
+        const savedCarry = (existingBill.PrevCarryBalance !== undefined && existingBill.PrevCarryBalance !== "")
+          ? (parseFloat(existingBill.PrevCarryBalance) || 0)
+          : autoCarryBalance;
+        document.getElementById("calcPrevCarryBalance").value = savedCarry;
         document.getElementById("calcPaidNow").value = existingBill.PaidAmount ?? 0;
         document.getElementById("calcPayMode").value = existingBill.PaymentMode || "UPI";
         document.getElementById("calcNotes").value = existingBill.Notes || "";
 
-        document.getElementById("elecRolloverHint").innerText = "Loaded from saved bill";
-        document.getElementById("pngRolloverHint").innerText = "Loaded from saved bill";
-        document.getElementById("waterRolloverHint").innerText = "Loaded from saved bill";
+        document.getElementById("elecRolloverHint").innerText = "Loaded from saved bill snapshot";
+        document.getElementById("pngRolloverHint").innerText = "Loaded from saved bill snapshot";
+        document.getElementById("waterRolloverHint").innerText = "Loaded from saved bill snapshot";
       } else {
         statusTag.innerText = `New Month Calculation (${formatMonthLabel(chosenMonth)})`;
         statusTag.className = "calc-month-status-tag";
@@ -3739,12 +3817,24 @@
       else if (paidAmount > 0 && paidAmount < totalBilled) billStatus = "Partial Paid";
       else if (totalBilled === 0) billStatus = "Fully Paid";
 
+      const existingBillRecord = existingBillIdx !== -1 ? DB.bills[existingBillIdx] : null;
+      const resolvedSnapshotContact = resolveFlatUpiAndContact(
+        selectedFlat.PropertyName,
+        selectedFlat,
+        activeFlatRenterObj
+      );
+      const snapshotUpiName = (existingBillRecord && existingBillRecord.UPIName) ? existingBillRecord.UPIName : (resolvedSnapshotContact.upiName || "");
+      const snapshotUpiId = (existingBillRecord && existingBillRecord.UPIID) ? existingBillRecord.UPIID : (resolvedSnapshotContact.upiId || "");
+      const snapshotContractMobile = (existingBillRecord && existingBillRecord.ContractMobile) ? existingBillRecord.ContractMobile : (resolvedSnapshotContact.contractMobile || "");
+      const snapshotTenantMobile = (existingBillRecord && existingBillRecord.TenantMobile) ? existingBillRecord.TenantMobile : (activeFlatRenterObj?.MobileNumber || activeFlatRenterObj?.AltMobileNumber || "");
+      const snapshotTenantName = (existingBillRecord && existingBillRecord.TenantName) ? existingBillRecord.TenantName : currentTenantName;
+
       const newBillObj = {
-        BillID: existingBillIdx !== -1 ? DB.bills[existingBillIdx].BillID : ("BILL-" + Date.now()),
+        BillID: existingBillRecord ? existingBillRecord.BillID : ("BILL-" + Date.now()),
         PropertyName: selectedFlat.PropertyName,
         FlatName: selectedFlat.FlatName,
         MonthYear: chosenMonth,
-        TenantName: currentTenantName,
+        TenantName: snapshotTenantName,
         BaseRent: parseFloat(document.getElementById("calcRent").value) || 0,
         ElecPrev: elecPrev,
         ElecCurr: elecCurr,
@@ -3768,9 +3858,13 @@
         PaymentMode: document.getElementById("calcPayMode").value,
         Status: billStatus,
         Notes: document.getElementById("calcNotes").value,
-        BillDate: new Date().toISOString(),
-        RenterID: currentRenterId,
-        PrevCarryBalance: prevCarryBalance
+        BillDate: existingBillRecord?.BillDate || new Date().toISOString(),
+        RenterID: existingBillRecord?.RenterID || currentRenterId,
+        PrevCarryBalance: prevCarryBalance,
+        UPIName: snapshotUpiName,
+        UPIID: snapshotUpiId,
+        ContractMobile: snapshotContractMobile,
+        TenantMobile: snapshotTenantMobile
       };
 
       if (existingBillIdx !== -1) {
@@ -3817,10 +3911,13 @@
         paymentMode: newBillObj.PaymentMode,
         status: newBillObj.Status,
         notes: newBillObj.Notes,
-        renterId: currentRenterId,
-        prevCarryBalance: prevCarryBalance
+        renterId: newBillObj.RenterID,
+        prevCarryBalance: prevCarryBalance,
+        upiName: snapshotUpiName,
+        upiId: snapshotUpiId,
+        contractMobile: snapshotContractMobile,
+        tenantMobile: snapshotTenantMobile
       });
-      syncDataLive();
     }
 
     /**
@@ -3931,8 +4028,9 @@
         : (carryVal < 0 ? `<span style="color:var(--accent-green);">- ₹${Math.abs(carryVal)} (Advance Credit)</span>` : `₹0`);
 
       const resolvedContact = resolveFlatUpiAndContact(bill.PropertyName, currentOpenedReceiptFlat, currentOpenedReceiptRenter);
-      const upiId = resolvedContact.upiId;
-      const upiName = resolvedContact.upiName;
+      // Use immutable bill snapshot if present so future profile edits never alter past bills
+      const upiId = (bill.UPIID && String(bill.UPIID).trim()) ? String(bill.UPIID).trim() : resolvedContact.upiId;
+      const upiName = (bill.UPIName && String(bill.UPIName).trim()) ? String(bill.UPIName).trim() : resolvedContact.upiName;
 
       document.getElementById("receiptBodyDetails").innerHTML = `
         <div class="receipt-select-bar no-print">
@@ -4132,8 +4230,12 @@
         currentOpenedReceiptFlat,
         currentOpenedReceiptRenter
       );
-      const upiId = resolvedContact.upiId;
-      const upiName = resolvedContact.upiName;
+      const upiId = (currentOpenedReceiptBill?.UPIID && String(currentOpenedReceiptBill.UPIID).trim())
+        ? String(currentOpenedReceiptBill.UPIID).trim()
+        : resolvedContact.upiId;
+      const upiName = (currentOpenedReceiptBill?.UPIName && String(currentOpenedReceiptBill.UPIName).trim())
+        ? String(currentOpenedReceiptBill.UPIName).trim()
+        : resolvedContact.upiName;
 
       if (!upiId) {
         qrImg.style.display = "none";
@@ -4157,13 +4259,13 @@
       recalculateReceiptSelection();
     }
 
-    // Bug 1 & Bug 3: Automatically retrieve renter number from profile, hide unchecked rows on image capture, and send receipt text & image on WhatsApp
+    // Bug 1 & Bug 3: Automatically retrieve renter number from frozen bill snapshot or profile, hide unchecked rows on image capture, and send receipt text & image on WhatsApp
     async function shareSelectedReceiptOnWhatsApp() {
       if (!currentOpenedReceiptBill) return;
       const bill = currentOpenedReceiptBill;
 
-      // Automatically retrieve renter phone from profile (Bug 1)
-      const rawPhone = currentOpenedReceiptRenter?.MobileNumber || currentOpenedReceiptRenter?.AltMobileNumber || bill.TenantMobile || "";
+      // Prioritize frozen bill snapshot mobile so past bills are unaffected by future profile changes
+      const rawPhone = bill.TenantMobile || currentOpenedReceiptRenter?.MobileNumber || currentOpenedReceiptRenter?.AltMobileNumber || "";
       const formattedPhone = formatWhatsAppPhone(rawPhone);
 
       if (!formattedPhone || formattedPhone.length < 10) {
@@ -4183,6 +4285,8 @@
         currentOpenedReceiptFlat,
         currentOpenedReceiptRenter
       );
+      const snapshotUpiId = (bill.UPIID && String(bill.UPIID).trim()) ? String(bill.UPIID).trim() : resolvedContact.upiId;
+      const snapshotUpiName = (bill.UPIName && String(bill.UPIName).trim()) ? String(bill.UPIName).trim() : resolvedContact.upiName;
 
       const lines = [];
       lines.push(`*🧾 MONTHLY RENT & UTILITY RECEIPT*`);
@@ -4240,10 +4344,8 @@
       }
 
       if (checkedKeys.has("upi")) {
-        const upiId = resolvedContact.upiId;
-        const upiName = resolvedContact.upiName;
-        if (upiId) {
-          lines.push(`💳 *Pay via UPI:* ${upiId}${upiName ? ' (' + upiName + ')' : ''}`);
+        if (snapshotUpiId) {
+          lines.push(`💳 *Pay via UPI:* ${snapshotUpiId}${snapshotUpiName ? ' (' + snapshotUpiName + ')' : ''}`);
         }
       }
 
@@ -4442,6 +4544,39 @@
       }
     }
 
+    // Helper: Propagate UPI Name, UPI ID, and Contact Mobile across the parent Property and all associated Flats & Active Renters
+    function propagatePropertyWideUpiAndContactLocal(propertyName, upiName, upiId, contractMobile) {
+      const targetPropKey = String(propertyName || "").trim().toLowerCase();
+      if (!targetPropKey) return;
+
+      DB.properties.forEach(p => {
+        if (String(p.PropertyName || "").trim().toLowerCase() === targetPropKey) {
+          p.UPIName = upiName;
+          p.UPIID = upiId;
+          p.ContractNumber = contractMobile;
+        }
+      });
+
+      DB.flats.forEach(f => {
+        if (String(f.PropertyName || "").trim().toLowerCase() === targetPropKey) {
+          f.UPIName = upiName;
+          f.UPIID = upiId;
+          f.ContractMobile = contractMobile;
+        }
+      });
+
+      DB.renters.forEach(r => {
+        if (
+          String(r.PropertyName || "").trim().toLowerCase() === targetPropKey &&
+          String(r.Status || "").trim().toLowerCase() === "active"
+        ) {
+          r.UPIName = upiName;
+          r.UPIID = upiId;
+          r.ContractMobile = contractMobile;
+        }
+      });
+    }
+
     // 9. Profile Form Logic & Strict Renter Separation
     async function saveUtilitiesLeft() {
       if (activeRole === "Viewer") return;
@@ -4460,9 +4595,9 @@
         waterFixedRate: document.getElementById("profWaterRate").value,
         elecMeterNumber: document.getElementById("profElecMeter").value,
         elecFixedRate: document.getElementById("profElecRate").value,
-        upiName: document.getElementById("profUpiName").value,
-        upiId: document.getElementById("profUpiId").value,
-        contractMobile: document.getElementById("profContractMobile").value
+        upiName: document.getElementById("profUpiName").value.trim(),
+        upiId: document.getElementById("profUpiId").value.trim(),
+        contractMobile: document.getElementById("profContractMobile").value.trim()
       };
 
       selectedFlat.RentAmount = payload.rentAmount;
@@ -4480,12 +4615,19 @@
       selectedFlat.UPIID = payload.upiId;
       selectedFlat.ContractMobile = payload.contractMobile;
 
+      // Sync UPI Name, UPI ID, and Contact Mobile across all flats & parent property
+      propagatePropertyWideUpiAndContactLocal(
+        selectedFlat.PropertyName,
+        payload.upiName,
+        payload.upiId,
+        payload.contractMobile
+      );
+
       saveDbSnapshotToCache();
       renderAllDashboardUI();
 
-      triggerSideToast("Utilities Saved", "Master utility configuration updated!", true);
+      triggerSideToast("Utilities & Property UPI Synced", "Updated flat utilities and synced UPI & Contact across all flats in this property!", true);
       await sendGasPost(payload);
-      syncDataLive();
     }
 
     async function submitRenterProfileRight() {
@@ -4526,9 +4668,9 @@
         waterFixedRate: document.getElementById("profWaterRate").value,
         elecMeterNumber: document.getElementById("profElecMeter").value,
         elecFixedRate: document.getElementById("profElecRate").value,
-        upiName: document.getElementById("profUpiName").value,
-        upiId: document.getElementById("profUpiId").value,
-        contractMobile: document.getElementById("profContractMobile").value
+        upiName: document.getElementById("profUpiName").value.trim(),
+        upiId: document.getElementById("profUpiId").value.trim(),
+        contractMobile: document.getElementById("profContractMobile").value.trim()
       };
 
       let existingActiveRenter = DB.renters.find(r =>
@@ -4555,6 +4697,9 @@
           existingActiveRenter.JoinDate = payload.joinDate;
           existingActiveRenter.ProfileImageURL = payload.profileImageUrl;
           existingActiveRenter.IdentityImageURL = payload.identityImageUrl;
+          existingActiveRenter.UPIName = payload.upiName;
+          existingActiveRenter.UPIID = payload.upiId;
+          existingActiveRenter.ContractMobile = payload.contractMobile;
           activeFlatRenterObj = existingActiveRenter;
         } else {
           const createdRenter = {
@@ -4572,20 +4717,30 @@
             ProfileImageURL: payload.profileImageUrl,
             IdentityImageURL: payload.identityImageUrl,
             RentAmount: payload.rentAmount,
+            UPIName: payload.upiName,
+            UPIID: payload.upiId,
+            ContractMobile: payload.contractMobile,
             Status: "Active"
           };
           DB.renters.push(createdRenter);
           activeFlatRenterObj = createdRenter;
         }
-        triggerSideToast("Profile Saved", "Isolated renter record saved immediately!", true);
+        triggerSideToast("Profile Saved", "Renter record saved & UPI/Contact synced across property!", true);
       }
+
+      // Sync UPI Name, UPI ID, and Contact Mobile across all flats & parent property
+      propagatePropertyWideUpiAndContactLocal(
+        selectedFlat.PropertyName,
+        payload.upiName,
+        payload.upiId,
+        payload.contractMobile
+      );
 
       saveDbSnapshotToCache();
       renderAllDashboardUI();
       populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName);
 
       await sendGasPost(payload);
-      syncDataLive();
     }
 
     function clearRenterRightForm() {
