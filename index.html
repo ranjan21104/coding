@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Include html2canvas for receipt image rendering -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     /* ==========================================================================
        STRICT BLACK, WHITE & SYSTEM THEME ENGINE
@@ -3890,7 +3892,11 @@
       return digits;
     }
 
-    // Action Button 1: Show Receipt Modal with Checkboxes & Auto WhatsApp Number Lookup
+
+
+
+
+   // Bug 1, Bug 2 & Bug 3: Show Receipt Modal with Checkboxes, Exact-Amount UPI QR Code, Hidden Unchecked Rows, and Image WhatsApp Share
     function openBillReceiptModal(billId, monthYear) {
       if (!selectedFlat) return;
       injectReceiptWhatsAppStyles();
@@ -3912,7 +3918,6 @@
       document.getElementById("recPropAndFlat").innerText = `${bill.PropertyName} — Flat ${bill.FlatName}`;
       document.getElementById("recMonthLabel").innerText = `Billing Month: ${formatMonthLabel(bill.MonthYear)}`;
 
-      const savedPhone = currentOpenedReceiptRenter?.MobileNumber || currentOpenedReceiptRenter?.AltMobileNumber || "";
       const carryVal = parseFloat(bill.PrevCarryBalance) || 0;
       const carryLine = carryVal > 0
         ? `<span style="color:var(--accent-red);">+ ₹${carryVal} (Previous Due)</span>`
@@ -3921,14 +3926,14 @@
       const upiId = currentOpenedReceiptFlat?.UPIID || currentOpenedReceiptRenter?.UPIID || "";
       const upiName = currentOpenedReceiptFlat?.UPIName || currentOpenedReceiptRenter?.UPIName || "";
 
-      // Dynamically inject Select-All bar, Checkboxes, WhatsApp Bar, and WhatsApp Button inside #receiptBodyDetails
+      // Dynamically inject Select-All bar, Checkboxes, QR Code Box, and WhatsApp Button inside #receiptBodyDetails (Manual WhatsApp input removed for Bug 1)
       document.getElementById("receiptBodyDetails").innerHTML = `
         <div class="receipt-select-bar no-print">
           <label>
             <input type="checkbox" id="recSelectAllToggle" class="rec-item-check" checked onchange="toggleAllReceiptItems(this.checked)">
             <span>Select / Deselect All Items</span>
           </label>
-          <span style="color:var(--text-muted); font-size:0.73rem;">Only ticked items are sent</span>
+          <span style="color:var(--text-muted); font-size:0.73rem;">Unchecked items are hidden entirely</span>
         </div>
 
         <div id="receiptItemsListContainer">
@@ -4031,21 +4036,15 @@
           </div>` : ''}
         </div>
 
-        <div class="wa-recipient-bar no-print">
-          <div style="display:flex; align-items:center; gap:8px;">
-            <i class="fa-brands fa-whatsapp" style="color:#25D366; font-size:1.25rem;"></i>
-            <div>
-              <div style="font-weight:800; color:var(--text-main);">Tenant WhatsApp No.</div>
-              <div id="recWaSourceHint" style="font-size:0.7rem; color:${savedPhone ? 'var(--accent-green)' : 'var(--accent-orange)'};">
-                ${savedPhone ? `Auto-fetched from ${currentOpenedReceiptRenter?.RenterName || 'Tenant'}'s Profile` : 'Not set in profile — enter number manually'}
-              </div>
-            </div>
-          </div>
-          <input type="tel" id="recWhatsappNumberInput" value="${savedPhone}" placeholder="e.g. 9876543210">
+        <!-- Bug 2: Dynamic Exact-Amount UPI QR Code Box -->
+        <div id="receiptUpiQrBox" class="receipt-line" style="display:flex; flex-direction:column; align-items:center; justify-content:center; margin: 14px 0; padding: 12px; background:var(--bg-input); border-radius:12px; border:1px solid var(--glass-border);">
+          <div style="font-size:0.78rem; font-weight:700; margin-bottom:8px; color:var(--text-muted);">Scan QR to Pay Exact Bill Amount via UPI</div>
+          <img id="receiptUpiQrImg" src="" alt="UPI QR Code" style="width:140px; height:140px; border-radius:8px; background:#fff; padding:6px; display:none;">
+          <div id="receiptUpiTextHint" style="font-size:0.75rem; color:var(--text-muted); margin-top:6px;">--</div>
         </div>
 
         <button type="button" class="btn-whatsapp-share no-print" onclick="shareSelectedReceiptOnWhatsApp()">
-          <i class="fa-brands fa-whatsapp" style="font-size:1.15rem;"></i> Send Selected Receipt on WhatsApp
+          <i class="fa-brands fa-whatsapp" style="font-size:1.15rem;"></i> Send Receipt & Image on WhatsApp
         </button>
       `;
 
@@ -4053,7 +4052,7 @@
       openModal("receiptViewModal");
     }
 
-    // Dynamically updates row styling and recalculates Total & Balance based on ticked items
+    // Bug 3: Hide unchecked rows entirely via CSS class toggle and update exact QR amount (Bug 2)
     function recalculateReceiptSelection() {
       if (!currentOpenedReceiptBill) return;
       const checkboxes = document.querySelectorAll("#receiptItemsListContainer .rec-item-check");
@@ -4099,7 +4098,43 @@
         }
       }
 
+      // Bug 2: Generate exact-amount UPI QR Code
+      updateReceiptUpiQr(selectedTotal);
+
       return { selectedTotal, paidAmt, netClosing };
+    }
+
+    // Bug 2: Update exact bill amount QR code using UPI ID
+    function updateReceiptUpiQr(exactAmount) {
+      const qrBox = document.getElementById("receiptUpiQrBox");
+      const qrImg = document.getElementById("receiptUpiQrImg");
+      const qrHint = document.getElementById("receiptUpiTextHint");
+      const upiCheckbox = document.querySelector('#receiptItemsListContainer .rec-item-check[data-key="upi"]');
+
+      if (!qrBox || !qrImg || !qrHint) return;
+
+      // Hide QR box entirely if UPI row is unchecked (Bug 3)
+      if (upiCheckbox && !upiCheckbox.checked) {
+        qrBox.style.display = "none";
+        return;
+      }
+      qrBox.style.display = "flex";
+
+      const upiId = currentOpenedReceiptFlat?.UPIID || currentOpenedReceiptRenter?.UPIID || "";
+      const upiName = currentOpenedReceiptFlat?.UPIName || currentOpenedReceiptRenter?.UPIName || "";
+
+      if (!upiId) {
+        qrImg.style.display = "none";
+        qrHint.innerText = "No UPI ID configured in property details.";
+        return;
+      }
+
+      const upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(upiName || 'Rental Payment')}&am=${exactAmount.toFixed(2)}&cu=INR`;
+      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(upiUri)}`;
+
+      qrImg.src = qrApiUrl;
+      qrImg.style.display = "inline-block";
+      qrHint.innerText = `Scan to pay exact ₹${exactAmount.toLocaleString('en-IN')} to ${upiId}`;
     }
 
     function toggleAllReceiptItems(isChecked) {
@@ -4109,28 +4144,55 @@
       recalculateReceiptSelection();
     }
 
-    // Generates a formatted receipt containing ONLY the ticked items and sends to WhatsApp
-    function shareSelectedReceiptOnWhatsApp() {
+    // Bug 1 & Bug 3: Automatically retrieve renter number from profile, hide unchecked rows on image capture, and send receipt text & image on WhatsApp
+    async function shareSelectedReceiptOnWhatsApp() {
       if (!currentOpenedReceiptBill) return;
       const bill = currentOpenedReceiptBill;
 
+      // Automatically retrieve renter phone from profile (Bug 1)
+      const rawPhone = currentOpenedReceiptRenter?.MobileNumber || currentOpenedReceiptRenter?.AltMobileNumber || bill.TenantMobile || "";
+      const formattedPhone = formatWhatsAppPhone(rawPhone);
+
+      if (!formattedPhone || formattedPhone.length < 10) {
+        return triggerSideToast("WhatsApp Number Missing", "Tenant mobile number is not set in their profile. Please update their profile first.", false);
+      }
+
+      const { selectedTotal, paidAmt, netClosing } = recalculateReceiptSelection();
+
+      // Step 1: Generate receipt image using html2canvas (Unchecked items are hidden via display: none !important)
+      let imageBlobUrl = null;
+      try {
+        const receiptCardEl = document.getElementById("printableReceiptArea");
+        const canvas = await html2canvas(receiptCardEl, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: null
+        });
+        
+        await new Promise((resolve) => {
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const file = new File([blob], `Receipt_${bill.FlatName}_${bill.MonthYear}.png`, { type: "image/png" });
+              if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                navigator.share({
+                  title: `Receipt - Flat ${bill.FlatName}`,
+                  text: `Monthly bill receipt for ${formatMonthLabel(bill.MonthYear)}`,
+                  files: [file]
+                }).catch(() => {});
+              }
+            }
+            resolve();
+          }, "image/png");
+        });
+      } catch (err) {
+        console.warn("Image capture note:", err);
+      }
+
+      // Step 2: Build WhatsApp text summary omitting unchecked items (Bug 3)
       const checkedKeys = new Set();
       document.querySelectorAll("#receiptItemsListContainer .rec-item-check:checked").forEach(cb => {
         checkedKeys.add(cb.dataset.key);
       });
-
-      if (checkedKeys.size === 0) {
-        return triggerSideToast("No Items Selected", "Please tick at least one item in the receipt to send on WhatsApp.", false);
-      }
-
-      const rawPhone = document.getElementById("recWhatsappNumberInput")?.value.trim() || "";
-      const formattedPhone = formatWhatsAppPhone(rawPhone);
-
-      if (!formattedPhone || formattedPhone.length < 10) {
-        return triggerSideToast("WhatsApp Number Required", "Please save the tenant's mobile number in Profile or type it in the WhatsApp field.", false);
-      }
-
-      const { selectedTotal, paidAmt, netClosing } = recalculateReceiptSelection();
 
       const lines = [];
       lines.push(`*🧾 MONTHLY RENT & UTILITY RECEIPT*`);
@@ -4203,8 +4265,9 @@
       const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(messageText)}`;
 
       window.open(whatsappUrl, "_blank");
-      triggerSideToast("Opening WhatsApp", `Sending selected receipt items to +${formattedPhone}`, true);
+      triggerSideToast("Opening WhatsApp", `Sending receipt to +${formattedPhone}`, true);
     }
+
 
     function printCurrentReceipt() {
       window.print();
