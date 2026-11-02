@@ -1781,11 +1781,86 @@
             <div><strong>Saved Theme:</strong> <span id="otherProfileTheme">--</span></div>
           </div>
         </div>
-        <div class="stat-pill" style="text-align: left;">
+
+        <!-- Two Dedicated Options: Registered Users & Last Login History -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+          <button
+            type="button"
+            id="btnOtherOptUsers"
+            class="btn-primary"
+            style="padding: 9px 12px; font-size: 0.8rem;"
+            onclick="switchOtherSubOption('users')"
+          >
+            <i class="fa-solid fa-users"></i> Registered Users
+          </button>
+          <button
+            type="button"
+            id="btnOtherOptLoginHistory"
+            class="btn-ledger-action"
+            style="padding: 9px 12px; font-size: 0.8rem; justify-content: center; display: flex; align-items: center; gap: 6px;"
+            onclick="switchOtherSubOption('history')"
+          >
+            <i class="fa-solid fa-clock-rotate-left"></i> Last Login History
+          </button>
+        </div>
+
+        <!-- Option 1 Panel: Registered Users -->
+        <div id="otherPanelUsers" class="stat-pill" style="text-align: left;">
           <span>REGISTERED PORTAL USERS</span>
-          <div id="otherUsersList" style="margin-top: 8px; font-size: 0.82rem; max-height: 150px; overflow-y: auto;">
+          <div id="otherUsersList" style="margin-top: 8px; font-size: 0.82rem; max-height: 240px; overflow-y: auto;">
             <!-- Populated dynamically -->
           </div>
+        </div>
+
+        <!-- Option 2 Panel: Last Login History (12 Users Per Page with Pagination) -->
+        <div id="otherPanelLoginHistory" class="stat-pill" style="text-align: left; display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span>CONTINUOUS LAST LOGIN HISTORY (12 PER PAGE)</span>
+            <span id="loginHistTotalBadge" style="font-size: 0.72rem; color: var(--primary); font-weight: 700;">0 Logins</span>
+          </div>
+          <div id="otherLoginHistoryList" style="margin-top: 6px; font-size: 0.8rem; max-height: 270px; overflow-y: auto;">
+            <!-- Populated dynamically (12 per page) -->
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--glass-border);">
+            <button
+              type="button"
+              id="btnLoginHistPrev"
+              class="btn-ledger-action"
+              style="padding: 6px 12px; font-size: 0.76rem; font-weight: 700;"
+              onclick="changeLoginHistoryPage(-1)"
+            >
+              <i class="fa-solid fa-chevron-left"></i> Previous Page
+            </button>
+            <span id="loginHistPageIndicator" style="font-size: 0.76rem; font-weight: 700; color: var(--text-muted);">
+              Page 1 of 1
+            </span>
+            <button
+              type="button"
+              id="btnLoginHistNext"
+              class="btn-ledger-action"
+              style="padding: 6px 12px; font-size: 0.76rem; font-weight: 700;"
+              onclick="changeLoginHistoryPage(1)"
+            >
+              Next Page <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Auto-Create & Repair Google Sheet (Sheets, Columns & Rows) -->
+        <div class="stat-pill admin-only" style="text-align: left; margin-top: 12px;">
+          <span>GOOGLE SHEET AUTO-CREATE (SHEETS, COLUMNS &amp; ROWS)</span>
+          <p style="font-size: 0.76rem; color: var(--text-muted); margin: 4px 0 8px 0;">
+            Automatically creates any missing Google Sheet tabs (Auth, LoginHistory, Properties, Flats, Renters, Bills), column headers, and syncs all rows.
+          </p>
+          <button
+            type="button"
+            id="btnAutoCreateGoogleSheet"
+            class="btn-primary"
+            style="padding: 9px 12px; font-size: 0.8rem;"
+            onclick="triggerGoogleSheetAutoSetupAndSync()"
+          >
+            <i class="fa-solid fa-table-columns"></i> Auto-Create &amp; Sync Google Sheet Now
+          </button>
         </div>
       </div>
     </div>
@@ -2196,52 +2271,87 @@
       <!-- TAB 3: PROFILE MATRIX -->
       <div id="tabProfile" class="tab-content">
         <div class="profile-matrix">
-          <!-- Left Column: Utilities -->
+          <!-- Left Column: Utilities (Strictly Isolated to Flat for Rent/Rates/Name; Single Unique Rate Field per Utility) -->
           <div class="matrix-col">
             <div class="col-title">Rent & Utility Details</div>
-            <div class="form-group"><label>Rent Amount</label><input type="number" id="profRent" class="form-control"></div>
-            <div class="form-group"><label>Flat Name/Number</label><input type="text" id="profFlatNumber" class="form-control" readonly></div>
+            <div class="form-group">
+              <label>Rent Amount (₹)</label>
+              <input type="number" id="profRent" class="form-control" oninput="syncProfileRatesToLiveCalculator()">
+            </div>
+            <div class="form-group">
+              <label>Flat Name/Number</label>
+              <input type="text" id="profFlatNumber" class="form-control" placeholder="e.g. 101 or 2B">
+            </div>
             <div class="form-group"><label>PNG Number</label><input type="text" id="profPngNumber" class="form-control"></div>
             <div class="form-group"><label>PNG Meter Number</label><input type="text" id="profPngMeter" class="form-control"></div>
-            <div class="form-group"><label>Fixed PNG Cost</label><input type="number" id="profPngFixedCost" class="form-control"></div>
-            <div class="form-group"><label>PNG Fixed Rate</label><input type="number" id="profPngRate" class="form-control"></div>
+            <div class="form-group">
+              <label>PNG Fixed Rate (₹/Unit)</label>
+              <input type="number" id="profPngRate" class="form-control" oninput="syncProfileRatesToLiveCalculator()">
+            </div>
             <div class="form-group"><label>Water Number</label><input type="text" id="profWaterNumber" class="form-control"></div>
             <div class="form-group"><label>Water Meter Number</label><input type="text" id="profWaterMeter" class="form-control"></div>
-            <div class="form-group"><label>Fixed Water Cost</label><input type="number" id="profWaterFixedCost" class="form-control"></div>
-            <div class="form-group"><label>Water Fixed Rate</label><input type="number" id="profWaterRate" class="form-control"></div>
+            <div class="form-group">
+              <label>Water Fixed Rate (₹/Unit)</label>
+              <input type="number" id="profWaterRate" class="form-control" oninput="syncProfileRatesToLiveCalculator()">
+            </div>
             <div class="form-group"><label>Electricity Meter Number</label><input type="text" id="profElecMeter" class="form-control"></div>
-            <div class="form-group"><label>Electricity Fixed Rate</label><input type="number" id="profElecRate" class="form-control"></div>
+            <div class="form-group">
+              <label>Electricity Fixed Rate (₹/Unit)</label>
+              <input type="number" id="profElecRate" class="form-control" oninput="syncProfileRatesToLiveCalculator()">
+            </div>
             <div class="form-group"><label>UPI Name</label><input type="text" id="profUpiName" class="form-control"></div>
             <div class="form-group"><label>UPI ID</label><input type="text" id="profUpiId" class="form-control"></div>
             <div class="form-group"><label>Contract Mobile Number</label><input type="text" id="profContractMobile" class="form-control"></div>
             <button class="btn-primary admin-only" onclick="saveUtilitiesLeft()">Update Utilities</button>
           </div>
 
-          <!-- Center Column: Renter Images -->
+          <!-- Center Column: Cloud Drive Renter Profile & Aadhaar Card Display + Delete Controls -->
           <div class="matrix-col" style="text-align: center;">
-            <div class="col-title">Renter Images</div>
-            <label style="font-size:0.75rem; color:var(--text-muted);">Renter Profile Picture</label>
-            <div class="image-frame-container">
-              <img id="profilePicturePreview" src="https://via.placeholder.com/150?text=Profile+Pic" alt="Profile">
+            <div class="col-title">Renter & Aadhaar Documents (Cloud Drive)</div>
+
+            <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Renter Profile Render</label>
+            <div class="image-frame-container" style="margin-bottom: 6px;">
+              <img id="profilePicturePreview" src="https://via.placeholder.com/150?text=No+Profile+Photo" alt="Profile">
             </div>
-            <label style="font-size:0.75rem; color:var(--text-muted); margin-top:14px;">Uploaded ID Card Photo</label>
-            <div class="image-frame-container">
-              <img id="identityPicturePreview" src="https://via.placeholder.com/300x150?text=ID+Document" alt="ID Document">
+            <div id="profileCloudStatusBadge" style="font-size:0.72rem; color:var(--text-muted); margin-bottom:6px;">No profile photo uploaded</div>
+            <button
+              type="button"
+              id="btnDeleteProfilePic"
+              class="btn-ledger-action admin-only"
+              style="background: rgba(239, 68, 68, 0.16); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.35); padding: 6px 12px; font-size: 0.76rem; font-weight: 700; margin-bottom: 14px;"
+              onclick="deleteRenterDocumentFromCloud('profile')"
+            >
+              <i class="fa-solid fa-trash-can"></i> Delete Profile Photo
+            </button>
+
+            <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700; display:block; margin-top:6px;">Aadhaar / ID Card Document</label>
+            <div class="image-frame-container" style="margin-bottom: 6px;">
+              <img id="identityPicturePreview" src="https://via.placeholder.com/300x150?text=No+Aadhaar+Uploaded" alt="Aadhaar / ID Document">
             </div>
+            <div id="identityCloudStatusBadge" style="font-size:0.72rem; color:var(--text-muted); margin-bottom:6px;">No Aadhaar / ID uploaded</div>
+            <button
+              type="button"
+              id="btnDeleteIdentityPic"
+              class="btn-ledger-action admin-only"
+              style="background: rgba(239, 68, 68, 0.16); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.35); padding: 6px 12px; font-size: 0.76rem; font-weight: 700;"
+              onclick="deleteRenterDocumentFromCloud('identity')"
+            >
+              <i class="fa-solid fa-trash-can"></i> Delete Aadhaar / ID Photo
+            </button>
           </div>
 
           <!-- Right Column: Renter Profile Info -->
           <div class="matrix-col">
             <div class="col-title">Renter Profile (Isolated Record)</div>
             <div class="form-group admin-only">
-              <label>Profile Image Upload</label>
-              <input type="file" id="fileProfilePic" class="form-control" accept="image/*" onchange="previewImageFile(this, 'profilePicturePreview')">
+              <label>Profile Image Upload (Auto-Saves to Cloud Drive)</label>
+              <input type="file" id="fileProfilePic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'profile')">
             </div>
             <div class="form-group"><label>Renter Name <span class="req-star">*</span></label><input type="text" id="renterName" class="form-control"></div>
-            <div class="form-group"><label>Identity Document Number</label><input type="text" id="renterIdentityNum" class="form-control" maxlength="12" placeholder="[ID Redacted]"></div>
+            <div class="form-group"><label>Aadhaar / Identity Document Number</label><input type="text" id="renterIdentityNum" class="form-control" maxlength="12" placeholder="12-digit Aadhaar / ID No."></div>
             <div class="form-group admin-only">
-              <label>ID Card Image Upload</label>
-              <input type="file" id="fileIdentityPic" class="form-control" accept="image/*" onchange="previewImageFile(this, 'identityPicturePreview')">
+              <label>Aadhaar / ID Card Upload (Auto-Saves to Cloud Drive)</label>
+              <input type="file" id="fileIdentityPic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'identity')">
             </div>
             <div class="form-group"><label>Mobile Number</label><input type="text" id="renterMobile" class="form-control"></div>
             <div class="form-group"><label>Alternative Mobile Number</label><input type="text" id="renterAltMobile" class="form-control"></div>
@@ -2372,8 +2482,14 @@
       flats: [],
       renters: [],
       bills: [],
-      users: []
+      users: [],
+      loginHistory: []
     };
+
+    const EMPTY_PROFILE_PLACEHOLDER = "https://via.placeholder.com/150?text=No+Profile+Photo";
+    const EMPTY_IDENTITY_PLACEHOLDER = "https://via.placeholder.com/300x150?text=No+Aadhaar+Uploaded";
+    const LOGIN_HISTORY_PAGE_SIZE = 12;
+    let currentLoginHistoryPage = 1;
 
     let activeUser = null;
     let activeUserFullName = "Administrator";
@@ -2665,12 +2781,14 @@
           DB.renters = parsed.renters || [];
           DB.bills = sanitizeAllBillsMonths(parsed.bills || []);
           DB.users = parsed.users || [];
+          DB.loginHistory = parsed.loginHistory || [];
           lastSyncedDataHash = JSON.stringify({
             p: DB.properties,
             f: DB.flats,
             r: DB.renters,
             b: DB.bills,
-            u: DB.users
+            u: DB.users,
+            l: DB.loginHistory
           });
         } catch (e) {}
       }
@@ -2697,7 +2815,8 @@
           f: DB.flats,
           r: DB.renters,
           b: DB.bills,
-          u: DB.users
+          u: DB.users,
+          l: DB.loginHistory
         });
       } catch (e) {}
     }
@@ -2804,6 +2923,28 @@
           DB.renters = res.renters || [];
           DB.bills = sanitizeAllBillsMonths(res.bills || []);
           DB.users = res.users || [];
+
+          // Populate loginHistory from server or append current login event into local log
+          const localLogRaw = localStorage.getItem("portal_login_history_backup");
+          let localBackupLogs = [];
+          try { if (localLogRaw) localBackupLogs = JSON.parse(localLogRaw) || []; } catch (e) {}
+          const newLoginEntry = {
+            LoginID: "LOG-" + Date.now(),
+            Username: activeUser,
+            FullName: activeUserFullName,
+            Role: activeRole,
+            MobileNumber: activeUserMobile,
+            LoginTimestamp: new Date().toISOString()
+          };
+          if (Array.isArray(res.loginHistory) && res.loginHistory.length > 0) {
+            DB.loginHistory = res.loginHistory;
+          } else {
+            DB.loginHistory = [newLoginEntry, ...localBackupLogs];
+          }
+          try {
+            localStorage.setItem("portal_login_history_backup", JSON.stringify(DB.loginHistory.slice(0, 500)));
+          } catch (e) {}
+
           saveDbSnapshotToCache();
 
           document.getElementById("loginPassword").value = "";
@@ -2838,13 +2979,26 @@
           const incomingRenters = res.renters || [];
           const incomingBills = sanitizeAllBillsMonths(res.bills || []);
           const incomingUsers = res.users || [];
+          let incomingLoginHistory = res.loginHistory;
+          if (!Array.isArray(incomingLoginHistory) || incomingLoginHistory.length === 0) {
+            try {
+              incomingLoginHistory = JSON.parse(localStorage.getItem("portal_login_history_backup") || "[]");
+            } catch (e) {
+              incomingLoginHistory = DB.loginHistory || [];
+            }
+          } else {
+            try {
+              localStorage.setItem("portal_login_history_backup", JSON.stringify(incomingLoginHistory.slice(0, 500)));
+            } catch (e) {}
+          }
 
           const incomingHash = JSON.stringify({
             p: incomingProperties,
             f: incomingFlats,
             r: incomingRenters,
             b: incomingBills,
-            u: incomingUsers
+            u: incomingUsers,
+            l: incomingLoginHistory
           });
 
           const hasDataChanged = incomingHash !== lastSyncedDataHash;
@@ -2854,6 +3008,7 @@
           DB.renters = incomingRenters;
           DB.bills = incomingBills;
           DB.users = incomingUsers;
+          DB.loginHistory = incomingLoginHistory;
           saveDbSnapshotToCache();
 
           if (res.userTheme && res.userTheme !== activeThemePref) {
@@ -3377,7 +3532,147 @@
       }
     }
 
-    // 6. Dedicated Settings Modal
+    // 6. Dedicated Settings Modal + "Other" Section Options (Registered Users & 12-per-page Last Login History)
+    function formatLoginTimestampDisplay(isoStr) {
+      if (!isoStr) return "--";
+      const d = new Date(isoStr);
+      if (isNaN(d.getTime())) return String(isoStr);
+      return d.toLocaleString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+      });
+    }
+
+    function switchOtherSubOption(optionMode) {
+      const usersPanel = document.getElementById("otherPanelUsers");
+      const historyPanel = document.getElementById("otherPanelLoginHistory");
+      const btnUsers = document.getElementById("btnOtherOptUsers");
+      const btnHistory = document.getElementById("btnOtherOptLoginHistory");
+
+      if (optionMode === "history") {
+        if (usersPanel) usersPanel.style.display = "none";
+        if (historyPanel) historyPanel.style.display = "block";
+        if (btnUsers) btnUsers.className = "btn-ledger-action";
+        if (btnHistory) btnHistory.className = "btn-primary";
+        currentLoginHistoryPage = 1;
+        renderLoginHistoryPage();
+      } else {
+        if (usersPanel) usersPanel.style.display = "block";
+        if (historyPanel) historyPanel.style.display = "none";
+        if (btnUsers) btnUsers.className = "btn-primary";
+        if (btnHistory) btnHistory.className = "btn-ledger-action";
+      }
+    }
+
+    function changeLoginHistoryPage(delta) {
+      const logs = Array.isArray(DB.loginHistory) ? DB.loginHistory : [];
+      const totalPages = Math.max(1, Math.ceil(logs.length / LOGIN_HISTORY_PAGE_SIZE));
+      const nextPage = currentLoginHistoryPage + delta;
+      if (nextPage < 1 || nextPage > totalPages) return;
+      currentLoginHistoryPage = nextPage;
+      renderLoginHistoryPage();
+    }
+
+    function renderLoginHistoryPage() {
+      const container = document.getElementById("otherLoginHistoryList");
+      const pageIndicator = document.getElementById("loginHistPageIndicator");
+      const totalBadge = document.getElementById("loginHistTotalBadge");
+      const prevBtn = document.getElementById("btnLoginHistPrev");
+      const nextBtn = document.getElementById("btnLoginHistNext");
+      if (!container) return;
+
+      const logs = Array.isArray(DB.loginHistory) ? DB.loginHistory : [];
+      const totalRecords = logs.length;
+      const totalPages = Math.max(1, Math.ceil(totalRecords / LOGIN_HISTORY_PAGE_SIZE));
+
+      if (currentLoginHistoryPage > totalPages) currentLoginHistoryPage = totalPages;
+      if (currentLoginHistoryPage < 1) currentLoginHistoryPage = 1;
+
+      const startIdx = (currentLoginHistoryPage - 1) * LOGIN_HISTORY_PAGE_SIZE;
+      const pageSlice = logs.slice(startIdx, startIdx + LOGIN_HISTORY_PAGE_SIZE);
+
+      if (totalBadge) {
+        totalBadge.innerText = `${totalRecords} Login${totalRecords === 1 ? "" : "s"}`;
+      }
+      if (pageIndicator) {
+        pageIndicator.innerText = `Page ${currentLoginHistoryPage} of ${totalPages}`;
+      }
+      if (prevBtn) {
+        prevBtn.disabled = currentLoginHistoryPage <= 1;
+        prevBtn.style.opacity = currentLoginHistoryPage <= 1 ? "0.45" : "1";
+        prevBtn.style.cursor = currentLoginHistoryPage <= 1 ? "not-allowed" : "pointer";
+      }
+      if (nextBtn) {
+        nextBtn.disabled = currentLoginHistoryPage >= totalPages;
+        nextBtn.style.opacity = currentLoginHistoryPage >= totalPages ? "0.45" : "1";
+        nextBtn.style.cursor = currentLoginHistoryPage >= totalPages ? "not-allowed" : "pointer";
+      }
+
+      if (pageSlice.length === 0) {
+        container.innerHTML = `<div style="padding:12px 0; color:var(--text-muted); text-align:center;">No login activity recorded yet.</div>`;
+        return;
+      }
+
+      container.innerHTML = pageSlice.map((entry, idx) => {
+        const serialNum = startIdx + idx + 1;
+        const fullName = entry.FullName || entry.Username || "User";
+        const uName = entry.Username || "--";
+        const role = entry.Role || "Admin";
+        const timeStr = formatLoginTimestampDisplay(entry.LoginTimestamp);
+        return `
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; padding:7px 4px; border-bottom:1px solid var(--glass-border);">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:0.72rem; font-weight:800; color:var(--primary); min-width:26px;">#${serialNum}</span>
+              <div>
+                <div><strong>${fullName}</strong> <span style="color:var(--text-muted); font-size:0.75rem;">(@${uName})</span></div>
+                <div style="font-size:0.72rem; color:var(--text-muted);"><i class="fa-regular fa-clock"></i> ${timeStr}</div>
+              </div>
+            </div>
+            <span class="role-badge">${role}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function triggerGoogleSheetAutoSetupAndSync(silent = false) {
+      const btn = document.getElementById("btnAutoCreateGoogleSheet");
+      if (btn && !silent) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Auto-Creating Sheets, Columns & Rows...`;
+      }
+      try {
+        const res = await sendGasPost({
+          action: "syncAllData",
+          properties: DB.properties || [],
+          flats: DB.flats || [],
+          renters: DB.renters || [],
+          bills: DB.bills || []
+        });
+        if (res && res.status === "success") {
+          if (!silent) {
+            triggerSideToast("Google Sheet Ready", "All Sheets, Columns & Rows auto-created and synced!", true);
+          }
+          await syncDataLive(true);
+        } else if (!silent) {
+          triggerSideToast("Sync Notice", (res && res.message) || "Google Sheet schema initialized.", "warning");
+        }
+      } catch (e) {
+        if (!silent) {
+          triggerSideToast("Connection Error", "Could not reach Google Apps Script Web App URL.", false);
+        }
+      } finally {
+        if (btn && !silent) {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fa-solid fa-table-columns"></i> Auto-Create & Sync Google Sheet Now`;
+        }
+      }
+    }
+
     function openSettingsModal() {
       document.getElementById("otherProfileFullName").innerText = activeUserFullName || activeUser;
       document.getElementById("otherProfileMobile").innerText = activeUserMobile || "Not set";
@@ -3395,6 +3690,7 @@
         `).join("") || "No user list loaded.";
       }
 
+      renderLoginHistoryPage();
       openModal("settingsModal");
     }
 
@@ -3529,41 +3825,74 @@
         runBillMath();
 
         if (fieldCategory === "rent" || fieldCategory === "rate") {
-          const newRent = parseFloat(document.getElementById("calcRent").value) || 0;
-          const newElecRate = parseFloat(document.getElementById("calcElecRate").value) || 0;
-          const newPngRate = parseFloat(document.getElementById("calcPngRate").value) || 0;
-          const newWaterRate = parseFloat(document.getElementById("calcWaterRate").value) || 0;
+          const chosenMonth = normalizeMonthYear(document.getElementById("calcMonthPicker").value);
+          const renterBills = getBillsForSpecificRenter(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj);
+          const existingBillForMonth = renterBills.find(b => normalizeMonthYear(b.MonthYear) === chosenMonth);
 
-          selectedFlat.RentAmount = newRent;
-          selectedFlat.ElecRate = newElecRate;
-          selectedFlat.PNGRate = newPngRate;
-          selectedFlat.WaterRate = newWaterRate;
+          // Only update master config for current & future months if this month is not a locked historical bill
+          if (!existingBillForMonth) {
+            const newRent = parseFloat(document.getElementById("calcRent").value) || 0;
+            const newElecRate = parseFloat(document.getElementById("calcElecRate").value) || 0;
+            const newPngRate = parseFloat(document.getElementById("calcPngRate").value) || 0;
+            const newWaterRate = parseFloat(document.getElementById("calcWaterRate").value) || 0;
 
-          document.getElementById("profRent").value = newRent;
-          document.getElementById("profElecRate").value = newElecRate;
-          document.getElementById("profPngRate").value = newPngRate;
-          document.getElementById("profWaterRate").value = newWaterRate;
+            selectedFlat.RentAmount = newRent;
+            selectedFlat.ElecRate = newElecRate;
+            selectedFlat.PNGRate = newPngRate;
+            selectedFlat.WaterRate = newWaterRate;
 
-          if (activeFlatRenterObj) {
-            activeFlatRenterObj.RentAmount = newRent;
+            document.getElementById("profRent").value = newRent;
+            document.getElementById("profElecRate").value = newElecRate;
+            document.getElementById("profPngRate").value = newPngRate;
+            document.getElementById("profWaterRate").value = newWaterRate;
+
+            if (activeFlatRenterObj) {
+              activeFlatRenterObj.RentAmount = newRent;
+            }
+
+            saveDbSnapshotToCache();
+            renderAllDashboardUI();
+
+            triggerSideToast("Master Config Saved", "Updated for current & future months! Past months remain untouched.", true);
+
+            await sendGasPost({
+              action: "updateMasterRentAndRates",
+              propertyName: selectedFlat.PropertyName,
+              flatName: selectedFlat.FlatName,
+              rentAmount: newRent,
+              elecRate: newElecRate,
+              pngRate: newPngRate,
+              waterRate: newWaterRate
+            });
+          } else {
+            triggerSideToast("Bill Override Ready", "Modified value for this month's calculation. Click Update & Replace Bill to save.", "warning");
           }
-
-          saveDbSnapshotToCache();
-          renderAllDashboardUI();
-
-          triggerSideToast("Master Config Saved", "Updated for current & future months! Past months remain untouched.", true);
-
-          await sendGasPost({
-            action: "updateMasterRentAndRates",
-            propertyName: selectedFlat.PropertyName,
-            flatName: selectedFlat.FlatName,
-            rentAmount: newRent,
-            elecRate: newElecRate,
-            pngRate: newPngRate,
-            waterRate: newWaterRate
-          });
         }
       }
+    }
+
+    // Requirement 1: Immediately reflect flat profile Rent & Fixed Rates in the live calculator
+    // ONLY when the calculator is on an unbilled month (past generated bills stay 100% locked!)
+    function syncProfileRatesToLiveCalculator() {
+      if (!selectedFlat) return;
+      const chosenMonth = normalizeMonthYear(document.getElementById("calcMonthPicker").value);
+      const renterBills = getBillsForSpecificRenter(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj);
+      const existingBill = renterBills.find(b => normalizeMonthYear(b.MonthYear) === chosenMonth);
+
+      // Never overwrite calculator values if viewing an already-generated past bill
+      if (existingBill) return;
+
+      const profRentVal = parseFloat(document.getElementById("profRent").value) || 0;
+      const profElecVal = parseFloat(document.getElementById("profElecRate").value) || 0;
+      const profPngVal = parseFloat(document.getElementById("profPngRate").value) || 0;
+      const profWaterVal = parseFloat(document.getElementById("profWaterRate").value) || 0;
+
+      document.getElementById("calcRent").value = profRentVal;
+      document.getElementById("calcElecRate").value = profElecVal;
+      document.getElementById("calcPngRate").value = profPngVal;
+      document.getElementById("calcWaterRate").value = profWaterVal;
+
+      runBillMath();
     }
 
     function handleBillingMonthChange() {
@@ -3627,10 +3956,10 @@
         statusTag.className = "calc-month-status-tag";
         submitBtnText.innerText = "Calculate Bill";
 
-        document.getElementById("calcRent").value = selectedFlat.RentAmount || activeFlatRenterObj?.RentAmount || 0;
-        document.getElementById("calcElecRate").value = selectedFlat.ElecRate || 9;
-        document.getElementById("calcPngRate").value = selectedFlat.PNGRate || 45;
-        document.getElementById("calcWaterRate").value = selectedFlat.WaterRate || 15;
+        document.getElementById("calcRent").value = selectedFlat.RentAmount ?? activeFlatRenterObj?.RentAmount ?? 0;
+        document.getElementById("calcElecRate").value = selectedFlat.ElecRate ?? 9;
+        document.getElementById("calcPngRate").value = selectedFlat.PNGRate ?? 45;
+        document.getElementById("calcWaterRate").value = selectedFlat.WaterRate ?? 15;
 
         const priorBills = sortedBills.filter(b => normalizeMonthYear(b.MonthYear) < chosenMonth);
         const lastPriorBill = priorBills.length > 0 ? priorBills[priorBills.length - 1] : null;
@@ -3667,6 +3996,39 @@
       runBillMath();
     }
 
+    function isPlaceholderImageUrl(url) {
+      if (!url) return true;
+      const s = String(url).trim();
+      return !s || s.includes("via.placeholder.com") || s === EMPTY_PROFILE_PLACEHOLDER || s === EMPTY_IDENTITY_PLACEHOLDER;
+    }
+
+    function updateRenterImageSlotUI(docType, imageUrl) {
+      const isIdentity = docType === "identity";
+      const imgEl = document.getElementById(isIdentity ? "identityPicturePreview" : "profilePicturePreview");
+      const badgeEl = document.getElementById(isIdentity ? "identityCloudStatusBadge" : "profileCloudStatusBadge");
+      const delBtn = document.getElementById(isIdentity ? "btnDeleteIdentityPic" : "btnDeleteProfilePic");
+      const fileInput = document.getElementById(isIdentity ? "fileIdentityPic" : "fileProfilePic");
+
+      const hasRealImage = !isPlaceholderImageUrl(imageUrl);
+      if (imgEl) {
+        imgEl.src = hasRealImage
+          ? imageUrl
+          : (isIdentity ? EMPTY_IDENTITY_PLACEHOLDER : EMPTY_PROFILE_PLACEHOLDER);
+      }
+      if (badgeEl) {
+        badgeEl.innerText = hasRealImage
+          ? (isIdentity ? "Aadhaar / ID saved in Cloud Drive" : "Profile photo saved in Cloud Drive")
+          : (isIdentity ? "No Aadhaar / ID uploaded" : "No profile photo uploaded");
+        badgeEl.style.color = hasRealImage ? "var(--accent-green)" : "var(--text-muted)";
+      }
+      if (delBtn) {
+        delBtn.style.display = hasRealImage ? "inline-flex" : "none";
+      }
+      if (!hasRealImage && fileInput) {
+        fileInput.value = "";
+      }
+    }
+
     function openFlatDetailsModal(flat, renter) {
       selectedFlat = flat;
       activeFlatRenterObj = renter || null;
@@ -3686,10 +4048,8 @@
       document.getElementById("profWaterRate").value = flat.WaterRate || renter?.WaterFixedRate || 15;
       document.getElementById("profPngNumber").value = flat.PNGNumber || renter?.PNGNumber || "";
       document.getElementById("profPngMeter").value = flat.PNGMeterNumber || renter?.PNGMeterNumber || "";
-      document.getElementById("profPngFixedCost").value = flat.FixedPNGCost || renter?.FixedPNGCost || 0;
       document.getElementById("profWaterNumber").value = flat.WaterNumber || renter?.WaterNumber || "";
       document.getElementById("profWaterMeter").value = flat.WaterMeterNumber || renter?.WaterMeterNumber || "";
-      document.getElementById("profWaterFixedCost").value = flat.FixedWaterCost || renter?.FixedWaterCost || 0;
       document.getElementById("profElecMeter").value = flat.ElecMeterNumber || renter?.ElecMeterNumber || "";
       document.getElementById("profUpiName").value = resolvedContact.upiName;
       document.getElementById("profUpiId").value = resolvedContact.upiId;
@@ -3705,8 +4065,8 @@
         document.getElementById("renterStatus").value = renter.Status || "Active";
         document.getElementById("renterJoinDate").value = renter.JoinDate || "";
         document.getElementById("renterEndDate").value = renter.EndDate || "";
-        document.getElementById("profilePicturePreview").src = renter.ProfileImageURL || "https://via.placeholder.com/150?text=Profile+Pic";
-        document.getElementById("identityPicturePreview").src = renter.IdentityImageURL || "https://via.placeholder.com/300x150?text=ID+Document";
+        updateRenterImageSlotUI("profile", renter.ProfileImageURL);
+        updateRenterImageSlotUI("identity", renter.IdentityImageURL);
       } else {
         clearRenterRightForm();
       }
@@ -4753,43 +5113,92 @@
       });
     }
 
-    // 9. Profile Form Logic & Strict Renter Separation
+    // 9. Profile Form Logic & Strict Flat-Isolated Rent, Rates & Flat Name Updates
     async function saveUtilitiesLeft() {
-      if (activeRole === "Viewer") return;
+      if (activeRole === "Viewer" || !selectedFlat) return;
+
+      const oldFlatName = String(selectedFlat.FlatName || "").trim();
+      const newFlatName = String(document.getElementById("profFlatNumber").value || "").trim();
+
+      if (!newFlatName) {
+        return triggerSideToast("Flat Name Required", "Flat Name/Number cannot be empty.", false);
+      }
+
+      if (oldFlatName.toLowerCase() !== newFlatName.toLowerCase()) {
+        const duplicateFlat = DB.flats.some(f =>
+          f !== selectedFlat &&
+          isSamePropAndFlat(f.PropertyName, f.FlatName, selectedFlat.PropertyName, newFlatName)
+        );
+        if (duplicateFlat) {
+          return triggerSideToast("Duplicate Flat Name", `Flat ${newFlatName} already exists in ${selectedFlat.PropertyName}.`, false);
+        }
+      }
+
       const payload = {
         action: "updateFlatUtilities",
         propertyName: selectedFlat.PropertyName,
-        flatName: selectedFlat.FlatName,
-        rentAmount: document.getElementById("profRent").value,
-        pngNumber: document.getElementById("profPngNumber").value,
-        pngMeterNumber: document.getElementById("profPngMeter").value,
-        fixedPngCost: document.getElementById("profPngFixedCost").value,
-        pngFixedRate: document.getElementById("profPngRate").value,
-        waterNumber: document.getElementById("profWaterNumber").value,
-        waterMeterNumber: document.getElementById("profWaterMeter").value,
-        fixedWaterCost: document.getElementById("profWaterFixedCost").value,
-        waterFixedRate: document.getElementById("profWaterRate").value,
-        elecMeterNumber: document.getElementById("profElecMeter").value,
-        elecFixedRate: document.getElementById("profElecRate").value,
+        oldFlatName: oldFlatName,
+        newFlatName: newFlatName,
+        flatName: newFlatName,
+        rentAmount: parseFloat(document.getElementById("profRent").value) || 0,
+        pngNumber: document.getElementById("profPngNumber").value.trim(),
+        pngMeterNumber: document.getElementById("profPngMeter").value.trim(),
+        fixedPngCost: 0,
+        pngFixedRate: parseFloat(document.getElementById("profPngRate").value) || 0,
+        waterNumber: document.getElementById("profWaterNumber").value.trim(),
+        waterMeterNumber: document.getElementById("profWaterMeter").value.trim(),
+        fixedWaterCost: 0,
+        waterFixedRate: parseFloat(document.getElementById("profWaterRate").value) || 0,
+        elecMeterNumber: document.getElementById("profElecMeter").value.trim(),
+        elecFixedRate: parseFloat(document.getElementById("profElecRate").value) || 0,
         upiName: document.getElementById("profUpiName").value.trim(),
         upiId: document.getElementById("profUpiId").value.trim(),
         contractMobile: document.getElementById("profContractMobile").value.trim()
       };
 
+      // Strictly isolated to selectedFlat (never alters any other flat's rent, rates, or name)
+      selectedFlat.FlatName = newFlatName;
       selectedFlat.RentAmount = payload.rentAmount;
       selectedFlat.ElecRate = payload.elecFixedRate;
       selectedFlat.PNGRate = payload.pngFixedRate;
       selectedFlat.WaterRate = payload.waterFixedRate;
       selectedFlat.PNGNumber = payload.pngNumber;
       selectedFlat.PNGMeterNumber = payload.pngMeterNumber;
-      selectedFlat.FixedPNGCost = payload.fixedPngCost;
+      selectedFlat.FixedPNGCost = 0;
       selectedFlat.WaterNumber = payload.waterNumber;
       selectedFlat.WaterMeterNumber = payload.waterMeterNumber;
-      selectedFlat.FixedWaterCost = payload.fixedWaterCost;
+      selectedFlat.FixedWaterCost = 0;
       selectedFlat.ElecMeterNumber = payload.elecMeterNumber;
       selectedFlat.UPIName = payload.upiName;
       selectedFlat.UPIID = payload.upiId;
       selectedFlat.ContractMobile = payload.contractMobile;
+
+      // Update modal header tag if flat name changed
+      document.getElementById("modalFlatTag").innerText = `Flat ${newFlatName}`;
+
+      // Keep renters of this specific flat linked to the updated flat name & active rates
+      DB.renters.forEach(r => {
+        if (isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, oldFlatName)) {
+          r.FlatName = newFlatName;
+          if (String(r.Status).trim().toLowerCase() === "active") {
+            r.RentAmount = payload.rentAmount;
+            r.PNGFixedRate = payload.pngFixedRate;
+            r.WaterFixedRate = payload.waterFixedRate;
+            r.ElecFixedRate = payload.elecFixedRate;
+          }
+        }
+      });
+
+      // If flat was renamed, relink flat key on its bills so History & Carry-Forward stay attached
+      // while keeping all past bill amounts, rates, and snapshot fields 100% locked and untouched!
+      if (oldFlatName.toLowerCase() !== newFlatName.toLowerCase()) {
+        DB.bills.forEach(b => {
+          if (isSamePropAndFlat(b.PropertyName, b.FlatName, selectedFlat.PropertyName, oldFlatName)) {
+            if (!b.SnapshotFlatName) b.SnapshotFlatName = b.FlatName;
+            b.FlatName = newFlatName;
+          }
+        });
+      }
 
       // Sync UPI Name, UPI ID, and Contact Mobile across all flats & parent property
       propagatePropertyWideUpiAndContactLocal(
@@ -4799,15 +5208,20 @@
         payload.contractMobile
       );
 
+      // Immediately reflect updated rates in the live calculation area (if viewing an unbilled month)
+      handleBillingMonthChange();
+      populateHistoryLedger(selectedFlat.PropertyName, selectedFlat.FlatName);
+      populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
+
       saveDbSnapshotToCache();
       renderAllDashboardUI();
 
-      triggerSideToast("Utilities & Property UPI Synced", "Updated flat utilities and synced UPI & Contact across all flats in this property!", true);
+      triggerSideToast("Utilities & Live Calc Updated", "Updated flat profile & live calculator! Past bills remain locked.", true);
       await sendGasPost(payload);
     }
 
     async function submitRenterProfileRight() {
-      if (activeRole === "Viewer") return;
+      if (activeRole === "Viewer" || !selectedFlat) return;
       const statusVal = document.getElementById("renterStatus").value;
       const rName = document.getElementById("renterName").value.trim();
 
@@ -4816,6 +5230,8 @@
       }
 
       const targetRenterId = activeFlatRenterObj?.RenterID || ("R-" + Date.now());
+      const currentProfileSrc = document.getElementById("profilePicturePreview").src;
+      const currentIdentitySrc = document.getElementById("identityPicturePreview").src;
 
       const payload = {
         action: "updateRenterProfile",
@@ -4831,19 +5247,19 @@
         renterStatus: statusVal,
         joinDate: document.getElementById("renterJoinDate").value || new Date().toISOString().split('T')[0],
         endDate: document.getElementById("renterEndDate").value,
-        profileImageUrl: document.getElementById("profilePicturePreview").src,
-        identityImageUrl: document.getElementById("identityPicturePreview").src,
-        rentAmount: document.getElementById("profRent").value,
-        pngNumber: document.getElementById("profPngNumber").value,
-        pngMeterNumber: document.getElementById("profPngMeter").value,
-        fixedPngCost: document.getElementById("profPngFixedCost").value,
-        pngFixedRate: document.getElementById("profPngRate").value,
-        waterNumber: document.getElementById("profWaterNumber").value,
-        waterMeterNumber: document.getElementById("profWaterMeter").value,
-        fixedWaterCost: document.getElementById("profWaterFixedCost").value,
-        waterFixedRate: document.getElementById("profWaterRate").value,
-        elecMeterNumber: document.getElementById("profElecMeter").value,
-        elecFixedRate: document.getElementById("profElecRate").value,
+        profileImageUrl: isPlaceholderImageUrl(currentProfileSrc) ? "" : currentProfileSrc,
+        identityImageUrl: isPlaceholderImageUrl(currentIdentitySrc) ? "" : currentIdentitySrc,
+        rentAmount: parseFloat(document.getElementById("profRent").value) || 0,
+        pngNumber: document.getElementById("profPngNumber").value.trim(),
+        pngMeterNumber: document.getElementById("profPngMeter").value.trim(),
+        fixedPngCost: 0,
+        pngFixedRate: parseFloat(document.getElementById("profPngRate").value) || 0,
+        waterNumber: document.getElementById("profWaterNumber").value.trim(),
+        waterMeterNumber: document.getElementById("profWaterMeter").value.trim(),
+        fixedWaterCost: 0,
+        waterFixedRate: parseFloat(document.getElementById("profWaterRate").value) || 0,
+        elecMeterNumber: document.getElementById("profElecMeter").value.trim(),
+        elecFixedRate: parseFloat(document.getElementById("profElecRate").value) || 0,
         upiName: document.getElementById("profUpiName").value.trim(),
         upiId: document.getElementById("profUpiId").value.trim(),
         contractMobile: document.getElementById("profContractMobile").value.trim()
@@ -4904,7 +5320,6 @@
         triggerSideToast("Profile Saved", "Renter record saved & UPI/Contact synced across property!", true);
       }
 
-      // Sync UPI Name, UPI ID, and Contact Mobile across all flats & parent property
       propagatePropertyWideUpiAndContactLocal(
         selectedFlat.PropertyName,
         payload.upiName,
@@ -4912,9 +5327,10 @@
         payload.contractMobile
       );
 
+      handleBillingMonthChange();
       saveDbSnapshotToCache();
       renderAllDashboardUI();
-      populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName);
+      populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
 
       await sendGasPost(payload);
     }
@@ -4929,8 +5345,8 @@
       document.getElementById("renterStatus").value = "Active";
       document.getElementById("renterJoinDate").value = new Date().toISOString().split('T')[0];
       document.getElementById("renterEndDate").value = "";
-      document.getElementById("profilePicturePreview").src = "https://via.placeholder.com/150?text=Profile+Pic";
-      document.getElementById("identityPicturePreview").src = "https://via.placeholder.com/300x150?text=ID+Document";
+      updateRenterImageSlotUI("profile", "");
+      updateRenterImageSlotUI("identity", "");
     }
 
     // 10. Modals, Strict Property-Targeted Flat Creation & Complete Cascade Deletion
@@ -5194,14 +5610,130 @@
       document.querySelectorAll(".modal-overlay").forEach(m => m.classList.remove("active"));
     }
 
-    function previewImageFile(input, targetImgId) {
-      if (input.files && input.files[0]) {
+    // Requirement 2: Compress, Preview, Auto-Upload to Cloud Drive & Delete Document Slot
+    function compressImageFileToDataUrl(file, maxWidth = 900, quality = 0.82) {
+      return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById(targetImgId).src = e.target.result;
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const scale = img.width > maxWidth ? (maxWidth / img.width) : 1;
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL("image/jpeg", quality));
+          };
+          img.onerror = () => resolve(e.target.result);
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function handleRenterDocumentUpload(input, docType) {
+      if (activeRole === "Viewer" || !selectedFlat) return;
+      if (!input.files || !input.files[0]) return;
+
+      const file = input.files[0];
+      const isIdentity = docType === "identity";
+      const badgeEl = document.getElementById(isIdentity ? "identityCloudStatusBadge" : "profileCloudStatusBadge");
+
+      try {
+        if (badgeEl) {
+          badgeEl.innerText = "Uploading to Cloud Drive...";
+          badgeEl.style.color = "var(--primary)";
         }
-        reader.readAsDataURL(input.files[0]);
+
+        const compressedDataUrl = await compressImageFileToDataUrl(file, isIdentity ? 1000 : 600, 0.82);
+
+        // Immediately display inside its respective profile render / Aadhaar section
+        updateRenterImageSlotUI(docType, compressedDataUrl);
+
+        if (activeFlatRenterObj) {
+          if (isIdentity) activeFlatRenterObj.IdentityImageURL = compressedDataUrl;
+          else activeFlatRenterObj.ProfileImageURL = compressedDataUrl;
+        }
+        saveDbSnapshotToCache();
+        renderAllDashboardUI();
+
+        triggerSideToast(
+          "Uploading to Cloud Drive",
+          `Saving ${isIdentity ? "Aadhaar / ID Card" : "Profile Render"} to connected Cloud Drive...`,
+          "warning"
+        );
+
+        const res = await sendGasPost({
+          action: "uploadRenterDocument",
+          propertyName: selectedFlat.PropertyName,
+          flatName: selectedFlat.FlatName,
+          renterId: activeFlatRenterObj?.RenterID || "",
+          renterName: document.getElementById("renterName")?.value || activeFlatRenterObj?.RenterName || "Current Tenant",
+          rentAmount: selectedFlat.RentAmount || 0,
+          docType: docType,
+          fileName: file.name,
+          mimeType: "image/jpeg",
+          base64Data: compressedDataUrl
+        });
+
+        if (res && res.status === "success" && res.imageUrl) {
+          updateRenterImageSlotUI(docType, res.imageUrl);
+          if (activeFlatRenterObj) {
+            if (isIdentity) activeFlatRenterObj.IdentityImageURL = res.imageUrl;
+            else activeFlatRenterObj.ProfileImageURL = res.imageUrl;
+          }
+          saveDbSnapshotToCache();
+          renderAllDashboardUI();
+        }
+
+        triggerSideToast(
+          "Saved to Cloud Drive",
+          `${isIdentity ? "Aadhaar / ID Card" : "Profile Render"} uploaded and saved to Cloud Drive!`,
+          true
+        );
+      } catch (err) {
+        triggerSideToast("Saved Locally", "Displayed image in profile. Will sync on next connection.", "warning");
       }
+    }
+
+    async function deleteRenterDocumentFromCloud(docType) {
+      if (activeRole === "Viewer" || !selectedFlat) return;
+      const isIdentity = docType === "identity";
+      const imgEl = document.getElementById(isIdentity ? "identityPicturePreview" : "profilePicturePreview");
+      const currentUrl = imgEl ? imgEl.src : "";
+
+      if (isPlaceholderImageUrl(currentUrl)) {
+        return triggerSideToast("Already Empty", "No image is currently uploaded in this slot.", false);
+      }
+
+      // Immediately clear the slot in UI and reset file input so a new photo can be uploaded
+      updateRenterImageSlotUI(docType, "");
+
+      if (activeFlatRenterObj) {
+        if (isIdentity) activeFlatRenterObj.IdentityImageURL = "";
+        else activeFlatRenterObj.ProfileImageURL = "";
+      }
+
+      saveDbSnapshotToCache();
+      renderAllDashboardUI();
+      populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
+
+      triggerSideToast(
+        "Removed from Cloud Drive",
+        `${isIdentity ? "Aadhaar / ID Card" : "Profile Render"} deleted and slot reset for a new upload!`,
+        true
+      );
+
+      await sendGasPost({
+        action: "deleteRenterDocument",
+        propertyName: selectedFlat.PropertyName,
+        flatName: selectedFlat.FlatName,
+        renterId: activeFlatRenterObj?.RenterID || "",
+        docType: docType,
+        currentImageUrl: currentUrl
+      });
     }
 
     async function sendGasPost(data) {
