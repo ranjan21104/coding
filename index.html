@@ -1707,6 +1707,356 @@
         max-width: calc(100vw - 24px);
       }
     }
+
+    /* ==========================================================================
+       REQUIREMENT 3: COLORFUL & WELL-DESIGNED CALCULATION BOXES IN FLAT SECTION
+       ========================================================================== */
+    #tabCalc .calc-grid-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    #tabCalc .calc-grid-card:hover {
+      transform: translateY(-2px);
+    }
+    #tabCalc .calc-grid-title > span:first-child {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+    #tabCalc .calc-grid-title > span:first-child i {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* 1. Billing Month & Base Rent — Royal Indigo / Violet */
+    #tabCalc .calc-grid-card.calc-box-rent {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.22) 0%, rgba(15, 23, 42, 0.78) 100%) !important;
+      border: 1.5px solid rgba(99, 102, 241, 0.55) !important;
+      border-left: 6px solid #6366f1 !important;
+      box-shadow: 0 10px 26px rgba(99, 102, 241, 0.16) !important;
+    }
+    #tabCalc .calc-grid-card.calc-box-rent .calc-grid-title > span:first-child {
+      color: #a5b4fc !important;
+    }
+    #tabCalc .calc-grid-card.calc-box-rent .calc-grid-title > span:first-child i {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #ffffff;
+    }
+
+    /* 2. Electricity Consumption — Radiant Amber / Gold */
+    #tabCalc .calc-grid-card.calc-box-elec {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(15, 23, 42, 0.78) 100%) !important;
+      border: 1.5px solid rgba(245, 158, 11, 0.55) !important;
+      border-left: 6px solid #f59e0b !important;
+      box-shadow: 0 10px 26px rgba(245, 158, 11, 0.16) !important;
+    }
+    #tabCalc .calc-grid-card.calc-box-elec .calc-grid-title > span:first-child {
+      color: #fcd34d !important;
+    }
+    #tabCalc .calc-grid-card.calc-box-elec .calc-grid-title > span:first-child i {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #ffffff;
+    }
+    #tabCalc .calc-grid-card.calc-box-elec .calc-auto-badge {
+      background: rgba(245, 158, 11, 0.2) !important;
+      border: 1px solid rgba(245, 158, 11, 0.5) !important;
+      color: #fde68a !important;
+    }
+
+    /* 3. PNG Gas Consumption — Vibrant Rose / Flame Pink */
+    #tabCalc .calc-grid-card.calc-box-png {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.22) 0%, rgba(15, 23, 42, 0.78) 100%) !important;
+      border: 1.5px solid rgba(236, 72, 153, 0.55) !important;
+      border-left: 6px solid #ec4899 !important;
+      box-shadow: 0 10px 26px rgba(236, 72, 153, 0.16) !important;
+    }
+    #tabCalc .calc-grid-card.calc-box-png .calc-grid-title > span:first-child {
+      color: #f9a8d4 !important;
+    }
+    #tabCalc .calc-grid-card.calc-box-png .calc-grid-title > span:first-child i {
+      background: linear-gradient(135deg, #ec4899, #e11d48);
+      color: #ffffff;
+    }
+    #tabCalc .calc-grid-card.calc-box-png .calc-auto-badge {
+      background: rgba(236, 72, 153, 0.2) !important;
+      border: 1px solid rgba(236, 72, 153, 0.5) !important;
+      color: #fbcfe8 !important;
+    }
+
+    /* 4. Water Consumption — Ocean Cyan / Sky Blue */
+    #tabCalc .calc-grid-card.calc-box-water {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.22) 0%, rgba(15, 23, 42, 0.78) 100%) !important;
+      border: 1.5px solid rgba(6, 182, 212, 0.55) !important;
+      border-left: 6px solid #06b6d4 !important;
+      box-shadow: 0 10px 26px rgba(6, 182, 212, 0.16) !important;
+    }
+    #tabCalc .calc-grid-card.calc-box-water .calc-grid-title > span:first-child {
+      color: #67e8f9 !important;
+    }
+    #tabCalc .calc-grid-card.calc-box-water .calc-grid-title > span:first-child i {
+      background: linear-gradient(135deg, #06b6d4, #0284c7);
+      color: #ffffff;
+    }
+    #tabCalc .calc-grid-card.calc-box-water .calc-auto-badge {
+      background: rgba(6, 182, 212, 0.2) !important;
+      border: 1px solid rgba(6, 182, 212, 0.5) !important;
+      color: #a5f3fc !important;
+    }
+
+    /* 5. Additional Charge — Vivid Purple / Amethyst */
+    #tabCalc .calc-grid-card.calc-box-add {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.22) 0%, rgba(15, 23, 42, 0.78) 100%) !important;
+      border: 1.5px solid rgba(168, 85, 247, 0.55) !important;
+      border-left: 6px solid #a855f7 !important;
+      box-shadow: 0 10px 26px rgba(168, 85, 247, 0.16) !important;
+    }
+    #tabCalc .calc-grid-card.calc-box-add .calc-grid-title > span:first-child {
+      color: #d8b4fe !important;
+    }
+    #tabCalc .calc-grid-card.calc-box-add .calc-grid-title > span:first-child i {
+      background: linear-gradient(135deg, #a855f7, #7e22ce);
+      color: #ffffff;
+    }
+    #tabCalc .calc-grid-card.calc-box-add .calc-auto-badge {
+      background: rgba(168, 85, 247, 0.2) !important;
+      border: 1px solid rgba(168, 85, 247, 0.5) !important;
+      color: #e9d5ff !important;
+    }
+
+    /* 6. Previous Carry Month Forward / Advance Due — Deep Teal / Coral Accent */
+    #tabCalc .calc-grid-card.calc-box-carry {
+      background: linear-gradient(135deg, rgba(20, 184, 166, 0.22) 0%, rgba(15, 23, 42, 0.78) 100%) !important;
+      border: 1.5px solid rgba(20, 184, 166, 0.55) !important;
+      border-left: 6px solid #14b8a6 !important;
+      box-shadow: 0 10px 26px rgba(20, 184, 166, 0.16) !important;
+    }
+    #tabCalc .calc-grid-card.calc-box-carry .calc-grid-title > span:first-child {
+      color: #5eead4 !important;
+    }
+    #tabCalc .calc-grid-card.calc-box-carry .calc-grid-title > span:first-child i {
+      background: linear-gradient(135deg, #14b8a6, #0d9488);
+      color: #ffffff;
+    }
+    #tabCalc .calc-grid-card.calc-box-carry .calc-auto-badge {
+      background: rgba(20, 184, 166, 0.2) !important;
+      border: 1px solid rgba(20, 184, 166, 0.5) !important;
+      color: #99f6e4 !important;
+    }
+
+    /* 7. Total Amount Paid & Payment Date — Emerald Mint Green */
+    #tabCalc .calc-grid-card.calc-box-paid {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(15, 23, 42, 0.78) 100%) !important;
+      border: 1.5px solid rgba(16, 185, 129, 0.55) !important;
+      border-left: 6px solid #10b981 !important;
+      box-shadow: 0 10px 26px rgba(16, 185, 129, 0.16) !important;
+    }
+    #tabCalc .calc-grid-card.calc-box-paid .calc-grid-title > span:first-child {
+      color: #6ee7b7 !important;
+    }
+    #tabCalc .calc-grid-card.calc-box-paid .calc-grid-title > span:first-child i {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #ffffff;
+    }
+
+    /* Grand Total Billed Banner */
+    .calc-grand-total-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 14px 0;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.28) 0%, rgba(236, 72, 153, 0.22) 100%) !important;
+      border: 1.5px solid rgba(129, 140, 248, 0.6) !important;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.2);
+    }
+
+    /* Light / White Theme Overrides for Colorful Calculation Boxes */
+    body.theme-white #tabCalc .calc-grid-card.calc-box-rent {
+      background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%) !important;
+      border-color: #818cf8 !important;
+    }
+    body.theme-white #tabCalc .calc-grid-card.calc-box-rent .calc-grid-title > span:first-child { color: #3730a3 !important; }
+
+    body.theme-white #tabCalc .calc-grid-card.calc-box-elec {
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%) !important;
+      border-color: #fbbf24 !important;
+    }
+    body.theme-white #tabCalc .calc-grid-card.calc-box-elec .calc-grid-title > span:first-child { color: #92400e !important; }
+    body.theme-white #tabCalc .calc-grid-card.calc-box-elec .calc-auto-badge { color: #92400e !important; background: rgba(245, 158, 11, 0.18) !important; }
+
+    body.theme-white #tabCalc .calc-grid-card.calc-box-png {
+      background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%) !important;
+      border-color: #f472b6 !important;
+    }
+    body.theme-white #tabCalc .calc-grid-card.calc-box-png .calc-grid-title > span:first-child { color: #9d174d !important; }
+    body.theme-white #tabCalc .calc-grid-card.calc-box-png .calc-auto-badge { color: #9d174d !important; background: rgba(236, 72, 153, 0.16) !important; }
+
+    body.theme-white #tabCalc .calc-grid-card.calc-box-water {
+      background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%) !important;
+      border-color: #22d3ee !important;
+    }
+    body.theme-white #tabCalc .calc-grid-card.calc-box-water .calc-grid-title > span:first-child { color: #155e75 !important; }
+    body.theme-white #tabCalc .calc-grid-card.calc-box-water .calc-auto-badge { color: #155e75 !important; background: rgba(6, 182, 212, 0.16) !important; }
+
+    body.theme-white #tabCalc .calc-grid-card.calc-box-add {
+      background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%) !important;
+      border-color: #c084fc !important;
+    }
+    body.theme-white #tabCalc .calc-grid-card.calc-box-add .calc-grid-title > span:first-child { color: #6b21a8 !important; }
+    body.theme-white #tabCalc .calc-grid-card.calc-box-add .calc-auto-badge { color: #6b21a8 !important; background: rgba(168, 85, 247, 0.16) !important; }
+
+    body.theme-white #tabCalc .calc-grid-card.calc-box-carry {
+      background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%) !important;
+      border-color: #2dd4bf !important;
+    }
+    body.theme-white #tabCalc .calc-grid-card.calc-box-carry .calc-grid-title > span:first-child { color: #115e59 !important; }
+    body.theme-white #tabCalc .calc-grid-card.calc-box-carry .calc-auto-badge { color: #115e59 !important; background: rgba(20, 184, 166, 0.16) !important; }
+
+    body.theme-white #tabCalc .calc-grid-card.calc-box-paid {
+      background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%) !important;
+      border-color: #34d399 !important;
+    }
+    body.theme-white #tabCalc .calc-grid-card.calc-box-paid .calc-grid-title > span:first-child { color: #065f46 !important; }
+
+    body.theme-white .calc-grand-total-banner {
+      background: linear-gradient(135deg, #e0e7ff 0%, #fce7f3 100%) !important;
+      border-color: #6366f1 !important;
+    }
+
+    /* ==========================================================================
+       REQUIREMENT 7: STYLISH HOME PAGE "KHET" (FIELD) SECTION & CARDS
+       ========================================================================== */
+    .home-khet-section {
+      max-width: 1280px;
+      margin: 4px auto 40px auto;
+      padding: 0 24px;
+    }
+    .home-khet-shell {
+      background: linear-gradient(145deg, rgba(6, 78, 59, 0.42) 0%, rgba(15, 23, 42, 0.78) 55%, rgba(20, 83, 45, 0.38) 100%);
+      border: 1.5px solid rgba(52, 211, 153, 0.45);
+      border-radius: 22px;
+      padding: 22px 24px;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    body.theme-white .home-khet-shell {
+      background: linear-gradient(145deg, rgba(236, 253, 245, 0.92) 0%, rgba(209, 250, 229, 0.88) 100%);
+      border-color: rgba(16, 185, 129, 0.55);
+      box-shadow: 0 14px 32px rgba(16, 185, 129, 0.14);
+    }
+    .home-khet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      padding-bottom: 16px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid rgba(52, 211, 153, 0.28);
+    }
+    .home-khet-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .home-khet-icon-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+    }
+    .home-khet-stats-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .home-khet-stat-pill {
+      background: rgba(15, 23, 42, 0.55);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    body.theme-white .home-khet-stat-pill {
+      background: rgba(255, 255, 255, 0.85);
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    .home-khet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(295px, 1fr));
+      gap: 16px;
+    }
+    .khet-stylish-card {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(15, 23, 42, 0.72) 100%);
+      border: 1.5px solid rgba(52, 211, 153, 0.42);
+      border-top: 4px solid #10b981;
+      border-radius: 16px;
+      padding: 16px;
+      transition: all 0.22s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+    }
+    .khet-stylish-card:hover {
+      transform: translateY(-3px);
+      border-color: #34d399;
+      box-shadow: 0 12px 28px rgba(16, 185, 129, 0.25);
+    }
+    body.theme-white .khet-stylish-card {
+      background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
+      border-color: #6ee7b7;
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.12);
+    }
+    .khet-detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.8rem;
+    }
+    body.theme-white .khet-detail-row {
+      background: rgba(16, 185, 129, 0.06);
+      border-color: rgba(16, 185, 129, 0.18);
+    }
+    @media (max-width: 768px) {
+      .home-khet-section {
+        padding: 0 12px;
+      }
+      .home-khet-shell {
+        padding: 16px 14px;
+      }
+    }
   </style>
 <script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body class="theme-black">
@@ -1729,20 +2079,20 @@
     <div class="side-toast-progress" id="sideToastProgress"></div>
   </div>
 
-  <!-- CENTERED REDESIGNED CONFIRMATION MODAL (FOR CASCADE DELETE FLAT & DELETE PROPERTY) -->
+  <!-- CENTERED REDESIGNED CONFIRMATION MODAL (FOR CASCADE DELETE FLAT, DELETE PROPERTY & LOGOUT CONFIRMATION) -->
   <div id="customConfirmModal" class="modal-overlay">
     <div class="modal-window confirm-modal-card">
-      <div class="confirm-icon-ring">
-        <i class="fa-solid fa-trash-can-arrow-up"></i>
+      <div class="confirm-icon-ring" id="confirmModalIconRing">
+        <i id="confirmModalIcon" class="fa-solid fa-trash-can-arrow-up"></i>
       </div>
       <h3 id="confirmModalTitle">Confirm Deletion</h3>
       <p id="confirmModalMessage">Are you sure you want to confirm delete this item? Yes or No?</p>
       <div class="confirm-btn-row">
-        <button type="button" class="btn-confirm-cancel" onclick="closeConfirmModal()">
-          <i class="fa-solid fa-xmark"></i> No, Cancel
+        <button type="button" class="btn-confirm-cancel" id="confirmModalNoBtn" onclick="closeConfirmModal()">
+          <i class="fa-solid fa-xmark"></i> <span id="confirmModalNoText">No, Cancel</span>
         </button>
         <button type="button" class="btn-confirm-danger" id="confirmModalYesBtn">
-          <i class="fa-solid fa-check"></i> Yes, Delete All
+          <i class="fa-solid fa-check"></i> <span id="confirmModalYesText">Yes, Delete All</span>
         </button>
       </div>
     </div>
@@ -1798,12 +2148,12 @@
         </span>
       </div>
 
-      <!-- Requirement 10: Total Amount Received from All Properties Banner -->
+      <!-- Requirement 6: Total Rent Money Shown Across All Properties (Strictly Rent Amount Only) -->
       <div id="fdTotalCollectionsBanner" style="margin-bottom:14px; background:linear-gradient(135deg, rgba(79,70,229,0.2) 0%, rgba(16,185,129,0.2) 100%); border:1.5px solid var(--primary); border-radius:14px; padding:12px 14px;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
           <div>
             <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.5px;">
-              <i class="fa-solid fa-wallet"></i> Total Amount Received From All Properties
+              <i class="fa-solid fa-wallet"></i> Total Rent Amount Across All Properties (Rent Only)
             </div>
             <div id="fdTotalAmountDisplay" style="font-size:1.35rem; font-weight:800; color:var(--accent-green); margin-top:2px;">₹0</div>
           </div>
@@ -1818,7 +2168,7 @@
           </button>
         </div>
         <div class="form-group" style="margin-bottom:10px;">
-          <label>Fund Source Property <span class="req-star">*</span> (From which property's money are you creating this FD?)</label>
+          <label>Fund Source Property <span class="req-star">*</span> (From which property's rent money are you creating this FD?)</label>
           <select id="fdSourceProperty" class="form-control"></select>
         </div>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
@@ -1851,52 +2201,56 @@
     </div>
   </div>
 
-  <!-- KHET (FARMLAND / FIELD) POP-UP MODAL (AUTO-SAVES TO GOOGLE SHEET + EDIT SUPPORT) -->
+  <!-- KHET (FIELD) POP-UP MODAL (Requirement 7: Field Name, Size in Bighas, Holder Name, Amount Paid, Payment Date) -->
   <div id="khetModal" class="modal-overlay" style="z-index: 2800;">
-    <div class="modal-window" style="max-width: 600px;">
+    <div class="modal-window" style="max-width: 640px;">
       <button class="modal-close-btn" onclick="closeModal('khetModal')"><i class="fa-solid fa-xmark"></i></button>
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding-right:36px; margin-bottom: 12px;">
         <h3 style="display:flex; align-items:center; gap:8px; margin:0;">
-          <i class="fa-solid fa-seedling" style="color:var(--accent-green);"></i> Khet (Farmland / Field) Details
+          <i class="fa-solid fa-seedling" style="color:var(--accent-green);"></i> Khet (Field) Management
         </h3>
         <span style="font-size:0.7rem; font-weight:700; color:var(--accent-green); background:rgba(16,185,129,0.14); padding:3px 9px; border-radius:20px;">
-          <i class="fa-solid fa-cloud-arrow-up"></i> Auto-Saves to Google Sheet
+          <i class="fa-solid fa-cloud-arrow-up"></i> Live Google Sheet Sync
         </span>
       </div>
-      <div class="calc-grid-card admin-only" style="margin-bottom: 14px;">
+      <div class="calc-grid-card admin-only" style="margin-bottom: 14px; border-left: 5px solid #10b981; background: linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(15, 23, 42, 0.65) 100%);">
         <div class="calc-grid-title">
-          <span id="khetFormTitle"><i class="fa-solid fa-plus-circle"></i> Add New Khet (Farmland) Entry</span>
+          <span id="khetFormTitle" style="color:#34d399;"><i class="fa-solid fa-wheat-awn"></i> Add New Khet (Field) Entry</span>
           <button type="button" id="btnCancelKhetEdit" class="btn-ledger-action" style="display:none; padding:4px 10px; font-size:0.72rem;" onclick="cancelKhetEdit()">
             <i class="fa-solid fa-xmark"></i> Cancel Edit
           </button>
         </div>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
           <div class="form-group" style="margin-bottom:8px;">
-            <label>Khet / Farmland / Plot Name <span class="req-star">*</span></label>
-            <input type="text" id="khetName" class="form-control" placeholder="e.g. North Field / Plot 4">
+            <label><i class="fa-solid fa-map-location-dot" style="color:#34d399;"></i> Field Name (Khet Name) <span class="req-star">*</span></label>
+            <input type="text" id="khetName" class="form-control" placeholder="e.g. North Canal Field / Plot 4">
           </div>
           <div class="form-group" style="margin-bottom:8px;">
-            <label>Crop / Cultivator / Purpose</label>
-            <input type="text" id="khetCrop" class="form-control" placeholder="e.g. Wheat / Batai">
+            <label><i class="fa-solid fa-ruler-combined" style="color:#38bdf8;"></i> Size of the Field (in Bighas) <span class="req-star">*</span></label>
+            <input type="text" id="khetBigha" class="form-control" placeholder="e.g. 5 Bigha or 5.5">
           </div>
           <div class="form-group" style="margin-bottom:8px;">
-            <label>Income / Batai Amount (₹)</label>
-            <input type="number" id="khetIncome" class="form-control" placeholder="0">
+            <label><i class="fa-solid fa-user-check" style="color:#fbbf24;"></i> Name of Person Holding the Field <span class="req-star">*</span></label>
+            <input type="text" id="khetHolderName" class="form-control" placeholder="Enter holder / cultivator name">
           </div>
           <div class="form-group" style="margin-bottom:8px;">
-            <label>Expense Amount (₹)</label>
-            <input type="number" id="khetExpense" class="form-control" placeholder="0">
+            <label><i class="fa-solid fa-indian-rupee-sign" style="color:#34d399;"></i> Amount of Money Paid (₹) <span class="req-star">*</span></label>
+            <input type="number" id="khetAmountPaid" class="form-control" placeholder="e.g. 45000">
+          </div>
+          <div class="form-group" style="margin-bottom:8px;">
+            <label><i class="fa-regular fa-calendar-days" style="color:#a78bfa;"></i> Date on Which It Was Paid <span class="req-star">*</span></label>
+            <input type="date" id="khetPaymentDate" class="form-control">
+          </div>
+          <div class="form-group" style="margin-bottom:8px;">
+            <label><i class="fa-solid fa-note-sticky" style="color:#94a3b8;"></i> Additional Notes (Optional)</label>
+            <input type="text" id="khetNotes" class="form-control" placeholder="Season, crop, or remarks">
           </div>
         </div>
-        <div class="form-group" style="margin-bottom:10px;">
-          <label>Date &amp; Notes</label>
-          <input type="text" id="khetNotes" class="form-control" placeholder="Season, area, or payment remarks">
-        </div>
-        <button type="button" id="btnSubmitKhetRecord" class="btn-primary" onclick="addKhetRecord()">
-          <i class="fa-solid fa-check"></i> <span id="btnSubmitKhetRecordText">Save Farmland / Khet Record to Google Sheet</span>
+        <button type="button" id="btnSubmitKhetRecord" class="btn-primary" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%); margin-top:4px;" onclick="addKhetRecord()">
+          <i class="fa-solid fa-check"></i> <span id="btnSubmitKhetRecordText">Save Khet (Field) Record to Google Sheet</span>
         </button>
       </div>
-      <div id="khetRecordsList" style="max-height: 290px; overflow-y: auto; display:flex; flex-direction:column; gap:8px;"></div>
+      <div id="khetRecordsList" style="max-height: 290px; overflow-y: auto; display:flex; flex-direction:column; gap:10px;"></div>
     </div>
   </div>
 
@@ -2031,6 +2385,50 @@
     <main class="flats-container" id="flatsList">
       <!-- Rendered Only When Property Is Clicked -->
     </main>
+
+    <!-- Requirement 7: Stylish Home Page "Khet" (Field) Section -->
+    <section id="homeKhetSection" class="home-khet-section">
+      <div class="home-khet-shell">
+        <div class="home-khet-header">
+          <div class="home-khet-brand">
+            <div class="home-khet-icon-badge">
+              <i class="fa-solid fa-seedling"></i>
+            </div>
+            <div>
+              <h3 style="margin:0; font-size:1.18rem; font-weight:800; display:flex; align-items:center; gap:8px;">
+                Khet (Field) Portfolio
+                <span style="font-size:0.68rem; font-weight:700; color:#34d399; background:rgba(16,185,129,0.16); padding:3px 9px; border-radius:20px; border:1px solid rgba(52,211,153,0.35);">
+                  <i class="fa-solid fa-wheat-awn"></i> Agricultural Holdings
+                </span>
+              </h3>
+              <p style="margin:3px 0 0 0; font-size:0.76rem; color:var(--text-muted);">
+                Track field name, field size in Bighas, holder name, amount paid, and payment date
+              </p>
+            </div>
+          </div>
+          <div class="home-khet-stats-bar">
+            <div class="home-khet-stat-pill">
+              <i class="fa-solid fa-layer-group" style="color:#34d399;"></i>
+              <span>Fields: <strong id="homeKhetTotalCount">0</strong></span>
+            </div>
+            <div class="home-khet-stat-pill">
+              <i class="fa-solid fa-ruler-combined" style="color:#38bdf8;"></i>
+              <span>Total Size: <strong id="homeKhetTotalBigha">0 Bigha</strong></span>
+            </div>
+            <div class="home-khet-stat-pill">
+              <i class="fa-solid fa-indian-rupee-sign" style="color:#fbbf24;"></i>
+              <span>Total Paid: <strong id="homeKhetTotalPaid" style="color:#34d399;">₹0</strong></span>
+            </div>
+            <button type="button" class="btn-primary admin-only" style="width:auto; padding:9px 16px; font-size:0.8rem; background:linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow:0 6px 16px rgba(16,185,129,0.35);" onclick="openKhetModal()">
+              <i class="fa-solid fa-plus"></i> Add / Manage Khet
+            </button>
+          </div>
+        </div>
+        <div id="homeKhetCardsGrid" class="home-khet-grid">
+          <!-- Populated dynamically with stylish Khet cards -->
+        </div>
+      </div>
+    </section>
   </section>
 
   <!-- ==================== POPUP MODALS ==================== -->
@@ -2114,6 +2512,10 @@
           <input type="number" id="eePaidAmount" class="form-control" oninput="runEditEverythingMath()">
         </div>
         <div class="form-group">
+          <label>Payment Date</label>
+          <input type="date" id="eePaymentDate" class="form-control">
+        </div>
+        <div class="form-group">
           <label>Payment Mode</label>
           <select id="eePaymentMode" class="form-control">
             <option value="UPI">UPI</option>
@@ -2129,7 +2531,7 @@
             <option value="Fully Paid">Fully Paid</option>
           </select>
         </div>
-        <div class="form-group" style="grid-column: span 2;">
+        <div class="form-group">
           <label>Important Notes</label>
           <input type="text" id="eeNotes" class="form-control">
         </div>
@@ -2873,15 +3275,15 @@
         <div class="flat-nav-item" onclick="switchFlatTab(event, 'tabGraph')">5. Graph</div>
       </nav>
 
-      <!-- TAB 1: CALCULATION WORKFLOW -->
+      <!-- TAB 1: CALCULATION WORKFLOW (Requirement 2 & 3: Colorful Calculation Boxes + Payment Date Next to Total Amount Paid) -->
       <div id="tabCalc" class="tab-content active">
-        <!-- Requirement 2: Billing Month and Base Rent placed in a single box divided in half side-by-side -->
-        <div class="calc-grid-card">
+        <!-- Box 1: Billing Month and Base Rent (Royal Indigo Theme) -->
+        <div class="calc-grid-card calc-box-rent">
           <div class="calc-grid-title">
             <span><i class="fa-solid fa-calendar-check"></i> Billing Month &amp; Monthly Base Rent</span>
             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
               <span id="calcMonthStatusTag" class="calc-month-status-tag">New Month Calculation</span>
-              <span id="calcRentBadge" style="font-size:0.78rem; font-weight:800; color:var(--primary); background:rgba(79,70,229,0.12); padding:3px 10px; border-radius:20px;">₹ 0</span>
+              <span id="calcRentBadge" style="font-size:0.78rem; font-weight:800; color:#fff; background:linear-gradient(135deg, #6366f1, #4f46e5); padding:4px 12px; border-radius:20px;">₹ 0</span>
             </div>
           </div>
           <div class="calc-half-split-row" style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; align-items:end;">
@@ -2901,11 +3303,11 @@
           </div>
         </div>
 
-        <!-- Electricity Consumption -->
-        <div class="calc-grid-card">
+        <!-- Box 2: Electricity Consumption (Radiant Amber / Gold Theme) -->
+        <div class="calc-grid-card calc-box-elec">
           <div class="calc-grid-title">
             <span><i class="fa-solid fa-bolt"></i> Electricity Consumption</span>
-            <span id="elecRolloverHint" style="font-size:0.72rem; color:var(--accent-green);"></span>
+            <span id="elecRolloverHint" style="font-size:0.72rem; color:var(--accent-green); font-weight:700;"></span>
           </div>
           <div class="calc-utility-row">
             <div class="calc-field-col">
@@ -2931,17 +3333,17 @@
               </div>
             </div>
             <div class="calc-field-col">
-              <label>Units & Charge</label>
+              <label>Units &amp; Charge</label>
               <div class="calc-auto-badge" id="calcElecSummary">0 U (₹0)</div>
             </div>
           </div>
         </div>
 
-        <!-- PNG Gas Consumption -->
-        <div class="calc-grid-card">
+        <!-- Box 3: PNG Gas Consumption (Vibrant Rose / Flame Pink Theme) -->
+        <div class="calc-grid-card calc-box-png">
           <div class="calc-grid-title">
             <span><i class="fa-solid fa-fire-flame-simple"></i> PNG Gas Consumption</span>
-            <span id="pngRolloverHint" style="font-size:0.72rem; color:var(--accent-green);"></span>
+            <span id="pngRolloverHint" style="font-size:0.72rem; color:var(--accent-green); font-weight:700;"></span>
           </div>
           <div class="calc-utility-row">
             <div class="calc-field-col">
@@ -2967,17 +3369,17 @@
               </div>
             </div>
             <div class="calc-field-col">
-              <label>Units & Charge</label>
+              <label>Units &amp; Charge</label>
               <div class="calc-auto-badge" id="calcPngSummary">0 U (₹0)</div>
             </div>
           </div>
         </div>
 
-        <!-- Water Consumption -->
-        <div class="calc-grid-card">
+        <!-- Box 4: Water Consumption (Ocean Cyan / Sky Blue Theme) -->
+        <div class="calc-grid-card calc-box-water">
           <div class="calc-grid-title">
             <span><i class="fa-solid fa-faucet-drip"></i> Water Consumption</span>
-            <span id="waterRolloverHint" style="font-size:0.72rem; color:var(--accent-green);"></span>
+            <span id="waterRolloverHint" style="font-size:0.72rem; color:var(--accent-green); font-weight:700;"></span>
           </div>
           <div class="calc-utility-row">
             <div class="calc-field-col">
@@ -3003,17 +3405,17 @@
               </div>
             </div>
             <div class="calc-field-col">
-              <label>Units & Charge</label>
+              <label>Units &amp; Charge</label>
               <div class="calc-auto-badge" id="calcWaterSummary">0 U (₹0)</div>
             </div>
           </div>
         </div>
 
-        <!-- Requirement 3 (Box 1 of 3): Dedicated Individual Box for Additional Charge -->
-        <div class="calc-grid-card">
+        <!-- Box 5: Additional Charge (Vivid Purple / Amethyst Theme) -->
+        <div class="calc-grid-card calc-box-add">
           <div class="calc-grid-title">
             <span><i class="fa-solid fa-sliders"></i> Additional Charge</span>
-            <span style="font-size:0.72rem; color:var(--text-muted);">Extra Charge / Discount</span>
+            <span style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">Extra Charge / Discount</span>
           </div>
           <div class="calc-utility-row">
             <div class="calc-field-col">
@@ -3038,8 +3440,8 @@
           </div>
         </div>
 
-        <!-- Requirement 3 (Box 2 of 3): Dedicated Individual Box for Previous Carry Month Forward / Advance Due -->
-        <div class="calc-grid-card">
+        <!-- Box 6: Previous Carry Month Forward / Advance Due (Deep Teal Theme) -->
+        <div class="calc-grid-card calc-box-carry">
           <div class="calc-grid-title">
             <span><i class="fa-solid fa-clock-rotate-left"></i> Previous Carry Month Forward / Advance Due</span>
             <span id="carryForwardHint" style="font-size:0.72rem; font-weight:700;"></span>
@@ -3065,19 +3467,23 @@
           </div>
         </div>
 
-        <!-- Requirement 3 (Box 3 of 3): Dedicated Individual Box for Total Amount Paid -->
-        <div class="calc-grid-card">
+        <!-- Box 7 (Requirement 2): Total Amount Paid + Payment Date + Payment Mode + Closing Balance (Emerald Green Theme) -->
+        <div class="calc-grid-card calc-box-paid">
           <div class="calc-grid-title">
-            <span><i class="fa-solid fa-money-bill-wave"></i> Total Amount Paid</span>
-            <span style="font-size:0.72rem; color:var(--text-muted);">Monthly Payment Settlement</span>
+            <span><i class="fa-solid fa-money-bill-wave"></i> Total Amount Paid &amp; Payment Date</span>
+            <span style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">Monthly Payment Settlement</span>
           </div>
-          <div class="calc-utility-row">
-            <div class="calc-field-col" style="grid-column: span 2;">
-              <label>Total Amount Paid (₹)</label>
+          <div class="calc-utility-row" style="grid-template-columns: repeat(4, 1fr);">
+            <div class="calc-field-col">
+              <label><i class="fa-solid fa-indian-rupee-sign"></i> Total Amount Paid (₹)</label>
               <input type="number" id="calcPaidNow" class="form-control" placeholder="0" oninput="runBillMath()">
             </div>
             <div class="calc-field-col">
-              <label>Payment Mode</label>
+              <label><i class="fa-regular fa-calendar-check"></i> Payment Date</label>
+              <input type="date" id="calcPaymentDate" class="form-control">
+            </div>
+            <div class="calc-field-col">
+              <label><i class="fa-solid fa-credit-card"></i> Payment Mode</label>
               <select id="calcPayMode" class="form-control">
                 <option value="UPI">UPI</option>
                 <option value="Cash">Cash</option>
@@ -3091,9 +3497,9 @@
           </div>
         </div>
 
-        <div style="display:flex; justify-content:space-between; align-items:center; margin: 12px 0; padding:12px 16px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:12px;">
-          <span style="font-weight:700;">Grand Total Billed (Includes Carry-Forward):</span>
-          <strong id="calcGrandTotal" style="font-size:1.2rem; color:var(--primary);">₹ 0</strong>
+        <div class="calc-grand-total-banner">
+          <span style="font-weight:800; font-size:0.95rem;"><i class="fa-solid fa-sack-dollar" style="color:#818cf8; margin-right:6px;"></i>Grand Total Billed (Includes Carry-Forward):</span>
+          <strong id="calcGrandTotal" style="font-size:1.3rem; color:var(--primary);">₹ 0</strong>
         </div>
 
         <div class="form-group">
@@ -3770,10 +4176,17 @@ function formatMonthLabel(rawVal) {
       }, 3600);
     }
 
-    function openCenteredConfirmModal(title, message, onYesCallback) {
+    function openCenteredConfirmModal(title, message, onYesCallback, customOpts = {}) {
       document.getElementById("confirmModalTitle").innerText = title;
       document.getElementById("confirmModalMessage").innerText = message;
       pendingConfirmCallback = onYesCallback;
+
+      const yesTextEl = document.getElementById("confirmModalYesText");
+      const noTextEl = document.getElementById("confirmModalNoText");
+      const iconEl = document.getElementById("confirmModalIcon");
+      if (yesTextEl) yesTextEl.innerText = customOpts.yesText || "Yes, Delete All";
+      if (noTextEl) noTextEl.innerText = customOpts.noText || "No, Cancel";
+      if (iconEl) iconEl.className = customOpts.iconClass || "fa-solid fa-trash-can-arrow-up";
 
       const yesBtn = document.getElementById("confirmModalYesBtn");
       yesBtn.onclick = () => {
@@ -3788,6 +4201,12 @@ function formatMonthLabel(rawVal) {
     function closeConfirmModal() {
       document.getElementById("customConfirmModal").classList.remove("active");
       pendingConfirmCallback = null;
+      const yesTextEl = document.getElementById("confirmModalYesText");
+      const noTextEl = document.getElementById("confirmModalNoText");
+      const iconEl = document.getElementById("confirmModalIcon");
+      if (yesTextEl) yesTextEl.innerText = "Yes, Delete All";
+      if (noTextEl) noTextEl.innerText = "No, Cancel";
+      if (iconEl) iconEl.className = "fa-solid fa-trash-can-arrow-up";
     }
 
     function togglePasswordVisibility(inputId, btnEl) {
@@ -4304,6 +4723,7 @@ function formatMonthLabel(rawVal) {
 
       updateGlobalProfitAndLoss();
       renderPropertiesRow();
+      renderHomeKhetSection();
 
       const flatsContainer = document.getElementById("flatsList");
       if (selectedProperty && DB.properties.some(p => String(p.PropertyName).trim() === String(selectedProperty).trim())) {
@@ -5608,7 +6028,7 @@ function formatMonthLabel(rawVal) {
           mobile: activeUserMobile
         });
         triggerSideToast("Password Updated", "Logging out for security...", true);
-        setTimeout(() => handleLogout(), 900);
+        setTimeout(() => handleLogout(true), 900);
       } else {
         msgBox.innerText = res.message || "Current Password is incorrect.";
         msgBox.className = "bottom-status-msg error";
@@ -5888,6 +6308,10 @@ function formatMonthLabel(rawVal) {
       document.getElementById("eeAddAmount").value = bill.AdditionalAmount ?? 0;
       document.getElementById("eeTotalBilled").value = bill.TotalBilled ?? 0;
       document.getElementById("eePaidAmount").value = bill.PaidAmount ?? 0;
+      const eePayDateEl = document.getElementById("eePaymentDate");
+      if (eePayDateEl) {
+        eePayDateEl.value = toInputDateValue(bill.PaymentDate || bill.BillDate) || "";
+      }
       document.getElementById("eePaymentMode").value = bill.PaymentMode || "UPI";
       document.getElementById("eeStatus").value = bill.Status || "Unpaid";
       document.getElementById("eeNotes").value = bill.Notes || "";
@@ -5932,10 +6356,12 @@ function formatMonthLabel(rawVal) {
       bill.AdditionalAmount = parseFloat(document.getElementById("eeAddAmount").value) || 0;
       bill.TotalBilled = parseFloat(document.getElementById("eeTotalBilled").value) || 0;
       bill.PaidAmount = parseFloat(document.getElementById("eePaidAmount").value) || 0;
+      bill.PaymentDate = document.getElementById("eePaymentDate")?.value || bill.PaymentDate || "";
       bill.PaymentMode = document.getElementById("eePaymentMode").value;
       bill.Status = document.getElementById("eeStatus").value;
       bill.Notes = document.getElementById("eeNotes").value;
 
+      saveDbSnapshotToCache();
       closeModal("editEverythingBillModal");
       renderEditEverythingBillsList();
       renderAllDashboardUI();
@@ -5968,6 +6394,7 @@ function formatMonthLabel(rawVal) {
         additionalAmount: bill.AdditionalAmount,
         totalBilled: bill.TotalBilled,
         paidAmount: bill.PaidAmount,
+        paymentDate: bill.PaymentDate || "",
         paymentMode: bill.PaymentMode,
         status: bill.Status,
         notes: bill.Notes,
@@ -6619,6 +7046,8 @@ function renderRegisteredUsersList() {
         document.getElementById("calcAddAmount").value = "";
         document.getElementById("calcPrevCarryBalance").value = 0;
         document.getElementById("calcPaidNow").value = 0;
+        const payDateElPast = document.getElementById("calcPaymentDate");
+        if (payDateElPast) payDateElPast.value = "";
         runBillMath();
         return;
       }
@@ -6659,6 +7088,10 @@ function renderRegisteredUsersList() {
           : autoCarryBalance;
         document.getElementById("calcPrevCarryBalance").value = savedCarry;
         document.getElementById("calcPaidNow").value = existingBill.PaidAmount ?? 0;
+        const payDateEl = document.getElementById("calcPaymentDate");
+        if (payDateEl) {
+          payDateEl.value = toInputDateValue(existingBill.PaymentDate || existingBill.BillDate) || new Date().toISOString().split("T")[0];
+        }
         document.getElementById("calcPayMode").value = existingBill.PaymentMode || "UPI";
         document.getElementById("calcNotes").value = existingBill.Notes || "";
 
@@ -6715,6 +7148,10 @@ function renderRegisteredUsersList() {
         document.getElementById("calcAddAmount").value = "";
         document.getElementById("calcPrevCarryBalance").value = autoCarryBalance;
         document.getElementById("calcPaidNow").value = 0;
+        const payDateElNew = document.getElementById("calcPaymentDate");
+        if (payDateElNew) {
+          payDateElNew.value = new Date().toISOString().split("T")[0];
+        }
         document.getElementById("calcNotes").value = "";
       }
 
@@ -6790,44 +7227,44 @@ function renderRegisteredUsersList() {
       }
     }
 
-    // FD Total Amount Received from All Properties (Requirement 10: Sorted Alphabetically)
+    // Requirement 6: FD Total Money Shown Across All Properties Must Strictly Reflect Only the Rent Amount (Excludes Water, PNG & Electricity)
     function updateFdTotalCollectionsDisplay() {
-      let grandTotalReceived = 0;
-      const propTotals = {};
+      let grandTotalRentOnly = 0;
+      const propRentTotals = {};
       sortPropertiesAlphabetically(DB.properties);
 
       (DB.properties || []).forEach(p => {
-        propTotals[p.PropertyName] = 0;
+        propRentTotals[p.PropertyName] = 0;
       });
 
       (DB.bills || []).forEach(b => {
-        const paid = parseFloat(b.PaidAmount) || 0;
-        grandTotalReceived += paid;
+        const rentOnly = parseFloat(b.BaseRent) || 0;
+        grandTotalRentOnly += rentOnly;
         if (b.PropertyName) {
-          propTotals[b.PropertyName] = (propTotals[b.PropertyName] || 0) + paid;
+          propRentTotals[b.PropertyName] = (propRentTotals[b.PropertyName] || 0) + rentOnly;
         }
       });
 
       const displayEl = document.getElementById("fdTotalAmountDisplay");
       if (displayEl) {
-        displayEl.innerText = '₹' + grandTotalReceived.toLocaleString('en-IN');
+        displayEl.innerText = '₹' + grandTotalRentOnly.toLocaleString('en-IN');
       }
 
       const badgesContainer = document.getElementById("fdPropertyBreakdownBadges");
       if (badgesContainer) {
-        badgesContainer.innerHTML = Object.entries(propTotals).map(([pName, amt]) => {
+        badgesContainer.innerHTML = Object.entries(propRentTotals).map(([pName, amt]) => {
           return '<span style="background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:6px; border:1px solid var(--glass-border);">' +
-                 pName + ': <strong style="color:var(--accent-green);">₹' + amt.toLocaleString('en-IN') + '</strong></span>';
+                 pName + ' (Rent): <strong style="color:var(--accent-green);">₹' + amt.toLocaleString('en-IN') + '</strong></span>';
         }).join("");
       }
 
-      // Populate Property selector dropdown for creating FD
+      // Populate Property selector dropdown for creating FD (showing Rent Only per property)
       const propSelect = document.getElementById("fdSourceProperty");
       if (propSelect) {
-        const options = ['<option value="All Properties">All Properties (General Pool)</option>'];
+        const options = ['<option value="All Properties">All Properties (Total Rent Pool: ₹' + grandTotalRentOnly.toLocaleString('en-IN') + ')</option>'];
         (DB.properties || []).forEach(p => {
-          const pReceived = propTotals[p.PropertyName] || 0;
-          options.push('<option value="' + p.PropertyName + '">' + p.PropertyName + ' (Received: ₹' + pReceived.toLocaleString('en-IN') + ')</option>');
+          const pRent = propRentTotals[p.PropertyName] || 0;
+          options.push('<option value="' + p.PropertyName + '">' + p.PropertyName + ' (Rent Only: ₹' + pRent.toLocaleString('en-IN') + ')</option>');
         });
         propSelect.innerHTML = options.join("");
       }
@@ -7842,6 +8279,7 @@ function renderRegisteredUsersList() {
         AdditionalAmount: netAddAmt,
         TotalBilled: totalBilled,
         PaidAmount: paidAmount,
+        PaymentDate: document.getElementById("calcPaymentDate")?.value || existingBillRecord?.PaymentDate || new Date().toISOString().split("T")[0],
         PaymentMode: document.getElementById("calcPayMode").value,
         Status: billStatus,
         Notes: document.getElementById("calcNotes").value,
@@ -7902,6 +8340,7 @@ function renderRegisteredUsersList() {
         additionalAmount: newBillObj.AdditionalAmount,
         totalBilled: newBillObj.TotalBilled,
         paidAmount: newBillObj.PaidAmount,
+        paymentDate: newBillObj.PaymentDate,
         paymentMode: newBillObj.PaymentMode,
         status: newBillObj.Status,
         notes: newBillObj.Notes,
@@ -7972,6 +8411,8 @@ function renderRegisteredUsersList() {
         const waterRate = parseFloat(bill.WaterRate) || 0;
         const waterTotal = bill.WaterTotal !== undefined && bill.WaterTotal !== "" ? (parseFloat(bill.WaterTotal) || 0) : (waterUnits * waterRate);
 
+        const paidDateDisplay = formatDateOnly(bill.PaymentDate || bill.BillDate);
+
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td><strong>${displayMonth}</strong></td>
@@ -8000,7 +8441,10 @@ function renderRegisteredUsersList() {
           </td>
           <td>${carryText}</td>
           <td><strong>₹${bill.TotalBilled}</strong></td>
-          <td>₹${bill.PaidAmount} (${bill.PaymentMode})</td>
+          <td>
+            <div><strong>₹${bill.PaidAmount}</strong> (${bill.PaymentMode})</div>
+            ${paidDateDisplay && paidDateDisplay !== '--' ? `<div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;"><i class="fa-regular fa-calendar-check"></i> ${paidDateDisplay}</div>` : ''}
+          </td>
           <td><span class="badge-${String(bill.Status).toLowerCase().includes('fully') ? 'paid' : (String(bill.Status).toLowerCase().includes('partial') ? 'partial' : 'unpaid')}">${bill.Status}</span></td>
           <td>
             <div class="history-actions-cell">
@@ -8078,20 +8522,37 @@ function renderRegisteredUsersList() {
       return digits;
     }
 
-    // Requirements 1, 6, 7 & 8: Clean Receipt, Pay UPI Name, Instant Client-Side QR Code with Centered UPI ID Below, & Reliable WhatsApp Receipt Image Sending
+    // Requirements 1, 4 & 5: Valid NPCI-Compliant UPI QR Code (Never encodes '@' as '%40'), Removed WhatsApp Target Line, and Removed Total Amount Paid from Receipt
     let lastQrFetchToken = 0;
 
+    function buildValidUpiUri(rawUpiId, rawUpiName, exactAmount) {
+      const cleanPa = String(rawUpiId || "").replace(/['"\s]/g, "").trim();
+      if (!cleanPa || !cleanPa.includes("@")) return "";
+
+      const cleanPnRaw = String(rawUpiName || "Rent Payment")
+        .replace(/[^a-zA-Z0-9 .&-]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim() || "Rent Payment";
+      const encodedPn = encodeURIComponent(cleanPnRaw);
+      const cleanAmt = Math.max(0, Number(exactAmount) || 0);
+
+      // CRITICAL: Keep literal '@' in pa= parameter per NPCI UPI Linking Spec so GPay, PhonePe, Paytm & BHIM never say "Invalid QR Code"
+      if (cleanAmt > 0) {
+        return `upi://pay?pa=${cleanPa}&pn=${encodedPn}&am=${cleanAmt.toFixed(2)}&cu=INR`;
+      }
+      return `upi://pay?pa=${cleanPa}&pn=${encodedPn}&cu=INR`;
+    }
+
     async function fetchQrCodeAsDataUrl(upiUri) {
-      // Requirement 7: Generate QR code instantaneously on the client using QRious so it never fails or taints canvas
       if (window.QRious) {
         try {
           const qr = new window.QRious({
             value: String(upiUri || ""),
-            size: 240,
-            padding: 12,
+            size: 260,
+            padding: 16,
             level: "M",
             background: "#ffffff",
-            foreground: "#0f172a"
+            foreground: "#000000"
           });
           const dataUrl = qr.toDataURL("image/png");
           if (dataUrl && dataUrl.startsWith("data:image/")) {
@@ -8099,7 +8560,7 @@ function renderRegisteredUsersList() {
           }
         } catch (qrErr) {}
       }
-      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(upiUri)}`;
+      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=${encodeURIComponent(upiUri)}`;
       try {
         const resp = await fetch(qrApiUrl, { mode: "cors", cache: "force-cache" });
         const blob = await resp.blob();
@@ -8132,9 +8593,6 @@ function renderRegisteredUsersList() {
       currentOpenedReceiptRenter = findRenterForBill(bill);
       currentOpenedReceiptFlat = DB.flats.find(f => isSamePropAndFlat(f.PropertyName, f.FlatName, bill.PropertyName, bill.FlatName)) || selectedFlat;
 
-      const targetTenantMobile = resolveReceiptTargetMobile(bill, currentOpenedReceiptRenter);
-      const targetRenterIsDeparted = currentOpenedReceiptRenter ? (String(currentOpenedReceiptRenter.Status || "").toLowerCase() !== "active") : false;
-
       document.getElementById("recPropAndFlat").innerText = `${bill.PropertyName} — Flat ${bill.FlatName}`;
       document.getElementById("recMonthLabel").innerText = `Billing Month: ${formatMonthLabel(bill.MonthYear)}`;
 
@@ -8151,16 +8609,11 @@ function renderRegisteredUsersList() {
         : (resolvedContact.contractMobile || activeUserMobile || currentOpenedReceiptRenter?.MobileNumber || "--");
 
       document.getElementById("receiptBodyDetails").innerHTML = `
-        <!-- Clean Receipt Content (Zero Checkboxes on Receipt) -->
+        <!-- Clean Receipt Content (Requirement 4 & 5: WhatsApp Target Number & Total Amount Paid Removed) -->
         <div id="receiptItemsListContainer">
           <div class="receipt-line" id="row_rec_tenant">
             <span>Tenant Name:</span>
-            <div style="text-align:right;">
-              <strong>${bill.TenantName || '--'}</strong>
-              <div style="font-size:0.7rem; color:${targetRenterIsDeparted ? 'var(--accent-red)' : 'var(--accent-green)'}; font-weight:700;">
-                <i class="fa-brands fa-whatsapp"></i> WhatsApp Target: ${targetTenantMobile || 'No mobile listed'} (${targetRenterIsDeparted ? 'Departed Tenant' : 'Active Tenant'})
-              </div>
-            </div>
+            <strong>${bill.TenantName || '--'}</strong>
           </div>
 
           <div class="receipt-line" id="row_rec_rent">
@@ -8198,12 +8651,7 @@ function renderRegisteredUsersList() {
             <span id="recDynamicTotalDisplay" style="color:var(--primary);">₹0</span>
           </div>
 
-          <div class="receipt-line" id="row_rec_paid">
-            <span>Total Amount Paid (${bill.PaymentMode || 'UPI'}):</span>
-            <strong style="color:var(--accent-green);">₹${(parseFloat(bill.PaidAmount) || 0).toLocaleString('en-IN')}</strong>
-          </div>
-
-          <!-- Requirement 6: Replaced Remaining Balance / Status with Pay UPI Name -->
+          <!-- Pay UPI Name -->
           <div class="receipt-line" id="row_rec_balance">
             <span>Pay UPI Name:</span>
             <strong id="recDynamicUpiNameDisplay" style="color:var(--primary);">${upiName || '--'}</strong>
@@ -8227,25 +8675,25 @@ function renderRegisteredUsersList() {
           </div>` : ''}
         </div>
 
-        <!-- Requirement 7 & 8: Working QR Code + UPI ID Shown Below in Center -->
+        <!-- Requirement 1, 7 & 8: Working Valid UPI QR Code + UPI ID Shown Below in Center -->
         <div id="receiptUpiQrBox" class="receipt-line" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; margin: 12px 0; padding: 14px; background:var(--bg-input); border-radius:12px; border:1px solid var(--glass-border);">
           <div style="font-size:0.76rem; font-weight:700; margin-bottom:8px; color:var(--text-muted); text-align:center;">Scan QR Code to Pay via UPI</div>
-          <img id="receiptUpiQrImg" src="" alt="UPI QR Code" style="width:154px; height:154px; border-radius:10px; background:#ffffff; padding:6px; display:none; margin:0 auto; box-shadow:0 4px 12px rgba(0,0,0,0.12);">
-          <div id="receiptQrUpiIdCenter" style="width:100%; text-align:center; font-size:0.86rem; font-weight:800; color:var(--primary); margin-top:8px; letter-spacing:0.2px; word-break:break-all;">${upiId ? `UPI ID: ${upiId}` : '--'}</div>
+          <img id="receiptUpiQrImg" src="" alt="UPI QR Code" style="width:160px; height:160px; border-radius:10px; background:#ffffff; padding:6px; display:none; margin:0 auto; box-shadow:0 4px 12px rgba(0,0,0,0.12);">
+          <div id="receiptQrUpiIdCenter" style="width:100%; text-align:center; font-size:0.86rem; font-weight:800; color:var(--primary); margin-top:8px; letter-spacing:0.2px; word-break:break-all;">${upiId || '--'}</div>
           <div id="receiptUpiTextHint" style="width:100%; text-align:center; font-size:0.72rem; color:var(--text-muted); margin-top:4px;">--</div>
         </div>
 
-        <!-- Requirement 4: AI Personal-Use Disclaimer on Receipt -->
+        <!-- AI Personal-Use Disclaimer on Receipt -->
         <div id="row_rec_disclaimer" class="receipt-ai-disclaimer">
           <i class="fa-solid fa-circle-info"></i> This receipt is generated by AI and is meant only for personal use, not for official or government use.
         </div>
 
-        <!-- Requirement 5: Primary "Share to WhatsApp" Trigger Button (Opens Checklist Right Here) -->
+        <!-- Primary "Share to WhatsApp" Trigger Button -->
         <button type="button" id="btnOpenWaChecklist" class="btn-whatsapp-share no-print" onclick="toggleWhatsAppChecklistDrawer()">
           <i class="fa-brands fa-whatsapp" style="font-size:1.15rem;"></i> Share to WhatsApp
         </button>
 
-        <!-- Requirement 5: Checklist Option Appears Right Here When Clicking "Share to WhatsApp" -->
+        <!-- Checklist Option Appears When Clicking "Share to WhatsApp" -->
         <div id="waShareChecklistDrawer" class="wa-checklist-drawer no-print">
           <div class="wa-checklist-header">
             <span style="font-size:0.8rem; font-weight:800; color:#25D366;">
@@ -8265,7 +8713,6 @@ function renderRegisteredUsersList() {
             <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="additional" data-row="row_rec_additional" data-amount="${parseFloat(bill.AdditionalAmount) || 0}" checked onchange="recalculateReceiptSelection()"> <span>Additional Charge</span></label>
             <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="carry" data-row="row_rec_carry" data-amount="${carryVal}" checked onchange="recalculateReceiptSelection()"> <span>Carry-Forward</span></label>
             <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="total" data-row="row_rec_total" checked onchange="recalculateReceiptSelection()"> <span>Total Billed</span></label>
-            <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="paid" data-row="row_rec_paid" checked onchange="recalculateReceiptSelection()"> <span>Amount Paid</span></label>
             <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="balance" data-row="row_rec_balance" checked onchange="recalculateReceiptSelection()"> <span>Pay UPI Name</span></label>
             <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="contact" data-row="row_rec_contact" checked onchange="recalculateReceiptSelection()"> <span>Contact Phone</span></label>
             <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="upi" data-row="row_rec_upi" checked onchange="recalculateReceiptSelection()"> <span>UPI &amp; QR Code</span></label>
@@ -8317,16 +8764,14 @@ function renderRegisteredUsersList() {
       if (selectAllToggle) selectAllToggle.checked = allChecked;
 
       const selectedTotal = Math.max(0, selectedChargesSum);
-      const paidCheck = document.querySelector('#waChecklistInputsContainer .rec-item-check[data-key="paid"]');
-      const paidAmt = (paidCheck && paidCheck.checked) ? (parseFloat(currentOpenedReceiptBill.PaidAmount) || 0) : 0;
-      const netClosing = selectedTotal - paidAmt;
+      const paidAmt = parseFloat(currentOpenedReceiptBill.PaidAmount) || 0;
+      const netClosing = Math.max(0, selectedTotal - paidAmt);
 
       const totalDisplay = document.getElementById("recDynamicTotalDisplay");
       if (totalDisplay) {
         totalDisplay.innerText = `₹${selectedTotal.toLocaleString('en-IN')}`;
       }
 
-      // Requirement 6: Display Pay UPI Name instead of Remaining Balance / Status
       const upiNameDisplay = document.getElementById("recDynamicUpiNameDisplay");
       if (upiNameDisplay) {
         const resolvedContact = resolveFlatUpiAndContact(
@@ -8340,7 +8785,7 @@ function renderRegisteredUsersList() {
         upiNameDisplay.innerText = upiName || "--";
       }
 
-      const qrPayableAmount = netClosing > 0 ? netClosing : selectedTotal;
+      const qrPayableAmount = selectedTotal;
       updateReceiptUpiQr(qrPayableAmount);
 
       return { selectedTotal, paidAmt, netClosing };
@@ -8367,17 +8812,18 @@ function renderRegisteredUsersList() {
         currentOpenedReceiptFlat,
         currentOpenedReceiptRenter
       );
-      const upiId = (currentOpenedReceiptBill?.UPIID && String(currentOpenedReceiptBill.UPIID).trim())
+      const rawUpiId = (currentOpenedReceiptBill?.UPIID && String(currentOpenedReceiptBill.UPIID).trim())
         ? String(currentOpenedReceiptBill.UPIID).trim()
         : resolvedContact.upiId;
+      const upiId = String(rawUpiId || "").replace(/['"\s]/g, "").trim();
       const upiName = (currentOpenedReceiptBill?.UPIName && String(currentOpenedReceiptBill.UPIName).trim())
         ? String(currentOpenedReceiptBill.UPIName).trim()
         : resolvedContact.upiName;
 
-      if (!upiId) {
+      if (!upiId || !upiId.includes("@")) {
         qrImg.style.display = "none";
-        if (qrUpiCenter) qrUpiCenter.innerText = "UPI ID Not Set";
-        qrHint.innerText = "Add a UPI ID in Flat Profile (3. Profile) to enable QR code.";
+        if (qrUpiCenter) qrUpiCenter.innerText = upiId ? `Invalid UPI ID (${upiId})` : "UPI ID Not Set";
+        qrHint.innerText = "Add a valid UPI ID (e.g. name@okaxis) in Flat Profile (3. Profile) to enable QR code.";
         return;
       }
 
@@ -8386,9 +8832,7 @@ function renderRegisteredUsersList() {
       }
 
       const cleanAmt = Math.max(0, Number(exactAmount) || 0);
-      const upiUri = cleanAmt > 0
-        ? `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(upiName || 'Rental Payment')}&am=${cleanAmt.toFixed(2)}&cu=INR`
-        : `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(upiName || 'Rental Payment')}&cu=INR`;
+      const upiUri = buildValidUpiUri(upiId, upiName, cleanAmt);
 
       const fetchToken = ++lastQrFetchToken;
       qrHint.innerText = `${upiName ? upiName + ' • ' : ''}Amount: ₹${cleanAmt.toLocaleString('en-IN')}`;
@@ -8432,8 +8876,8 @@ function renderRegisteredUsersList() {
           const upiName = (currentOpenedReceiptBill?.UPIName && String(currentOpenedReceiptBill.UPIName).trim())
             ? String(currentOpenedReceiptBill.UPIName).trim()
             : resolvedContact.upiName;
-          if (upiId) {
-            const upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(upiName || 'Rental Payment')}&cu=INR`;
+          const upiUri = buildValidUpiUri(upiId, upiName, parseFloat(currentOpenedReceiptBill?.TotalBilled) || 0);
+          if (upiUri) {
             qrImg.src = await fetchQrCodeAsDataUrl(upiUri);
           }
         }
@@ -9414,59 +9858,80 @@ function renderRegisteredUsersList() {
     function openKhetModal() {
       cancelKhetEdit();
       renderKhetRecordsList();
+      renderHomeKhetSection();
       openModal("khetModal");
     }
 
-    function editKhetRecord(id) {
+    function editKhetRecord(id, openModalIfClosed = false) {
       const list = getStoredKhetRecords();
       const target = list.find(item => String(item.id || item.KhetID) === String(id));
       if (!target) return;
 
+      if (openModalIfClosed) {
+        openModal("khetModal");
+      }
+
       editingKhetRecordId = String(target.id || target.KhetID);
+      const bighaVal = target.bigha !== undefined ? target.bigha : (target.FieldSizeBigha || "");
+      const holderVal = target.holderName !== undefined ? target.holderName : (target.HolderName || target.crop || target.CropOrPurpose || "");
+      const paidVal = target.amountPaid !== undefined ? target.amountPaid : (target.AmountPaid !== undefined ? target.AmountPaid : (target.income !== undefined ? target.income : (target.IncomeAmount !== undefined ? target.IncomeAmount : "")));
+      const rawPayDate = target.paymentDate || target.PaymentDate || target.createdAt || target.CreatedAt || "";
+
       document.getElementById("khetName").value = target.name || target.KhetName || "";
-      document.getElementById("khetCrop").value = target.crop !== undefined ? target.crop : (target.CropOrPurpose || "");
-      document.getElementById("khetIncome").value = target.income !== undefined ? target.income : (target.IncomeAmount !== undefined ? target.IncomeAmount : "");
-      document.getElementById("khetExpense").value = target.expense !== undefined ? target.expense : (target.ExpenseAmount !== undefined ? target.ExpenseAmount : "");
+      document.getElementById("khetBigha").value = bighaVal;
+      document.getElementById("khetHolderName").value = holderVal;
+      document.getElementById("khetAmountPaid").value = paidVal;
+      document.getElementById("khetPaymentDate").value = toInputDateValue(rawPayDate) || new Date().toISOString().split("T")[0];
       document.getElementById("khetNotes").value = target.notes || target.Notes || "";
 
       const titleEl = document.getElementById("khetFormTitle");
       const btnTextEl = document.getElementById("btnSubmitKhetRecordText");
       const cancelBtn = document.getElementById("btnCancelKhetEdit");
-      if (titleEl) titleEl.innerText = "Edit Farmland (Khet) Details";
-      if (btnTextEl) btnTextEl.innerText = "Update Farmland Record (Auto-Save to Google Sheet)";
+      if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Khet (Field) Details`;
+      if (btnTextEl) btnTextEl.innerText = "Update Khet (Field) Record in Google Sheet";
       if (cancelBtn) cancelBtn.style.display = "inline-flex";
     }
 
     function cancelKhetEdit() {
       editingKhetRecordId = null;
       const nameEl = document.getElementById("khetName");
-      const cropEl = document.getElementById("khetCrop");
-      const incEl = document.getElementById("khetIncome");
-      const expEl = document.getElementById("khetExpense");
+      const bighaEl = document.getElementById("khetBigha");
+      const holderEl = document.getElementById("khetHolderName");
+      const paidEl = document.getElementById("khetAmountPaid");
+      const payDateEl = document.getElementById("khetPaymentDate");
       const notesEl = document.getElementById("khetNotes");
       if (nameEl) nameEl.value = "";
-      if (cropEl) cropEl.value = "";
-      if (incEl) incEl.value = "";
-      if (expEl) expEl.value = "";
+      if (bighaEl) bighaEl.value = "";
+      if (holderEl) holderEl.value = "";
+      if (paidEl) paidEl.value = "";
+      if (payDateEl) payDateEl.value = new Date().toISOString().split("T")[0];
       if (notesEl) notesEl.value = "";
 
       const titleEl = document.getElementById("khetFormTitle");
       const btnTextEl = document.getElementById("btnSubmitKhetRecordText");
       const cancelBtn = document.getElementById("btnCancelKhetEdit");
-      if (titleEl) titleEl.innerText = "Add Khet / Field Record";
-      if (btnTextEl) btnTextEl.innerText = "Save Khet Record (Auto-Save to Google Sheet)";
+      if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-wheat-awn"></i> Add New Khet (Field) Entry`;
+      if (btnTextEl) btnTextEl.innerText = "Save Khet (Field) Record to Google Sheet";
       if (cancelBtn) cancelBtn.style.display = "none";
     }
 
     async function addKhetRecord() {
       if (activeRole === "Viewer") return;
-      const name = document.getElementById("khetName")?.value.trim();
-      const crop = document.getElementById("khetCrop")?.value.trim() || "";
-      const income = parseFloat(document.getElementById("khetIncome")?.value) || 0;
-      const expense = parseFloat(document.getElementById("khetExpense")?.value) || 0;
+      const name = document.getElementById("khetName")?.value.trim() || "";
+      const bigha = document.getElementById("khetBigha")?.value.trim() || "";
+      const holderName = document.getElementById("khetHolderName")?.value.trim() || "";
+      const amountPaid = parseFloat(document.getElementById("khetAmountPaid")?.value) || 0;
+      const paymentDate = document.getElementById("khetPaymentDate")?.value || new Date().toISOString().split("T")[0];
       const notes = document.getElementById("khetNotes")?.value.trim() || "";
+
       if (!name) {
-        return triggerSideToast("Required Field", "Please enter the Khet / Field Name.", false);
+        return triggerSideToast("Required Field", "Please enter the Field Name (Khet Name).", false);
+      }
+      if (!bigha) {
+        return triggerSideToast("Required Field", "Please enter the Size of the Field in Bighas.", false);
+      }
+      if (!holderName) {
+        return triggerSideToast("Required Field", "Please enter the Name of the Person Holding the Field.", false);
       }
 
       const list = [...getStoredKhetRecords()];
@@ -9484,12 +9949,18 @@ function renderRegisteredUsersList() {
             KhetID: recId,
             name,
             KhetName: name,
-            crop,
-            CropOrPurpose: crop,
-            income,
-            IncomeAmount: income,
-            expense,
-            ExpenseAmount: expense,
+            bigha,
+            FieldSizeBigha: bigha,
+            holderName,
+            HolderName: holderName,
+            crop: holderName,
+            CropOrPurpose: holderName,
+            amountPaid,
+            AmountPaid: amountPaid,
+            income: amountPaid,
+            IncomeAmount: amountPaid,
+            paymentDate,
+            PaymentDate: paymentDate,
             notes,
             Notes: notes,
             updatedAt: new Date().toISOString()
@@ -9505,12 +9976,20 @@ function renderRegisteredUsersList() {
           KhetID: newId,
           name,
           KhetName: name,
-          crop,
-          CropOrPurpose: crop,
-          income,
-          IncomeAmount: income,
-          expense,
-          ExpenseAmount: expense,
+          bigha,
+          FieldSizeBigha: bigha,
+          holderName,
+          HolderName: holderName,
+          crop: holderName,
+          CropOrPurpose: holderName,
+          amountPaid,
+          AmountPaid: amountPaid,
+          income: amountPaid,
+          IncomeAmount: amountPaid,
+          expense: 0,
+          ExpenseAmount: 0,
+          paymentDate,
+          PaymentDate: paymentDate,
           notes,
           Notes: notes,
           createdAt: nowDate,
@@ -9522,10 +10001,11 @@ function renderRegisteredUsersList() {
       saveStoredKhetRecords(list);
       cancelKhetEdit();
       renderKhetRecordsList();
+      renderHomeKhetSection();
 
       triggerSideToast(
         isEditing ? "Khet Updated & Saved" : "Khet Saved to Google Sheet",
-        `${isEditing ? "Updated" : "Saved"} Farmland (Khet) record for ${name} and synced to Google Sheet!`,
+        `${isEditing ? "Updated" : "Saved"} Khet (${name}) and synced to Google Sheet!`,
         true
       );
 
@@ -9533,9 +10013,13 @@ function renderRegisteredUsersList() {
         action: "saveKhetRecord",
         id: savedRecord.id,
         name: savedRecord.name,
-        crop: savedRecord.crop,
-        income: savedRecord.income,
-        expense: savedRecord.expense,
+        bigha: savedRecord.bigha,
+        holderName: savedRecord.holderName,
+        amountPaid: savedRecord.amountPaid,
+        paymentDate: savedRecord.paymentDate,
+        crop: savedRecord.holderName,
+        income: savedRecord.amountPaid,
+        expense: 0,
         notes: savedRecord.notes,
         createdAt: savedRecord.createdAt
       });
@@ -9549,12 +10033,133 @@ function renderRegisteredUsersList() {
         cancelKhetEdit();
       }
       renderKhetRecordsList();
+      renderHomeKhetSection();
       triggerSideToast("Khet Record Removed", "Khet record deleted from app & Google Sheet.", "warning");
 
       await sendGasPost({
         action: "deleteKhetRecord",
         id: id
       });
+    }
+
+    function extractKhetDisplayFields(item) {
+      const recId = item.id || item.KhetID || "";
+      const khetName = item.name || item.KhetName || "Unnamed Field";
+      const rawBigha = item.bigha !== undefined && item.bigha !== "" ? item.bigha : (item.FieldSizeBigha || "--");
+      const bighaLabel = String(rawBigha).toLowerCase().includes("bigha") ? String(rawBigha) : `${rawBigha} Bigha`;
+      const holderName = item.holderName || item.HolderName || item.crop || item.CropOrPurpose || "--";
+      const amountPaid = Number(
+        item.amountPaid !== undefined ? item.amountPaid :
+        (item.AmountPaid !== undefined ? item.AmountPaid :
+        (item.income !== undefined ? item.income : (item.IncomeAmount || 0)))
+      );
+      const rawDate = item.paymentDate || item.PaymentDate || item.createdAt || item.CreatedAt || "";
+      const paymentDate = formatDateOnly(rawDate);
+      const notes = item.notes || item.Notes || "";
+      return { recId, khetName, rawBigha, bighaLabel, holderName, amountPaid, paymentDate, notes };
+    }
+
+    function renderHomeKhetSection() {
+      const sectionEl = document.getElementById("homeKhetSection");
+      const gridEl = document.getElementById("homeKhetCardsGrid");
+      const countEl = document.getElementById("homeKhetTotalCount");
+      const bighaEl = document.getElementById("homeKhetTotalBigha");
+      const paidEl = document.getElementById("homeKhetTotalPaid");
+      if (!gridEl) return;
+
+      if (activeRole === "Viewer") {
+        if (sectionEl) sectionEl.style.display = "none";
+        return;
+      }
+      if (sectionEl) sectionEl.style.display = "block";
+
+      const list = getStoredKhetRecords();
+      let totalBighaNum = 0;
+      let totalPaidNum = 0;
+
+      list.forEach(item => {
+        const f = extractKhetDisplayFields(item);
+        const parsedBigha = parseFloat(String(f.rawBigha).replace(/[^0-9.]/g, "")) || 0;
+        totalBighaNum += parsedBigha;
+        totalPaidNum += f.amountPaid;
+      });
+
+      if (countEl) countEl.innerText = String(list.length);
+      if (bighaEl) bighaEl.innerText = `${Number(totalBighaNum.toFixed(2))} Bigha`;
+      if (paidEl) paidEl.innerText = `₹${totalPaidNum.toLocaleString("en-IN")}`;
+
+      if (list.length === 0) {
+        gridEl.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align:center; padding:26px 16px; background:rgba(15,23,42,0.38); border:1px dashed rgba(52,211,153,0.4); border-radius:16px; color:var(--text-muted);">
+            <i class="fa-solid fa-wheat-awn" style="font-size:1.8rem; color:#34d399; margin-bottom:8px; display:block;"></i>
+            <strong style="color:var(--text-main); font-size:0.95rem;">No Khet (Field) Records Added Yet</strong>
+            <p style="font-size:0.78rem; margin-top:4px;">Click "Add / Manage Khet" to record field name, size in Bighas, holder name, amount paid, and payment date.</p>
+          </div>
+        `;
+        return;
+      }
+
+      gridEl.innerHTML = list.map(item => {
+        const f = extractKhetDisplayFields(item);
+        const safeId = String(f.recId).replace(/'/g, "\\'");
+        return `
+          <div class="khet-stylish-card">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:10px;">
+                <div style="display:flex; align-items:center; gap:9px;">
+                  <div style="width:36px; height:36px; border-radius:10px; background:rgba(16,185,129,0.2); border:1px solid rgba(52,211,153,0.45); display:flex; align-items:center; justify-content:center; color:#34d399; font-size:1rem; flex-shrink:0;">
+                    <i class="fa-solid fa-seedling"></i>
+                  </div>
+                  <div>
+                    <div style="font-weight:800; font-size:0.96rem; color:var(--text-main);">${f.khetName}</div>
+                    <div style="font-size:0.7rem; color:#34d399; font-weight:700;"><i class="fa-solid fa-ruler-combined"></i> Size: ${f.bighaLabel}</div>
+                  </div>
+                </div>
+                <span style="background:rgba(16,185,129,0.2); color:#34d399; border:1px solid rgba(52,211,153,0.4); padding:4px 10px; border-radius:20px; font-size:0.78rem; font-weight:800;">
+                  ₹${f.amountPaid.toLocaleString('en-IN')}
+                </span>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:6px;">
+                <div class="khet-detail-row">
+                  <span style="color:var(--text-muted);"><i class="fa-solid fa-map-pin" style="color:#34d399; width:16px;"></i> Field Name:</span>
+                  <strong>${f.khetName}</strong>
+                </div>
+                <div class="khet-detail-row">
+                  <span style="color:var(--text-muted);"><i class="fa-solid fa-ruler-combined" style="color:#38bdf8; width:16px;"></i> Field Size:</span>
+                  <strong style="color:#38bdf8;">${f.bighaLabel}</strong>
+                </div>
+                <div class="khet-detail-row">
+                  <span style="color:var(--text-muted);"><i class="fa-solid fa-user-tie" style="color:#fbbf24; width:16px;"></i> Holder Name:</span>
+                  <strong>${f.holderName}</strong>
+                </div>
+                <div class="khet-detail-row">
+                  <span style="color:var(--text-muted);"><i class="fa-solid fa-indian-rupee-sign" style="color:#34d399; width:16px;"></i> Amount Paid:</span>
+                  <strong style="color:var(--accent-green);">₹${f.amountPaid.toLocaleString('en-IN')}</strong>
+                </div>
+                <div class="khet-detail-row">
+                  <span style="color:var(--text-muted);"><i class="fa-regular fa-calendar-check" style="color:#a78bfa; width:16px;"></i> Payment Date:</span>
+                  <strong>${f.paymentDate}</strong>
+                </div>
+                ${f.notes ? `
+                <div class="khet-detail-row">
+                  <span style="color:var(--text-muted);"><i class="fa-solid fa-comment-dots" style="color:#94a3b8; width:16px;"></i> Notes:</span>
+                  <span>${f.notes}</span>
+                </div>` : ''}
+              </div>
+            </div>
+
+            <div class="admin-only" style="display:flex; justify-content:flex-end; align-items:center; gap:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.08);">
+              <button type="button" class="btn-ledger-action edit-btn" onclick="editKhetRecord('${safeId}', true)" title="Edit Khet Details">
+                <i class="fa-solid fa-pen-to-square"></i> Edit
+              </button>
+              <button type="button" class="btn-ledger-action" style="color:var(--accent-red); border-color:rgba(239,68,68,0.4);" onclick="deleteKhetRecord('${safeId}')" title="Delete Khet Record">
+                <i class="fa-solid fa-trash-can"></i> Delete
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
     }
 
     function renderKhetRecordsList() {
@@ -9566,26 +10171,25 @@ function renderRegisteredUsersList() {
         return;
       }
       container.innerHTML = list.map(item => {
-        const recId = item.id || item.KhetID || "";
-        const safeId = String(recId).replace(/'/g, "\\'");
-        const khetName = item.name || item.KhetName || "Farmland";
-        const crop = item.crop !== undefined ? item.crop : (item.CropOrPurpose || "");
-        const income = Number(item.income !== undefined ? item.income : (item.IncomeAmount || 0));
-        const expense = Number(item.expense !== undefined ? item.expense : (item.ExpenseAmount || 0));
-        const notes = item.notes || item.Notes || "";
+        const f = extractKhetDisplayFields(item);
+        const safeId = String(f.recId).replace(/'/g, "\\'");
         return `
-          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:12px 14px; background:var(--bg-input); border:1px solid rgba(52,211,153,0.35); border-left:4px solid #10b981; border-radius:12px;">
             <div style="flex:1; min-width:0;">
-              <div style="font-weight:800; font-size:0.88rem;">${khetName} ${crop ? `(${crop})` : ''}</div>
-              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
-                Income: <strong style="color:var(--accent-green);">₹${income.toLocaleString('en-IN')}</strong> | Expense: <strong style="color:var(--accent-red);">₹${expense.toLocaleString('en-IN')}</strong> ${notes ? ' | ' + notes : ''}
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <strong style="font-size:0.9rem;">${f.khetName}</strong>
+                <span style="font-size:0.72rem; background:rgba(56,189,248,0.16); color:#38bdf8; padding:2px 8px; border-radius:12px; font-weight:700;">${f.bighaLabel}</span>
+                <span style="font-size:0.78rem; color:var(--accent-green); font-weight:800;">Paid: ₹${f.amountPaid.toLocaleString('en-IN')}</span>
+              </div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">
+                Holder: <strong>${f.holderName}</strong> &nbsp;|&nbsp; Payment Date: <strong>${f.paymentDate}</strong> ${f.notes ? ' | ' + f.notes : ''}
               </div>
             </div>
             <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
-              <button type="button" class="btn-ledger-action edit-btn admin-only" onclick="editKhetRecord('${safeId}')" title="Edit Farmland (Khet) Details">
+              <button type="button" class="btn-ledger-action edit-btn admin-only" onclick="editKhetRecord('${safeId}')" title="Edit Khet (Field) Details">
                 <i class="fa-solid fa-pen-to-square"></i> Edit
               </button>
-              <button type="button" class="btn-ledger-action admin-only" style="color:var(--accent-red);" onclick="deleteKhetRecord('${safeId}')" title="Delete Farmland (Khet) Record">
+              <button type="button" class="btn-ledger-action admin-only" style="color:var(--accent-red);" onclick="deleteKhetRecord('${safeId}')" title="Delete Khet Record">
                 <i class="fa-solid fa-trash-can"></i>
               </button>
             </div>
@@ -10426,7 +11030,8 @@ function renderRegisteredUsersList() {
       );
     }
 
-    function handleLogout() {
+    // Requirement 8 & 9: Logout Confirmation Prompt ("Are you sure you want to log out?" with Yes/No) + Side Slide-In "Logged out successfully" Toast
+    function performConfirmedLogout() {
       saveDbSnapshotToCache();
       activeUser = null;
       selectedProperty = null;
@@ -10442,6 +11047,30 @@ function renderRegisteredUsersList() {
       document.getElementById("dashboardScreen").classList.remove("active");
       document.getElementById("loginScreen").classList.add("active");
       document.querySelectorAll(".modal-overlay").forEach(m => m.classList.remove("active"));
+
+      // Requirement 9: Slide in "Logged out successfully" notification on the logout/login page
+      setTimeout(() => {
+        triggerSideToast("Logged out successfully", "You have been safely logged out.", true);
+      }, 60);
+    }
+
+    function handleLogout(skipConfirm = false) {
+      if (skipConfirm === true) {
+        performConfirmedLogout();
+        return;
+      }
+      openCenteredConfirmModal(
+        "Confirm Logout",
+        "Are you sure you want to log out?",
+        () => {
+          performConfirmedLogout();
+        },
+        {
+          yesText: "Yes",
+          noText: "No",
+          iconClass: "fa-solid fa-right-from-bracket"
+        }
+      );
     }
 
     // Requirement 2: Compress, Preview, Auto-Upload to Cloud Drive & Delete Document Slot
