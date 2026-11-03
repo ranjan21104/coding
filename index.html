@@ -4091,7 +4091,7 @@ function formatMonthLabel(rawVal) {
           LoginTimestamp: new Date().toISOString()
         };
         const updatedLogs = [instantLoginEntry, ...localBackupLogs].slice(0, 500);
-        try { // No-cache: login history storage disabled } catch (err) {}
+        /* No-cache: storage disabled */
         DB.loginHistory = (String(activeRole).toLowerCase() === "admin") ? updatedLogs : [];
 
         document.getElementById("loginPassword").value = "";
