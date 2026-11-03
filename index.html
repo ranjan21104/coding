@@ -1945,6 +1945,185 @@
 
   <!-- ==================== POPUP MODALS ==================== -->
 
+  <!-- EDIT ANY BILL POPUP MODAL (Requirement 4: Edit Everything) -->
+  <div id="editEverythingBillModal" class="modal-overlay" style="z-index: 7000;">
+    <div class="modal-window" style="max-width: 680px;">
+      <button class="modal-close-btn" onclick="closeModal('editEverythingBillModal')"><i class="fa-solid fa-xmark"></i></button>
+      <div style="margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--glass-border); padding-right:34px;">
+        <h3 style="margin:0; font-size:1.15rem; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-pen-to-square" style="color:var(--primary);"></i> Edit Bill Entry
+        </h3>
+        <p id="editEverythingBillSubtitle" style="font-size:0.76rem; color:var(--text-muted); margin-top:3px;">
+          Editing bill entry
+        </p>
+      </div>
+
+      <input type="hidden" id="eeBillId">
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+        <div class="form-group">
+          <label>Property Name</label>
+          <input type="text" id="eePropName" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Flat Name/Number</label>
+          <input type="text" id="eeFlatName" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Billing Month (YYYY-MM)</label>
+          <input type="month" id="eeMonthYear" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Tenant Name</label>
+          <input type="text" id="eeTenantName" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Base Rent (₹)</label>
+          <input type="number" id="eeBaseRent" class="form-control" oninput="runEditEverythingMath()">
+        </div>
+        <div class="form-group">
+          <label>Carry-Forward Balance (₹)</label>
+          <input type="number" id="eeCarryBalance" class="form-control" oninput="runEditEverythingMath()">
+        </div>
+      </div>
+
+      <!-- Utilities Grid -->
+      <div style="background:var(--bg-input); border:1px solid var(--glass-border); border-radius:12px; padding:12px; margin:10px 0;">
+        <div style="font-size:0.78rem; font-weight:800; color:var(--primary); margin-bottom:8px;">Utility Readings &amp; Charges</div>
+        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;">
+          <div>
+            <label style="font-size:0.7rem; font-weight:700;">Electricity Total (₹)</label>
+            <input type="number" id="eeElecTotal" class="form-control" oninput="runEditEverythingMath()">
+          </div>
+          <div>
+            <label style="font-size:0.7rem; font-weight:700;">PNG Gas Total (₹)</label>
+            <input type="number" id="eePngTotal" class="form-control" oninput="runEditEverythingMath()">
+          </div>
+          <div>
+            <label style="font-size:0.7rem; font-weight:700;">Water Total (₹)</label>
+            <input type="number" id="eeWaterTotal" class="form-control" oninput="runEditEverythingMath()">
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+        <div class="form-group">
+          <label>Additional Charge Name</label>
+          <input type="text" id="eeAddName" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Additional Amount (₹)</label>
+          <input type="number" id="eeAddAmount" class="form-control" oninput="runEditEverythingMath()">
+        </div>
+        <div class="form-group">
+          <label>Total Billed (₹)</label>
+          <input type="number" id="eeTotalBilled" class="form-control" style="font-weight:800; color:var(--primary);">
+        </div>
+        <div class="form-group">
+          <label>Paid Amount (₹)</label>
+          <input type="number" id="eePaidAmount" class="form-control" oninput="runEditEverythingMath()">
+        </div>
+        <div class="form-group">
+          <label>Payment Mode</label>
+          <select id="eePaymentMode" class="form-control">
+            <option value="UPI">UPI</option>
+            <option value="Cash">Cash</option>
+            <option value="Bank">Bank</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Bill Status</label>
+          <select id="eeStatus" class="form-control">
+            <option value="Unpaid">Unpaid</option>
+            <option value="Partial Paid">Partial Paid</option>
+            <option value="Fully Paid">Fully Paid</option>
+          </select>
+        </div>
+        <div class="form-group" style="grid-column: span 2;">
+          <label>Important Notes</label>
+          <input type="text" id="eeNotes" class="form-control">
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; padding-top:12px; border-top:1px solid var(--glass-border);">
+        <button type="button" class="btn-confirm-danger" style="padding:10px 18px;" onclick="deleteCurrentEditEverythingBill()">
+          <i class="fa-solid fa-trash-can"></i> Delete This Bill
+        </button>
+        <div style="display:flex; gap:10px;">
+          <button type="button" class="btn-confirm-cancel" onclick="closeModal('editEverythingBillModal')">Cancel</button>
+          <button type="button" class="btn-primary" style="width:auto; padding:10px 24px;" onclick="saveEditEverythingBillChanges()">
+            <i class="fa-solid fa-check"></i> Save Bill Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT USER ASSIGNMENT & FLAT POPUP MODAL (Requirement 5) -->
+  <div id="editUserAssignmentModal" class="modal-overlay" style="z-index: 6500;">
+    <div class="modal-window" style="max-width: 520px;">
+      <button class="modal-close-btn" onclick="closeModal('editUserAssignmentModal')"><i class="fa-solid fa-xmark"></i></button>
+      <div style="margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--glass-border); padding-right:34px;">
+        <h3 style="margin:0; font-size:1.15rem; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-user-gear" style="color:var(--primary);"></i> Edit User Role &amp; Flat Assignment
+        </h3>
+        <p style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">
+          Update flat assignment or role for this registered user.
+        </p>
+      </div>
+
+      <input type="hidden" id="editAssignTargetUsername">
+
+      <div class="form-group">
+        <label>Username (Locked)</label>
+        <input type="text" id="editAssignUsernameDisplay" class="form-control" readonly>
+      </div>
+
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="editAssignFullName" class="form-control" readonly>
+      </div>
+
+      <div class="form-group">
+        <label>Account Role</label>
+        <select id="editAssignRole" class="form-control" onchange="handleEditAssignRoleChange()">
+          <option value="Admin">Admin (Full Access - Can Edit &amp; View Everything)</option>
+          <option value="Viewer">Viewer (Restricted Scope)</option>
+        </select>
+      </div>
+
+      <!-- Scope fields when Viewer is selected -->
+      <div id="editAssignScopeBox" style="background:var(--bg-input); border:1px solid var(--glass-border); border-radius:12px; padding:12px; margin-bottom:14px;">
+        <div class="form-group" style="margin-bottom:10px;">
+          <label>Viewer Scope Level</label>
+          <select id="editAssignScopeLevel" class="form-control" onchange="handleEditAssignScopeLevelChange()">
+            <option value="FLAT">Single Specific Flat (e.g. Flat 101)</option>
+            <option value="ALL">All Properties (Can view all properties & flats)</option>
+            <option value="SELECTED">Selected Properties</option>
+          </select>
+        </div>
+
+        <div id="editAssignFlatSelectorFields">
+          <div class="form-group" style="margin-bottom:10px;">
+            <label>Assigned Property <span class="req-star">*</span></label>
+            <select id="editAssignPropDropdown" class="form-control" onchange="populateEditAssignFlatsDropdown()"></select>
+          </div>
+          <div class="form-group" style="margin-bottom:4px;">
+            <label>Assigned Flat <span class="req-star">*</span> (Select new flat number to change flat)</label>
+            <select id="editAssignFlatDropdown" class="form-control"></select>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:14px; padding-top:12px; border-top:1px solid var(--glass-border);">
+        <button type="button" class="btn-confirm-cancel" onclick="closeModal('editUserAssignmentModal')">Cancel</button>
+        <button type="button" class="btn-primary" style="width:auto; padding:10px 22px;" onclick="saveUserAssignmentChanges()">
+          <i class="fa-solid fa-floppy-disk"></i> Save Assignment
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- REACTIVATION DESTINATION MODAL (Requirement 6) -->
   <div id="reactivateDestinationModal" class="modal-overlay" style="z-index: 5200;">
     <div class="modal-window" style="max-width: 480px;">
@@ -2092,19 +2271,19 @@
 
       <!-- 3 Dedicated Action Switch Buttons Below Locked Fields -->
       <div class="profile-action-switch">
-        <button type="button" id="btnShowChangePass" class="btn-switch-option active" onclick="switchProfileDrawer('drawerChangePass', 'btnShowChangePass')">
+        <button type="button" id="btnShowChangePass" class="btn-switch-option" onclick="toggleProfileDrawer('drawerChangePass', 'btnShowChangePass')">
           <i class="fa-solid fa-key"></i> Change Password
         </button>
-        <button type="button" id="btnShowChangeUser" class="btn-switch-option" onclick="switchProfileDrawer('drawerChangeUser', 'btnShowChangeUser')">
+        <button type="button" id="btnShowChangeUser" class="btn-switch-option" onclick="toggleProfileDrawer('drawerChangeUser', 'btnShowChangeUser')">
           <i class="fa-solid fa-at"></i> Change Username
         </button>
-        <button type="button" id="btnShowChangeName" class="btn-switch-option" onclick="switchProfileDrawer('drawerChangeName', 'btnShowChangeName')">
+        <button type="button" id="btnShowChangeName" class="btn-switch-option" onclick="toggleProfileDrawer('drawerChangeName', 'btnShowChangeName')">
           <i class="fa-solid fa-user-pen"></i> Change Name
         </button>
       </div>
 
       <!-- Option A: Change Password Drawer -->
-      <div id="drawerChangePass" class="profile-sub-drawer active">
+      <div id="drawerChangePass" class="profile-sub-drawer">
         <h4 style="margin-bottom: 12px; font-size: 0.92rem; color: var(--primary);">Update Your Password</h4>
         <div class="form-group">
           <label>Current Password <span class="req-star">*</span></label>
@@ -2260,20 +2439,40 @@
         </div>
 
         <!-- Requirement 3: Prompt to select Property & Specific Flat when creating a Viewer account -->
-        <div id="viewerScopeSelectionBox" style="display:none; background:rgba(79, 70, 229, 0.1); border:1.5px solid var(--primary); border-radius:12px; padding:12px; margin-bottom:14px;">
-          <div style="font-size:0.78rem; font-weight:800; color:var(--primary); margin-bottom:8px;">
-            <i class="fa-solid fa-building-lock"></i> Select Property &amp; Flat for Viewer Account
+        <div id="viewerScopeSelectionBox" style="display:none; background:rgba(79, 70, 229, 0.1); border:1.5px solid var(--primary); border-radius:12px; padding:14px; margin-bottom:14px;">
+          <div style="font-size:0.82rem; font-weight:800; color:var(--primary); margin-bottom:10px;">
+            <i class="fa-solid fa-shield-halved"></i> Viewer Access Scope Configuration
           </div>
-          <div class="form-group" style="margin-bottom:10px;">
-            <label>Select Property to Display <span class="req-star">*</span></label>
-            <select id="createUserAssignedProp" class="form-control" onchange="populateCreateUserFlatsDropdown()"></select>
+
+          <div class="form-group" style="margin-bottom:12px;">
+            <label>Select Viewer Access Level <span class="req-star">*</span></label>
+            <select id="createViewerScopeType" class="form-control" onchange="handleViewerScopeTypeChange()">
+              <option value="ALL">1. All Properties (Can view all properties & flats, current & future)</option>
+              <option value="SELECTED">2. Selected Properties (Restrict to specific properties)</option>
+              <option value="FLAT" selected>3. Single Specific Flat (Restrict to 1 specific flat only)</option>
+            </select>
           </div>
-          <div class="form-group" style="margin-bottom:6px;">
-            <label>Select Specific Flat to Display <span class="req-star">*</span></label>
-            <select id="createUserAssignedFlat" class="form-control"></select>
+
+          <!-- Single Flat Mode -->
+          <div id="viewerSingleFlatFields">
+            <div class="form-group" style="margin-bottom:10px;">
+              <label>Select Property <span class="req-star">*</span></label>
+              <select id="createUserAssignedProp" class="form-control" onchange="populateCreateUserFlatsDropdown()"></select>
+            </div>
+            <div class="form-group" style="margin-bottom:6px;">
+              <label>Select Flat <span class="req-star">*</span></label>
+              <select id="createUserAssignedFlat" class="form-control"></select>
+            </div>
           </div>
-          <div style="font-size:0.72rem; color:var(--text-muted); line-height:1.35;">
-            Once a specific flat is selected, this Viewer user ID will strictly only be allowed to view the details of this particular flat and nothing else.
+
+          <!-- Selected Properties Mode -->
+          <div id="viewerSelectedPropsFields" style="display:none; margin-bottom:10px;">
+            <label style="font-size:0.78rem; font-weight:700; margin-bottom:6px; display:block;">Select Properties Allowed for This Viewer:</label>
+            <div id="viewerPropsCheckboxesContainer" style="display:flex; flex-direction:column; gap:6px; max-height:150px; overflow-y:auto; background:var(--bg-input); padding:8px; border-radius:8px; border:1px solid var(--glass-border);"></div>
+          </div>
+
+          <div style="font-size:0.72rem; color:var(--text-muted); line-height:1.35; margin-top:8px;">
+            Configures exactly which properties or flats this Viewer account is authorized to view.
           </div>
         </div>
 
@@ -2283,12 +2482,12 @@
       <!-- Settings Tab 3: Other (Registered User Management & Admin-Only Last Login History; Google Sheet Auto-Create Removed) -->
       <div id="setSubOther" class="tab-content">
         <!-- Two Dedicated Options: Registered User & Admin-Only Last Login History -->
-        <div id="otherOptionsBtnGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+        <div id="otherOptionsBtnGrid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px;">
           <button
             type="button"
             id="btnOtherOptUsers"
             class="btn-primary"
-            style="padding: 9px 12px; font-size: 0.8rem;"
+            style="padding: 9px 8px; font-size: 0.76rem; font-weight:700;"
             onclick="switchOtherSubOption('users')"
           >
             <i class="fa-solid fa-users-gear"></i> Registered User
@@ -2297,10 +2496,19 @@
             type="button"
             id="btnOtherOptLoginHistory"
             class="btn-ledger-action admin-only"
-            style="padding: 9px 12px; font-size: 0.8rem; justify-content: center; display: flex; align-items: center; gap: 6px;"
+            style="padding: 9px 8px; font-size: 0.76rem; font-weight:700; justify-content: center; display: flex; align-items: center; gap: 5px;"
             onclick="switchOtherSubOption('history')"
           >
-            <i class="fa-solid fa-clock-rotate-left"></i> Last Login History
+            <i class="fa-solid fa-clock-rotate-left"></i> Last Logins
+          </button>
+          <button
+            type="button"
+            id="btnOtherOptEditEverything"
+            class="btn-ledger-action admin-only"
+            style="padding: 9px 8px; font-size: 0.76rem; font-weight:700; justify-content: center; display: flex; align-items: center; gap: 5px; color:#818cf8; border-color:rgba(129,140,248,0.5);"
+            onclick="switchOtherSubOption('editEverything')"
+          >
+            <i class="fa-solid fa-pen-ruler"></i> Edit Everything
           </button>
         </div>
 
@@ -2312,6 +2520,31 @@
           </div>
           <div id="otherUsersList" style="margin-top: 8px; font-size: 0.82rem; max-height: 290px; overflow-y: auto;">
             <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        
+        <!-- Option 3 Panel: Edit Everything (System-wide Complete Billing History Editor & Deleter) (Requirement 4) -->
+        <div id="otherPanelEditEverything" class="stat-pill admin-only" style="text-align: left; display: none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+            <div>
+              <span style="font-weight:800; font-size:0.85rem;"><i class="fa-solid fa-pen-ruler" style="color:var(--primary);"></i> SYSTEM-WIDE BILLING HISTORY (EDIT &amp; DELETE EVERYTHING)</span>
+              <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">
+                Admin master control: edit any bill field or permanently delete accidental/mistaken entries.
+              </div>
+            </div>
+            <input
+              type="text"
+              id="editEverythingSearchInput"
+              class="form-control"
+              style="width:200px; padding:6px 10px; font-size:0.76rem;"
+              placeholder="Search tenant, flat, month..."
+              oninput="renderEditEverythingBillsList(this.value)"
+            >
+          </div>
+
+          <div id="editEverythingBillsList" style="max-height: 340px; overflow-y: auto; display:flex; flex-direction:column; gap:8px;">
+            <!-- Populated dynamically with full edit & delete buttons for every bill -->
           </div>
         </div>
 
@@ -3535,10 +3768,9 @@ function formatMonthLabel(rawVal) {
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      // Requirement 1: Zero browser caching of sensitive property & tenant data
+      // Clear persistent disk storage, but preserve in-tab session identity across browser refresh
       try {
         localStorage.clear();
-        sessionStorage.clear();
       } catch (e) {}
       injectReceiptWhatsAppStyles();
 
@@ -3584,7 +3816,21 @@ function formatMonthLabel(rawVal) {
 
       if (savedSelectedProp) selectedProperty = savedSelectedProp;
 
-      const cachedSnapshot = sessionStorage.getItem("cached_db_snapshot") || localStorage.getItem("portal_full_db_backup");
+      if (savedSessionUser) {
+        // Requirement 2: Browser refresh preserves login and fast-syncs fresh data
+        activeUser = savedSessionUser;
+        activeRole = savedRole;
+        activeUserFullName = savedFullName;
+        activeUserMobile = savedMobile;
+        activeAssignedProperty = savedAssignedProp;
+        activeAssignedFlat = savedAssignedFlat;
+        applyRolePermissions(activeRole);
+        unlockDashboardInstant(false);
+        syncDataLive(true);
+        return;
+      }
+
+      const cachedSnapshot = null;
       if (cachedSnapshot) {
         try {
           const parsed = JSON.parse(cachedSnapshot);
@@ -3685,6 +3931,8 @@ function formatMonthLabel(rawVal) {
       if (activeRole !== "Viewer") return null;
       let prop = String(activeAssignedProperty || "").trim();
       let flat = String(activeAssignedFlat || "").trim();
+      if (prop === "ALL") return { prop: "ALL", flat: "" };
+      if (prop.includes(",")) return { prop: prop, flat: "" };
       if ((!prop || !flat) && activeUser) {
         const matchedU = (DB.users || []).find(u => String(u.Username || "").trim().toLowerCase() === String(activeUser).trim().toLowerCase());
         if (matchedU) {
@@ -4791,6 +5039,8 @@ function formatMonthLabel(rawVal) {
       document.getElementById("newUsernameInput").value = "";
       document.getElementById("confirmNewUsernameInput").value = "";
 
+      document.querySelectorAll(".profile-sub-drawer").forEach(d => d.classList.remove("active"));
+      document.querySelectorAll(".btn-switch-option").forEach(b => b.classList.remove("active"));
       openModal("profileModal");
 
       try {
@@ -4818,11 +5068,24 @@ function formatMonthLabel(rawVal) {
       }
     }
 
-    function switchProfileDrawer(drawerId, btnId) {
+    function toggleProfileDrawer(drawerId, btnId) {
+      const drawer = document.getElementById(drawerId);
+      const btn = document.getElementById(btnId);
+      const isAlreadyActive = drawer.classList.contains("active");
+
+      // Close all drawers
       document.querySelectorAll(".profile-sub-drawer").forEach(d => d.classList.remove("active"));
       document.querySelectorAll(".btn-switch-option").forEach(b => b.classList.remove("active"));
-      document.getElementById(drawerId).classList.add("active");
-      document.getElementById(btnId).classList.add("active");
+
+      // If it was not active, open it (toggle behavior)
+      if (!isAlreadyActive) {
+        drawer.classList.add("active");
+        btn.classList.add("active");
+      }
+    }
+
+    function switchProfileDrawer(drawerId, btnId) {
+      toggleProfileDrawer(drawerId, btnId);
     }
 
     async function submitChangeUsernameOnly() {
@@ -5159,7 +5422,382 @@ function formatMonthLabel(rawVal) {
         : `<option value="">No Flats in Selected Property</option>`;
     }
 
-    function renderRegisteredUsersList() {
+    
+    // Requirement 1: Prompt Destination Popup when changing status to Active
+    function promptReactivateDestinationForLeftRenter(targetRenter) {
+      if (!targetRenter) return;
+      reactivatePreviousRenterProfile(targetRenter.RenterID);
+    }
+
+    // Hook editLeftStatus onchange: if user selects Active in departed renter modal, open destination selector
+    document.addEventListener("DOMContentLoaded", () => {
+      const editLeftStatusEl = document.getElementById("editLeftStatus");
+      if (editLeftStatusEl) {
+        editLeftStatusEl.addEventListener("change", function() {
+          if (this.value === "Active") {
+            const rId = document.getElementById("editLeftRenterId")?.value;
+            const r = (DB.renters || []).find(item => String(item.RenterID || "").trim() === String(rId || "").trim());
+            if (r) {
+              closeModal("editLeftRenterModal");
+              promptReactivateDestinationForLeftRenter(r);
+            }
+          }
+        });
+      }
+    });
+
+    // Requirement 3: Handler for Viewer Scope Mode change
+    function handleViewerScopeTypeChange() {
+      const mode = document.getElementById("createViewerScopeType")?.value;
+      const flatFields = document.getElementById("viewerSingleFlatFields");
+      const propsFields = document.getElementById("viewerSelectedPropsFields");
+      if (!flatFields || !propsFields) return;
+
+      if (mode === "ALL") {
+        flatFields.style.display = "none";
+        propsFields.style.display = "none";
+      } else if (mode === "SELECTED") {
+        flatFields.style.display = "none";
+        propsFields.style.display = "block";
+        populateViewerPropsCheckboxes();
+      } else {
+        flatFields.style.display = "block";
+        propsFields.style.display = "none";
+        populateCreateUserFlatsDropdown();
+      }
+    }
+
+    function populateViewerPropsCheckboxes() {
+      const container = document.getElementById("viewerPropsCheckboxesContainer");
+      if (!container) return;
+      container.innerHTML = (DB.properties || []).map(p => {
+        return '<label style="display:flex; align-items:center; gap:8px; font-size:0.78rem; cursor:pointer;">' +
+               '<input type="checkbox" class="viewer-prop-cb" value="' + p.PropertyName + '" checked> ' + p.PropertyName + '</label>';
+      }).join("");
+    }
+
+    // Requirement 4: Switch Other Sub-Options (Users, History, Edit Everything)
+    function switchOtherSubOption(opt) {
+      const usersPanel = document.getElementById("otherPanelUsers");
+      const historyPanel = document.getElementById("otherPanelLoginHistory");
+      const eePanel = document.getElementById("otherPanelEditEverything");
+      const btnUsers = document.getElementById("btnOtherOptUsers");
+      const btnHistory = document.getElementById("btnOtherOptLoginHistory");
+      const btnEe = document.getElementById("btnOtherOptEditEverything");
+
+      [usersPanel, historyPanel, eePanel].forEach(p => { if (p) p.style.display = "none"; });
+      [btnUsers, btnHistory, btnEe].forEach(b => { if (b) b.className = "btn-ledger-action admin-only"; });
+
+      if (opt === "history") {
+        if (historyPanel) historyPanel.style.display = "block";
+        if (btnHistory) btnHistory.className = "btn-primary admin-only";
+        renderLoginHistoryPage();
+      } else if (opt === "editEverything") {
+        if (eePanel) eePanel.style.display = "block";
+        if (btnEe) btnEe.className = "btn-primary admin-only";
+        renderEditEverythingBillsList();
+      } else {
+        if (usersPanel) usersPanel.style.display = "block";
+        if (btnUsers) btnUsers.className = "btn-primary";
+        renderRegisteredUsersList();
+      }
+    }
+
+    // Render Edit Everything Bills Table
+    function renderEditEverythingBillsList(searchFilter = "") {
+      const container = document.getElementById("editEverythingBillsList");
+      if (!container) return;
+
+      const q = String(searchFilter || "").trim().toLowerCase();
+      const allBills = [...(DB.bills || [])].reverse();
+
+      const filtered = allBills.filter(b => {
+        if (!q) return true;
+        const tenant = String(b.TenantName || "").toLowerCase();
+        const prop = String(b.PropertyName || "").toLowerCase();
+        const flat = String(b.FlatName || "").toLowerCase();
+        const month = String(b.MonthYear || "").toLowerCase();
+        const status = String(b.Status || "").toLowerCase();
+        return tenant.includes(q) || prop.includes(q) || flat.includes(q) || month.includes(q) || status.includes(q);
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:16px; color:var(--text-muted); font-size:0.8rem;">No billing records found.</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(b => {
+        const safeId = String(b.BillID || "").replace(/'/g, "\\'");
+        const cleanM = normalizeMonthYear(b.MonthYear);
+        const billed = parseFloat(b.TotalBilled) || 0;
+        const paid = parseFloat(b.PaidAmount) || 0;
+        const isPaid = paid >= billed && billed > 0;
+        return '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:10px 12px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:10px;">' +
+                 '<div style="flex:1; min-width:200px;">' +
+                   '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
+                     '<strong>' + (b.PropertyName || '--') + ' - Flat ' + (b.FlatName || '--') + '</strong>' +
+                     '<span style="font-size:0.72rem; color:var(--primary); font-weight:700;">' + formatMonthLabel(cleanM) + '</span>' +
+                     '<span class="badge-' + (isPaid ? 'paid' : 'unpaid') + '" style="font-size:0.65rem;">' + (b.Status || 'Unpaid') + '</span>' +
+                   '</div>' +
+                   '<div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">' +
+                     'Tenant: <strong>' + (b.TenantName || '--') + '</strong> | Billed: <strong>₹' + billed.toLocaleString('en-IN') + '</strong> | Paid: <strong>₹' + paid.toLocaleString('en-IN') + '</strong> (' + (b.PaymentMode || 'UPI') + ')' +
+                   '</div>' +
+                 '</div>' +
+                 '<div style="display:flex; align-items:center; gap:6px;">' +
+                   '<button type="button" class="btn-ledger-action edit-btn admin-only" style="padding:6px 10px; font-size:0.74rem;" onclick="openEditEverythingBillModal(\'' + safeId + '\')" title="Edit entire bill">' +
+                     '<i class="fa-solid fa-pen"></i> Edit' +
+                   '</button>' +
+                   '<button type="button" class="btn-ledger-action admin-only" style="padding:6px 10px; font-size:0.74rem; color:var(--accent-red); border-color:rgba(239,68,68,0.4);" onclick="deleteBillFromEditEverything(\'' + safeId + '\')" title="Delete this bill entry">' +
+                     '<i class="fa-solid fa-trash-can"></i>' +
+                   '</button>' +
+                 '</div>' +
+               '</div>';
+      }).join("");
+    }
+
+    function openEditEverythingBillModal(billId) {
+      const bill = (DB.bills || []).find(b => String(b.BillID || "").trim() === String(billId).trim());
+      if (!bill) return triggerSideToast("Error", "Bill record not found.", false);
+
+      document.getElementById("eeBillId").value = bill.BillID || "";
+      document.getElementById("eePropName").value = bill.PropertyName || "";
+      document.getElementById("eeFlatName").value = bill.FlatName || "";
+      document.getElementById("eeMonthYear").value = normalizeMonthYear(bill.MonthYear);
+      document.getElementById("eeTenantName").value = bill.TenantName || "";
+      document.getElementById("eeBaseRent").value = bill.BaseRent ?? 0;
+      document.getElementById("eeCarryBalance").value = bill.PrevCarryBalance ?? 0;
+      document.getElementById("eeElecTotal").value = bill.ElecTotal ?? 0;
+      document.getElementById("eePngTotal").value = bill.PNGTotal ?? 0;
+      document.getElementById("eeWaterTotal").value = bill.WaterTotal ?? 0;
+      document.getElementById("eeAddName").value = bill.AdditionalName || "";
+      document.getElementById("eeAddAmount").value = bill.AdditionalAmount ?? 0;
+      document.getElementById("eeTotalBilled").value = bill.TotalBilled ?? 0;
+      document.getElementById("eePaidAmount").value = bill.PaidAmount ?? 0;
+      document.getElementById("eePaymentMode").value = bill.PaymentMode || "UPI";
+      document.getElementById("eeStatus").value = bill.Status || "Unpaid";
+      document.getElementById("eeNotes").value = bill.Notes || "";
+
+      document.getElementById("editEverythingBillSubtitle").innerText = "Bill ID: " + bill.BillID + " (" + bill.PropertyName + " - Flat " + bill.FlatName + ")";
+      openModal("editEverythingBillModal");
+    }
+
+    function runEditEverythingMath() {
+      const rent = parseFloat(document.getElementById("eeBaseRent").value) || 0;
+      const carry = parseFloat(document.getElementById("eeCarryBalance").value) || 0;
+      const elec = parseFloat(document.getElementById("eeElecTotal").value) || 0;
+      const png = parseFloat(document.getElementById("eePngTotal").value) || 0;
+      const water = parseFloat(document.getElementById("eeWaterTotal").value) || 0;
+      const add = parseFloat(document.getElementById("eeAddAmount").value) || 0;
+      const total = Math.max(0, rent + carry + elec + png + water + add);
+      document.getElementById("eeTotalBilled").value = total;
+
+      const paid = parseFloat(document.getElementById("eePaidAmount").value) || 0;
+      const statusSelect = document.getElementById("eeStatus");
+      if (paid >= total && total > 0) statusSelect.value = "Fully Paid";
+      else if (paid > 0 && paid < total) statusSelect.value = "Partial Paid";
+      else if (total === 0) statusSelect.value = "Fully Paid";
+      else statusSelect.value = "Unpaid";
+    }
+
+    async function saveEditEverythingBillChanges() {
+      const billId = document.getElementById("eeBillId").value;
+      const bill = (DB.bills || []).find(b => String(b.BillID || "").trim() === String(billId).trim());
+      if (!bill) return triggerSideToast("Error", "Bill record not found.", false);
+
+      bill.PropertyName = document.getElementById("eePropName").value.trim() || bill.PropertyName;
+      bill.FlatName = document.getElementById("eeFlatName").value.trim() || bill.FlatName;
+      bill.MonthYear = normalizeMonthYear(document.getElementById("eeMonthYear").value) || bill.MonthYear;
+      bill.TenantName = document.getElementById("eeTenantName").value.trim() || bill.TenantName;
+      bill.BaseRent = parseFloat(document.getElementById("eeBaseRent").value) || 0;
+      bill.PrevCarryBalance = parseFloat(document.getElementById("eeCarryBalance").value) || 0;
+      bill.ElecTotal = parseFloat(document.getElementById("eeElecTotal").value) || 0;
+      bill.PNGTotal = parseFloat(document.getElementById("eePngTotal").value) || 0;
+      bill.WaterTotal = parseFloat(document.getElementById("eeWaterTotal").value) || 0;
+      bill.AdditionalName = document.getElementById("eeAddName").value.trim();
+      bill.AdditionalAmount = parseFloat(document.getElementById("eeAddAmount").value) || 0;
+      bill.TotalBilled = parseFloat(document.getElementById("eeTotalBilled").value) || 0;
+      bill.PaidAmount = parseFloat(document.getElementById("eePaidAmount").value) || 0;
+      bill.PaymentMode = document.getElementById("eePaymentMode").value;
+      bill.Status = document.getElementById("eeStatus").value;
+      bill.Notes = document.getElementById("eeNotes").value;
+
+      closeModal("editEverythingBillModal");
+      renderEditEverythingBillsList();
+      renderAllDashboardUI();
+      triggerSideToast("Bill Updated", "Bill changes saved to Google Sheets!", true);
+
+      await sendGasPost({
+        action: "recordBill",
+        billId: bill.BillID,
+        propertyName: bill.PropertyName,
+        flatName: bill.FlatName,
+        monthYear: bill.MonthYear,
+        tenantName: bill.TenantName,
+        baseRent: bill.BaseRent,
+        elecPrev: bill.ElecPrev || 0,
+        elecCurr: bill.ElecCurr || 0,
+        elecUnits: bill.ElecUnits || 0,
+        elecRate: bill.ElecRate || 0,
+        elecTotal: bill.ElecTotal,
+        pngPrev: bill.PNGPrev || 0,
+        pngCurr: bill.PNGCurr || 0,
+        pngUnits: bill.PNGUnits || 0,
+        pngRate: bill.PNGRate || 0,
+        pngTotal: bill.PNGTotal,
+        waterPrev: bill.WaterPrev || 0,
+        waterCurr: bill.WaterCurr || 0,
+        waterUnits: bill.WaterUnits || 0,
+        waterRate: bill.WaterRate || 0,
+        waterTotal: bill.WaterTotal,
+        additionalName: bill.AdditionalName,
+        additionalAmount: bill.AdditionalAmount,
+        totalBilled: bill.TotalBilled,
+        paidAmount: bill.PaidAmount,
+        paymentMode: bill.PaymentMode,
+        status: bill.Status,
+        notes: bill.Notes,
+        renterId: bill.RenterID || "",
+        prevCarryBalance: bill.PrevCarryBalance,
+        upiName: bill.UPIName || "",
+        upiId: bill.UPIID || "",
+        contractMobile: bill.ContractMobile || "",
+        tenantMobile: bill.TenantMobile || ""
+      });
+    }
+
+    function deleteBillFromEditEverything(billId) {
+      openCenteredConfirmModal(
+        "Delete Bill Entry Permanently",
+        "Are you sure you want to permanently delete this bill entry? It will be removed from Google Sheets and cannot be recovered.",
+        async () => {
+          const target = (DB.bills || []).find(b => String(b.BillID || "").trim() === String(billId).trim());
+          DB.bills = (DB.bills || []).filter(b => String(b.BillID || "").trim() !== String(billId).trim());
+          renderEditEverythingBillsList();
+          renderAllDashboardUI();
+          triggerSideToast("Bill Deleted", "Bill entry permanently deleted from system.", "warning");
+
+          await sendGasPost({
+            action: "deleteBill",
+            billId: billId,
+            propertyName: target?.PropertyName,
+            flatName: target?.FlatName,
+            monthYear: target?.MonthYear
+          });
+        }
+      );
+    }
+
+    function deleteCurrentEditEverythingBill() {
+      const billId = document.getElementById("eeBillId").value;
+      closeModal("editEverythingBillModal");
+      deleteBillFromEditEverything(billId);
+    }
+
+    // Requirement 5: Open Edit User Assignment Modal to change role, property, or flat
+    function openEditUserAssignmentModal(targetUsername) {
+      const u = (DB.users || []).find(item => String(item.Username || "").trim().toLowerCase() === String(targetUsername).trim().toLowerCase());
+      if (!u) return triggerSideToast("Error", "User record not found.", false);
+
+      document.getElementById("editAssignTargetUsername").value = u.Username || "";
+      document.getElementById("editAssignUsernameDisplay").value = "@" + (u.Username || "");
+      document.getElementById("editAssignFullName").value = u.FullName || u.Username || "";
+      document.getElementById("editAssignRole").value = (u.Role === "Viewer") ? "Viewer" : "Admin";
+
+      // Scope fields
+      const propSelect = document.getElementById("editAssignPropDropdown");
+      if (propSelect) {
+        propSelect.innerHTML = (DB.properties || []).map(p => '<option value="' + p.PropertyName + '">' + p.PropertyName + '</option>').join("");
+        if (u.AssignedProperty && u.AssignedProperty !== "ALL") {
+          propSelect.value = u.AssignedProperty;
+        }
+      }
+      populateEditAssignFlatsDropdown();
+      if (u.AssignedFlat) {
+        const flatSelect = document.getElementById("editAssignFlatDropdown");
+        if (flatSelect) flatSelect.value = u.AssignedFlat;
+      }
+
+      handleEditAssignRoleChange();
+      openModal("editUserAssignmentModal");
+    }
+
+    function handleEditAssignRoleChange() {
+      const role = document.getElementById("editAssignRole")?.value;
+      const scopeBox = document.getElementById("editAssignScopeBox");
+      if (scopeBox) scopeBox.style.display = (role === "Viewer") ? "block" : "none";
+    }
+
+    function handleEditAssignScopeLevelChange() {
+      const level = document.getElementById("editAssignScopeLevel")?.value;
+      const flatFields = document.getElementById("editAssignFlatSelectorFields");
+      if (flatFields) flatFields.style.display = (level === "FLAT") ? "block" : "none";
+    }
+
+    function populateEditAssignFlatsDropdown() {
+      const propName = document.getElementById("editAssignPropDropdown")?.value;
+      const flatSelect = document.getElementById("editAssignFlatDropdown");
+      if (!flatSelect) return;
+      const matching = (DB.flats || []).filter(f => String(f.PropertyName || "").trim().toLowerCase() === String(propName || "").trim().toLowerCase());
+      flatSelect.innerHTML = matching.length > 0
+        ? matching.map(f => '<option value="' + f.FlatName + '">Flat ' + f.FlatName + '</option>').join("")
+        : '<option value="">No flats available</option>';
+    }
+
+    async function saveUserAssignmentChanges() {
+      const targetUser = document.getElementById("editAssignTargetUsername").value;
+      const u = (DB.users || []).find(item => String(item.Username || "").trim().toLowerCase() === String(targetUser).trim().toLowerCase());
+      if (!u) return;
+
+      const newRole = document.getElementById("editAssignRole").value;
+      const scopeLevel = document.getElementById("editAssignScopeLevel")?.value || "FLAT";
+      let assignedProp = "";
+      let assignedFlat = "";
+
+      if (newRole === "Viewer") {
+        if (scopeLevel === "ALL") {
+          assignedProp = "ALL";
+          assignedFlat = "";
+        } else {
+          assignedProp = document.getElementById("editAssignPropDropdown")?.value || "";
+          assignedFlat = document.getElementById("editAssignFlatDropdown")?.value || "";
+        }
+      }
+
+      u.Role = newRole;
+      u.AssignedProperty = assignedProp;
+      u.AssignedFlat = assignedFlat;
+
+      // If editing current logged user, update active session
+      if (String(activeUser || "").trim().toLowerCase() === targetUser.toLowerCase()) {
+        activeRole = newRole;
+        activeAssignedProperty = assignedProp;
+        activeAssignedFlat = assignedFlat;
+        sessionStorage.setItem("active_session_role", newRole);
+        sessionStorage.setItem("active_session_assigned_prop", assignedProp);
+        sessionStorage.setItem("active_session_assigned_flat", assignedFlat);
+        applyRolePermissions(newRole);
+      }
+
+      closeModal("editUserAssignmentModal");
+      renderRegisteredUsersList();
+      renderAllDashboardUI();
+      triggerSideToast(
+        "User Updated",
+        "@" + targetUser + " assignment updated to " + (assignedFlat ? "Flat " + assignedFlat + " in " + assignedProp : (assignedProp === "ALL" ? "All Properties" : newRole)),
+        true
+      );
+
+      await sendGasPost({
+        action: "updateUserRole",
+        requesterUsername: activeUser,
+        targetUsername: targetUser,
+        newRole: newRole,
+        assignedProperty: assignedProp,
+        assignedFlat: assignedFlat
+      });
+    }
+
+function renderRegisteredUsersList() {
       const usersContainer = document.getElementById("otherUsersList");
       if (!usersContainer) return;
       const isAdmin = String(activeRole || "").trim().toLowerCase() === "admin";
@@ -5196,6 +5834,9 @@ function formatMonthLabel(rawVal) {
 
           adminControlsHtml = `
             <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:6px;">
+              <button type="button" class="btn-ledger-action edit-btn" style="padding:5px 9px; font-size:0.72rem; font-weight:700;" onclick="openEditUserAssignmentModal('${safeUName}')" title="Edit user role and flat assignment">
+                <i class="fa-solid fa-pen-to-square"></i> Edit Flat / Role
+              </button>
               ${roleToggleBtn}
               ${deleteBtn}
             </div>
@@ -5388,8 +6029,22 @@ function formatMonthLabel(rawVal) {
       const newU = document.getElementById("createUserLoginId").value.trim();
       const newP = document.getElementById("createUserPass").value;
       const role = document.getElementById("createUserRole").value;
-      const assignedProperty = role === "Viewer" ? (document.getElementById("createUserAssignedProp")?.value || "").trim() : "";
-      const assignedFlat = role === "Viewer" ? (document.getElementById("createUserAssignedFlat")?.value || "").trim() : "";
+      const scopeMode = document.getElementById("createViewerScopeType")?.value || "FLAT";
+      let assignedProperty = "";
+      let assignedFlat = "";
+      if (role === "Viewer") {
+        if (scopeMode === "ALL") {
+          assignedProperty = "ALL";
+          assignedFlat = "";
+        } else if (scopeMode === "SELECTED") {
+          const selectedProps = Array.from(document.querySelectorAll(".viewer-prop-cb:checked")).map(cb => cb.value);
+          assignedProperty = selectedProps.join(", ");
+          assignedFlat = "";
+        } else {
+          assignedProperty = (document.getElementById("createUserAssignedProp")?.value || "").trim();
+          assignedFlat = (document.getElementById("createUserAssignedFlat")?.value || "").trim();
+        }
+      }
 
       if (!fullName || !newU || !newP) {
         return triggerSideToast("Missing Fields", "Please fill in Name, Username, and Password.", false);
