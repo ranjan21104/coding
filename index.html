@@ -1936,9 +1936,6 @@
       </div>
     </section>
 
-    <!-- Requirement 10: Always-Visible Multi-Series Flat Section Analytics Graph on Dashboard -->
-    <section id="dashboardFlatAnalyticsSection" style="display:none; padding: 6px 18px 8px 18px; width: 100%;"></section>
-
     <!-- 3-Units Merged Wide Flat Cards Layout (Hidden until a Property is clicked) -->
     <main class="flats-container" id="flatsList">
       <!-- Rendered Only When Property Is Clicked -->
@@ -3223,13 +3220,10 @@
         </div>
       </div>
 
-      <!-- TAB 5: GRAPH (Requirement 10: Multi-Series Analytics Graph for Rent, Electricity, Water, PNG & Total) -->
+      <!-- TAB 5: GRAPH (Only Under Flat Option: Two Graphs - 1. Expense Breakdown & 2. Consolidated 3-Year Graph) -->
       <div id="tabGraph" class="tab-content">
         <div id="tabGraphContainer" style="margin-bottom:14px;"></div>
       </div>
-
-      <!-- Requirement 10: Always-Visible Multi-Series Analytics Graph inside Flat Details Dashboard -->
-      <div id="flatModalAlwaysVisibleGraphContainer" style="margin-top:18px; padding-top:14px; border-top:1.5px solid var(--glass-border);"></div>
 
     </div>
   </div>
@@ -4117,7 +4111,6 @@ function formatMonthLabel(rawVal) {
       } else {
         selectedProperty = null;
         sessionStorage.removeItem("active_selected_property");
-        renderDashboardFlatAnalyticsSection(null);
         if (DB.properties.length > 0) {
           flatsContainer.innerHTML = `
             <div class="empty-flats-prompt">
@@ -4872,8 +4865,6 @@ function formatMonthLabel(rawVal) {
       const viewerScope = resolveViewerAssignedScope();
       const effectivePropName = (viewerScope && viewerScope.mode === "FLAT") ? viewerScope.prop : propertyName;
       const targetPropClean = String(effectivePropName || "").trim().toLowerCase();
-
-      renderDashboardFlatAnalyticsSection(effectivePropName);
 
       let flats = DB.flats.filter(f => String(f.PropertyName || "").trim().toLowerCase() === targetPropClean);
       if (activeRole === "Viewer" && viewerScope) {
@@ -6814,180 +6805,199 @@ function renderRegisteredUsersList() {
 
     /**
      * ============================================================================
-     * REQUIREMENT 10: MULTI-SERIES ANALYTICS GRAPH WITH INTERACTIVE METRIC TOGGLES,
-     * UNIQUE DISTINCT COLORS, COLOR LEGEND BENEATH GRAPH & ALWAYS-VISIBLE PLACEMENT
+     * FLAT OPTION GRAPHS (ONLY UNDER FLAT -> 5. GRAPH TAB):
+     * 1. First Graph: Total Breakdown for Rent, Electricity, Water, and PNG Gas
+     *    with distinct colors and a clear bottom legend.
+     * 2. Second Graph (Below the first one): Single Consolidated Graph for 3 Years
+     *    with distinct colors per year and a filter/selection option to choose years.
      * ============================================================================
      */
-    let rhSelectedGraphYear = new Date().getFullYear();
-    let dashboardSelectedAnalyticsFlat = "ALL";
-    let activeGraphSeriesFilters = {
-      total: true,
+    let flatGraph1SelectedScope = "ALL"; // "ALL" or specific year string e.g. "2026"
+    let flatGraph1ExpenseFilters = {
       rent: true,
       elec: true,
       water: true,
       png: true
     };
 
-    const GRAPH_SERIES_CONFIG = [
-      { key: "total", label: "Total Aggregate", color: "#6366f1", bg: "rgba(99, 102, 241, 0.16)" },
-      { key: "rent",  label: "Rent",            color: "#10b981", bg: "rgba(16, 185, 129, 0.16)" },
-      { key: "elec",  label: "Electricity",     color: "#f59e0b", bg: "rgba(245, 158, 11, 0.16)" },
-      { key: "water", label: "Water",           color: "#06b6d4", bg: "rgba(6, 182, 212, 0.16)" },
-      { key: "png",   label: "PNG Gas",         color: "#ec4899", bg: "rgba(236, 72, 153, 0.16)" }
+    const FLAT_EXPENSE_SERIES = [
+      { key: "rent",  label: "Rent",        color: "#10b981", bg: "rgba(16, 185, 129, 0.16)" },
+      { key: "elec",  label: "Electricity", color: "#f59e0b", bg: "rgba(245, 158, 11, 0.16)" },
+      { key: "water", label: "Water",       color: "#06b6d4", bg: "rgba(6, 182, 212, 0.16)" },
+      { key: "png",   label: "PNG Gas",     color: "#ec4899", bg: "rgba(236, 72, 153, 0.16)" }
     ];
 
-    function toggleGraphMetricSeries(seriesKey) {
-      if (seriesKey === "ALL_ON") {
-        Object.keys(activeGraphSeriesFilters).forEach(k => { activeGraphSeriesFilters[k] = true; });
-      } else if (activeGraphSeriesFilters.hasOwnProperty(seriesKey)) {
-        activeGraphSeriesFilters[seriesKey] = !activeGraphSeriesFilters[seriesKey];
-        if (!Object.values(activeGraphSeriesFilters).some(Boolean)) {
-          activeGraphSeriesFilters[seriesKey] = true;
+    let flatGraph2YearFilters = {}; // { [year]: true/false }
+
+    function ensureThreeYearFiltersInitialized() {
+      const currentYear = new Date().getFullYear();
+      const threeYears = [currentYear, currentYear - 1, currentYear - 2];
+      let hasAnyKey = false;
+      threeYears.forEach(y => {
+        if (flatGraph2YearFilters.hasOwnProperty(y)) hasAnyKey = true;
+      });
+      if (!hasAnyKey) {
+        threeYears.forEach(y => { flatGraph2YearFilters[y] = true; });
+      }
+      if (! threeYears.some(y => Boolean(flatGraph2YearFilters[y]))) {
+        threeYears.forEach(y => { flatGraph2YearFilters[y] = true; });
+      }
+    }
+
+    function toggleFlatGraph1Expense(expenseKey) {
+      if (expenseKey === "ALL_ON") {
+        Object.keys(flatGraph1ExpenseFilters).forEach(k => { flatGraph1ExpenseFilters[k] = true; });
+      } else if (flatGraph1ExpenseFilters.hasOwnProperty(expenseKey)) {
+        flatGraph1ExpenseFilters[expenseKey] = !flatGraph1ExpenseFilters[expenseKey];
+        if (!Object.values(flatGraph1ExpenseFilters).some(Boolean)) {
+          flatGraph1ExpenseFilters[expenseKey] = true;
         }
       }
       refreshAllAnalyticsGraphs();
     }
 
-    function setRhGraphYear(year) {
-      rhSelectedGraphYear = parseInt(year, 10);
+    function setFlatGraph1Scope(scopeVal) {
+      flatGraph1SelectedScope = scopeVal || "ALL";
       refreshAllAnalyticsGraphs();
     }
 
-    function setDashboardAnalyticsFlatFilter(flatVal) {
-      dashboardSelectedAnalyticsFlat = flatVal || "ALL";
+    function toggleFlatGraph2Year(yearVal) {
+      ensureThreeYearFiltersInitialized();
+      const currentYear = new Date().getFullYear();
+      const threeYears = [currentYear, currentYear - 1, currentYear - 2];
+
+      if (yearVal === "ALL_3_YEARS") {
+        threeYears.forEach(y => { flatGraph2YearFilters[y] = true; });
+      } else {
+        const yNum = parseInt(yearVal, 10);
+        if (!isNaN(yNum)) {
+          flatGraph2YearFilters[yNum] = !flatGraph2YearFilters[yNum];
+          if (!threeYears.some(y => Boolean(flatGraph2YearFilters[y]))) {
+            flatGraph2YearFilters[yNum] = true;
+          }
+        }
+      }
+      refreshAllAnalyticsGraphs();
+    }
+
+    function selectOnlyFlatGraph2Year(yearVal) {
+      const currentYear = new Date().getFullYear();
+      const threeYears = [currentYear, currentYear - 1, currentYear - 2];
+      if (yearVal === "ALL_3_YEARS") {
+        threeYears.forEach(y => { flatGraph2YearFilters[y] = true; });
+      } else {
+        const yNum = parseInt(yearVal, 10);
+        threeYears.forEach(y => { flatGraph2YearFilters[y] = (y === yNum); });
+      }
       refreshAllAnalyticsGraphs();
     }
 
     function refreshAllAnalyticsGraphs() {
-      if (selectedProperty) {
-        renderDashboardFlatAnalyticsSection(selectedProperty);
-      }
       if (selectedFlat) {
         renderAllRentersGraphForFlat(selectedFlat.PropertyName, selectedFlat.FlatName);
-        renderRhThreeYearMonthlyChart(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj);
       }
     }
 
-    function buildMultiSeriesChartHtml(billsList, titleText, subtitleText, extraHeaderControlsHtml = "", compactHeight = false) {
+    function extractBillExpenseParts(b) {
+      const r = parseFloat(b.BaseRent) || 0;
+      const ePrev = parseFloat(b.ElecPrev) || 0;
+      const eCurr = parseFloat(b.ElecCurr) || 0;
+      const eUnits = b.ElecUnits !== undefined && b.ElecUnits !== "" ? (parseFloat(b.ElecUnits) || 0) : Math.max(0, eCurr - ePrev);
+      const eRate = parseFloat(b.ElecRate) || 0;
+      const e = b.ElecTotal !== undefined && b.ElecTotal !== "" ? (parseFloat(b.ElecTotal) || 0) : (eUnits * eRate);
+
+      const pPrev = parseFloat(b.PNGPrev) || 0;
+      const pCurr = parseFloat(b.PNGCurr) || 0;
+      const pUnits = b.PNGUnits !== undefined && b.PNGUnits !== "" ? (parseFloat(b.PNGUnits) || 0) : Math.max(0, pCurr - pPrev);
+      const pRate = parseFloat(b.PNGRate) || 0;
+      const p = b.PNGTotal !== undefined && b.PNGTotal !== "" ? (parseFloat(b.PNGTotal) || 0) : (pUnits * pRate);
+
+      const wPrev = parseFloat(b.WaterPrev) || 0;
+      const wCurr = parseFloat(b.WaterCurr) || 0;
+      const wUnits = b.WaterUnits !== undefined && b.WaterUnits !== "" ? (parseFloat(b.WaterUnits) || 0) : Math.max(0, wCurr - wPrev);
+      const wRate = parseFloat(b.WaterRate) || 0;
+      const w = b.WaterTotal !== undefined && b.WaterTotal !== "" ? (parseFloat(b.WaterTotal) || 0) : (wUnits * wRate);
+
+      const tot = parseFloat(b.TotalBilled) || (r + e + p + w);
+      return { rent: r, elec: e, water: w, png: p, total: tot };
+    }
+
+    // FIRST GRAPH: Total Breakdown for Rent, Electricity, Water, and PNG Gas
+    function buildFirstExpenseBreakdownGraphHtml(allFlatBills, prop, flat) {
       const currentYear = new Date().getFullYear();
-      const yearsList = [currentYear, currentYear - 1, currentYear - 2];
-      if (!yearsList.includes(rhSelectedGraphYear)) {
-        rhSelectedGraphYear = currentYear;
-      }
+      const threeYears = [currentYear, currentYear - 1, currentYear - 2];
 
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      const monthlyMetrics = [];
-      let maxVal = 1000;
+      const scopedBills = (allFlatBills || []).filter(b => {
+        if (flatGraph1SelectedScope === "ALL") return true;
+        const norm = normalizeMonthYear(b.MonthYear);
+        return norm.startsWith(String(flatGraph1SelectedScope) + "-");
+      });
 
-      for (let m = 1; m <= 12; m++) {
-        const monthKey = rhSelectedGraphYear + "-" + String(m).padStart(2, "0");
-        const monthBills = (billsList || []).filter(b => normalizeMonthYear(b.MonthYear) === monthKey);
+      const totals = { rent: 0, elec: 0, water: 0, png: 0 };
+      scopedBills.forEach(b => {
+        const parts = extractBillExpenseParts(b);
+        totals.rent += parts.rent;
+        totals.elec += parts.elec;
+        totals.water += parts.water;
+        totals.png += parts.png;
+      });
 
-        let rentSum = 0, elecSum = 0, waterSum = 0, pngSum = 0, totalSum = 0;
-        monthBills.forEach(b => {
-          const r = parseFloat(b.BaseRent) || 0;
-          const ePrev = parseFloat(b.ElecPrev) || 0;
-          const eCurr = parseFloat(b.ElecCurr) || 0;
-          const eUnits = b.ElecUnits !== undefined && b.ElecUnits !== "" ? (parseFloat(b.ElecUnits) || 0) : Math.max(0, eCurr - ePrev);
-          const eRate = parseFloat(b.ElecRate) || 0;
-          const e = b.ElecTotal !== undefined && b.ElecTotal !== "" ? (parseFloat(b.ElecTotal) || 0) : (eUnits * eRate);
+      const enabledExpenses = FLAT_EXPENSE_SERIES.filter(s => flatGraph1ExpenseFilters[s.key]);
+      const grandTotalAllFour = totals.rent + totals.elec + totals.water + totals.png;
 
-          const pPrev = parseFloat(b.PNGPrev) || 0;
-          const pCurr = parseFloat(b.PNGCurr) || 0;
-          const pUnits = b.PNGUnits !== undefined && b.PNGUnits !== "" ? (parseFloat(b.PNGUnits) || 0) : Math.max(0, pCurr - pPrev);
-          const pRate = parseFloat(b.PNGRate) || 0;
-          const p = b.PNGTotal !== undefined && b.PNGTotal !== "" ? (parseFloat(b.PNGTotal) || 0) : (pUnits * pRate);
+      let maxBarVal = 1000;
+      enabledExpenses.forEach(s => {
+        if (totals[s.key] > maxBarVal) maxBarVal = totals[s.key];
+      });
 
-          const wPrev = parseFloat(b.WaterPrev) || 0;
-          const wCurr = parseFloat(b.WaterCurr) || 0;
-          const wUnits = b.WaterUnits !== undefined && b.WaterUnits !== "" ? (parseFloat(b.WaterUnits) || 0) : Math.max(0, wCurr - wPrev);
-          const wRate = parseFloat(b.WaterRate) || 0;
-          const w = b.WaterTotal !== undefined && b.WaterTotal !== "" ? (parseFloat(b.WaterTotal) || 0) : (wUnits * wRate);
-
-          const tot = parseFloat(b.TotalBilled) || (r + e + p + w);
-          rentSum += r;
-          elecSum += e;
-          waterSum += w;
-          pngSum += p;
-          totalSum += tot;
-        });
-
-        const item = { month: months[m - 1], total: totalSum, rent: rentSum, elec: elecSum, water: waterSum, png: pngSum };
-        monthlyMetrics.push(item);
-
-        GRAPH_SERIES_CONFIG.forEach(s => {
-          if (activeGraphSeriesFilters[s.key] && item[s.key] > maxVal) {
-            maxVal = item[s.key];
-          }
-        });
-      }
-
-      const chartWidth = 720;
-      const chartHeight = compactHeight ? 185 : 210;
-      const padLeft = 52;
-      const padRight = 24;
-      const padTop = 24;
-      const padBottom = 34;
+      const chartWidth = 680;
+      const chartHeight = 220;
+      const padLeft = 64;
+      const padRight = 32;
+      const padTop = 32;
+      const padBottom = 42;
       const usableW = chartWidth - padLeft - padRight;
       const usableH = chartHeight - padTop - padBottom;
 
-      const enabledSeries = GRAPH_SERIES_CONFIG.filter(s => activeGraphSeriesFilters[s.key]);
-
-      // Grouped bars per month + multi-series trend lines
       let barsSvg = "";
-      let linesSvg = "";
-      let labelsSvg = "";
+      const slotWidth = usableW / Math.max(1, enabledExpenses.length);
 
-      monthlyMetrics.forEach((mData, idx) => {
-        const centerX = padLeft + (idx * (usableW / 11));
-        labelsSvg += `<text x="${centerX.toFixed(1)}" y="${chartHeight - 10}" font-size="10" font-weight="700" fill="#94a3b8" text-anchor="middle">${mData.month}</text>`;
+      enabledExpenses.forEach((s, idx) => {
+        const val = totals[s.key] || 0;
+        const barW = Math.min(88, Math.max(38, slotWidth * 0.52));
+        const centerX = padLeft + (idx * slotWidth) + (slotWidth / 2);
+        const barX = centerX - (barW / 2);
+        const barH = (val / maxBarVal) * usableH;
+        const barY = padTop + usableH - barH;
+        const pct = grandTotalAllFour > 0 ? ((val / grandTotalAllFour) * 100).toFixed(1) : "0.0";
 
-        const count = enabledSeries.length;
-        const barW = Math.max(4, Math.min(10, Math.floor(34 / Math.max(1, count))));
-        const totalGroupW = count * barW + Math.max(0, count - 1) * 2;
-        const startX = centerX - (totalGroupW / 2);
-
-        enabledSeries.forEach((s, sIdx) => {
-          const val = mData[s.key] || 0;
-          const barH = (val / maxVal) * usableH;
-          const barY = padTop + usableH - barH;
-          const barX = startX + sIdx * (barW + 2);
-          barsSvg += `<rect x="${barX.toFixed(1)}" y="${barY.toFixed(1)}" width="${barW}" height="${Math.max(0, barH).toFixed(1)}" rx="2" fill="${s.color}" fill-opacity="0.32"><title>${mData.month} - ${s.label}: ₹${val.toLocaleString('en-IN')}</title></rect>`;
-        });
+        barsSvg += `
+          <g>
+            <rect x="${barX.toFixed(1)}" y="${barY.toFixed(1)}" width="${barW.toFixed(1)}" height="${Math.max(4, barH).toFixed(1)}" rx="8" fill="${s.color}" fill-opacity="0.88" stroke="${s.color}" stroke-width="1.5">
+              <title>${s.label}: ₹${val.toLocaleString('en-IN')} (${pct}%)</title>
+            </rect>
+            <text x="${centerX.toFixed(1)}" y="${Math.max(16, barY - 8).toFixed(1)}" font-size="11" font-weight="800" fill="${s.color}" text-anchor="middle">₹${val.toLocaleString('en-IN')}</text>
+            <text x="${centerX.toFixed(1)}" y="${chartHeight - 16}" font-size="11.5" font-weight="800" fill="#e2e8f0" text-anchor="middle">${s.label}</text>
+            <text x="${centerX.toFixed(1)}" y="${chartHeight - 3}" font-size="9.5" font-weight="700" fill="#94a3b8" text-anchor="middle">(${pct}%)</text>
+          </g>
+        `;
       });
 
-      enabledSeries.forEach(s => {
-        const pts = monthlyMetrics.map((mData, idx) => {
-          const x = padLeft + (idx * (usableW / 11));
-          const val = mData[s.key] || 0;
-          const y = padTop + usableH - ((val / maxVal) * usableH);
-          return { x, y, val, month: mData.month };
-        });
-        const poly = pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
-        linesSvg += `<polyline fill="none" stroke="${s.color}" stroke-width="${s.key === 'total' ? '2.8' : '2'}" stroke-linecap="round" stroke-linejoin="round" points="${poly}" />`;
-        pts.forEach(p => {
-          const valLabel = (p.val > 0 && (s.key === "total" || enabledSeries.length === 1))
-            ? (p.val >= 1000 ? (p.val / 1000).toFixed(p.val % 1000 === 0 ? 0 : 1) + "k" : Math.round(p.val))
-            : "";
-          linesSvg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${s.key === 'total' ? '4.2' : '3.3'}" fill="${s.color}" stroke="#ffffff" stroke-width="1.2"><title>${p.month} - ${s.label}: ₹${p.val.toLocaleString('en-IN')}</title></circle>`;
-          if (valLabel) {
-            linesSvg += `<text x="${p.x.toFixed(1)}" y="${Math.max(12, p.y - 7).toFixed(1)}" font-size="8.5" font-weight="800" fill="${s.color}" text-anchor="middle">₹${valLabel}</text>`;
-          }
-        });
-      });
+      const scopeButtonsHtml = [
+        `<button type="button" class="btn-ledger-action ${flatGraph1SelectedScope === 'ALL' ? 'active' : ''}" style="padding:5px 11px; font-size:0.73rem; font-weight:800; ${flatGraph1SelectedScope === 'ALL' ? 'background:var(--primary); color:#ffffff; border-color:var(--primary);' : ''}" onclick="setFlatGraph1Scope('ALL')">All Time Total</button>`,
+        ...threeYears.map(y => {
+          const isSel = String(flatGraph1SelectedScope) === String(y);
+          return `<button type="button" class="btn-ledger-action ${isSel ? 'active' : ''}" style="padding:5px 11px; font-size:0.73rem; font-weight:800; ${isSel ? 'background:var(--primary); color:#ffffff; border-color:var(--primary);' : ''}" onclick="setFlatGraph1Scope('${y}')">${y}</button>`;
+        })
+      ].join("");
 
-      const yearButtonsHtml = yearsList.map(y => {
-        const isSel = y === rhSelectedGraphYear;
-        return `<button type="button" class="btn-ledger-action ${isSel ? 'active' : ''}" style="padding:5px 12px; font-size:0.74rem; font-weight:800; ${isSel ? 'background:var(--primary); color:#ffffff; border-color:var(--primary);' : ''}" onclick="setRhGraphYear(${y})">${y}${y === currentYear ? ' (Current)' : ''}</button>`;
-      }).join("");
-
-      const filterTogglesHtml = GRAPH_SERIES_CONFIG.map(s => {
-        const isOn = Boolean(activeGraphSeriesFilters[s.key]);
+      const expenseFilterPillsHtml = FLAT_EXPENSE_SERIES.map(s => {
+        const isOn = Boolean(flatGraph1ExpenseFilters[s.key]);
         return `
           <button
             type="button"
-            onclick="toggleGraphMetricSeries('${s.key}')"
-            style="display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:999px; font-size:0.73rem; font-weight:800; cursor:pointer; transition:all 0.18s ease; border:1.5px solid ${isOn ? s.color : 'var(--glass-border)'}; background:${isOn ? s.bg : 'rgba(255,255,255,0.03)'}; color:${isOn ? '#ffffff' : 'var(--text-muted)'}; opacity:${isOn ? '1' : '0.6'};"
+            onclick="toggleFlatGraph1Expense('${s.key}')"
+            style="display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:999px; font-size:0.73rem; font-weight:800; cursor:pointer; transition:all 0.18s ease; border:1.5px solid ${isOn ? s.color : 'var(--glass-border)'}; background:${isOn ? s.bg : 'rgba(255,255,255,0.03)'}; color:${isOn ? '#ffffff' : 'var(--text-muted)'}; opacity:${isOn ? '1' : '0.55'};"
           >
             <span style="width:9px; height:9px; border-radius:50%; background:${s.color}; display:inline-block; box-shadow:0 0 6px ${s.color};"></span>
             <span>${s.label}</span>
@@ -6996,28 +7006,201 @@ function renderRegisteredUsersList() {
         `;
       }).join("");
 
-      // Calculate Annual Breakdown Totals for Legend Beneath Graph
-      const annualTotals = { total: 0, rent: 0, elec: 0, water: 0, png: 0 };
-      monthlyMetrics.forEach(m => {
-        annualTotals.total += m.total;
-        annualTotals.rent += m.rent;
-        annualTotals.elec += m.elec;
-        annualTotals.water += m.water;
-        annualTotals.png += m.png;
-      });
-
-      const legendBelowHtml = GRAPH_SERIES_CONFIG.map(s => {
-        const isOn = Boolean(activeGraphSeriesFilters[s.key]);
+      const legendBelowHtml = FLAT_EXPENSE_SERIES.map(s => {
+        const isOn = Boolean(flatGraph1ExpenseFilters[s.key]);
+        const val = totals[s.key] || 0;
+        const pct = grandTotalAllFour > 0 ? ((val / grandTotalAllFour) * 100).toFixed(1) : "0.0";
         return `
           <div
-            onclick="toggleGraphMetricSeries('${s.key}')"
-            style="display:flex; align-items:center; gap:8px; padding:6px 12px; border-radius:10px; background:rgba(255,255,255,0.03); border:1px solid ${isOn ? s.color : 'var(--glass-border)'}; cursor:pointer; opacity:${isOn ? '1' : '0.5'};"
+            onclick="toggleFlatGraph1Expense('${s.key}')"
+            style="display:flex; align-items:center; gap:9px; padding:7px 13px; border-radius:10px; background:rgba(255,255,255,0.03); border:1.5px solid ${isOn ? s.color : 'var(--glass-border)'}; cursor:pointer; opacity:${isOn ? '1' : '0.5'};"
             title="Click to toggle ${s.label}"
           >
-            <span style="width:12px; height:12px; border-radius:3px; background:${s.color}; display:inline-block; flex-shrink:0;"></span>
-            <div style="font-size:0.74rem; line-height:1.2;">
+            <span style="width:14px; height:14px; border-radius:4px; background:${s.color}; display:inline-block; flex-shrink:0; box-shadow:0 0 8px ${s.color};"></span>
+            <div style="font-size:0.75rem; line-height:1.25;">
               <div style="font-weight:800; color:var(--text-main);">${s.label}</div>
-              <div style="color:${s.color}; font-weight:700;">₹${annualTotals[s.key].toLocaleString('en-IN')}</div>
+              <div style="color:${s.color}; font-weight:800;">₹${val.toLocaleString('en-IN')} <span style="color:var(--text-muted); font-weight:600;">(${pct}%)</span></div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      return `
+        <div style="background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:16px; padding:16px; margin-bottom:18px; box-shadow:0 10px 28px rgba(0,0,0,0.22);">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;">
+            <div>
+              <h4 style="font-size:0.98rem; font-weight:800; color:var(--text-main); margin:0; display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-chart-pie" style="color:#10b981;"></i> 1. Total Expense Breakdown — Rent, Electricity, Water & PNG Gas
+              </h4>
+              <p style="font-size:0.74rem; color:var(--text-muted); margin:3px 0 0 0;">
+                ${prop} — Flat ${flat} (${flatGraph1SelectedScope === 'ALL' ? 'All Recorded Bills' : 'Year ' + flatGraph1SelectedScope}) • Combined Total: <strong style="color:var(--text-main);">₹${grandTotalAllFour.toLocaleString('en-IN')}</strong>
+              </p>
+            </div>
+            <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
+              ${scopeButtonsHtml}
+            </div>
+          </div>
+
+          <!-- Expense Filter Toggles -->
+          <div style="display:flex; align-items:center; flex-wrap:wrap; gap:7px; margin-bottom:12px;">
+            <span style="font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-right:4px;">
+              <i class="fa-solid fa-filter"></i> Filter Expenses:
+            </span>
+            ${expenseFilterPillsHtml}
+            <button type="button" class="btn-ledger-action" style="padding:4px 9px; font-size:0.68rem;" onclick="toggleFlatGraph1Expense('ALL_ON')">Show All 4</button>
+          </div>
+
+          <!-- SVG Total Breakdown Bar Chart -->
+          <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
+            <svg viewBox="0 0 ${chartWidth} ${chartHeight}" style="width:100%; min-width:500px; height:auto; overflow:visible;">
+              <line x1="${padLeft}" y1="${padTop}" x2="${chartWidth - padRight}" y2="${padTop}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,3" />
+              <line x1="${padLeft}" y1="${padTop + (usableH / 2)}" x2="${chartWidth - padRight}" y2="${padTop + (usableH / 2)}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,3" />
+              <line x1="${padLeft}" y1="${padTop + usableH}" x2="${chartWidth - padRight}" y2="${padTop + usableH}" stroke="rgba(255,255,255,0.2)" />
+              <text x="${padLeft - 8}" y="${padTop + 4}" font-size="9.5" fill="#94a3b8" text-anchor="end">₹${Math.round(maxBarVal).toLocaleString('en-IN')}</text>
+              <text x="${padLeft - 8}" y="${padTop + (usableH / 2) + 3}" font-size="9.5" fill="#94a3b8" text-anchor="end">₹${Math.round(maxBarVal / 2).toLocaleString('en-IN')}</text>
+              <text x="${padLeft - 8}" y="${padTop + usableH}" font-size="9.5" fill="#94a3b8" text-anchor="end">₹0</text>
+              ${barsSvg}
+            </svg>
+          </div>
+
+          <!-- Clear Bottom Color Legend Indicating Which Color Represents Which Expense -->
+          <div style="margin-top:12px; padding-top:12px; border-top:1px dashed var(--glass-border);">
+            <div style="font-size:0.71rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">
+              <i class="fa-solid fa-palette"></i> Expense Color Legend (Rent • Electricity • Water • PNG Gas):
+            </div>
+            <div style="display:flex; align-items:center; flex-wrap:wrap; gap:10px;">
+              ${legendBelowHtml}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // SECOND GRAPH (BELOW THE FIRST ONE): Single Consolidated Graph for 3 Years with Year Filter/Selection
+    function buildSecondThreeYearConsolidatedGraphHtml(allFlatBills, prop, flat) {
+      ensureThreeYearFiltersInitialized();
+      const currentYear = new Date().getFullYear();
+      const threeYearsConfig = [
+        { year: currentYear,     label: `${currentYear} (Current Year)`, color: "#6366f1", bg: "rgba(99, 102, 241, 0.16)" },
+        { year: currentYear - 1, label: `${currentYear - 1} (Previous Year)`, color: "#10b981", bg: "rgba(16, 185, 129, 0.16)" },
+        { year: currentYear - 2, label: `${currentYear - 2} (2 Years Ago)`, color: "#f59e0b", bg: "rgba(245, 158, 11, 0.16)" }
+      ];
+
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const yearMonthlyTotals = {};
+      const yearAnnualTotals = {};
+      let maxVal = 1000;
+
+      threeYearsConfig.forEach(yc => {
+        yearMonthlyTotals[yc.year] = [];
+        yearAnnualTotals[yc.year] = 0;
+
+        for (let m = 1; m <= 12; m++) {
+          const monthKey = yc.year + "-" + String(m).padStart(2, "0");
+          const monthBills = (allFlatBills || []).filter(b => normalizeMonthYear(b.MonthYear) === monthKey);
+          let mSum = 0;
+          monthBills.forEach(b => {
+            const parts = extractBillExpenseParts(b);
+            mSum += parts.total;
+          });
+          yearMonthlyTotals[yc.year].push(mSum);
+          yearAnnualTotals[yc.year] += mSum;
+
+          if (flatGraph2YearFilters[yc.year] && mSum > maxVal) {
+            maxVal = mSum;
+          }
+        }
+      });
+
+      const activeYearsList = threeYearsConfig.filter(yc => Boolean(flatGraph2YearFilters[yc.year]));
+      const allThreeActive = activeYearsList.length === 3;
+
+      const chartWidth = 720;
+      const chartHeight = 225;
+      const padLeft = 58;
+      const padRight = 24;
+      const padTop = 26;
+      const padBottom = 36;
+      const usableW = chartWidth - padLeft - padRight;
+      const usableH = chartHeight - padTop - padBottom;
+
+      let barsSvg = "";
+      let linesSvg = "";
+      let labelsSvg = "";
+
+      months.forEach((mLabel, mIdx) => {
+        const centerX = padLeft + (mIdx * (usableW / 11));
+        labelsSvg += `<text x="${centerX.toFixed(1)}" y="${chartHeight - 10}" font-size="10.5" font-weight="700" fill="#94a3b8" text-anchor="middle">${mLabel}</text>`;
+
+        const count = activeYearsList.length;
+        const barW = Math.max(5, Math.min(12, Math.floor(34 / Math.max(1, count))));
+        const totalGroupW = count * barW + Math.max(0, count - 1) * 2;
+        const startX = centerX - (totalGroupW / 2);
+
+        activeYearsList.forEach((yc, yIdx) => {
+          const val = yearMonthlyTotals[yc.year][mIdx] || 0;
+          const barH = (val / maxVal) * usableH;
+          const barY = padTop + usableH - barH;
+          const barX = startX + yIdx * (barW + 2);
+          barsSvg += `<rect x="${barX.toFixed(1)}" y="${barY.toFixed(1)}" width="${barW}" height="${Math.max(0, barH).toFixed(1)}" rx="2.5" fill="${yc.color}" fill-opacity="0.35"><title>${mLabel} ${yc.year}: ₹${val.toLocaleString('en-IN')}</title></rect>`;
+        });
+      });
+
+      activeYearsList.forEach(yc => {
+        const pts = months.map((mLabel, mIdx) => {
+          const x = padLeft + (mIdx * (usableW / 11));
+          const val = yearMonthlyTotals[yc.year][mIdx] || 0;
+          const y = padTop + usableH - ((val / maxVal) * usableH);
+          return { x, y, val, month: mLabel };
+        });
+        const poly = pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+        linesSvg += `<polyline fill="none" stroke="${yc.color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="${poly}" />`;
+        pts.forEach(p => {
+          linesSvg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.8" fill="${yc.color}" stroke="#ffffff" stroke-width="1.2"><title>${p.month} ${yc.year}: ₹${p.val.toLocaleString('en-IN')}</title></circle>`;
+          if (p.val > 0) {
+            const shortVal = p.val >= 1000 ? (p.val / 1000).toFixed(p.val % 1000 === 0 ? 0 : 1) + "k" : Math.round(p.val);
+            linesSvg += `<text x="${p.x.toFixed(1)}" y="${Math.max(12, p.y - 7).toFixed(1)}" font-size="8.5" font-weight="800" fill="${yc.color}" text-anchor="middle">₹${shortVal}</text>`;
+          }
+        });
+      });
+
+      // Year Filter / Selection Controls
+      const yearQuickButtonsHtml = [
+        `<button type="button" class="btn-ledger-action ${allThreeActive ? 'active' : ''}" style="padding:5px 12px; font-size:0.73rem; font-weight:800; ${allThreeActive ? 'background:var(--primary); color:#ffffff; border-color:var(--primary);' : ''}" onclick="selectOnlyFlatGraph2Year('ALL_3_YEARS')">All 3 Years</button>`,
+        ...threeYearsConfig.map(yc => {
+          const isOnlyThis = activeYearsList.length === 1 && activeYearsList[0].year === yc.year;
+          return `<button type="button" class="btn-ledger-action ${isOnlyThis ? 'active' : ''}" style="padding:5px 11px; font-size:0.73rem; font-weight:800; ${isOnlyThis ? 'background:' + yc.color + '; color:#ffffff; border-color:' + yc.color + ';' : ''}" onclick="selectOnlyFlatGraph2Year(${yc.year})">Only ${yc.year}</button>`;
+        })
+      ].join("");
+
+      const yearTogglePillsHtml = threeYearsConfig.map(yc => {
+        const isOn = Boolean(flatGraph2YearFilters[yc.year]);
+        return `
+          <button
+            type="button"
+            onclick="toggleFlatGraph2Year(${yc.year})"
+            style="display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:999px; font-size:0.73rem; font-weight:800; cursor:pointer; transition:all 0.18s ease; border:1.5px solid ${isOn ? yc.color : 'var(--glass-border)'}; background:${isOn ? yc.bg : 'rgba(255,255,255,0.03)'}; color:${isOn ? '#ffffff' : 'var(--text-muted)'}; opacity:${isOn ? '1' : '0.55'};"
+          >
+            <span style="width:9px; height:9px; border-radius:50%; background:${yc.color}; display:inline-block; box-shadow:0 0 6px ${yc.color};"></span>
+            <span>Year ${yc.year}</span>
+            <i class="fa-solid ${isOn ? 'fa-check' : 'fa-plus'}" style="font-size:0.65rem;"></i>
+          </button>
+        `;
+      }).join("");
+
+      const yearLegendBelowHtml = threeYearsConfig.map(yc => {
+        const isOn = Boolean(flatGraph2YearFilters[yc.year]);
+        const yrTotal = yearAnnualTotals[yc.year] || 0;
+        return `
+          <div
+            onclick="toggleFlatGraph2Year(${yc.year})"
+            style="display:flex; align-items:center; gap:9px; padding:7px 13px; border-radius:10px; background:rgba(255,255,255,0.03); border:1.5px solid ${isOn ? yc.color : 'var(--glass-border)'}; cursor:pointer; opacity:${isOn ? '1' : '0.5'};"
+            title="Click to toggle Year ${yc.year}"
+          >
+            <span style="width:14px; height:14px; border-radius:4px; background:${yc.color}; display:inline-block; flex-shrink:0; box-shadow:0 0 8px ${yc.color};"></span>
+            <div style="font-size:0.75rem; line-height:1.25;">
+              <div style="font-weight:800; color:var(--text-main);">${yc.label}</div>
+              <div style="color:${yc.color}; font-weight:800;">₹${yrTotal.toLocaleString('en-IN')}</div>
             </div>
           </div>
         `;
@@ -7028,140 +7211,65 @@ function renderRegisteredUsersList() {
           <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;">
             <div>
               <h4 style="font-size:0.98rem; font-weight:800; color:var(--text-main); margin:0; display:flex; align-items:center; gap:8px;">
-                <i class="fa-solid fa-chart-column" style="color:var(--primary);"></i> ${titleText}
+                <i class="fa-solid fa-chart-line" style="color:#6366f1;"></i> 2. Consolidated 3-Year Graph (${currentYear - 2} – ${currentYear})
               </h4>
-              <p style="font-size:0.74rem; color:var(--text-muted); margin:3px 0 0 0;">${subtitleText}</p>
+              <p style="font-size:0.74rem; color:var(--text-muted); margin:3px 0 0 0;">
+                Single consolidated 3-year monthly comparison (January to December) for ${prop} — Flat ${flat}
+              </p>
             </div>
             <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
-              ${extraHeaderControlsHtml}
-              ${yearButtonsHtml}
+              ${yearQuickButtonsHtml}
             </div>
           </div>
 
-          <!-- Multi-Series Selection Toggles / Filters -->
+          <!-- Year Filter / Selection Option -->
           <div style="display:flex; align-items:center; flex-wrap:wrap; gap:7px; margin-bottom:12px;">
             <span style="font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-right:4px;">
-              <i class="fa-solid fa-filter"></i> Filter Metrics:
+              <i class="fa-solid fa-calendar-check"></i> Choose Years:
             </span>
-            ${filterTogglesHtml}
-            <button type="button" class="btn-ledger-action" style="padding:4px 9px; font-size:0.68rem;" onclick="toggleGraphMetricSeries('ALL_ON')">Show All</button>
+            ${yearTogglePillsHtml}
+            <button type="button" class="btn-ledger-action" style="padding:4px 9px; font-size:0.68rem;" onclick="toggleFlatGraph2Year('ALL_3_YEARS')">Compare All 3 Years</button>
           </div>
 
-          <!-- Multi-Series SVG Chart -->
+          <!-- Consolidated 3-Year SVG Graph -->
           <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
             <svg viewBox="0 0 ${chartWidth} ${chartHeight}" style="width:100%; min-width:560px; height:auto; overflow:visible;">
               <line x1="${padLeft}" y1="${padTop}" x2="${chartWidth - padRight}" y2="${padTop}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,3" />
               <line x1="${padLeft}" y1="${padTop + (usableH / 2)}" x2="${chartWidth - padRight}" y2="${padTop + (usableH / 2)}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,3" />
-              <line x1="${padLeft}" y1="${padTop + usableH}" x2="${chartWidth - padRight}" y2="${padTop + usableH}" stroke="rgba(255,255,255,0.18)" />
-              <text x="${padLeft - 6}" y="${padTop + 4}" font-size="9" fill="#94a3b8" text-anchor="end">₹${Math.round(maxVal).toLocaleString('en-IN')}</text>
-              <text x="${padLeft - 6}" y="${padTop + (usableH / 2) + 3}" font-size="9" fill="#94a3b8" text-anchor="end">₹${Math.round(maxVal / 2).toLocaleString('en-IN')}</text>
-              <text x="${padLeft - 6}" y="${padTop + usableH}" font-size="9" fill="#94a3b8" text-anchor="end">₹0</text>
+              <line x1="${padLeft}" y1="${padTop + usableH}" x2="${chartWidth - padRight}" y2="${padTop + usableH}" stroke="rgba(255,255,255,0.2)" />
+              <text x="${padLeft - 8}" y="${padTop + 4}" font-size="9.5" fill="#94a3b8" text-anchor="end">₹${Math.round(maxVal).toLocaleString('en-IN')}</text>
+              <text x="${padLeft - 8}" y="${padTop + (usableH / 2) + 3}" font-size="9.5" fill="#94a3b8" text-anchor="end">₹${Math.round(maxVal / 2).toLocaleString('en-IN')}</text>
+              <text x="${padLeft - 8}" y="${padTop + usableH}" font-size="9.5" fill="#94a3b8" text-anchor="end">₹0</text>
               ${barsSvg}
               ${linesSvg}
               ${labelsSvg}
             </svg>
           </div>
 
-          <!-- Distinct Color Legend Placed Directly Beneath the Graph -->
-          <div style="margin-top:12px; padding-top:10px; border-top:1px dashed var(--glass-border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
-            <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
-              ${legendBelowHtml}
+          <!-- Clear Bottom Legend for the 3 Years -->
+          <div style="margin-top:12px; padding-top:12px; border-top:1px dashed var(--glass-border);">
+            <div style="font-size:0.71rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">
+              <i class="fa-solid fa-layer-group"></i> 3-Year Color Legend (Click any year to toggle):
             </div>
-            <div style="font-size:0.71rem; color:var(--text-muted);">
-              Click any metric pill or legend item to toggle visibility
+            <div style="display:flex; align-items:center; flex-wrap:wrap; gap:10px;">
+              ${yearLegendBelowHtml}
             </div>
           </div>
         </div>
       `;
     }
 
-    // Always-visible Flat Section Analytics Graph on the Main Dashboard
-    function renderDashboardFlatAnalyticsSection(propertyName) {
-      const dashContainer = document.getElementById("dashboardFlatAnalyticsSection");
-      if (!dashContainer) return;
-
-      const targetProp = propertyName || (DB.properties && DB.properties[0] ? DB.properties[0].PropertyName : "");
-      if (!targetProp) {
-        dashContainer.style.display = "none";
-        dashContainer.innerHTML = "";
-        return;
-      }
-
-      dashContainer.style.display = "block";
-      const propFlats = (DB.flats || []).filter(f =>
-        String(f.PropertyName || "").trim().toLowerCase() === String(targetProp).trim().toLowerCase()
-      );
-
-      if (
-        dashboardSelectedAnalyticsFlat !== "ALL" &&
-        !propFlats.some(f => String(f.FlatName || "").trim().toLowerCase() === String(dashboardSelectedAnalyticsFlat).trim().toLowerCase())
-      ) {
-        dashboardSelectedAnalyticsFlat = "ALL";
-      }
-
-      const flatOptionsHtml = `<option value="ALL" ${dashboardSelectedAnalyticsFlat === "ALL" ? "selected" : ""}>All Flats in ${targetProp}</option>` +
-        propFlats.map(f => `<option value="${f.FlatName}" ${String(dashboardSelectedAnalyticsFlat) === String(f.FlatName) ? "selected" : ""}>Flat ${f.FlatName}</option>`).join("");
-
-      const flatSelectControl = `
-        <select class="form-control" style="width:auto; min-width:155px; padding:5px 10px; font-size:0.75rem; font-weight:700;" onchange="setDashboardAnalyticsFlatFilter(this.value)">
-          ${flatOptionsHtml}
-        </select>
-      `;
-
-      const filteredBills = (DB.bills || []).filter(b => {
-        const sameProp = String(b.PropertyName || "").trim().toLowerCase() === String(targetProp).trim().toLowerCase();
-        if (!sameProp) return false;
-        if (dashboardSelectedAnalyticsFlat === "ALL") return true;
-        return String(b.FlatName || "").trim().toLowerCase() === String(dashboardSelectedAnalyticsFlat).trim().toLowerCase();
-      });
-
-      const scopeTitle = dashboardSelectedAnalyticsFlat === "ALL"
-        ? `${targetProp} — Flat Section Analytics Breakdown (All Flats)`
-        : `${targetProp} — Flat ${dashboardSelectedAnalyticsFlat} Analytics Breakdown`;
-
-      dashContainer.innerHTML = buildMultiSeriesChartHtml(
-        filteredBills,
-        scopeTitle,
-        "Multi-series breakdown for Rent, Electricity, Water, PNG, and Total Aggregate (Always Visible on Dashboard)",
-        flatSelectControl,
-        true
-      );
-    }
-
     function renderAllRentersGraphForFlat(prop, flat) {
-      const allFlatBills = (DB.bills || []).filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat));
-      const chartHtml = buildMultiSeriesChartHtml(
-        allFlatBills,
-        `Flat ${flat} — Multi-Series Rent, Electricity, Water, PNG & Total Graph`,
-        `3-Year monthly breakdown for ${prop} - Flat ${flat} (January to December)`,
-        "",
-        true
-      );
-
       const container = document.getElementById("tabGraphContainer");
-      if (container) container.innerHTML = chartHtml;
-
-      const alwaysVisibleModalGraph = document.getElementById("flatModalAlwaysVisibleGraphContainer");
-      if (alwaysVisibleModalGraph) alwaysVisibleModalGraph.innerHTML = chartHtml;
-    }
-
-    function renderRhThreeYearMonthlyChart(prop, flat, renter) {
-      const container = document.getElementById("rhThreeYearChartContainer");
       if (!container) return;
 
-      const activeRenterBills = renter ? getBillsForSpecificRenter(prop, flat, renter) : [];
       const allFlatBills = (DB.bills || []).filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat));
-      const billsSource = activeRenterBills.length > 0 ? activeRenterBills : allFlatBills;
-      const tenantNameDisp = renter ? renter.RenterName : `Flat ${flat}`;
+      const firstGraphHtml = buildFirstExpenseBreakdownGraphHtml(allFlatBills, prop, flat);
+      const secondGraphHtml = buildSecondThreeYearConsolidatedGraphHtml(allFlatBills, prop, flat);
 
-      container.innerHTML = buildMultiSeriesChartHtml(
-        billsSource,
-        `3-Year Monthly Breakdown Graph (${tenantNameDisp})`,
-        "Filter by Rent, Electricity, Water, PNG, or Total Aggregate across 3 years",
-        "",
-        true
-      );
+      container.innerHTML = firstGraphHtml + secondGraphHtml;
     }
+
 
     /**
      * Requirement 5 & 6: Edit any renter (including departed renters) while preserving their status
