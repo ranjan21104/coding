@@ -88,13 +88,12 @@
       display: flex !important;
     }
 
-    /* Login Screen */
+    /* Login Screen - Crisp Clear House Background & Permanently White Frosted Login Card */
     #loginScreen {
       align-items: center;
       justify-content: center;
       padding: 16px;
-      background: linear-gradient(180deg, rgba(9, 13, 22, 0.55) 0%, rgba(9, 13, 22, 0.85) 100%),
-                  url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=85') center/cover no-repeat fixed !important;
+      background: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=90') center/cover no-repeat fixed !important;
     }
 
     .glass-card {
@@ -106,31 +105,50 @@
       box-shadow: 0 25px 55px rgba(0, 0, 0, 0.6);
     }
 
-    .login-container {
+    #loginScreen .login-container {
       width: 100%;
-      max-width: 420px;
-      padding: 36px 28px;
+      max-width: 425px;
+      padding: 38px 30px;
       text-align: center;
-      color: #ffffff;
+      background: rgba(255, 255, 255, 0.82) !important;
+      backdrop-filter: blur(12px) saturate(140%) !important;
+      -webkit-backdrop-filter: blur(12px) saturate(140%) !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.94) !important;
+      border-radius: 22px !important;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28), 0 4px 16px rgba(15, 23, 42, 0.12) !important;
+      color: #0f172a !important;
     }
 
-    .login-brand {
+    #loginScreen .login-brand {
       margin-bottom: 26px;
     }
-    .login-brand i {
-      font-size: 2.6rem;
-      color: #818cf8;
-      margin-bottom: 10px;
+    #loginScreen .login-brand-icon-wrap {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 12px auto;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.14) 0%, rgba(59, 130, 246, 0.18) 100%);
+      border: 1.5px solid rgba(79, 70, 229, 0.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.15);
     }
-    .login-brand h1 {
-      font-size: 1.7rem;
+    #loginScreen .login-brand i {
+      font-size: 2rem;
+      color: #4f46e5 !important;
+      margin: 0;
+    }
+    #loginScreen .login-brand h1 {
+      font-size: 1.72rem;
       font-weight: 800;
       letter-spacing: -0.5px;
-      color: #ffffff;
+      color: #0f172a !important;
     }
-    .login-brand p {
-      font-size: 0.88rem;
-      color: #e2e8f0;
+    #loginScreen .login-brand p {
+      font-size: 0.86rem;
+      color: #475569 !important;
+      font-weight: 600;
       margin-top: 4px;
     }
 
@@ -227,8 +245,31 @@
       font-weight: 800;
       margin-left: 2px;
     }
+    #loginScreen .form-group {
+      margin-bottom: 18px;
+    }
     #loginScreen .form-group label {
-      color: #ffffff;
+      color: #1e293b !important;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      margin-bottom: 7px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    #loginScreen .login-input-shell {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    #loginScreen .login-field-icon {
+      position: absolute;
+      left: 14px;
+      color: #4f46e5;
+      font-size: 0.95rem;
+      pointer-events: none;
+      z-index: 2;
     }
     .form-control {
       width: 100%;
@@ -246,9 +287,34 @@
       border-style: dashed;
     }
     #loginScreen .form-control {
-      background: rgba(15, 23, 42, 0.72);
-      color: #ffffff;
-      border-color: rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.96) !important;
+      color: #0f172a !important;
+      border: 1.5px solid #cbd5e1 !important;
+      border-radius: 12px !important;
+      padding: 13px 14px 13px 40px !important;
+      font-size: 0.94rem !important;
+      font-weight: 600 !important;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05) !important;
+      transition: all 0.2s ease !important;
+    }
+    #loginScreen #loginPassword {
+      padding-right: 44px !important;
+    }
+    #loginScreen .form-control::placeholder {
+      color: #64748b !important;
+      font-weight: 500;
+    }
+    #loginScreen .form-control:focus {
+      outline: none !important;
+      background: #ffffff !important;
+      border-color: #4f46e5 !important;
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.16) !important;
+    }
+    #loginScreen .eye-toggle-btn {
+      color: #475569 !important;
+    }
+    #loginScreen .eye-toggle-btn:hover {
+      color: #4f46e5 !important;
     }
     .form-control:focus:not([readonly]) {
       outline: none;
@@ -1439,7 +1505,7 @@
         <!-- Populated dynamically when Receipt button is clicked -->
       </div>
 
-      <div class="no-print" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:16px;">
+      <div class="no-print" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:14px;">
         <button type="button" class="btn-confirm-cancel" onclick="closeModal('receiptViewModal')">Close</button>
         <button type="button" class="btn-primary" onclick="printCurrentReceipt()">
           <i class="fa-solid fa-print"></i> Print / Save PDF
@@ -1448,30 +1514,36 @@
     </div>
   </div>
 
-  <!-- SCREEN 1: LOGIN / LOGOUT SCREEN -->
+  <!-- SCREEN 1: LOGIN / LOGOUT SCREEN (Permanently White Frosted Theme on Crisp Clear House Background) -->
   <section id="loginScreen" class="screen active">
     <div class="glass-card login-container">
       <div class="login-brand">
-        <i class="fa-solid fa-building-user"></i>
+        <div class="login-brand-icon-wrap">
+          <i class="fa-solid fa-building-user"></i>
+        </div>
         <h1>Property Cloud</h1>
         <p>Live Sheets Synchronized Portal</p>
       </div>
 
       <form id="loginForm" onsubmit="handleLoginSubmit(event)">
         <div class="form-group">
-          <label>Username</label>
-          <input type="text" id="loginUsername" class="form-control" placeholder="Enter username" required autocomplete="off">
+          <label for="loginUsername"><i class="fa-solid fa-user-shield" style="color:#4f46e5;"></i> Username</label>
+          <div class="login-input-shell">
+            <i class="fa-solid fa-user login-field-icon"></i>
+            <input type="text" id="loginUsername" class="form-control" placeholder="Enter your username" required autocomplete="off">
+          </div>
         </div>
         <div class="form-group">
-          <label>Password</label>
-          <div class="password-field-wrapper">
-            <input type="password" id="loginPassword" class="form-control" placeholder="Enter password" required autocomplete="off">
+          <label for="loginPassword"><i class="fa-solid fa-key" style="color:#4f46e5;"></i> Password</label>
+          <div class="password-field-wrapper login-input-shell">
+            <i class="fa-solid fa-lock login-field-icon"></i>
+            <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required autocomplete="off">
             <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('loginPassword', this)" title="Show / Hide Password">
               <i class="fa-solid fa-eye"></i>
             </button>
           </div>
         </div>
-        <button type="submit" id="loginBtn" class="btn-primary">
+        <button type="submit" id="loginBtn" class="btn-primary" style="margin-top:6px; padding:13px 18px; border-radius:12px; font-size:0.96rem; box-shadow: 0 10px 24px rgba(79, 70, 229, 0.32);">
           <span>Log In</span>
           <i class="fa-solid fa-arrow-right-to-bracket"></i>
         </button>
@@ -1941,15 +2013,15 @@
       <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
         <div class="form-group">
           <label>Elec. Rate</label>
-          <input type="number" id="addFlatElecRate" class="form-control" placeholder="9">
+          <input type="number" id="addFlatElecRate" class="form-control" placeholder="0">
         </div>
         <div class="form-group">
           <label>PNG Rate</label>
-          <input type="number" id="addFlatPngRate" class="form-control" placeholder="45">
+          <input type="number" id="addFlatPngRate" class="form-control" placeholder="0">
         </div>
         <div class="form-group">
           <label>Water Rate</label>
-          <input type="number" id="addFlatWaterRate" class="form-control" placeholder="15">
+          <input type="number" id="addFlatWaterRate" class="form-control" placeholder="0">
         </div>
       </div>
       <button class="btn-primary admin-only" onclick="submitAddFlat()">Add Flat</button>
@@ -1996,40 +2068,28 @@
 
       <!-- TAB 1: CALCULATION WORKFLOW -->
       <div id="tabCalc" class="tab-content active">
-        <div class="calc-header-bar">
-          <div>
-            <h4 style="color:var(--primary);">Monthly Bill Calculator</h4>
-            <span id="calcMonthStatusTag" class="calc-month-status-tag">New Month Calculation</span>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <label style="font-size:0.8rem; font-weight:700;">Billing Month:</label>
-            <input type="month" id="calcMonthPicker" class="form-control" style="width:165px; padding:7px 10px;" onchange="handleBillingMonthChange()">
-          </div>
-        </div>
-
-        <!-- B. Smart Base Rent Input Field -->
+        <!-- Requirement 2: Billing Month and Base Rent placed in a single box divided in half side-by-side -->
         <div class="calc-grid-card">
           <div class="calc-grid-title">
-            <span><i class="fa-solid fa-house-chimney"></i> Base Rent Configuration</span>
-            <span style="font-size:0.72rem; color:var(--text-muted);"></span>
+            <span><i class="fa-solid fa-calendar-check"></i> Billing Month &amp; Monthly Base Rent</span>
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <span id="calcMonthStatusTag" class="calc-month-status-tag">New Month Calculation</span>
+              <span id="calcRentBadge" style="font-size:0.78rem; font-weight:800; color:var(--primary); background:rgba(79,70,229,0.12); padding:3px 10px; border-radius:20px;">₹ 0</span>
+            </div>
           </div>
-          <div class="calc-utility-row" style="grid-template-columns: 2fr 1fr 1fr;">
+          <div class="calc-half-split-row" style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; align-items:end;">
             <div class="calc-field-col">
-              <label>Base Rent (₹)</label>
+              <label><i class="fa-regular fa-calendar"></i> Billing Month</label>
+              <input type="month" id="calcMonthPicker" class="form-control" onchange="handleBillingMonthChange()">
+            </div>
+            <div class="calc-field-col">
+              <label><i class="fa-solid fa-house-chimney"></i> Base Rent (₹) <span style="font-size:0.68rem; font-weight:600; color:var(--text-muted);">(This Month Only)</span></label>
               <div class="editable-input-wrap">
                 <input type="number" id="calcRent" class="form-control" readonly oninput="runBillMath()">
-                <button type="button" class="pencil-lock-btn admin-only" onclick="toggleCalcFieldLock('calcRent', this, 'rent')" title="Edit / Save Base Rent">
+                <button type="button" class="pencil-lock-btn admin-only" onclick="toggleCalcFieldLock('calcRent', this, 'rent')" title="Edit Base Rent for This Month Only (Profile Unchanged)">
                   <i class="fa-solid fa-pen"></i>
                 </button>
               </div>
-            </div>
-            <div class="calc-field-col">
-              <label>Lifecycle Mode</label>
-              <div class="calc-auto-badge" style="color:var(--text-muted); font-size:0.75rem;">Auto-Rollover</div>
-            </div>
-            <div class="calc-field-col">
-              <label>Rent Total</label>
-              <div class="calc-auto-badge" id="calcRentBadge">₹ 0</div>
             </div>
           </div>
         </div>
@@ -2142,14 +2202,13 @@
           </div>
         </div>
 
-        <!-- Additional Charges, Automatic Carry-Forward (Due / Advance), & Payment Settlement -->
+        <!-- Requirement 3 (Box 1 of 3): Dedicated Individual Box for Additional Charge -->
         <div class="calc-grid-card">
           <div class="calc-grid-title">
-            <span><i class="fa-solid fa-sliders"></i> Additional Charges & Automatic Balance Carry-Forward</span>
-            <span id="carryForwardHint" style="font-size:0.72rem; font-weight:700;"></span>
+            <span><i class="fa-solid fa-sliders"></i> Additional Charge</span>
+            <span style="font-size:0.72rem; color:var(--text-muted);">Extra Charge / Discount</span>
           </div>
-
-          <div class="calc-utility-row" style="margin-bottom: 10px;">
+          <div class="calc-utility-row">
             <div class="calc-field-col">
               <label>Custom Charge Name</label>
               <input type="text" id="calcAddName" class="form-control" placeholder="e.g. Maintenance">
@@ -2170,11 +2229,17 @@
               <div class="calc-auto-badge" id="calcAddSummary">₹ 0</div>
             </div>
           </div>
+        </div>
 
-          <!-- Automatic Previous Months Pending Due (+) or Advance Payment (-) Carry Forward Row -->
-          <div class="calc-utility-row" style="margin-bottom: 10px; grid-template-columns: 2fr 1fr 1fr;">
+        <!-- Requirement 3 (Box 2 of 3): Dedicated Individual Box for Previous Carry Month Forward / Advance Due -->
+        <div class="calc-grid-card">
+          <div class="calc-grid-title">
+            <span><i class="fa-solid fa-clock-rotate-left"></i> Previous Carry Month Forward / Advance Due</span>
+            <span id="carryForwardHint" style="font-size:0.72rem; font-weight:700;"></span>
+          </div>
+          <div class="calc-utility-row" style="grid-template-columns: 2fr 1fr 1fr;">
             <div class="calc-field-col">
-              <label>Previous Months Carry-Forward (Due Added / Advance Deducted)</label>
+              <label>Previous Carry Month Forward / Advance Due (₹)</label>
               <div class="editable-input-wrap">
                 <input type="number" id="calcPrevCarryBalance" class="form-control" readonly value="0" oninput="runBillMath()">
                 <button type="button" class="pencil-lock-btn admin-only" onclick="toggleCalcFieldLock('calcPrevCarryBalance', this, 'carry')" title="Edit / Lock Carry-Forward Balance">
@@ -2191,10 +2256,17 @@
               <div class="calc-auto-badge" id="calcCarryAmountBadge">₹ 0</div>
             </div>
           </div>
+        </div>
 
+        <!-- Requirement 3 (Box 3 of 3): Dedicated Individual Box for Total Amount Paid -->
+        <div class="calc-grid-card">
+          <div class="calc-grid-title">
+            <span><i class="fa-solid fa-money-bill-wave"></i> Total Amount Paid</span>
+            <span style="font-size:0.72rem; color:var(--text-muted);">Monthly Payment Settlement</span>
+          </div>
           <div class="calc-utility-row">
             <div class="calc-field-col" style="grid-column: span 2;">
-              <label>Amount Paid by Renter This Month (₹)</label>
+              <label>Total Amount Paid (₹)</label>
               <input type="number" id="calcPaidNow" class="form-control" placeholder="0" oninput="runBillMath()">
             </div>
             <div class="calc-field-col">
@@ -2360,98 +2432,56 @@
         </div>
       </div>
 
-      <!-- TAB 4: RENTER HISTORY -->
+      <!-- TAB 4: RENTER HISTORY (Requirement 8: Top-Corner Search Bar + Every Active & Past Tenant in Dedicated Box) -->
       <div id="tabRenterHistory" class="tab-content">
-        <div class="calc-header-bar" style="margin-bottom:14px;">
-          <div>
-            <h4><i class="fa-solid fa-clock-rotate-left"></i> Renter History & Isolated Financial Records</h4>
-            <span style="font-size:0.74rem; color:var(--text-muted);">Search by tenant name, phone, status, or filter records & invoices by date range</span>
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+          <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">
+            Showing <span id="rhFilteredCountLabel" style="color:var(--primary); font-weight:800;">All</span> Tenant Record(s)
           </div>
-          <div style="min-width:250px;">
-            <label style="font-size:0.75rem; font-weight:700; display:block; margin-bottom:4px;">
-              Select Renter Record (<span id="rhFilteredCountLabel">All</span>):
-            </label>
-            <select id="rhRenterSelectDropdown" class="form-control" onchange="renderSelectedRenterHistoryRecord()"></select>
-          </div>
-        </div>
-
-        <!-- Dedicated Search & Date-Range Filter Bar -->
-        <div class="calc-grid-card" style="margin-bottom:14px; padding:12px 14px;">
-          <div style="display:grid; grid-template-columns: 2fr 1fr 1fr auto; gap:10px; align-items:end;">
-            <div class="calc-field-col">
-              <label style="font-size:0.74rem; font-weight:700;"><i class="fa-solid fa-magnifying-glass"></i> Search Tenant Name / Phone / Invoice Month</label>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-left:auto;">
+            <div style="position:relative; min-width:250px; flex:1;">
+              <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:0.84rem; pointer-events:none;"></i>
               <input
                 type="text"
                 id="rhSearchInput"
                 class="form-control"
-                placeholder="Type tenant name, mobile, status, or month (e.g. Oct 2026)..."
+                style="padding:8px 12px 8px 34px; font-size:0.82rem; border-radius:20px;"
+                placeholder="Search tenant name, phone, status, month..."
                 oninput="filterRenterHistoryRecords()"
               >
             </div>
-            <div class="calc-field-col">
-              <label style="font-size:0.74rem; font-weight:700;"><i class="fa-regular fa-calendar"></i> From Date</label>
-              <input
-                type="date"
-                id="rhDateFrom"
-                class="form-control"
-                onchange="filterRenterHistoryRecords()"
-              >
-            </div>
-            <div class="calc-field-col">
-              <label style="font-size:0.74rem; font-weight:700;"><i class="fa-regular fa-calendar-check"></i> To Date</label>
-              <input
-                type="date"
-                id="rhDateTo"
-                class="form-control"
-                onchange="filterRenterHistoryRecords()"
-              >
-            </div>
-            <div class="calc-field-col">
-              <button
-                type="button"
-                class="btn-ledger-action"
-                style="height:38px; padding:0 12px; font-weight:700;"
-                onclick="clearRenterHistoryFilters()"
-                title="Clear Search & Date Filters"
-              >
-                <i class="fa-solid fa-rotate-left"></i> Reset
-              </button>
-            </div>
+            <input
+              type="date"
+              id="rhDateFrom"
+              class="form-control"
+              style="width:136px; padding:7px 10px; font-size:0.78rem; border-radius:12px;"
+              title="From Date"
+              onchange="filterRenterHistoryRecords()"
+            >
+            <input
+              type="date"
+              id="rhDateTo"
+              class="form-control"
+              style="width:136px; padding:7px 10px; font-size:0.78rem; border-radius:12px;"
+              title="To Date"
+              onchange="filterRenterHistoryRecords()"
+            >
+            <button
+              type="button"
+              class="btn-ledger-action"
+              style="height:35px; padding:0 11px; border-radius:12px; font-weight:700;"
+              onclick="clearRenterHistoryFilters()"
+              title="Clear Search & Date Filters"
+            >
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
           </div>
         </div>
 
-        <div class="stat-pill" style="display:flex; flex-wrap:wrap; align-items:center; gap:14px; text-align:left; margin-bottom:14px;">
-          <div class="renter-avatar" style="width:54px; height:54px;">
-            <img id="rhAvatar" src="https://via.placeholder.com/150" alt="Avatar">
-          </div>
-          <div style="flex:1;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <h3 id="rhName">Tenant Name</h3>
-              <span id="rhStatusBadge" class="badge-paid">Active</span>
-            </div>
-            <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">
-              <span id="rhContact">Contact: --</span> | <span id="rhStay">Duration: --</span>
-            </div>
-          </div>
-          <button type="button" class="btn-primary" style="width:auto; padding:9px 14px; font-size:0.8rem;" onclick="switchFlatTabToProfile()">
-            <i class="fa-solid fa-id-card"></i> View Profile & Docs
-          </button>
+        <!-- Dedicated List of All Active & Past Tenants for This Flat (Each Tenant in a Single Dedicated Box) -->
+        <div id="rhAllTenantsListContainer" style="display:flex; flex-direction:column; gap:14px;">
+          <!-- Dynamically populated with one dedicated box per tenant -->
         </div>
-
-        <div class="renter-history-overview">
-          <div class="stat-pill"><span>TOTAL BILLED</span><strong id="rhBilled">₹ 0</strong></div>
-          <div class="stat-pill"><span>TOTAL PAID</span><strong id="rhPaid">₹ 0</strong></div>
-          <div class="stat-pill"><span>TOTAL RENT</span><strong id="rhTotalRent">₹ 0</strong></div>
-          <div class="stat-pill"><span>TOTAL UTILITY</span><strong id="rhUtility">₹ 0</strong></div>
-          <div class="stat-pill"><span>BALANCE STATUS</span><strong id="rhBalance" style="color:var(--accent-red);">Due: ₹ 0</strong></div>
-        </div>
-
-        <details style="margin-top:16px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:8px; padding:12px;" open>
-          <summary style="cursor:pointer; font-weight:700; color:var(--primary);">&gt; Show Stay-Specific Invoices</summary>
-          <div id="rhInvoiceList" style="margin-top:12px; font-size:0.82rem;">
-            <!-- Generated rows strictly for the selected renter -->
-          </div>
-        </details>
       </div>
 
     </div>
@@ -2617,58 +2647,85 @@
       }
     }
 
-    // Inject Receipt Checkbox & WhatsApp Styles Automatically
+    // Inject Clean Receipt, Checklist Drawer & Renter Box Styles Automatically
     function injectReceiptWhatsAppStyles() {
       if (document.getElementById("waReceiptDynamicStyles")) return;
       const style = document.createElement("style");
       style.id = "waReceiptDynamicStyles";
       style.innerHTML = `
-        .receipt-select-bar {
+        /* Clean Receipt Layout (No Checkboxes on Receipt) */
+        .receipt-line.unchecked-row,
+        .receipt-total-box.unchecked-row,
+        #receiptUpiQrBox.unchecked-row {
+          display: none !important;
+        }
+        .receipt-ai-disclaimer {
+          margin-top: 12px;
+          padding: 9px 12px;
+          border-radius: 10px;
+          background: rgba(245, 158, 11, 0.1);
+          border: 1px dashed rgba(245, 158, 11, 0.45);
+          font-size: 0.72rem;
+          line-height: 1.4;
+          color: var(--text-muted);
+          text-align: center;
+          font-weight: 600;
+        }
+        /* Checklist Drawer Shown Only When Clicking "Share to WhatsApp" */
+        .wa-checklist-drawer {
+          display: none;
+          margin-top: 12px;
+          padding: 14px;
+          border-radius: 14px;
+          background: var(--bg-input);
+          border: 1.5px solid rgba(37, 211, 102, 0.45);
+          box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+        }
+        .wa-checklist-drawer.open {
+          display: block;
+        }
+        .wa-checklist-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          background: var(--bg-input);
-          border: 1px solid var(--glass-border);
-          padding: 8px 12px;
-          border-radius: 10px;
-          margin-bottom: 10px;
-          font-size: 0.78rem;
-          font-weight: 700;
-        }
-        .receipt-select-bar label {
-          display: flex;
-          align-items: center;
+          flex-wrap: wrap;
           gap: 8px;
-          cursor: pointer;
-          color: var(--primary);
+          padding-bottom: 8px;
+          margin-bottom: 10px;
+          border-bottom: 1px solid var(--glass-border);
         }
-        .receipt-line.unchecked-row,
-        .receipt-total-box.unchecked-row {
-          opacity: 0.35;
-          text-decoration: line-through;
+        .wa-checklist-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 7px 10px;
+          margin-bottom: 12px;
         }
-        #printableReceiptArea.capturing-receipt .no-print,
-        #printableReceiptArea.capturing-receipt .rec-item-check,
-        #printableReceiptArea.capturing-receipt .receipt-select-bar,
-        #printableReceiptArea.capturing-receipt .btn-whatsapp-share,
-        #printableReceiptArea.capturing-receipt .modal-close-btn,
-        #printableReceiptArea.capturing-receipt .receipt-line.unchecked-row,
-        #printableReceiptArea.capturing-receipt .receipt-total-box.unchecked-row {
-          display: none !important;
-        }
-        .receipt-line-left {
+        .wa-check-item {
           display: flex;
           align-items: center;
-          gap: 9px;
+          gap: 7px;
+          font-size: 0.77rem;
+          font-weight: 600;
+          color: var(--text-main);
           cursor: pointer;
-          flex: 1;
+          padding: 5px 8px;
+          border-radius: 8px;
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid var(--glass-border);
         }
         .rec-item-check {
-          width: 17px;
-          height: 17px;
-          accent-color: var(--primary);
+          width: 16px;
+          height: 16px;
+          accent-color: #25D366;
           cursor: pointer;
           flex-shrink: 0;
+        }
+        #printableReceiptArea.capturing-receipt .no-print,
+        #printableReceiptArea.capturing-receipt .wa-checklist-drawer,
+        #printableReceiptArea.capturing-receipt .btn-whatsapp-share,
+        #printableReceiptArea.capturing-receipt .modal-close-btn,
+        #printableReceiptArea.capturing-receipt .unchecked-row {
+          display: none !important;
         }
         .btn-whatsapp-share {
           width: 100%;
@@ -2692,6 +2749,36 @@
           transform: translateY(-1px);
           filter: brightness(1.06);
         }
+        /* Dedicated Single Box per Tenant in Renter History */
+        .rh-tenant-card-box {
+          background: var(--bg-input);
+          border: 1.5px solid var(--glass-border);
+          border-radius: 16px;
+          padding: 16px;
+          transition: border-color 0.2s ease;
+        }
+        .rh-tenant-card-box.active-tenant-box {
+          border-color: rgba(16, 185, 129, 0.45);
+        }
+        .rh-tenant-details-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+          gap: 8px 12px;
+          margin-top: 12px;
+          padding: 10px 12px;
+          border-radius: 10px;
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid var(--glass-border);
+          font-size: 0.77rem;
+        }
+        @media (max-width: 640px) {
+          .wa-checklist-grid {
+            grid-template-columns: 1fr;
+          }
+          .calc-half-split-row {
+            grid-template-columns: 1fr 1fr !important;
+          }
+        }
         @media print {
           body * { visibility: hidden; }
           #printableReceiptArea, #printableReceiptArea * { visibility: visible; }
@@ -2705,12 +2792,10 @@
             box-shadow: none;
           }
           .no-print,
-          .rec-item-check,
-          .receipt-select-bar,
+          .wa-checklist-drawer,
           .btn-whatsapp-share,
           .modal-close-btn,
-          .receipt-line.unchecked-row,
-          .receipt-total-box.unchecked-row {
+          .unchecked-row {
             display: none !important;
           }
         }
@@ -3476,6 +3561,10 @@
         card.className = `flat-card-merged ${statusClass}`;
         card.onclick = () => openFlatDetailsModal(flat, renter);
 
+        const dispElec = resolveExactRateValue(flat.ElecRate, renter?.ElecFixedRate);
+        const dispPng = resolveExactRateValue(flat.PNGRate, renter?.PNGFixedRate);
+        const dispWater = resolveExactRateValue(flat.WaterRate, renter?.WaterFixedRate);
+
         card.innerHTML = `
           <div>
             <div class="flat-top-row">
@@ -3491,9 +3580,9 @@
             ${paymentBannerHTML}
           </div>
           <div class="flat-bottom-row">
-            <span><i class="fa-solid fa-bolt"></i> Elec: ₹${flat.ElecRate || 9}/U</span>
-            <span><i class="fa-solid fa-fire"></i> PNG: ₹${flat.PNGRate || 45}</span>
-            <span><i class="fa-solid fa-faucet-drip"></i> Water: ₹${flat.WaterRate || 15}</span>
+            <span><i class="fa-solid fa-bolt"></i> Elec: ₹${dispElec !== "" ? dispElec : 0}/U</span>
+            <span><i class="fa-solid fa-fire"></i> PNG: ₹${dispPng !== "" ? dispPng : 0}</span>
+            <span><i class="fa-solid fa-faucet-drip"></i> Water: ₹${dispWater !== "" ? dispWater : 0}</span>
           </div>
         `;
         container.appendChild(card);
@@ -3547,6 +3636,10 @@
           paymentBannerHTML = `<div class="payment-banner"><span>Needs to Pay:</span><span>₹${baseRent.toLocaleString('en-IN')}</span></div>`;
         }
 
+        const dispElec = resolveExactRateValue(flat.ElecRate, renter?.ElecFixedRate);
+        const dispPng = resolveExactRateValue(flat.PNGRate, renter?.PNGFixedRate);
+        const dispWater = resolveExactRateValue(flat.WaterRate, renter?.WaterFixedRate);
+
         const card = document.createElement("div");
         card.className = `flat-card-merged ${statusClass}`;
         card.onclick = () => openFlatDetailsModal(flat, renter);
@@ -3565,9 +3658,9 @@
             ${paymentBannerHTML}
           </div>
           <div class="flat-bottom-row">
-            <span><i class="fa-solid fa-bolt"></i> Elec: ₹${flat.ElecRate || 9}/U</span>
-            <span><i class="fa-solid fa-fire"></i> PNG: ₹${flat.PNGRate || 45}</span>
-            <span><i class="fa-solid fa-faucet-drip"></i> Water: ₹${flat.WaterRate || 15}</span>
+            <span><i class="fa-solid fa-bolt"></i> Elec: ₹${dispElec !== "" ? dispElec : 0}/U</span>
+            <span><i class="fa-solid fa-fire"></i> PNG: ₹${dispPng !== "" ? dispPng : 0}</span>
+            <span><i class="fa-solid fa-faucet-drip"></i> Water: ₹${dispWater !== "" ? dispWater : 0}</span>
           </div>
         `;
         container.appendChild(card);
@@ -4111,6 +4204,26 @@
       });
     }
 
+    // Requirement 7 Helper: Preserves exact user-set rate values (including 0 or empty string "") without resetting to 45 or 15
+    function resolveExactRateValue(primaryVal, secondaryVal) {
+      if (primaryVal !== undefined && primaryVal !== null && String(primaryVal).trim() !== "") {
+        return primaryVal;
+      }
+      if (secondaryVal !== undefined && secondaryVal !== null && String(secondaryVal).trim() !== "") {
+        return secondaryVal;
+      }
+      return "";
+    }
+
+    function parseInputRateOrEmpty(inputId) {
+      const el = document.getElementById(inputId);
+      if (!el) return "";
+      const raw = String(el.value ?? "").trim();
+      if (raw === "") return "";
+      const num = parseFloat(raw);
+      return isNaN(num) ? "" : num;
+    }
+
     async function toggleCalcFieldLock(inputId, btnEl, fieldCategory) {
       if (activeRole === "Viewer") return;
       const input = document.getElementById(inputId);
@@ -4128,54 +4241,63 @@
         btnEl.innerHTML = `<i class="fa-solid fa-pen"></i>`;
         runBillMath();
 
-        if (fieldCategory === "rent" || fieldCategory === "rate") {
+        // Requirement 1: Editing Base Rent in Calculation is strictly for this month's calculation only!
+        // It must NEVER overwrite the flat profile's saved Base Rent.
+        if (fieldCategory === "rent") {
+          triggerSideToast(
+            "Monthly Rent Override Set",
+            "Used only for this month's bill calculation. Profile Base Rent remains unchanged for future months.",
+            true
+          );
+          return;
+        }
+
+        if (fieldCategory === "rate") {
           const chosenMonth = normalizeMonthYear(document.getElementById("calcMonthPicker").value);
           const renterBills = getBillsForSpecificRenter(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj);
           const existingBillForMonth = renterBills.find(b => normalizeMonthYear(b.MonthYear) === chosenMonth);
 
-          // Only update master config for current & future months if this month is not a locked historical bill
           if (!existingBillForMonth) {
-            const newRent = parseFloat(document.getElementById("calcRent").value) || 0;
-            const newElecRate = parseFloat(document.getElementById("calcElecRate").value) || 0;
-            const newPngRate = parseFloat(document.getElementById("calcPngRate").value) || 0;
-            const newWaterRate = parseFloat(document.getElementById("calcWaterRate").value) || 0;
+            const newElecRate = parseInputRateOrEmpty("calcElecRate");
+            const newPngRate = parseInputRateOrEmpty("calcPngRate");
+            const newWaterRate = parseInputRateOrEmpty("calcWaterRate");
 
-            selectedFlat.RentAmount = newRent;
             selectedFlat.ElecRate = newElecRate;
             selectedFlat.PNGRate = newPngRate;
             selectedFlat.WaterRate = newWaterRate;
 
-            document.getElementById("profRent").value = newRent;
             document.getElementById("profElecRate").value = newElecRate;
             document.getElementById("profPngRate").value = newPngRate;
             document.getElementById("profWaterRate").value = newWaterRate;
 
             if (activeFlatRenterObj) {
-              activeFlatRenterObj.RentAmount = newRent;
+              activeFlatRenterObj.ElecFixedRate = newElecRate;
+              activeFlatRenterObj.PNGFixedRate = newPngRate;
+              activeFlatRenterObj.WaterFixedRate = newWaterRate;
             }
 
             saveDbSnapshotToCache();
             renderAllDashboardUI();
 
-            triggerSideToast("Master Config Saved", "Updated for current & future months! Past months remain untouched.", true);
+            triggerSideToast("Utility Rate Saved", "Updated utility rate for current & future months!", true);
 
             await sendGasPost({
               action: "updateMasterRentAndRates",
               propertyName: selectedFlat.PropertyName,
               flatName: selectedFlat.FlatName,
-              rentAmount: newRent,
+              rentAmount: selectedFlat.RentAmount ?? 0,
               elecRate: newElecRate,
               pngRate: newPngRate,
               waterRate: newWaterRate
             });
           } else {
-            triggerSideToast("Bill Override Ready", "Modified value for this month's calculation. Click Update & Replace Bill to save.", "warning");
+            triggerSideToast("Bill Override Ready", "Modified rate for this month's calculation. Click Update & Replace Bill to save.", "warning");
           }
         }
       }
     }
 
-    // Requirement 1: Immediately reflect flat profile Rent & Fixed Rates in the live calculator
+    // Immediately reflect flat profile Rent & Fixed Rates in the live calculator
     // ONLY when the calculator is on an unbilled month (past generated bills stay 100% locked!)
     function syncProfileRatesToLiveCalculator() {
       if (!selectedFlat) return;
@@ -4186,15 +4308,15 @@
       // Never overwrite calculator values if viewing an already-generated past bill
       if (existingBill) return;
 
-      const profRentVal = parseFloat(document.getElementById("profRent").value) || 0;
-      const profElecVal = parseFloat(document.getElementById("profElecRate").value) || 0;
-      const profPngVal = parseFloat(document.getElementById("profPngRate").value) || 0;
-      const profWaterVal = parseFloat(document.getElementById("profWaterRate").value) || 0;
+      const profRentRaw = document.getElementById("profRent").value;
+      const profElecRaw = document.getElementById("profElecRate").value;
+      const profPngRaw = document.getElementById("profPngRate").value;
+      const profWaterRaw = document.getElementById("profWaterRate").value;
 
-      document.getElementById("calcRent").value = profRentVal;
-      document.getElementById("calcElecRate").value = profElecVal;
-      document.getElementById("calcPngRate").value = profPngVal;
-      document.getElementById("calcWaterRate").value = profWaterVal;
+      document.getElementById("calcRent").value = profRentRaw;
+      document.getElementById("calcElecRate").value = profElecRaw;
+      document.getElementById("calcPngRate").value = profPngRaw;
+      document.getElementById("calcWaterRate").value = profWaterRaw;
 
       runBillMath();
     }
@@ -4222,22 +4344,22 @@
       );
 
       if (existingBill) {
-        statusTag.innerText = `Existing Bill Found (${formatMonthLabel(chosenMonth)}) - Locked Snapshot (Submitting Replaces Bill)`;
+        statusTag.innerText = `Existing Bill Found (${formatMonthLabel(chosenMonth)}) - Locked Snapshot`;
         statusTag.className = "calc-month-status-tag existing";
         submitBtnText.innerText = `Update & Replace Bill for ${formatMonthLabel(chosenMonth)}`;
 
         document.getElementById("calcRent").value = existingBill.BaseRent !== undefined && existingBill.BaseRent !== "" ? existingBill.BaseRent : 0;
         document.getElementById("calcElecPrev").value = existingBill.ElecPrev ?? 0;
         document.getElementById("calcElecCurr").value = existingBill.ElecCurr ?? "";
-        document.getElementById("calcElecRate").value = existingBill.ElecRate !== undefined && existingBill.ElecRate !== "" ? existingBill.ElecRate : 9;
+        document.getElementById("calcElecRate").value = resolveExactRateValue(existingBill.ElecRate, selectedFlat.ElecRate);
 
         document.getElementById("calcPngPrev").value = existingBill.PNGPrev ?? 0;
         document.getElementById("calcPngCurr").value = existingBill.PNGCurr ?? "";
-        document.getElementById("calcPngRate").value = existingBill.PNGRate !== undefined && existingBill.PNGRate !== "" ? existingBill.PNGRate : 45;
+        document.getElementById("calcPngRate").value = resolveExactRateValue(existingBill.PNGRate, selectedFlat.PNGRate);
 
         document.getElementById("calcWaterPrev").value = existingBill.WaterPrev ?? 0;
         document.getElementById("calcWaterCurr").value = existingBill.WaterCurr ?? "";
-        document.getElementById("calcWaterRate").value = existingBill.WaterRate !== undefined && existingBill.WaterRate !== "" ? existingBill.WaterRate : 15;
+        document.getElementById("calcWaterRate").value = resolveExactRateValue(existingBill.WaterRate, selectedFlat.WaterRate);
 
         const addAmtVal = parseFloat(existingBill.AdditionalAmount) || 0;
         document.getElementById("calcAddName").value = existingBill.AdditionalName || "";
@@ -4260,10 +4382,12 @@
         statusTag.className = "calc-month-status-tag";
         submitBtnText.innerText = "Calculate Bill";
 
-        document.getElementById("calcRent").value = selectedFlat.RentAmount ?? activeFlatRenterObj?.RentAmount ?? 0;
-        document.getElementById("calcElecRate").value = selectedFlat.ElecRate ?? 9;
-        document.getElementById("calcPngRate").value = selectedFlat.PNGRate ?? 45;
-        document.getElementById("calcWaterRate").value = selectedFlat.WaterRate ?? 15;
+        // Requirement 1 & 7: Always restore original Base Rent and exact utility rates from Flat Profile when switching to a new/next month
+        const profileBaseRent = resolveExactRateValue(selectedFlat.RentAmount, activeFlatRenterObj?.RentAmount);
+        document.getElementById("calcRent").value = profileBaseRent !== "" ? profileBaseRent : 0;
+        document.getElementById("calcElecRate").value = resolveExactRateValue(selectedFlat.ElecRate, activeFlatRenterObj?.ElecFixedRate);
+        document.getElementById("calcPngRate").value = resolveExactRateValue(selectedFlat.PNGRate, activeFlatRenterObj?.PNGFixedRate);
+        document.getElementById("calcWaterRate").value = resolveExactRateValue(selectedFlat.WaterRate, activeFlatRenterObj?.WaterFixedRate);
 
         const priorBills = sortedBills.filter(b => normalizeMonthYear(b.MonthYear) < chosenMonth);
         const lastPriorBill = priorBills.length > 0 ? priorBills[priorBills.length - 1] : null;
@@ -4345,11 +4469,12 @@
 
       const resolvedContact = resolveFlatUpiAndContact(flat.PropertyName, flat, renter);
 
-      document.getElementById("profRent").value = flat.RentAmount || renter?.RentAmount || 0;
+      const savedRent = resolveExactRateValue(flat.RentAmount, renter?.RentAmount);
+      document.getElementById("profRent").value = savedRent !== "" ? savedRent : 0;
       document.getElementById("profFlatNumber").value = flat.FlatName;
-      document.getElementById("profElecRate").value = flat.ElecRate || renter?.ElecFixedRate || 9;
-      document.getElementById("profPngRate").value = flat.PNGRate || renter?.PNGFixedRate || 45;
-      document.getElementById("profWaterRate").value = flat.WaterRate || renter?.WaterFixedRate || 15;
+      document.getElementById("profElecRate").value = resolveExactRateValue(flat.ElecRate, renter?.ElecFixedRate);
+      document.getElementById("profPngRate").value = resolveExactRateValue(flat.PNGRate, renter?.PNGFixedRate);
+      document.getElementById("profWaterRate").value = resolveExactRateValue(flat.WaterRate, renter?.WaterFixedRate);
       document.getElementById("profPngNumber").value = flat.PNGNumber || renter?.PNGNumber || "";
       document.getElementById("profPngMeter").value = flat.PNGMeterNumber || renter?.PNGMeterNumber || "";
       document.getElementById("profWaterNumber").value = flat.WaterNumber || renter?.WaterNumber || "";
@@ -4754,7 +4879,26 @@
 
 
 
-    // Bug 1, Bug 2 & Bug 3: Show Receipt Modal with Checkboxes, Exact-Amount UPI QR Code, Hidden Unchecked Rows, and Image WhatsApp Share
+    // Requirements 4, 5 & 6: Clean Receipt (No Checkboxes on Receipt), Contact Phone, AI Personal-Use Disclaimer,
+    // Embedded Base64 QR Code for Image Capture, Checklist Option on "Share to WhatsApp", & Direct Image Share to WhatsApp
+    let lastQrFetchToken = 0;
+
+    async function fetchQrCodeAsDataUrl(upiUri) {
+      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(upiUri)}`;
+      try {
+        const resp = await fetch(qrApiUrl, { mode: "cors", cache: "force-cache" });
+        const blob = await resp.blob();
+        return await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result || qrApiUrl);
+          reader.onerror = () => resolve(qrApiUrl);
+          reader.readAsDataURL(blob);
+        });
+      } catch (e) {
+        return qrApiUrl;
+      }
+    }
+
     function openBillReceiptModal(billId, monthYear) {
       if (!selectedFlat) return;
       injectReceiptWhatsAppStyles();
@@ -4782,146 +4926,160 @@
         : (carryVal < 0 ? `<span style="color:var(--accent-green);">- ₹${Math.abs(carryVal)} (Advance Credit)</span>` : `₹0`);
 
       const resolvedContact = resolveFlatUpiAndContact(bill.PropertyName, currentOpenedReceiptFlat, currentOpenedReceiptRenter);
-      // Use immutable bill snapshot if present so future profile edits never alter past bills
       const upiId = (bill.UPIID && String(bill.UPIID).trim()) ? String(bill.UPIID).trim() : resolvedContact.upiId;
       const upiName = (bill.UPIName && String(bill.UPIName).trim()) ? String(bill.UPIName).trim() : resolvedContact.upiName;
+      const contactPhone = (bill.ContractMobile && String(bill.ContractMobile).trim())
+        ? String(bill.ContractMobile).trim()
+        : (resolvedContact.contractMobile || activeUserMobile || currentOpenedReceiptRenter?.MobileNumber || "--");
 
       document.getElementById("receiptBodyDetails").innerHTML = `
-        <div class="receipt-select-bar no-print">
-          <label>
-            <input type="checkbox" id="recSelectAllToggle" class="rec-item-check" checked onchange="toggleAllReceiptItems(this.checked)">
-            <span>Select / Deselect All Items</span>
-          </label>
-          <span style="color:var(--text-muted); font-size:0.73rem;">Unchecked items are hidden in receipt</span>
-        </div>
-
+        <!-- Clean Receipt Content (Zero Checkboxes on Receipt) -->
         <div id="receiptItemsListContainer">
           <div class="receipt-line" id="row_rec_tenant">
-            <label class="receipt-line-left">
-              <input type="checkbox" class="rec-item-check" data-key="tenant" checked onchange="recalculateReceiptSelection()">
-              <span>Tenant Name:</span>
-            </label>
+            <span>Tenant Name:</span>
             <strong>${bill.TenantName || '--'}</strong>
           </div>
 
           <div class="receipt-line" id="row_rec_rent">
-            <label class="receipt-line-left">
-              <input type="checkbox" class="rec-item-check" data-key="rent" data-amount="${parseFloat(bill.BaseRent) || 0}" checked onchange="recalculateReceiptSelection()">
-              <span>Base Rent:</span>
-            </label>
-            <strong>₹${bill.BaseRent || 0}</strong>
+            <span>Base Rent:</span>
+            <strong>₹${(parseFloat(bill.BaseRent) || 0).toLocaleString('en-IN')}</strong>
           </div>
 
           <div class="receipt-line" id="row_rec_elec">
-            <label class="receipt-line-left">
-              <input type="checkbox" class="rec-item-check" data-key="elec" data-amount="${parseFloat(bill.ElecTotal) || 0}" checked onchange="recalculateReceiptSelection()">
-              <span>Electricity (${bill.ElecPrev} to ${bill.ElecCurr} = ${bill.ElecUnits}U @ ₹${bill.ElecRate}):</span>
-            </label>
-            <strong>₹${bill.ElecTotal || 0}</strong>
+            <span>Electricity (${bill.ElecPrev} to ${bill.ElecCurr} = ${bill.ElecUnits}U @ ₹${bill.ElecRate}):</span>
+            <strong>₹${(parseFloat(bill.ElecTotal) || 0).toLocaleString('en-IN')}</strong>
           </div>
 
           <div class="receipt-line" id="row_rec_png">
-            <label class="receipt-line-left">
-              <input type="checkbox" class="rec-item-check" data-key="png" data-amount="${parseFloat(bill.PNGTotal) || 0}" checked onchange="recalculateReceiptSelection()">
-              <span>PNG Gas (${bill.PNGPrev} to ${bill.PNGCurr} = ${bill.PNGUnits}U @ ₹${bill.PNGRate}):</span>
-            </label>
-            <strong>₹${bill.PNGTotal || 0}</strong>
+            <span>PNG Gas (${bill.PNGPrev} to ${bill.PNGCurr} = ${bill.PNGUnits}U @ ₹${bill.PNGRate}):</span>
+            <strong>₹${(parseFloat(bill.PNGTotal) || 0).toLocaleString('en-IN')}</strong>
           </div>
 
           <div class="receipt-line" id="row_rec_water">
-            <label class="receipt-line-left">
-              <input type="checkbox" class="rec-item-check" data-key="water" data-amount="${parseFloat(bill.WaterTotal) || 0}" checked onchange="recalculateReceiptSelection()">
-              <span>Water (${bill.WaterPrev} to ${bill.WaterCurr} = ${bill.WaterUnits}U @ ₹${bill.WaterRate}):</span>
-            </label>
-            <strong>₹${bill.WaterTotal || 0}</strong>
+            <span>Water (${bill.WaterPrev} to ${bill.WaterCurr} = ${bill.WaterUnits}U @ ₹${bill.WaterRate}):</span>
+            <strong>₹${(parseFloat(bill.WaterTotal) || 0).toLocaleString('en-IN')}</strong>
           </div>
 
           <div class="receipt-line" id="row_rec_additional">
-            <label class="receipt-line-left">
-              <input type="checkbox" class="rec-item-check" data-key="additional" data-amount="${parseFloat(bill.AdditionalAmount) || 0}" checked onchange="recalculateReceiptSelection()">
-              <span>Additional (${bill.AdditionalName || 'None'}):</span>
-            </label>
-            <strong>₹${bill.AdditionalAmount || 0}</strong>
+            <span>Additional Charge (${bill.AdditionalName || 'None'}):</span>
+            <strong>₹${(parseFloat(bill.AdditionalAmount) || 0).toLocaleString('en-IN')}</strong>
           </div>
 
           <div class="receipt-line" id="row_rec_carry">
-            <label class="receipt-line-left">
-              <input type="checkbox" class="rec-item-check" data-key="carry" data-amount="${carryVal}" checked onchange="recalculateReceiptSelection()">
-              <span>Carry-Forward Balance:</span>
-            </label>
+            <span>Carry-Forward Balance:</span>
             <strong>${carryLine}</strong>
           </div>
 
           <div class="receipt-total-box" id="row_rec_total">
-            <label class="receipt-line-left" style="font-weight:800;">
-              <input type="checkbox" class="rec-item-check" data-key="total" checked onchange="recalculateReceiptSelection()">
-              <span>Selected Total Billed:</span>
-            </label>
+            <span style="font-weight:800;">Total Billed Amount:</span>
             <span id="recDynamicTotalDisplay" style="color:var(--primary);">₹0</span>
           </div>
 
           <div class="receipt-line" id="row_rec_paid">
-            <label class="receipt-line-left">
-              <input type="checkbox" class="rec-item-check" data-key="paid" checked onchange="recalculateReceiptSelection()">
-              <span>Amount Paid (${bill.PaymentMode || 'UPI'}):</span>
-            </label>
+            <span>Total Amount Paid (${bill.PaymentMode || 'UPI'}):</span>
             <strong style="color:var(--accent-green);">₹${(parseFloat(bill.PaidAmount) || 0).toLocaleString('en-IN')}</strong>
           </div>
 
           <div class="receipt-line" id="row_rec_balance">
-            <label class="receipt-line-left">
-              <input type="checkbox" class="rec-item-check" data-key="balance" checked onchange="recalculateReceiptSelection()">
-              <span>Remaining Balance / Status:</span>
-            </label>
+            <span>Remaining Balance / Status:</span>
             <strong id="recDynamicBalanceDisplay">--</strong>
+          </div>
+
+          <div class="receipt-line" id="row_rec_contact">
+            <span>Contact Phone Number:</span>
+            <strong>${contactPhone}</strong>
           </div>
 
           ${upiId ? `
           <div class="receipt-line" id="row_rec_upi">
-            <label class="receipt-line-left">
-              <input type="checkbox" class="rec-item-check" data-key="upi" checked onchange="recalculateReceiptSelection()">
-              <span>Pay via UPI (${upiName || 'Account'}):</span>
-            </label>
+            <span>Pay via UPI (${upiName || 'Account'}):</span>
             <strong style="color:var(--primary);">${upiId}</strong>
           </div>` : ''}
 
           ${bill.Notes ? `
           <div class="receipt-line" id="row_rec_notes">
-            <label class="receipt-line-left">
-              <input type="checkbox" class="rec-item-check" data-key="notes" checked onchange="recalculateReceiptSelection()">
-              <span>Notes:</span>
-            </label>
+            <span>Notes:</span>
             <span>${bill.Notes}</span>
           </div>` : ''}
         </div>
 
-        <!-- Dynamic Exact-Amount UPI QR Code Box -->
-        <div id="receiptUpiQrBox" class="receipt-line" style="display:flex; flex-direction:column; align-items:center; justify-content:center; margin: 14px 0; padding: 12px; background:var(--bg-input); border-radius:12px; border:1px solid var(--glass-border);">
-          <div style="font-size:0.78rem; font-weight:700; margin-bottom:8px; color:var(--text-muted);">Scan QR to Pay Exact Bill Amount via UPI</div>
-          <img id="receiptUpiQrImg" crossOrigin="anonymous" src="" alt="UPI QR Code" style="width:140px; height:140px; border-radius:8px; background:#fff; padding:6px; display:none;">
-          <div id="receiptUpiTextHint" style="font-size:0.75rem; color:var(--text-muted); margin-top:6px;">--</div>
+        <!-- Requirement 6: Dynamic Exact-Amount UPI QR Code Box Shared in Receipt -->
+        <div id="receiptUpiQrBox" class="receipt-line" style="display:flex; flex-direction:column; align-items:center; justify-content:center; margin: 12px 0; padding: 12px; background:var(--bg-input); border-radius:12px; border:1px solid var(--glass-border);">
+          <div style="font-size:0.76rem; font-weight:700; margin-bottom:8px; color:var(--text-muted);">Scan QR Code to Pay via UPI</div>
+          <img id="receiptUpiQrImg" crossOrigin="anonymous" src="" alt="UPI QR Code" style="width:142px; height:142px; border-radius:10px; background:#ffffff; padding:6px; display:none;">
+          <div id="receiptUpiTextHint" style="font-size:0.74rem; color:var(--text-muted); margin-top:6px;">--</div>
         </div>
 
-        <button type="button" class="btn-whatsapp-share no-print" onclick="shareSelectedReceiptOnWhatsApp()">
-          <i class="fa-brands fa-whatsapp" style="font-size:1.15rem;"></i> Send Receipt & Image on WhatsApp
+        <!-- Requirement 4: AI Personal-Use Disclaimer on Receipt -->
+        <div id="row_rec_disclaimer" class="receipt-ai-disclaimer">
+          <i class="fa-solid fa-circle-info"></i> This receipt is generated by AI and is meant only for personal use, not for official or government use.
+        </div>
+
+        <!-- Requirement 5: Primary "Share to WhatsApp" Trigger Button (Opens Checklist Right Here) -->
+        <button type="button" id="btnOpenWaChecklist" class="btn-whatsapp-share no-print" onclick="toggleWhatsAppChecklistDrawer()">
+          <i class="fa-brands fa-whatsapp" style="font-size:1.15rem;"></i> Share to WhatsApp
         </button>
+
+        <!-- Requirement 5: Checklist Option Appears Right Here When Clicking "Share to WhatsApp" -->
+        <div id="waShareChecklistDrawer" class="wa-checklist-drawer no-print">
+          <div class="wa-checklist-header">
+            <span style="font-size:0.8rem; font-weight:800; color:#25D366;">
+              <i class="fa-solid fa-list-check"></i> Select Details to Share on WhatsApp
+            </span>
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.75rem; font-weight:700; cursor:pointer; color:var(--primary);">
+              <input type="checkbox" id="recSelectAllToggle" class="rec-item-check" checked onchange="toggleAllReceiptItems(this.checked)">
+              <span>Select All</span>
+            </label>
+          </div>
+          <div class="wa-checklist-grid" id="waChecklistInputsContainer">
+            <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="tenant" data-row="row_rec_tenant" checked onchange="recalculateReceiptSelection()"> <span>Tenant Name</span></label>
+            <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="rent" data-row="row_rec_rent" data-amount="${parseFloat(bill.BaseRent) || 0}" checked onchange="recalculateReceiptSelection()"> <span>Base Rent</span></label>
+            <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="elec" data-row="row_rec_elec" data-amount="${parseFloat(bill.ElecTotal) || 0}" checked onchange="recalculateReceiptSelection()"> <span>Electricity</span></label>
+            <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="png" data-row="row_rec_png" data-amount="${parseFloat(bill.PNGTotal) || 0}" checked onchange="recalculateReceiptSelection()"> <span>PNG Gas</span></label>
+            <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="water" data-row="row_rec_water" data-amount="${parseFloat(bill.WaterTotal) || 0}" checked onchange="recalculateReceiptSelection()"> <span>Water</span></label>
+            <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="additional" data-row="row_rec_additional" data-amount="${parseFloat(bill.AdditionalAmount) || 0}" checked onchange="recalculateReceiptSelection()"> <span>Additional Charge</span></label>
+            <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="carry" data-row="row_rec_carry" data-amount="${carryVal}" checked onchange="recalculateReceiptSelection()"> <span>Carry-Forward</span></label>
+            <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="total" data-row="row_rec_total" checked onchange="recalculateReceiptSelection()"> <span>Total Billed</span></label>
+            <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="paid" data-row="row_rec_paid" checked onchange="recalculateReceiptSelection()"> <span>Amount Paid</span></label>
+            <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="balance" data-row="row_rec_balance" checked onchange="recalculateReceiptSelection()"> <span>Balance Status</span></label>
+            <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="contact" data-row="row_rec_contact" checked onchange="recalculateReceiptSelection()"> <span>Contact Phone</span></label>
+            <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="upi" data-row="row_rec_upi" checked onchange="recalculateReceiptSelection()"> <span>UPI &amp; QR Code</span></label>
+            ${bill.Notes ? `<label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="notes" data-row="row_rec_notes" checked onchange="recalculateReceiptSelection()"> <span>Notes</span></label>` : ''}
+          </div>
+          <div style="font-size:0.72rem; color:var(--text-muted); margin-bottom:8px;">
+            Unchecked items are automatically hidden from both the receipt image and WhatsApp message.
+          </div>
+          <button type="button" id="btnConfirmSendWhatsApp" class="btn-whatsapp-share" style="margin-top:0;" onclick="shareSelectedReceiptOnWhatsApp()">
+            <i class="fa-solid fa-paper-plane"></i> Send Receipt Image &amp; Details to WhatsApp
+          </button>
+        </div>
       `;
 
       recalculateReceiptSelection();
       openModal("receiptViewModal");
     }
 
-    // Bug 3: Hide unchecked rows via CSS class toggle and update exact QR amount (Bug 2)
+    function toggleWhatsAppChecklistDrawer() {
+      const drawer = document.getElementById("waShareChecklistDrawer");
+      if (!drawer) return;
+      drawer.classList.toggle("open");
+    }
+
     function recalculateReceiptSelection() {
-      if (!currentOpenedReceiptBill) return;
-      const checkboxes = document.querySelectorAll("#receiptItemsListContainer .rec-item-check");
+      if (!currentOpenedReceiptBill) return { selectedTotal: 0, paidAmt: 0, netClosing: 0 };
+      const checkboxes = document.querySelectorAll("#waChecklistInputsContainer .rec-item-check");
       let selectedChargesSum = 0;
       let allChecked = true;
 
       checkboxes.forEach(cb => {
-        const parentRow = cb.closest(".receipt-line, .receipt-total-box");
-        if (parentRow) {
-          parentRow.classList.toggle("unchecked-row", !cb.checked);
+        const targetRowId = cb.dataset.row;
+        const rowEl = targetRowId ? document.getElementById(targetRowId) : null;
+        if (rowEl) {
+          rowEl.classList.toggle("unchecked-row", !cb.checked);
+        }
+        if (cb.dataset.key === "upi") {
+          const qrBox = document.getElementById("receiptUpiQrBox");
+          if (qrBox) qrBox.classList.toggle("unchecked-row", !cb.checked);
         }
         if (!cb.checked) allChecked = false;
 
@@ -4934,7 +5092,7 @@
       if (selectAllToggle) selectAllToggle.checked = allChecked;
 
       const selectedTotal = Math.max(0, selectedChargesSum);
-      const paidCheck = document.querySelector('#receiptItemsListContainer .rec-item-check[data-key="paid"]');
+      const paidCheck = document.querySelector('#waChecklistInputsContainer .rec-item-check[data-key="paid"]');
       const paidAmt = (paidCheck && paidCheck.checked) ? (parseFloat(currentOpenedReceiptBill.PaidAmount) || 0) : 0;
       const netClosing = selectedTotal - paidAmt;
 
@@ -4957,26 +5115,25 @@
         }
       }
 
-      // Generate exact-amount UPI QR Code (uses payable balance if partial paid, or selectedTotal)
       const qrPayableAmount = netClosing > 0 ? netClosing : selectedTotal;
       updateReceiptUpiQr(qrPayableAmount);
 
       return { selectedTotal, paidAmt, netClosing };
     }
 
-    // Bug 2: Update exact bill amount QR code using UPI ID (with automatic Property fallback)
-    function updateReceiptUpiQr(exactAmount) {
+    async function updateReceiptUpiQr(exactAmount) {
       const qrBox = document.getElementById("receiptUpiQrBox");
       const qrImg = document.getElementById("receiptUpiQrImg");
       const qrHint = document.getElementById("receiptUpiTextHint");
-      const upiCheckbox = document.querySelector('#receiptItemsListContainer .rec-item-check[data-key="upi"]');
+      const upiCheckbox = document.querySelector('#waChecklistInputsContainer .rec-item-check[data-key="upi"]');
 
       if (!qrBox || !qrImg || !qrHint) return;
 
       if (upiCheckbox && !upiCheckbox.checked) {
-        qrBox.style.display = "none";
+        qrBox.classList.add("unchecked-row");
         return;
       }
+      qrBox.classList.remove("unchecked-row");
       qrBox.style.display = "flex";
 
       const resolvedContact = resolveFlatUpiAndContact(
@@ -4998,39 +5155,36 @@
       }
 
       const upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(upiName || 'Rental Payment')}&am=${exactAmount.toFixed(2)}&cu=INR`;
-      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(upiUri)}`;
-
-      qrImg.crossOrigin = "anonymous";
-      qrImg.src = qrApiUrl;
+      const fetchToken = ++lastQrFetchToken;
+      qrHint.innerText = `Scan QR to pay ₹${exactAmount.toLocaleString('en-IN')} to ${upiId}`;
       qrImg.style.display = "inline-block";
-      qrHint.innerText = `Scan to pay exact ₹${exactAmount.toLocaleString('en-IN')} to ${upiId}`;
+
+      const dataUrl = await fetchQrCodeAsDataUrl(upiUri);
+      if (fetchToken === lastQrFetchToken && qrImg) {
+        qrImg.src = dataUrl;
+      }
     }
 
     function toggleAllReceiptItems(isChecked) {
-      document.querySelectorAll("#receiptItemsListContainer .rec-item-check").forEach(cb => {
+      document.querySelectorAll("#waChecklistInputsContainer .rec-item-check").forEach(cb => {
         cb.checked = isChecked;
       });
       recalculateReceiptSelection();
     }
 
-    // Bug 1 & Bug 3: Automatically retrieve renter number from frozen bill snapshot or profile, hide unchecked rows on image capture, and send receipt text & image on WhatsApp
+    // Requirements 4, 5 & 6: Captures complete clean receipt image (including QR code, contact number, AI disclaimer,
+    // and only checked items) and sends it directly into WhatsApp chat without requiring a manual mobile download first
     async function shareSelectedReceiptOnWhatsApp() {
       if (!currentOpenedReceiptBill) return;
       const bill = currentOpenedReceiptBill;
 
-      // Prioritize frozen bill snapshot mobile so past bills are unaffected by future profile changes
       const rawPhone = bill.TenantMobile || currentOpenedReceiptRenter?.MobileNumber || currentOpenedReceiptRenter?.AltMobileNumber || "";
       const formattedPhone = formatWhatsAppPhone(rawPhone);
 
-      if (!formattedPhone || formattedPhone.length < 10) {
-        return triggerSideToast("WhatsApp Number Missing", "Tenant mobile number is not set in their profile. Please update their profile first.", false);
-      }
-
       const { selectedTotal, paidAmt, netClosing } = recalculateReceiptSelection();
 
-      // Build WhatsApp text summary omitting unchecked items (Bug 3)
       const checkedKeys = new Set();
-      document.querySelectorAll("#receiptItemsListContainer .rec-item-check:checked").forEach(cb => {
+      document.querySelectorAll("#waChecklistInputsContainer .rec-item-check:checked").forEach(cb => {
         checkedKeys.add(cb.dataset.key);
       });
 
@@ -5041,6 +5195,9 @@
       );
       const snapshotUpiId = (bill.UPIID && String(bill.UPIID).trim()) ? String(bill.UPIID).trim() : resolvedContact.upiId;
       const snapshotUpiName = (bill.UPIName && String(bill.UPIName).trim()) ? String(bill.UPIName).trim() : resolvedContact.upiName;
+      const snapshotContactPhone = (bill.ContractMobile && String(bill.ContractMobile).trim())
+        ? String(bill.ContractMobile).trim()
+        : (resolvedContact.contractMobile || activeUserMobile || "");
 
       const lines = [];
       lines.push(`*🧾 MONTHLY RENT & UTILITY RECEIPT*`);
@@ -5096,22 +5253,34 @@
           lines.push(`🎉 *Status:* *Fully Paid (₹0 Due)*`);
         }
       }
-
-      if (checkedKeys.has("upi")) {
-        if (snapshotUpiId) {
-          lines.push(`💳 *Pay via UPI:* ${snapshotUpiId}${snapshotUpiName ? ' (' + snapshotUpiName + ')' : ''}`);
-        }
+      if (checkedKeys.has("contact") && snapshotContactPhone) {
+        lines.push(`📞 *Contact Phone:* ${snapshotContactPhone}`);
       }
-
+      if (checkedKeys.has("upi") && snapshotUpiId) {
+        lines.push(`💳 *Pay via UPI:* ${snapshotUpiId}${snapshotUpiName ? ' (' + snapshotUpiName + ')' : ''}`);
+      }
       if (checkedKeys.has("notes") && bill.Notes) {
         lines.push(`📝 *Note:* ${bill.Notes}`);
       }
+      lines.push(`_Disclaimer: This receipt is generated by AI and is meant only for personal use, not for official or government use._`);
 
       const messageText = lines.join("\n");
-      const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(messageText)}`;
+      const sendBtn = document.getElementById("btnConfirmSendWhatsApp");
+      if (sendBtn) {
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Preparing Receipt Image...`;
+      }
 
-      // Generate clean receipt image using html2canvas with unchecked rows & buttons hidden
+      // Ensure QR code image is converted to inline data URL before capturing with html2canvas
+      const qrImg = document.getElementById("receiptUpiQrImg");
+      if (checkedKeys.has("upi") && qrImg && qrImg.src && !qrImg.src.startsWith("data:")) {
+        try {
+          qrImg.src = await fetchQrCodeAsDataUrl(qrImg.src);
+        } catch (e) {}
+      }
+
       const receiptCardEl = document.getElementById("printableReceiptArea");
+      let receiptBlob = null;
       try {
         receiptCardEl.classList.add("capturing-receipt");
         const canvas = await html2canvas(receiptCardEl, {
@@ -5121,33 +5290,53 @@
           backgroundColor: getComputedStyle(document.body).getPropertyValue("--bg-modal").trim() || "#111827"
         });
         receiptCardEl.classList.remove("capturing-receipt");
-
-        const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
-        if (blob) {
-          if (navigator.clipboard && window.ClipboardItem) {
-            try {
-              await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
-            } catch (clipErr) {}
-          }
-
-          const downloadUrl = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = downloadUrl;
-          a.download = `Receipt_${bill.FlatName}_${bill.MonthYear}.png`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          setTimeout(() => URL.revokeObjectURL(downloadUrl), 5000);
-        }
+        receiptBlob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
       } catch (err) {
         receiptCardEl.classList.remove("capturing-receipt");
-        console.warn("Image capture note:", err);
+      } finally {
+        if (sendBtn) {
+          sendBtn.disabled = false;
+          sendBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Send Receipt Image & Details to WhatsApp`;
+        }
       }
 
-      window.open(whatsappUrl, "_blank");
-      triggerSideToast("Opening WhatsApp", `Receipt image saved/copied & opening WhatsApp for +${formattedPhone}`, true);
-    }
+      // 1. Direct Mobile / Native Share Sheet with Receipt Image File (Sends directly into WhatsApp chat without downloading first)
+      if (receiptBlob) {
+        const fileName = `Receipt_Flat_${bill.FlatName}_${bill.MonthYear}.png`;
+        const receiptFile = new File([receiptBlob], fileName, { type: "image/png" });
+        if (navigator.canShare && navigator.canShare({ files: [receiptFile] })) {
+          try {
+            await navigator.share({
+              files: [receiptFile],
+              title: `Rent Receipt - Flat ${bill.FlatName} (${formatMonthLabel(bill.MonthYear)})`,
+              text: messageText
+            });
+            triggerSideToast("Shared to WhatsApp", "Complete receipt image & details shared directly!", true);
+            return;
+          } catch (shareErr) {
+            if (shareErr && shareErr.name === "AbortError") return;
+          }
+        }
 
+        // Copy receipt image directly to clipboard so desktop WhatsApp Web / App users can paste (Ctrl+V) immediately without downloading
+        if (navigator.clipboard && window.ClipboardItem) {
+          try {
+            await navigator.clipboard.write([new ClipboardItem({ "image/png": receiptBlob })]);
+          } catch (clipErr) {}
+        }
+      }
+
+      if (!formattedPhone || formattedPhone.length < 10) {
+        const waDirectUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`;
+        window.open(waDirectUrl, "_blank");
+        triggerSideToast("Receipt Copied for WhatsApp", "Receipt image copied to clipboard! Paste (Ctrl+V) directly in WhatsApp chat.", true);
+        return;
+      }
+
+      const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(messageText)}`;
+      window.open(whatsappUrl, "_blank");
+      triggerSideToast("Opening WhatsApp Chat", `Receipt image copied to clipboard & opening chat for +${formattedPhone}`, true);
+    }
 
     function printCurrentReceipt() {
       window.print();
@@ -5180,7 +5369,7 @@
       });
     }
 
-    // 8. Strict Renter History Isolation + Search & Date-Range Filtering
+    // Requirement 8: Renter History Section — Top-Corner Search + Every Active & Past Tenant Displayed in Its Own Dedicated Box
     function doesRenterMatchHistoryFilters(renter, prop, flat, searchQuery, fromDateStr, toDateStr) {
       const q = String(searchQuery || "").trim().toLowerCase();
       const renterBills = getBillsForSpecificRenter(prop, flat, renter);
@@ -5189,6 +5378,8 @@
         const nameMatch = String(renter.RenterName || "").toLowerCase().includes(q);
         const phoneMatch = String(renter.MobileNumber || "").toLowerCase().includes(q) ||
                            String(renter.AltMobileNumber || "").toLowerCase().includes(q);
+        const idMatch = String(renter.IdentityDocNumber || "").toLowerCase().includes(q);
+        const addrMatch = String(renter.Address || "").toLowerCase().includes(q);
         const statusMatch = String(renter.Status || "").toLowerCase().includes(q);
         const joinEndMatch = String(renter.JoinDate || "").toLowerCase().includes(q) ||
                              String(renter.EndDate || "").toLowerCase().includes(q);
@@ -5200,7 +5391,7 @@
           return mLabel.includes(q) || mRaw.includes(q) || pMode.includes(q) || bStatus.includes(q);
         });
 
-        if (!nameMatch && !phoneMatch && !statusMatch && !joinEndMatch && !billMatch) {
+        if (!nameMatch && !phoneMatch && !idMatch && !addrMatch && !statusMatch && !joinEndMatch && !billMatch) {
           return false;
         }
       }
@@ -5250,13 +5441,12 @@
       }
     }
 
-    function populateIsolatedRenterHistoryDropdown(prop, flat, preserveSelection = false) {
-      const select = document.getElementById("rhRenterSelectDropdown");
+    function populateIsolatedRenterHistoryDropdown(prop, flat) {
+      const container = document.getElementById("rhAllTenantsListContainer");
       const countLabel = document.getElementById("rhFilteredCountLabel");
-      if (!select) return;
+      if (!container) return;
 
-      const previousValue = preserveSelection ? select.value : "";
-      const searchQuery = document.getElementById("rhSearchInput")?.value || "";
+      const searchQuery = (document.getElementById("rhSearchInput")?.value || "").trim().toLowerCase();
       const fromDateStr = document.getElementById("rhDateFrom")?.value || "";
       const toDateStr = document.getElementById("rhDateTo")?.value || "";
 
@@ -5269,179 +5459,194 @@
       );
 
       if (countLabel) {
-        const hasFilters = Boolean(searchQuery.trim() || fromDateStr || toDateStr);
+        const hasFilters = Boolean(searchQuery || fromDateStr || toDateStr);
         countLabel.innerText = hasFilters
-          ? `${filteredRenters.length} of ${allFlatRenters.length} Matched`
-          : `${allFlatRenters.length} Total`;
+          ? `${filteredRenters.length} of ${allFlatRenters.length}`
+          : `${allFlatRenters.length}`;
       }
 
       if (filteredRenters.length === 0) {
-        select.innerHTML = `<option value="">No Matching Renter Records</option>`;
-        renderSelectedRenterHistoryRecord();
+        container.innerHTML = `
+          <div class="rh-tenant-card-box" style="text-align:center; padding:26px 16px; color:var(--text-muted);">
+            <i class="fa-solid fa-users-slash" style="font-size:1.8rem; margin-bottom:8px; color:var(--primary);"></i>
+            <div style="font-weight:700; font-size:0.9rem; color:var(--text-main);">No Tenant Records Found</div>
+            <div style="font-size:0.78rem; margin-top:4px;">No active or past renters match your current search filter for this flat.</div>
+          </div>
+        `;
         return;
       }
 
+      // Sort so Active tenant(s) appear first, followed by Past / Left tenants (newest join date first)
       filteredRenters.sort((a, b) => {
-        const aAct = String(a.r.Status).toLowerCase() === "active" ? 0 : 1;
-        const bAct = String(b.r.Status).toLowerCase() === "active" ? 0 : 1;
-        return aAct - bAct;
+        const aAct = String(a.r.Status || "").toLowerCase() === "active" ? 0 : 1;
+        const bAct = String(b.r.Status || "").toLowerCase() === "active" ? 0 : 1;
+        if (aAct !== bAct) return aAct - bAct;
+        return String(b.r.JoinDate || "").localeCompare(String(a.r.JoinDate || ""));
       });
 
-      select.innerHTML = filteredRenters.map(item => {
-        const r = item.r;
-        const statusLabel = String(r.Status).toLowerCase() === "active" ? "ACTIVE" : "PAST / INACTIVE";
-        return `<option value="${item.rId}">${r.RenterName || 'Unnamed Tenant'} [${statusLabel}] (${r.JoinDate || 'N/A'})</option>`;
+      const fromMonth = fromDateStr ? fromDateStr.substring(0, 7) : "";
+      const toMonth = toDateStr ? toDateStr.substring(0, 7) : "";
+
+      container.innerHTML = filteredRenters.map((item, idx) => {
+        const targetRenter = item.r;
+        const isAct = String(targetRenter.Status || "").toLowerCase() === "active";
+        const statusBadgeText = isAct ? "Active Tenant" : "Left / Past Tenant";
+        const statusBadgeClass = isAct ? "badge-paid" : "badge-unpaid";
+        const avatarSrc = (!isPlaceholderImageUrl(targetRenter.ProfileImageURL))
+          ? targetRenter.ProfileImageURL
+          : "https://via.placeholder.com/150?text=Tenant";
+
+        const allBills = getBillsForSpecificRenter(prop, flat, targetRenter);
+        const renterMetaMatchesQuery = searchQuery && (
+          String(targetRenter.RenterName || "").toLowerCase().includes(searchQuery) ||
+          String(targetRenter.MobileNumber || "").toLowerCase().includes(searchQuery) ||
+          String(targetRenter.AltMobileNumber || "").toLowerCase().includes(searchQuery) ||
+          String(targetRenter.IdentityDocNumber || "").toLowerCase().includes(searchQuery) ||
+          String(targetRenter.Address || "").toLowerCase().includes(searchQuery) ||
+          String(targetRenter.Status || "").toLowerCase().includes(searchQuery)
+        );
+
+        const bills = allBills.filter(b => {
+          const cleanM = normalizeMonthYear(b.MonthYear);
+          if (fromMonth && cleanM && cleanM < fromMonth) return false;
+          if (toMonth && cleanM && cleanM > toMonth) return false;
+          if (searchQuery && !renterMetaMatchesQuery) {
+            const mLabel = formatMonthLabel(cleanM).toLowerCase();
+            const pMode = String(b.PaymentMode || "").toLowerCase();
+            const bStatus = String(b.Status || "").toLowerCase();
+            const bNotes = String(b.Notes || "").toLowerCase();
+            return mLabel.includes(searchQuery) || cleanM.toLowerCase().includes(searchQuery) || pMode.includes(searchQuery) || bStatus.includes(searchQuery) || bNotes.includes(searchQuery);
+          }
+          return true;
+        });
+
+        let totalStandaloneBilled = 0, totalPaid = 0, totalRent = 0, totalUtility = 0;
+        bills.forEach(b => {
+          const billed = parseFloat(b.TotalBilled) || 0;
+          const carry = parseFloat(b.PrevCarryBalance) || 0;
+          const standalone = billed - carry;
+          const rent = parseFloat(b.BaseRent) || 0;
+          totalStandaloneBilled += standalone;
+          totalPaid += parseFloat(b.PaidAmount) || 0;
+          totalRent += rent;
+          totalUtility += Math.max(0, standalone - rent);
+        });
+
+        const netBal = totalStandaloneBilled - totalPaid;
+        let balText = "Settled (₹0)";
+        let balColor = "var(--accent-green)";
+        if (netBal > 0) {
+          balText = `Due: ₹${netBal.toLocaleString('en-IN')}`;
+          balColor = "var(--accent-red)";
+        } else if (netBal < 0) {
+          balText = `Advance: ₹${Math.abs(netBal).toLocaleString('en-IN')}`;
+          balColor = "var(--accent-green)";
+        }
+
+        const newestFirstInvoices = [...bills].reverse();
+        const invoicesHtml = newestFirstInvoices.length === 0
+          ? `<p style="color:var(--text-muted); font-size:0.78rem; margin:6px 0 0 0;">No monthly bills recorded for this tenant yet.</p>`
+          : newestFirstInvoices.map(b => {
+              const cleanM = normalizeMonthYear(b.MonthYear);
+              const ePrev = parseFloat(b.ElecPrev) || 0;
+              const eCurr = parseFloat(b.ElecCurr) || 0;
+              const eUnits = b.ElecUnits !== undefined && b.ElecUnits !== "" ? (parseFloat(b.ElecUnits) || 0) : Math.max(0, eCurr - ePrev);
+              const eRate = parseFloat(b.ElecRate) || 0;
+              const eTotal = b.ElecTotal !== undefined && b.ElecTotal !== "" ? (parseFloat(b.ElecTotal) || 0) : (eUnits * eRate);
+
+              const pPrev = parseFloat(b.PNGPrev) || 0;
+              const pCurr = parseFloat(b.PNGCurr) || 0;
+              const pUnits = b.PNGUnits !== undefined && b.PNGUnits !== "" ? (parseFloat(b.PNGUnits) || 0) : Math.max(0, pCurr - pPrev);
+              const pRate = parseFloat(b.PNGRate) || 0;
+              const pTotal = b.PNGTotal !== undefined && b.PNGTotal !== "" ? (parseFloat(b.PNGTotal) || 0) : (pUnits * pRate);
+
+              const wPrev = parseFloat(b.WaterPrev) || 0;
+              const wCurr = parseFloat(b.WaterCurr) || 0;
+              const wUnits = b.WaterUnits !== undefined && b.WaterUnits !== "" ? (parseFloat(b.WaterUnits) || 0) : Math.max(0, wCurr - wPrev);
+              const wRate = parseFloat(b.WaterRate) || 0;
+              const wTotal = b.WaterTotal !== undefined && b.WaterTotal !== "" ? (parseFloat(b.WaterTotal) || 0) : (wUnits * wRate);
+
+              return `
+                <div style="padding:9px 0; border-bottom:1px solid var(--glass-border);">
+                  <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px;">
+                    <span><strong>${formatMonthLabel(cleanM)}</strong> — Rent: ₹${b.BaseRent || 0} | Total Billed: <strong>₹${b.TotalBilled}</strong> | Paid: ₹${b.PaidAmount} (${b.PaymentMode})</span>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <span class="badge-${String(b.Status).toLowerCase().includes('fully') ? 'paid' : (String(b.Status).toLowerCase().includes('partial') ? 'partial' : 'unpaid')}">${b.Status}</span>
+                      <button type="button" class="btn-ledger-action receipt-btn" onclick="openBillReceiptModal('${b.BillID}', '${cleanM}')">
+                        <i class="fa-solid fa-receipt"></i> Receipt
+                      </button>
+                    </div>
+                  </div>
+                  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:8px; margin-top:6px; font-size:0.74rem; color:var(--text-muted); background:rgba(255,255,255,0.03); padding:6px 8px; border-radius:6px;">
+                    <div><i class="fa-solid fa-bolt" style="color:var(--primary);"></i> <strong>Elec:</strong> ${ePrev} → ${eCurr} (${eUnits}U @ ₹${eRate}) = <strong>₹${eTotal.toLocaleString('en-IN')}</strong></div>
+                    <div><i class="fa-solid fa-fire" style="color:var(--primary);"></i> <strong>PNG:</strong> ${pPrev} → ${pCurr} (${pUnits}U @ ₹${pRate}) = <strong>₹${pTotal.toLocaleString('en-IN')}</strong></div>
+                    <div><i class="fa-solid fa-faucet-drip" style="color:var(--primary);"></i> <strong>Water:</strong> ${wPrev} → ${wCurr} (${wUnits}U @ ₹${wRate}) = <strong>₹${wTotal.toLocaleString('en-IN')}</strong></div>
+                  </div>
+                </div>
+              `;
+            }).join("");
+
+        return `
+          <div class="rh-tenant-card-box ${isAct ? 'active-tenant-box' : ''}">
+            <!-- Top Identity Row inside Tenant Box -->
+            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:14px;">
+              <div class="renter-avatar" style="width:56px; height:56px; flex-shrink:0;">
+                <img src="${avatarSrc}" alt="${targetRenter.RenterName || 'Tenant'}">
+              </div>
+              <div style="flex:1; min-width:200px;">
+                <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
+                  <h3 style="font-size:1.05rem; font-weight:800;">${targetRenter.RenterName || 'Unnamed Tenant'}</h3>
+                  <span class="${statusBadgeClass}" style="font-size:0.72rem;">${statusBadgeText}</span>
+                </div>
+                <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">
+                  <i class="fa-solid fa-phone" style="color:var(--primary);"></i> ${targetRenter.MobileNumber || '--'}
+                  ${targetRenter.AltMobileNumber ? ` (Alt: ${targetRenter.AltMobileNumber})` : ''}
+                  &nbsp;|&nbsp;
+                  <i class="fa-regular fa-calendar" style="color:var(--primary);"></i> Stay: <strong>${targetRenter.JoinDate || '--'}</strong> to <strong>${isAct ? 'Present' : (targetRenter.EndDate || 'Left')}</strong>
+                </div>
+              </div>
+              ${isAct ? `
+              <button type="button" class="btn-primary" style="width:auto; padding:8px 14px; font-size:0.78rem;" onclick="switchFlatTabToProfile()">
+                <i class="fa-solid fa-id-card"></i> Edit Active Profile
+              </button>` : ''}
+            </div>
+
+            <!-- Complete Personal & Flat Rate Details Inside Single Dedicated Box -->
+            <div class="rh-tenant-details-grid">
+              <div><span style="color:var(--text-muted);">Aadhaar / ID No:</span> <strong>${targetRenter.IdentityDocNumber || '--'}</strong></div>
+              <div><span style="color:var(--text-muted);">Family Members:</span> <strong>${targetRenter.TotalFamilyMembers || '1'}</strong></div>
+              <div><span style="color:var(--text-muted);">Address:</span> <strong>${targetRenter.Address || '--'}</strong></div>
+              <div><span style="color:var(--text-muted);">Base Rent:</span> <strong>₹${targetRenter.RentAmount ?? selectedFlat?.RentAmount ?? 0}</strong></div>
+              <div><span style="color:var(--text-muted);">Elec / PNG / Water Rate:</span> <strong>₹${resolveExactRateValue(targetRenter.ElecFixedRate, selectedFlat?.ElecRate) || 0} / ₹${resolveExactRateValue(targetRenter.PNGFixedRate, selectedFlat?.PNGRate) || 0} / ₹${resolveExactRateValue(targetRenter.WaterFixedRate, selectedFlat?.WaterRate) || 0}</strong></div>
+              <div><span style="color:var(--text-muted);">Meters (E / P / W):</span> <strong>${targetRenter.ElecMeterNumber || '--'} / ${targetRenter.PNGMeterNumber || '--'} / ${targetRenter.WaterMeterNumber || '--'}</strong></div>
+            </div>
+
+            <!-- Financial Summary Pills Inside Same Tenant Box -->
+            <div class="renter-history-overview" style="margin:12px 0 10px 0;">
+              <div class="stat-pill"><span>TOTAL BILLED</span><strong>₹ ${totalStandaloneBilled.toLocaleString('en-IN')}</strong></div>
+              <div class="stat-pill"><span>TOTAL PAID</span><strong>₹ ${totalPaid.toLocaleString('en-IN')}</strong></div>
+              <div class="stat-pill"><span>TOTAL RENT</span><strong>₹ ${totalRent.toLocaleString('en-IN')}</strong></div>
+              <div class="stat-pill"><span>TOTAL UTILITY</span><strong>₹ ${totalUtility.toLocaleString('en-IN')}</strong></div>
+              <div class="stat-pill"><span>BALANCE STATUS</span><strong style="color:${balColor};">${balText}</strong></div>
+            </div>
+
+            <!-- Invoices List Inside Same Tenant Box -->
+            <details style="background:rgba(0,0,0,0.12); border:1px solid var(--glass-border); border-radius:10px; padding:10px 12px;" ${idx === 0 ? 'open' : ''}>
+              <summary style="cursor:pointer; font-weight:700; font-size:0.8rem; color:var(--primary);">
+                &gt; Monthly Bills &amp; Invoices (${bills.length})
+              </summary>
+              <div style="margin-top:8px; font-size:0.8rem;">
+                ${invoicesHtml}
+              </div>
+            </details>
+          </div>
+        `;
       }).join("");
-
-      if (previousValue && filteredRenters.some(item => item.rId === previousValue)) {
-        select.value = previousValue;
-      }
-
-      renderSelectedRenterHistoryRecord();
     }
 
     function renderSelectedRenterHistoryRecord() {
-      if (!selectedFlat) return;
-      const select = document.getElementById("rhRenterSelectDropdown");
-      const chosenId = select?.value || "";
-      const searchQuery = (document.getElementById("rhSearchInput")?.value || "").trim().toLowerCase();
-      const fromDateStr = document.getElementById("rhDateFrom")?.value || "";
-      const toDateStr = document.getElementById("rhDateTo")?.value || "";
-
-      const flatRenters = DB.renters
-        .map((r, originalIdx) => ({ r, rId: r.RenterID || `IDX-${originalIdx}` }))
-        .filter(item => isSamePropAndFlat(item.r.PropertyName, item.r.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName));
-
-      const matchedEntry = flatRenters.find(item => item.rId === chosenId);
-      const targetRenter = matchedEntry ? matchedEntry.r : null;
-
-      if (!targetRenter) {
-        document.getElementById("rhName").innerText = chosenId === "" && flatRenters.length > 0 ? "No Renter Matches Filter" : "No Renter Assigned";
-        document.getElementById("rhStatusBadge").innerText = "N/A";
-        document.getElementById("rhStatusBadge").className = "badge-partial";
-        document.getElementById("rhContact").innerText = "Contact: --";
-        document.getElementById("rhStay").innerText = "Duration: --";
-        document.getElementById("rhBilled").innerText = "₹ 0";
-        document.getElementById("rhPaid").innerText = "₹ 0";
-        document.getElementById("rhTotalRent").innerText = "₹ 0";
-        document.getElementById("rhUtility").innerText = "₹ 0";
-        document.getElementById("rhBalance").innerText = "Settled (₹0)";
-        document.getElementById("rhInvoiceList").innerHTML = "<p style='color:var(--text-muted);'>No renter records match your current search or date range filter.</p>";
-        return;
-      }
-
-      const isAct = String(targetRenter.Status).toLowerCase() === "active";
-      document.getElementById("rhAvatar").src = targetRenter.ProfileImageURL || "https://via.placeholder.com/150";
-      document.getElementById("rhName").innerText = targetRenter.RenterName || "Tenant";
-      document.getElementById("rhStatusBadge").innerText = isAct ? "Active" : "Inactive (Archived)";
-      document.getElementById("rhStatusBadge").className = isAct ? "badge-paid" : "badge-unpaid";
-      document.getElementById("rhContact").innerText = `Phone: ${targetRenter.MobileNumber || '--'}`;
-      document.getElementById("rhStay").innerText = `Stay: ${targetRenter.JoinDate || '--'} to ${isAct ? 'Present' : (targetRenter.EndDate || 'Archived')}`;
-
-      const allBills = getBillsForSpecificRenter(selectedFlat.PropertyName, selectedFlat.FlatName, targetRenter);
-
-      // Filter invoices by active date range or invoice-specific search terms
-      const fromMonth = fromDateStr ? fromDateStr.substring(0, 7) : "";
-      const toMonth = toDateStr ? toDateStr.substring(0, 7) : "";
-      const renterMetaMatchesQuery = searchQuery && (
-        String(targetRenter.RenterName || "").toLowerCase().includes(searchQuery) ||
-        String(targetRenter.MobileNumber || "").toLowerCase().includes(searchQuery) ||
-        String(targetRenter.AltMobileNumber || "").toLowerCase().includes(searchQuery) ||
-        String(targetRenter.Status || "").toLowerCase().includes(searchQuery)
-      );
-
-      const bills = allBills.filter(b => {
-        const cleanM = normalizeMonthYear(b.MonthYear);
-        if (fromMonth && cleanM && cleanM < fromMonth) return false;
-        if (toMonth && cleanM && cleanM > toMonth) return false;
-
-        if (searchQuery && !renterMetaMatchesQuery) {
-          const mLabel = formatMonthLabel(cleanM).toLowerCase();
-          const pMode = String(b.PaymentMode || "").toLowerCase();
-          const bStatus = String(b.Status || "").toLowerCase();
-          const bNotes = String(b.Notes || "").toLowerCase();
-          return mLabel.includes(searchQuery) || cleanM.toLowerCase().includes(searchQuery) || pMode.includes(searchQuery) || bStatus.includes(searchQuery) || bNotes.includes(searchQuery);
-        }
-        return true;
-      });
-
-      let totalStandaloneBilled = 0, totalPaid = 0, totalRent = 0, totalUtility = 0;
-
-      bills.forEach(b => {
-        const billed = parseFloat(b.TotalBilled) || 0;
-        const carry = parseFloat(b.PrevCarryBalance) || 0;
-        const standalone = billed - carry;
-        const rent = parseFloat(b.BaseRent) || 0;
-
-        totalStandaloneBilled += standalone;
-        totalPaid += parseFloat(b.PaidAmount) || 0;
-        totalRent += rent;
-        totalUtility += Math.max(0, standalone - rent);
-      });
-
-      const netBal = totalStandaloneBilled - totalPaid;
-
-      document.getElementById("rhBilled").innerText = `₹ ${totalStandaloneBilled.toLocaleString('en-IN')}`;
-      document.getElementById("rhPaid").innerText = `₹ ${totalPaid.toLocaleString('en-IN')}`;
-      document.getElementById("rhTotalRent").innerText = `₹ ${totalRent.toLocaleString('en-IN')}`;
-      document.getElementById("rhUtility").innerText = `₹ ${totalUtility.toLocaleString('en-IN')}`;
-
-      const balEl = document.getElementById("rhBalance");
-      if (netBal > 0) {
-        balEl.innerText = `Due: ₹ ${netBal.toLocaleString('en-IN')}`;
-        balEl.style.color = "var(--accent-red)";
-      } else if (netBal < 0) {
-        balEl.innerText = `Advance: ₹ ${Math.abs(netBal).toLocaleString('en-IN')}`;
-        balEl.style.color = "var(--accent-green)";
-      } else {
-        balEl.innerText = `Settled (₹0)`;
-        balEl.style.color = "var(--accent-green)";
-      }
-
-      const invContainer = document.getElementById("rhInvoiceList");
-      if (bills.length === 0) {
-        invContainer.innerHTML = `<p style="color:var(--text-muted);">No invoices found for ${targetRenter.RenterName} matching the selected filter criteria.</p>`;
-      } else {
-        const newestFirstInvoices = [...bills].reverse();
-        invContainer.innerHTML = newestFirstInvoices.map(b => {
-          const cleanM = normalizeMonthYear(b.MonthYear);
-          const ePrev = parseFloat(b.ElecPrev) || 0;
-          const eCurr = parseFloat(b.ElecCurr) || 0;
-          const eUnits = b.ElecUnits !== undefined && b.ElecUnits !== "" ? (parseFloat(b.ElecUnits) || 0) : Math.max(0, eCurr - ePrev);
-          const eRate = parseFloat(b.ElecRate) || 0;
-          const eTotal = b.ElecTotal !== undefined && b.ElecTotal !== "" ? (parseFloat(b.ElecTotal) || 0) : (eUnits * eRate);
-
-          const pPrev = parseFloat(b.PNGPrev) || 0;
-          const pCurr = parseFloat(b.PNGCurr) || 0;
-          const pUnits = b.PNGUnits !== undefined && b.PNGUnits !== "" ? (parseFloat(b.PNGUnits) || 0) : Math.max(0, pCurr - pPrev);
-          const pRate = parseFloat(b.PNGRate) || 0;
-          const pTotal = b.PNGTotal !== undefined && b.PNGTotal !== "" ? (parseFloat(b.PNGTotal) || 0) : (pUnits * pRate);
-
-          const wPrev = parseFloat(b.WaterPrev) || 0;
-          const wCurr = parseFloat(b.WaterCurr) || 0;
-          const wUnits = b.WaterUnits !== undefined && b.WaterUnits !== "" ? (parseFloat(b.WaterUnits) || 0) : Math.max(0, wCurr - wPrev);
-          const wRate = parseFloat(b.WaterRate) || 0;
-          const wTotal = b.WaterTotal !== undefined && b.WaterTotal !== "" ? (parseFloat(b.WaterTotal) || 0) : (wUnits * wRate);
-
-          return `
-            <div style="padding:10px 0; border-bottom:1px solid var(--glass-border);">
-              <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px;">
-                <span><strong>${formatMonthLabel(cleanM)}</strong> — Rent: ₹${b.BaseRent || 0} | Total Billed: <strong>₹${b.TotalBilled}</strong> | Paid: ₹${b.PaidAmount} (${b.PaymentMode})</span>
-                <div style="display:flex; align-items:center; gap:8px;">
-                  <span class="badge-${String(b.Status).toLowerCase().includes('fully') ? 'paid' : (String(b.Status).toLowerCase().includes('partial') ? 'partial' : 'unpaid')}">${b.Status}</span>
-                  <button type="button" class="btn-ledger-action receipt-btn" onclick="openBillReceiptModal('${b.BillID}', '${cleanM}')">
-                    <i class="fa-solid fa-receipt"></i> Receipt
-                  </button>
-                </div>
-              </div>
-              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:8px; margin-top:6px; font-size:0.75rem; color:var(--text-muted); background:rgba(255,255,255,0.03); padding:6px 8px; border-radius:6px;">
-                <div><i class="fa-solid fa-bolt" style="color:var(--primary);"></i> <strong>Elec:</strong> Prev ${ePrev} → Curr ${eCurr} (${eUnits}U @ ₹${eRate}/U) = <strong>₹${eTotal.toLocaleString('en-IN')}</strong></div>
-                <div><i class="fa-solid fa-fire" style="color:var(--primary);"></i> <strong>PNG:</strong> Prev ${pPrev} → Curr ${pCurr} (${pUnits}U @ ₹${pRate}/U) = <strong>₹${pTotal.toLocaleString('en-IN')}</strong></div>
-                <div><i class="fa-solid fa-faucet-drip" style="color:var(--primary);"></i> <strong>Water:</strong> Prev ${wPrev} → Curr ${wCurr} (${wUnits}U @ ₹${wRate}/U) = <strong>₹${wTotal.toLocaleString('en-IN')}</strong></div>
-              </div>
-            </div>
-          `;
-        }).join("");
+      if (selectedFlat) {
+        populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName);
       }
     }
 
@@ -5478,7 +5683,7 @@
       });
     }
 
-    // 9. Profile Form Logic & Strict Flat-Isolated Rent, Rates & Flat Name Updates
+    // 9. Profile Form Logic & Strict Flat-Isolated Rent, Rates & Flat Name Updates (Requirement 7: Never resets PNG/Water to 45 or 15)
     async function saveUtilitiesLeft(isAutoSave = false) {
       if (activeRole === "Viewer" || !selectedFlat) return;
       rebindSelectedFlatAndRenterReferences();
@@ -5502,23 +5707,28 @@
         }
       }
 
+      const exactRentVal = parseInputRateOrEmpty("profRent");
+      const exactPngRate = parseInputRateOrEmpty("profPngRate");
+      const exactWaterRate = parseInputRateOrEmpty("profWaterRate");
+      const exactElecRate = parseInputRateOrEmpty("profElecRate");
+
       const payload = {
         action: "updateFlatUtilities",
         propertyName: selectedFlat.PropertyName,
         oldFlatName: oldFlatName,
         newFlatName: newFlatName,
         flatName: newFlatName,
-        rentAmount: parseFloat(document.getElementById("profRent").value) || 0,
+        rentAmount: exactRentVal !== "" ? exactRentVal : 0,
         pngNumber: document.getElementById("profPngNumber").value.trim(),
         pngMeterNumber: document.getElementById("profPngMeter").value.trim(),
         fixedPngCost: 0,
-        pngFixedRate: parseFloat(document.getElementById("profPngRate").value) || 0,
+        pngFixedRate: exactPngRate,
         waterNumber: document.getElementById("profWaterNumber").value.trim(),
         waterMeterNumber: document.getElementById("profWaterMeter").value.trim(),
         fixedWaterCost: 0,
-        waterFixedRate: parseFloat(document.getElementById("profWaterRate").value) || 0,
+        waterFixedRate: exactWaterRate,
         elecMeterNumber: document.getElementById("profElecMeter").value.trim(),
-        elecFixedRate: parseFloat(document.getElementById("profElecRate").value) || 0,
+        elecFixedRate: exactElecRate,
         upiName: document.getElementById("profUpiName").value.trim(),
         upiId: document.getElementById("profUpiId").value.trim(),
         contractMobile: document.getElementById("profContractMobile").value.trim()
@@ -5562,7 +5772,6 @@
       selectedFlat.UPIID = payload.upiId;
       selectedFlat.ContractMobile = payload.contractMobile;
 
-      // Update modal header tag if flat name changed
       document.getElementById("modalFlatTag").innerText = `Flat ${newFlatName}`;
 
       // Keep renters of this specific flat linked to the updated flat name & active rates
@@ -5585,8 +5794,6 @@
         }
       });
 
-      // If flat was renamed, relink flat key on its bills so History & Carry-Forward stay attached
-      // while keeping all past bill amounts, rates, and snapshot fields 100% locked and untouched!
       if (oldFlatName.toLowerCase() !== newFlatName.toLowerCase()) {
         DB.bills.forEach(b => {
           if (isSamePropAndFlat(b.PropertyName, b.FlatName, selectedFlat.PropertyName, oldFlatName)) {
@@ -5596,7 +5803,6 @@
         });
       }
 
-      // Sync UPI Name, UPI ID, and Contact Mobile across all flats & parent property
       propagatePropertyWideUpiAndContactLocal(
         selectedFlat.PropertyName,
         payload.upiName,
@@ -5604,8 +5810,7 @@
         payload.contractMobile
       );
 
-      // Immediately reflect updated rates in the live calculation area (if viewing an unbilled month; past bills stay locked!)
-      handleBillingMonthChange();
+      syncProfileRatesToLiveCalculator();
       populateHistoryLedger(selectedFlat.PropertyName, selectedFlat.FlatName);
       populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
 
@@ -5614,7 +5819,7 @@
 
       triggerSideToast(
         isAutoSave ? "Saved Across Flat" : "Utilities & Live Calc Updated",
-        "Rent & Fixed Utility Rates saved across this flat for new bills! Past bills remain locked.",
+        "Exact Rent & Fixed Utility Rates saved across this flat! Past bills remain locked.",
         true
       );
       await sendGasPost(payload);
@@ -5634,6 +5839,11 @@
       const currentProfileSrc = document.getElementById("profilePicturePreview").src;
       const currentIdentitySrc = document.getElementById("identityPicturePreview").src;
 
+      const exactRentVal = parseInputRateOrEmpty("profRent");
+      const exactPngRate = parseInputRateOrEmpty("profPngRate");
+      const exactWaterRate = parseInputRateOrEmpty("profWaterRate");
+      const exactElecRate = parseInputRateOrEmpty("profElecRate");
+
       const payload = {
         action: "updateRenterProfile",
         renterId: targetRenterId,
@@ -5650,17 +5860,17 @@
         endDate: document.getElementById("renterEndDate").value,
         profileImageUrl: isPlaceholderImageUrl(currentProfileSrc) ? "" : currentProfileSrc,
         identityImageUrl: isPlaceholderImageUrl(currentIdentitySrc) ? "" : currentIdentitySrc,
-        rentAmount: parseFloat(document.getElementById("profRent").value) || 0,
+        rentAmount: exactRentVal !== "" ? exactRentVal : 0,
         pngNumber: document.getElementById("profPngNumber").value.trim(),
         pngMeterNumber: document.getElementById("profPngMeter").value.trim(),
         fixedPngCost: 0,
-        pngFixedRate: parseFloat(document.getElementById("profPngRate").value) || 0,
+        pngFixedRate: exactPngRate,
         waterNumber: document.getElementById("profWaterNumber").value.trim(),
         waterMeterNumber: document.getElementById("profWaterMeter").value.trim(),
         fixedWaterCost: 0,
-        waterFixedRate: parseFloat(document.getElementById("profWaterRate").value) || 0,
+        waterFixedRate: exactWaterRate,
         elecMeterNumber: document.getElementById("profElecMeter").value.trim(),
-        elecFixedRate: parseFloat(document.getElementById("profElecRate").value) || 0,
+        elecFixedRate: exactElecRate,
         upiName: document.getElementById("profUpiName").value.trim(),
         upiId: document.getElementById("profUpiId").value.trim(),
         contractMobile: document.getElementById("profContractMobile").value.trim()
@@ -5764,7 +5974,7 @@
         payload.contractMobile
       );
 
-      handleBillingMonthChange();
+      syncProfileRatesToLiveCalculator();
       saveDbSnapshotToCache();
       renderAllDashboardUI();
       populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
@@ -5950,10 +6160,10 @@
         return triggerSideToast("Duplicate Flat", `Flat ${flat} already exists in ${targetProp}.`, false);
       }
 
-      const rentAmt = document.getElementById("addFlatRent").value || 0;
-      const eRate = document.getElementById("addFlatElecRate").value || 9;
-      const pRate = document.getElementById("addFlatPngRate").value || 45;
-      const wRate = document.getElementById("addFlatWaterRate").value || 15;
+      const rentAmt = parseInputRateOrEmpty("addFlatRent") !== "" ? parseInputRateOrEmpty("addFlatRent") : 0;
+      const eRate = parseInputRateOrEmpty("addFlatElecRate");
+      const pRate = parseInputRateOrEmpty("addFlatPngRate");
+      const wRate = parseInputRateOrEmpty("addFlatWaterRate");
       const generatedRenterId = "R-" + Date.now();
 
       const propObj = findPropertyObject(targetProp);
@@ -5980,6 +6190,9 @@
         FlatName: flat,
         RenterName: rName,
         RentAmount: rentAmt,
+        ElecFixedRate: eRate,
+        PNGFixedRate: pRate,
+        WaterFixedRate: wRate,
         UPIName: inheritedUpiName,
         UPIID: inheritedUpiId,
         ContractMobile: inheritedContract,
