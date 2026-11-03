@@ -11,8 +11,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Include html2canvas for receipt image rendering -->
+  <!-- Include html2canvas for receipt image rendering & QRious for 100% reliable client-side UPI QR code generation -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <style>
     /* ==========================================================================
        STRICT BLACK, WHITE & SYSTEM THEME ENGINE
@@ -166,29 +167,58 @@
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.95);
     }
 
-    /* Universal Colorful Side Slide-In Notification Toast */
+    /* Universal Colorful Side Slide-In Notification Toast (Requirement 9: Glitch-Free Desktop & Mobile Positioning) */
     .side-toast {
       position: fixed;
-      top: 22px;
-      right: -450px;
+      top: 20px;
+      right: 20px;
       z-index: 99999;
-      min-width: 290px;
-      max-width: 90vw;
+      min-width: 280px;
+      max-width: min(390px, calc(100vw - 32px));
       background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 50%, #7928ca 100%);
       color: #ffffff;
-      padding: 16px 20px;
+      padding: 15px 38px 15px 18px;
       border-radius: 16px;
       box-shadow: 0 15px 35px rgba(255, 65, 108, 0.45);
       border: 1.5px solid rgba(255, 255, 255, 0.38);
       display: flex;
       align-items: center;
-      gap: 14px;
-      transition: right 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+      gap: 13px;
+      transform: translate3d(calc(100% + 40px), 0, 0);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      will-change: transform, opacity;
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease, visibility 0.32s;
       overflow: hidden;
       backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
     }
     .side-toast.show {
-      right: 18px;
+      transform: translate3d(0, 0, 0);
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .side-toast-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.78rem;
+      transition: background 0.18s ease;
+    }
+    .side-toast-close:hover {
+      background: rgba(255, 255, 255, 0.38);
     }
     .side-toast.success-toast {
       background: linear-gradient(135deg, #059669 0%, #10b981 50%, #2563eb 100%);
@@ -235,7 +265,7 @@
       transform-origin: left;
     }
     .side-toast.show .side-toast-progress {
-      animation: progressShrink 3.8s linear forwards;
+      animation: progressShrink 3.5s linear forwards;
     }
     @keyframes progressShrink {
       from { transform: scaleX(1); }
@@ -726,43 +756,77 @@
       display: flex;
       align-items: center;
     }
+    /* Requirement 2: Plus (+) Button Menu — Completely Transparent Background with Light Blur Behind the 3 Option Names */
     .action-menu {
       display: none;
       position: absolute;
       top: 48px;
       right: 0;
-      width: 225px;
-      background: var(--bg-modal);
-      border: 1.5px solid var(--glass-border);
+      width: 235px;
+      background: transparent !important;
+      border: none !important;
       border-radius: var(--radius-md);
-      box-shadow: 0 18px 36px rgba(0,0,0,0.55);
-      overflow: hidden;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      padding: 4px 0;
+      overflow: visible;
       z-index: 500;
     }
     .action-menu.show {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
     }
     .menu-item {
-      padding: 13px 16px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       gap: 12px;
-      font-size: 0.86rem;
-      font-weight: 600;
+      font-size: 0.87rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: background 0.2s;
-      color: var(--text-main);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.2s ease;
+      color: #ffffff !important;
+      background: rgba(15, 23, 42, 0.36) !important;
+      backdrop-filter: blur(10px) saturate(140%) !important;
+      -webkit-backdrop-filter: blur(10px) saturate(140%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.34) !important;
+      border-radius: 12px !important;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
     }
-    .menu-item:last-child {
-      border-bottom: none;
+    body.theme-white .action-menu .menu-item {
+      background: rgba(255, 255, 255, 0.48) !important;
+      backdrop-filter: blur(10px) saturate(150%) !important;
+      -webkit-backdrop-filter: blur(10px) saturate(150%) !important;
+      border: 1.5px solid rgba(99, 102, 241, 0.38) !important;
+      color: #0f172a !important;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
+      box-shadow: 0 6px 18px rgba(79, 70, 229, 0.16);
     }
     .menu-item:hover {
-      background: rgba(99, 102, 241, 0.18);
+      background: rgba(79, 70, 229, 0.52) !important;
+      border-color: #818cf8 !important;
+      color: #ffffff !important;
+      transform: translateY(-1px);
+    }
+    body.theme-white .action-menu .menu-item:hover {
+      background: rgba(79, 70, 229, 0.85) !important;
+      color: #ffffff !important;
+      text-shadow: none;
     }
     .menu-item i {
       width: 18px;
-      color: #818cf8;
+      color: #a5b4fc;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
+    }
+    body.theme-white .action-menu .menu-item i {
+      color: #4f46e5;
+      filter: none;
+    }
+    body.theme-white .action-menu .menu-item:hover i {
+      color: #ffffff;
     }
 
     /* Horizontal Properties Row */
@@ -1265,15 +1329,37 @@
       color: #ffffff;
     }
 
-    /* Flat Detailed 4-Tab Navigation Modal */
+    /* Requirement 3: Colourful & Visually Appealing "Flat" Section Background (Replaces Plain White Screen) */
     .modal-flat-details {
       max-width: 980px;
+      background: linear-gradient(135deg, #1e1b4b 0%, #311042 35%, #0f172a 72%, #064e3b 100%) !important;
+      border: 2px solid rgba(129, 140, 248, 0.48) !important;
+      box-shadow: 0 24px 60px rgba(79, 70, 229, 0.35), 0 0 0 1px rgba(236, 72, 153, 0.22) !important;
+    }
+    body.theme-white .modal-flat-details {
+      background: linear-gradient(135deg, #e0e7ff 0%, #ede9fe 28%, #fce7f3 58%, #dbeafe 82%, #d1fae5 100%) !important;
+      border: 2px solid #818cf8 !important;
+      box-shadow: 0 22px 55px rgba(79, 70, 229, 0.25) !important;
+      color: #0f172a !important;
+    }
+    body.theme-white .modal-flat-details .calc-grid-card,
+    body.theme-white .modal-flat-details .matrix-col,
+    body.theme-white .modal-flat-details .stat-pill {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.86) 0%, rgba(238, 242, 255, 0.90) 100%) !important;
+      border: 1.5px solid rgba(99, 102, 241, 0.28) !important;
+      box-shadow: 0 6px 18px rgba(79, 70, 229, 0.08);
+    }
+    .modal-flat-details .calc-grid-card,
+    .modal-flat-details .matrix-col {
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.82) 0%, rgba(49, 46, 129, 0.42) 100%);
+      border: 1px solid rgba(129, 140, 248, 0.32);
     }
     .flat-nav-bar {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 6px;
-      background: var(--bg-input);
+      background: linear-gradient(90deg, rgba(79, 70, 229, 0.18) 0%, rgba(236, 72, 153, 0.16) 50%, rgba(16, 185, 129, 0.18) 100%);
+      border: 1px solid rgba(129, 140, 248, 0.35);
       padding: 6px;
       border-radius: var(--radius-md);
       margin: 14px 0 18px 0;
@@ -1282,15 +1368,19 @@
       text-align: center;
       padding: 9px 6px;
       font-size: 0.78rem;
-      font-weight: 700;
+      font-weight: 800;
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s;
-      color: var(--text-muted);
+      color: var(--text-main);
+    }
+    .flat-nav-item:hover {
+      background: rgba(99, 102, 241, 0.22);
     }
     .flat-nav-item.active {
-      background: var(--primary);
-      color: #ffffff;
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 55%, #ec4899 100%);
+      color: #ffffff !important;
+      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
     }
 
     .tab-content {
@@ -1612,11 +1702,9 @@
       }
       .side-toast {
         top: 14px;
+        right: 12px;
         min-width: 260px;
         max-width: calc(100vw - 24px);
-      }
-      .side-toast.show {
-        right: 12px;
       }
     }
   </style>
@@ -1626,8 +1714,11 @@
   <!-- PERMANENT HOUSE BACKGROUND CANVAS FOR HOME PAGE & LOGIN -->
   <div class="bg-canvas"></div>
 
-  <!-- UNIVERSAL COLORFUL SIDE SLIDE-IN NOTIFICATION TOAST -->
-  <div id="sideToast" class="side-toast">
+  <!-- UNIVERSAL COLORFUL SIDE SLIDE-IN NOTIFICATION TOAST (Requirement 9: Glitch-Free Desktop & Mobile) -->
+  <div id="sideToast" class="side-toast" role="status" aria-live="polite">
+    <button type="button" class="side-toast-close" onclick="dismissSideToast()" title="Dismiss notification">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
     <div class="side-toast-icon">
       <i id="sideToastIcon" class="fa-solid fa-shield-halved"></i>
     </div>
@@ -1635,7 +1726,7 @@
       <h5 id="sideToastTitle">Notification</h5>
       <p id="sideToastMessage">Action completed</p>
     </div>
-    <div class="side-toast-progress"></div>
+    <div class="side-toast-progress" id="sideToastProgress"></div>
   </div>
 
   <!-- CENTERED REDESIGNED CONFIRMATION MODAL (FOR CASCADE DELETE FLAT & DELETE PROPERTY) -->
@@ -2123,16 +2214,16 @@
     </div>
   </div>
 
-  <!-- REACTIVATION DESTINATION MODAL (Requirement 1: Ask Which Property & Which Flat to Assign Returning Renter) -->
+  <!-- REACTIVATION DESTINATION MODAL (Requirement 4: Ask Which Property & Which Flat to Assign Returning Renter) -->
   <div id="reactivateDestinationModal" class="modal-overlay" style="z-index: 5200;">
     <div class="modal-window" style="max-width: 480px;">
       <button class="modal-close-btn" onclick="closeModal('reactivateDestinationModal')"><i class="fa-solid fa-xmark"></i></button>
       <div style="margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--glass-border);">
         <h3 style="margin:0; display:flex; align-items:center; gap:8px;">
-          <i class="fa-solid fa-building-circle-check" style="color:var(--accent-green);"></i> Reactivate Returning Renter
+          <i class="fa-solid fa-building-circle-check" style="color:var(--accent-green);"></i> Re-active Renter / Returning Renter
         </h3>
         <p style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">
-          Select which Property and which Flat within that property this returning renter should be assigned to.
+          Select which Property and which Flat this returning renter should be added to. Active renters in other flats are never affected.
         </p>
       </div>
 
@@ -2191,16 +2282,16 @@
           <input type="text" id="editLeftName" class="form-control">
         </div>
         <div class="form-group">
-          <label>Aadhaar / ID Card Number</label>
-          <input type="text" id="editLeftIdentityNum" class="form-control">
+          <label>Aadhaar Card Number (Strictly 12 Digits)</label>
+          <input type="text" id="editLeftIdentityNum" class="form-control" maxlength="12" inputmode="numeric" pattern="\d{12}" placeholder="12-digit Aadhaar Number" oninput="this.value = sanitizeAadhaar12Digits(this.value)">
         </div>
         <div class="form-group">
-          <label>Mobile Number</label>
-          <input type="tel" id="editLeftMobile" class="form-control">
+          <label>Mobile Number (+91 &amp; 10 Digits)</label>
+          <input type="tel" id="editLeftMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)">
         </div>
         <div class="form-group">
-          <label>Alternative Mobile Number</label>
-          <input type="tel" id="editLeftAltMobile" class="form-control">
+          <label>Alternative Mobile Number (+91 &amp; 10 Digits)</label>
+          <input type="tel" id="editLeftAltMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)">
         </div>
         <div class="form-group" style="grid-column: span 2;">
           <label>Permanent Address</label>
@@ -2229,7 +2320,7 @@
 
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:14px; padding-top:12px; border-top:1px solid var(--glass-border);">
         <button type="button" id="btnReactivateFromEditModal" class="btn-ledger-action admin-only" style="color:var(--accent-green); border-color:rgba(16,185,129,0.5); padding:9px 14px; font-weight:700;" onclick="triggerReactivateFromEditModal()">
-          <i class="fa-solid fa-user-check"></i> Reactivate Returning Renter...
+          <i class="fa-solid fa-user-check"></i> Re-active Renter / Returning Renter
         </button>
         <div style="display:flex; gap:10px; margin-left:auto;">
           <button type="button" class="btn-confirm-cancel" onclick="closeModal('editLeftRenterModal')">Cancel</button>
@@ -2356,8 +2447,8 @@
         </div>
 
         <div class="form-group">
-          <label>Mobile No. <span class="req-star">*</span></label>
-          <input type="tel" id="changeMobileOnlyInput" class="form-control" placeholder="Enter your mobile number">
+          <label>Mobile No. (+91 &amp; 10 Digits) <span class="req-star">*</span></label>
+          <input type="tel" id="changeMobileOnlyInput" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)">
         </div>
 
         <button class="btn-primary" onclick="submitChangeNameAndMobile()">Update Name & Mobile No.</button>
@@ -2419,8 +2510,8 @@
           <input type="text" id="createUserName" class="form-control" placeholder="Enter full name">
         </div>
         <div class="form-group">
-          <label>Mobile No.</label>
-          <input type="tel" id="createUserMobile" class="form-control" placeholder="Enter mobile number">
+          <label>Mobile No. (+91 &amp; 10 Digits)</label>
+          <input type="tel" id="createUserMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)">
         </div>
         <div class="form-group">
           <label>Desired Username (User ID) <span class="req-star">*</span></label>
@@ -3088,7 +3179,7 @@
             </div>
             <div class="form-group"><label>UPI Name</label><input type="text" id="profUpiName" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
             <div class="form-group"><label>UPI ID</label><input type="text" id="profUpiId" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
-            <div class="form-group"><label>Contract Mobile Number</label><input type="text" id="profContractMobile" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
+            <div class="form-group"><label>Contract Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="profContractMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)" onchange="saveUtilitiesLeft(true)"></div>
             <button class="btn-primary admin-only" onclick="saveUtilitiesLeft(false)">Update Utilities</button>
           </div>
 
@@ -3136,8 +3227,8 @@
             </div>
             <div class="form-group"><label>Renter Name <span class="req-star">*</span></label><input type="text" id="renterName" class="form-control"></div>
             <div class="form-group">
-              <label>Aadhaar / Identity Document Number</label>
-              <input type="text" id="renterIdentityNum" class="form-control" maxlength="16" placeholder="12-digit Aadhaar / ID No." oninput="handleAadhaarLookupInput(this.value)" onchange="handleAadhaarLookupInput(this.value)">
+              <label>Aadhaar Card Number (Strictly 12 Digits)</label>
+              <input type="text" id="renterIdentityNum" class="form-control" maxlength="12" inputmode="numeric" pattern="\d{12}" placeholder="Enter 12-digit Aadhaar Number" oninput="this.value = sanitizeAadhaar12Digits(this.value); handleAadhaarLookupInput(this.value)" onchange="this.value = sanitizeAadhaar12Digits(this.value); handleAadhaarLookupInput(this.value)">
               <!-- Requirement 5: Returning Renter Aadhaar Match & Reactivate Same Profile Banner -->
               <div id="aadhaarPreviousRenterPrompt" style="display:none; margin-top:8px;"></div>
             </div>
@@ -3145,8 +3236,8 @@
               <label>Aadhaar / ID Card Upload (Auto-Saves to Cloud Drive)</label>
               <input type="file" id="fileIdentityPic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'identity')">
             </div>
-            <div class="form-group"><label>Mobile Number</label><input type="text" id="renterMobile" class="form-control"></div>
-            <div class="form-group"><label>Alternative Mobile Number</label><input type="text" id="renterAltMobile" class="form-control"></div>
+            <div class="form-group"><label>Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
+            <div class="form-group"><label>Alternative Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterAltMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
             <div class="form-group"><label>Address</label><input type="text" id="renterAddress" class="form-control"></div>
             <div class="form-group"><label>Total Family Members</label><input type="number" id="renterFamily" class="form-control" value="1"></div>
             <div class="form-group">
@@ -3158,6 +3249,9 @@
             </div>
             <div class="form-group"><label>Join Date</label><input type="date" id="renterJoinDate" class="form-control"></div>
             <div class="form-group"><label>End Date</label><input type="date" id="renterEndDate" class="form-control"></div>
+            <button type="button" id="btnReactivateProfileTab" class="btn-ledger-action admin-only" style="width:100%; justify-content:center; margin-bottom:10px; padding:10px 14px; font-weight:800; color:var(--accent-green); border-color:rgba(16,185,129,0.55); background:rgba(16,185,129,0.1);" onclick="triggerReactivateFromProfileTab()">
+              <i class="fa-solid fa-user-check"></i> Re-active Renter / Returning Renter (Choose Property &amp; Flat)
+            </button>
             <button class="btn-primary admin-only" onclick="submitRenterProfileRight()">Save Renter Record</button>
           </div>
         </div>
@@ -3273,10 +3367,26 @@
       const propName = document.getElementById("reactivatePropertySelect")?.value;
       const flatSelect = document.getElementById("reactivateFlatSelect");
       if (!flatSelect) return;
+      if (!propName) {
+        flatSelect.innerHTML = '<option value="">-- Select Property First --</option>';
+        return;
+      }
       const matching = (DB.flats || []).filter(f => String(f.PropertyName || "").trim().toLowerCase() === String(propName || "").trim().toLowerCase());
-      flatSelect.innerHTML = matching.length > 0
-        ? matching.map(f => '<option value="' + f.FlatName + '">Flat ' + f.FlatName + ' (Rent: ₹' + (f.RentAmount || 0) + ')</option>').join("")
-        : '<option value="">No flats available in this property</option>';
+      if (matching.length === 0) {
+        flatSelect.innerHTML = '<option value="">No flats available in this property</option>';
+        return;
+      }
+      const optionsHtml = ['<option value="">-- Select Flat --</option>'].concat(
+        matching.map(f => {
+          const activeOcc = (DB.renters || []).find(r =>
+            isSamePropAndFlat(r.PropertyName, r.FlatName, f.PropertyName, f.FlatName) &&
+            String(r.Status || "").trim().toLowerCase() === "active"
+          );
+          const occLabel = activeOcc ? ('Occupied by ' + (activeOcc.RenterName || 'Active Renter')) : 'Vacant';
+          return '<option value="' + f.FlatName + '">Flat ' + f.FlatName + ' (' + occLabel + ' • Rent: ₹' + (f.RentAmount || 0) + ')</option>';
+        })
+      );
+      flatSelect.innerHTML = optionsHtml.join("");
       handleReactivateFlatChange();
     }
 
@@ -3299,6 +3409,26 @@
       }
     }
 
+    function triggerReactivateFromProfileTab() {
+      if (activeRole === "Viewer") return;
+      if (activeFlatRenterObj && activeFlatRenterObj.RenterID) {
+        reactivatePreviousRenterProfile(activeFlatRenterObj.RenterID);
+        return;
+      }
+      const typedAadhaar = sanitizeAadhaar12Digits(document.getElementById("renterIdentityNum")?.value || "");
+      const typedName = (document.getElementById("renterName")?.value || "").trim().toLowerCase();
+      const matched = (DB.renters || []).find(r => {
+        if (typedAadhaar && sanitizeAadhaar12Digits(r.IdentityDocNumber) === typedAadhaar) return true;
+        if (typedName && String(r.RenterName || "").trim().toLowerCase() === typedName) return true;
+        return false;
+      });
+      if (matched) {
+        reactivatePreviousRenterProfile(matched.RenterID || ("IDX-" + DB.renters.indexOf(matched)));
+      } else {
+        triggerSideToast("Select Returning Renter", "Please open Edit Profile from Renter History or enter an existing 12-digit Aadhaar number first.", false);
+      }
+    }
+
     function reactivatePreviousRenterProfile(renterIdOrIdx) {
       if (activeRole === "Viewer") return;
 
@@ -3316,28 +3446,20 @@
 
       pendingReactivatingRenter = matchedRenter;
       document.getElementById("reactivateTargetRenterId").value = matchedRenter.RenterID || "";
-      document.getElementById("reactivateTargetName").value = matchedRenter.RenterName || "";
+      document.getElementById("reactivateTargetName").value = (matchedRenter.RenterName || "") + (matchedRenter.IdentityDocNumber ? " (Aadhaar: " + matchedRenter.IdentityDocNumber + ")" : "");
       document.getElementById("reactivateJoinDate").value = new Date().toISOString().split("T")[0];
       document.getElementById("reactivateRentAmount").value = matchedRenter.RentAmount || selectedFlat?.RentAmount || 0;
 
-      // Populate Properties
+      // Requirement 4 & 10: Populate sorted Properties with an explicit prompt so it never auto-reactivates in the old flat without selection
+      sortPropertiesAlphabetically(DB.properties);
       const propSelect = document.getElementById("reactivatePropertySelect");
       if (propSelect) {
-        propSelect.innerHTML = (DB.properties || []).map(p => '<option value="' + p.PropertyName + '">' + p.PropertyName + '</option>').join("");
-        if (selectedFlat?.PropertyName) {
-          propSelect.value = selectedFlat.PropertyName;
-        } else if (matchedRenter.PropertyName && (DB.properties || []).some(p => p.PropertyName === matchedRenter.PropertyName)) {
-          propSelect.value = matchedRenter.PropertyName;
-        }
+        propSelect.innerHTML = ['<option value="">-- Select Property --</option>'].concat(
+          (DB.properties || []).map(p => '<option value="' + p.PropertyName + '">' + p.PropertyName + '</option>')
+        ).join("");
+        propSelect.value = "";
       }
       populateReactivateFlatsDropdown();
-      if (selectedFlat?.FlatName) {
-        const flatSelect = document.getElementById("reactivateFlatSelect");
-        if (flatSelect && Array.from(flatSelect.options).some(o => o.value === selectedFlat.FlatName)) {
-          flatSelect.value = selectedFlat.FlatName;
-        }
-      }
-      handleReactivateFlatChange();
 
       openModal("reactivateDestinationModal");
     }
@@ -3350,45 +3472,28 @@
       const rentAmt = parseFloat(document.getElementById("reactivateRentAmount")?.value) || 0;
 
       if (!destProp || !destFlat) {
-        return triggerSideToast("Destination Required", "Please choose both property and flat/room.", false);
+        return triggerSideToast("Destination Required", "Please select both the Property and the Flat where this returning renter should be added.", false);
       }
 
       if (!pendingReactivatingRenter.RenterID) {
         pendingReactivatingRenter.RenterID = "R-" + Date.now();
       }
 
-      // Archive any other currently active renter in the destination flat and stamp their bills
-      const todayIso = new Date().toISOString().split("T")[0];
-      (DB.renters || []).forEach(r => {
-        if (
-          r !== pendingReactivatingRenter &&
-          isSamePropAndFlat(r.PropertyName, r.FlatName, destProp, destFlat) &&
-          String(r.Status || "").trim().toLowerCase() === "active"
-        ) {
-          const outgoingId = r.RenterID || ("R-" + Date.now());
-          r.RenterID = outgoingId;
-          r.Status = "Inactive";
-          r.EndDate = r.EndDate || todayIso;
-          const outgoingNameClean = String(r.RenterName || "").trim().toLowerCase();
-          (DB.bills || []).forEach(b => {
-            if (isSamePropAndFlat(b.PropertyName, b.FlatName, destProp, destFlat)) {
-              const bRId = String(b.RenterID || "").trim();
-              const bTName = String(b.TenantName || "").trim().toLowerCase();
-              if (!bRId && (!outgoingNameClean || bTName === outgoingNameClean)) {
-                b.RenterID = outgoingId;
-              }
-            }
-          });
-        }
-      });
+      // Requirement 4: NEVER trigger a "Left" ("Inactive") status for any currently active renters!
+      // All existing active renters remain untouched and active.
 
-      // Requirement 1: Reactivate strictly into the selected destination property & flat
+      // Reactivate strictly into the selected destination property & flat
       pendingReactivatingRenter.PropertyName = destProp;
       pendingReactivatingRenter.FlatName = destFlat;
       pendingReactivatingRenter.Status = "Active";
       pendingReactivatingRenter.JoinDate = joinDate;
       pendingReactivatingRenter.EndDate = "";
       pendingReactivatingRenter.RentAmount = rentAmt;
+
+      saveLocalFlatUtilityAndDateMeta(destProp, destFlat, pendingReactivatingRenter.RenterID, {
+        JoinDate: joinDate,
+        EndDate: ""
+      });
 
       // Update target flat in DB.flats and switch active view to destination flat
       const targetFlatObj = (DB.flats || []).find(f => isSamePropAndFlat(f.PropertyName, f.FlatName, destProp, destFlat));
@@ -3544,31 +3649,125 @@ function formatMonthLabel(rawVal) {
       };
     }
 
+    /**
+     * Requirement 10: Automatically sort properties alphabetically based on their first letter (A-Z)
+     */
+    function sortPropertiesAlphabetically(propsArray) {
+      if (!Array.isArray(propsArray)) return [];
+      propsArray.sort((a, b) => {
+        const nameA = String(a?.PropertyName || "").trim();
+        const nameB = String(b?.PropertyName || "").trim();
+        return nameA.localeCompare(nameB, undefined, { sensitivity: "base", numeric: true });
+      });
+      return propsArray;
+    }
+
+    /**
+     * Requirement 11: Strictly 12-Digit Aadhaar Number Sanitizer & Validator (neither more nor less)
+     */
+    function sanitizeAadhaar12Digits(val) {
+      return String(val || "").replace(/\D/g, "").slice(0, 12);
+    }
+
+    function isValidAadhaar12Digits(val) {
+      const clean = String(val || "").replace(/\D/g, "");
+      return /^\d{12}$/.test(clean);
+    }
+
+    /**
+     * Requirement 12: Valid Indian Mobile Number starting with +91 and containing strictly 10 digits after it
+     */
+    function ensurePlus91Prefix(inputEl) {
+      if (!inputEl) return;
+      const cur = String(inputEl.value || "").trim();
+      if (!cur) {
+        inputEl.value = "+91 ";
+      }
+    }
+
+    function formatIndianMobilePlus91(val) {
+      const raw = String(val || "").trim();
+      if (!raw || raw === "+" || raw === "+9" || raw === "+91") {
+        return raw.startsWith("+") ? "+91 " : "";
+      }
+      let digits = raw.replace(/\D/g, "");
+      if (raw.startsWith("+91") && digits.startsWith("91")) {
+        digits = digits.slice(2);
+      } else if (digits.length > 10 && digits.startsWith("91")) {
+        digits = digits.slice(2);
+      } else if (digits.length === 11 && digits.startsWith("0")) {
+        digits = digits.slice(1);
+      }
+      digits = digits.slice(0, 10);
+      return digits.length > 0 ? ("+91 " + digits) : "+91 ";
+    }
+
+    function extractIndianMobile10Digits(val) {
+      const raw = String(val || "").trim();
+      if (!raw) return "";
+      let digits = raw.replace(/\D/g, "");
+      if (raw.startsWith("+91") && digits.startsWith("91")) {
+        digits = digits.slice(2);
+      } else if (digits.length > 10 && digits.startsWith("91")) {
+        digits = digits.slice(2);
+      } else if (digits.length === 11 && digits.startsWith("0")) {
+        digits = digits.slice(1);
+      }
+      return digits;
+    }
+
+    function isValidIndianMobilePlus91(val) {
+      const raw = String(val || "").trim();
+      if (!raw || raw === "+91") return false;
+      const digits10 = extractIndianMobile10Digits(raw);
+      return /^\d{10}$/.test(digits10);
+    }
+
+    /**
+     * Requirement 9: Fix notifications getting stuck or glitching on desktop/computer version of home page
+     */
+    function dismissSideToast() {
+      const toast = document.getElementById("sideToast");
+      if (sideToastTimeout) {
+        clearTimeout(sideToastTimeout);
+        sideToastTimeout = null;
+      }
+      if (toast) {
+        toast.classList.remove("show");
+      }
+    }
+
     function triggerSideToast(title, message, type = false) {
       const toast = document.getElementById("sideToast");
       const icon = document.getElementById("sideToastIcon");
-      document.getElementById("sideToastTitle").innerText = title;
-      document.getElementById("sideToastMessage").innerText = message;
+      if (!toast) return;
+      document.getElementById("sideToastTitle").innerText = title || "";
+      document.getElementById("sideToastMessage").innerText = message || "";
 
       toast.classList.remove("success-toast", "warning-toast");
       if (type === true || type === "success") {
         toast.classList.add("success-toast");
-        icon.className = "fa-solid fa-circle-check";
+        if (icon) icon.className = "fa-solid fa-circle-check";
       } else if (type === "warning") {
         toast.classList.add("warning-toast");
-        icon.className = "fa-solid fa-bell";
+        if (icon) icon.className = "fa-solid fa-bell";
       } else {
-        icon.className = "fa-solid fa-triangle-exclamation";
+        if (icon) icon.className = "fa-solid fa-triangle-exclamation";
       }
 
-      toast.classList.remove("show");
-      void toast.offsetWidth;
-      toast.classList.add("show");
+      if (sideToastTimeout) {
+        clearTimeout(sideToastTimeout);
+        sideToastTimeout = null;
+      }
 
-      if (sideToastTimeout) clearTimeout(sideToastTimeout);
+      requestAnimationFrame(() => {
+        toast.classList.add("show");
+      });
+
       sideToastTimeout = setTimeout(() => {
         toast.classList.remove("show");
-      }, 3900);
+        sideToastTimeout = null;
+      }, 3600);
     }
 
     function openCenteredConfirmModal(title, message, onYesCallback) {
@@ -3898,12 +4097,12 @@ function formatMonthLabel(rawVal) {
       const savedTheme = localStorage.getItem("app_visual_theme") || "black";
       applyVisualTheme(savedTheme);
 
-      // Requirement 2: Hydrate cached DB snapshot immediately (0ms) so browser refresh loads data with zero lag
+      // Requirement 2 & 10: Hydrate cached DB snapshot immediately (0ms) and sort properties A-Z
       const cachedSnapshot = sessionStorage.getItem("cached_db_snapshot") || localStorage.getItem("portal_full_db_backup");
       if (cachedSnapshot) {
         try {
           const parsed = JSON.parse(cachedSnapshot);
-          DB.properties = parsed.properties || [];
+          DB.properties = sortPropertiesAlphabetically(parsed.properties || []);
           DB.flats = parsed.flats || [];
           DB.renters = parsed.renters || [];
           DB.bills = sanitizeAllBillsMonths(parsed.bills || []);
@@ -3958,6 +4157,7 @@ function formatMonthLabel(rawVal) {
 
     function saveDbSnapshotToCache() {
       try {
+        sortPropertiesAlphabetically(DB.properties);
         const serialized = JSON.stringify(DB);
         sessionStorage.setItem("cached_db_snapshot", serialized);
         if (
@@ -4822,10 +5022,11 @@ function formatMonthLabel(rawVal) {
       document.getElementById("topTotalLoss").innerText = `₹${totalLoss.toLocaleString('en-IN')}`;
     }
 
-    // 3. Render Properties
+    // 3. Render Properties (Requirement 10: Always sorted alphabetically A-Z by first letter)
     function renderPropertiesRow() {
       const container = document.getElementById("propertiesList");
       container.innerHTML = "";
+      sortPropertiesAlphabetically(DB.properties);
       const viewerScope = resolveViewerAssignedScope();
       const visibleProps = (activeRole === "Viewer" && viewerScope)
         ? DB.properties.filter(p => isPropertyAllowedForViewer(p.PropertyName, viewerScope))
@@ -5314,7 +5515,7 @@ function formatMonthLabel(rawVal) {
 
     async function submitChangeNameAndMobile() {
       const newFullName = document.getElementById("changeNameOnlyInput").value.trim();
-      const newMobile = document.getElementById("changeMobileOnlyInput").value.trim();
+      const rawMobileInput = document.getElementById("changeMobileOnlyInput").value.trim();
       const msgBox = document.getElementById("nameChangeBottomMsg");
 
       msgBox.className = "bottom-status-msg";
@@ -5326,12 +5527,14 @@ function formatMonthLabel(rawVal) {
         return;
       }
 
-      if (!newMobile) {
-        msgBox.innerText = "Please enter your Mobile No.";
+      if (!isValidIndianMobilePlus91(rawMobileInput)) {
+        msgBox.innerText = "Please enter a valid Indian mobile number starting with +91 followed by 10 digits.";
         msgBox.className = "bottom-status-msg error";
-        triggerSideToast("Mobile Required", "Please enter your Mobile No.", false);
+        triggerSideToast("Invalid Mobile Number", "Mobile number must start with +91 and contain exactly 10 digits after it.", false);
         return;
       }
+      const newMobile = formatIndianMobilePlus91(rawMobileInput);
+      document.getElementById("changeMobileOnlyInput").value = newMobile;
 
       activeUserFullName = newFullName;
       activeUserMobile = newMobile;
@@ -6142,7 +6345,11 @@ function renderRegisteredUsersList() {
 
     async function submitCreateNewUser() {
       const fullName = document.getElementById("createUserName").value.trim();
-      const mobile = document.getElementById("createUserMobile").value.trim();
+      const rawMobile = document.getElementById("createUserMobile").value.trim();
+      if (rawMobile && rawMobile !== "+91" && !isValidIndianMobilePlus91(rawMobile)) {
+        return triggerSideToast("Invalid Mobile Number", "Please enter a valid Indian mobile number starting with +91 followed by exactly 10 digits.", false);
+      }
+      const mobile = (rawMobile && rawMobile !== "+91") ? formatIndianMobilePlus91(rawMobile) : "";
       const newU = document.getElementById("createUserLoginId").value.trim();
       const newP = document.getElementById("createUserPass").value;
       const role = document.getElementById("createUserRole").value;
@@ -6583,10 +6790,11 @@ function renderRegisteredUsersList() {
       }
     }
 
-    // FD Total Amount Received from All Properties (Requirement 10)
+    // FD Total Amount Received from All Properties (Requirement 10: Sorted Alphabetically)
     function updateFdTotalCollectionsDisplay() {
       let grandTotalReceived = 0;
       const propTotals = {};
+      sortPropertiesAlphabetically(DB.properties);
 
       (DB.properties || []).forEach(p => {
         propTotals[p.PropertyName] = 0;
@@ -6652,9 +6860,9 @@ function renderRegisteredUsersList() {
       const existingStatus = String(targetRenter.Status || "Inactive").trim().toLowerCase() === "active" ? "Active" : "Inactive";
       document.getElementById("editLeftRenterId").value = targetRenter.RenterID || "";
       document.getElementById("editLeftName").value = targetRenter.RenterName || "";
-      document.getElementById("editLeftIdentityNum").value = targetRenter.IdentityDocNumber || "";
-      document.getElementById("editLeftMobile").value = targetRenter.MobileNumber || "";
-      document.getElementById("editLeftAltMobile").value = targetRenter.AltMobileNumber || "";
+      document.getElementById("editLeftIdentityNum").value = sanitizeAadhaar12Digits(targetRenter.IdentityDocNumber || "");
+      document.getElementById("editLeftMobile").value = targetRenter.MobileNumber ? formatIndianMobilePlus91(targetRenter.MobileNumber) : "";
+      document.getElementById("editLeftAltMobile").value = targetRenter.AltMobileNumber ? formatIndianMobilePlus91(targetRenter.AltMobileNumber) : "";
       document.getElementById("editLeftAddress").value = targetRenter.Address || "";
       document.getElementById("editLeftFamily").value = targetRenter.TotalFamilyMembers || 1;
       document.getElementById("editLeftStatus").value = existingStatus;
@@ -6681,6 +6889,24 @@ function renderRegisteredUsersList() {
         return triggerSideToast("Name Required", "Renter name cannot be empty.", false);
       }
 
+      const rawAadhaar = document.getElementById("editLeftIdentityNum").value.trim();
+      if (rawAadhaar && !isValidAadhaar12Digits(rawAadhaar)) {
+        return triggerSideToast("Invalid Aadhaar Number", "Aadhaar card number must be exactly 12 digits (neither more nor less).", false);
+      }
+      const cleanAadhaar = rawAadhaar ? sanitizeAadhaar12Digits(rawAadhaar) : "";
+
+      const rawMob = document.getElementById("editLeftMobile").value.trim();
+      if (rawMob && rawMob !== "+91" && !isValidIndianMobilePlus91(rawMob)) {
+        return triggerSideToast("Invalid Mobile Number", "Mobile number must start with +91 and contain exactly 10 digits after it.", false);
+      }
+      const cleanMob = (rawMob && rawMob !== "+91") ? formatIndianMobilePlus91(rawMob) : "";
+
+      const rawAltMob = document.getElementById("editLeftAltMobile").value.trim();
+      if (rawAltMob && rawAltMob !== "+91" && !isValidIndianMobilePlus91(rawAltMob)) {
+        return triggerSideToast("Invalid Alt. Mobile Number", "Alternative mobile number must start with +91 and contain exactly 10 digits after it.", false);
+      }
+      const cleanAltMob = (rawAltMob && rawAltMob !== "+91") ? formatIndianMobilePlus91(rawAltMob) : "";
+
       const targetRenter = (DB.renters || []).find(r => String(r.RenterID || "").trim() === String(targetRenterId).trim());
       if (!targetRenter) {
         return triggerSideToast("Error", "Renter record not found.", false);
@@ -6690,9 +6916,9 @@ function renderRegisteredUsersList() {
       const preservedStatus = String(targetRenter.Status || "Inactive").trim().toLowerCase() === "active" ? "Active" : "Inactive";
 
       targetRenter.RenterName = newName;
-      targetRenter.IdentityDocNumber = document.getElementById("editLeftIdentityNum").value.trim();
-      targetRenter.MobileNumber = document.getElementById("editLeftMobile").value.trim();
-      targetRenter.AltMobileNumber = document.getElementById("editLeftAltMobile").value.trim();
+      targetRenter.IdentityDocNumber = cleanAadhaar;
+      targetRenter.MobileNumber = cleanMob;
+      targetRenter.AltMobileNumber = cleanAltMob;
       targetRenter.Address = document.getElementById("editLeftAddress").value.trim();
       targetRenter.TotalFamilyMembers = document.getElementById("editLeftFamily").value || 1;
       targetRenter.Status = preservedStatus;
@@ -7030,10 +7256,10 @@ function renderRegisteredUsersList() {
           <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;">
             <div>
               <h4 style="font-size:0.98rem; font-weight:800; color:var(--text-main); margin:0; display:flex; align-items:center; gap:8px;">
-                <i class="fa-solid fa-chart-pie" style="color:#10b981;"></i> 1. Total Expense Breakdown — Rent, Electricity, Water & PNG Gas
+                <i class="fa-solid fa-chart-pie" style="color:#10b981;"></i> 1. Total Expense Breakdown — Rent, Electricity, Water & PNG Gas (Active Users Only)
               </h4>
               <p style="font-size:0.74rem; color:var(--text-muted); margin:3px 0 0 0;">
-                ${prop} — Flat ${flat} (${flatGraph1SelectedScope === 'ALL' ? 'All Recorded Bills' : 'Year ' + flatGraph1SelectedScope}) • Combined Total: <strong style="color:var(--text-main);">₹${grandTotalAllFour.toLocaleString('en-IN')}</strong>
+                ${prop} — Flat ${flat} • <span style="color:var(--accent-green); font-weight:800;">Active Users Only</span> (${flatGraph1SelectedScope === 'ALL' ? 'All Active User Bills' : 'Year ' + flatGraph1SelectedScope}) • Combined Total: <strong style="color:var(--text-main);">₹${grandTotalAllFour.toLocaleString('en-IN')}</strong>
               </p>
             </div>
             <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
@@ -7076,7 +7302,7 @@ function renderRegisteredUsersList() {
       `;
     }
 
-    // SECOND GRAPH (BELOW THE FIRST ONE): Single Consolidated Graph for 3 Years with Year Filter/Selection
+    // SECOND GRAPH (BELOW THE FIRST ONE): Single Consolidated Graph for 3 Years with Year Filter/Selection (All Users: Active + Inactive)
     function buildSecondThreeYearConsolidatedGraphHtml(allFlatBills, prop, flat) {
       ensureThreeYearFiltersInitialized();
       const currentYear = new Date().getFullYear();
@@ -7211,10 +7437,10 @@ function renderRegisteredUsersList() {
           <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;">
             <div>
               <h4 style="font-size:0.98rem; font-weight:800; color:var(--text-main); margin:0; display:flex; align-items:center; gap:8px;">
-                <i class="fa-solid fa-chart-line" style="color:#6366f1;"></i> 2. Consolidated 3-Year Graph (${currentYear - 2} – ${currentYear})
+                <i class="fa-solid fa-chart-line" style="color:#6366f1;"></i> 2. Consolidated 3-Year Graph (${currentYear - 2} – ${currentYear}) (Active &amp; Inactive Users)
               </h4>
               <p style="font-size:0.74rem; color:var(--text-muted); margin:3px 0 0 0;">
-                Single consolidated 3-year monthly comparison (January to December) for ${prop} — Flat ${flat}
+                ${prop} — Flat ${flat} • <span style="color:#818cf8; font-weight:800;">All Users (Active + Inactive / Left)</span> • Consolidated 3-year monthly comparison
               </p>
             </div>
             <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
@@ -7259,12 +7485,45 @@ function renderRegisteredUsersList() {
       `;
     }
 
+    // Requirement 5: First graph displays data ONLY for active users; Second graph displays data for everyone (both active and inactive users)
     function renderAllRentersGraphForFlat(prop, flat) {
       const container = document.getElementById("tabGraphContainer");
       if (!container) return;
 
+      // Second Graph Data: All bills in this flat (both active and inactive/left users)
       const allFlatBills = (DB.bills || []).filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat));
-      const firstGraphHtml = buildFirstExpenseBreakdownGraphHtml(allFlatBills, prop, flat);
+
+      // First Graph Data: Strictly bills belonging ONLY to currently active user(s) in this flat
+      const activeRentersInFlat = (DB.renters || []).filter(r =>
+        isSamePropAndFlat(r.PropertyName, r.FlatName, prop, flat) &&
+        String(r.Status || "").trim().toLowerCase() === "active"
+      );
+      const inactiveRentersInFlat = (DB.renters || []).filter(r =>
+        isSamePropAndFlat(r.PropertyName, r.FlatName, prop, flat) &&
+        String(r.Status || "").trim().toLowerCase() !== "active"
+      );
+      const inactiveIds = new Set(inactiveRentersInFlat.map(r => String(r.RenterID || "").trim()).filter(Boolean));
+      const inactiveNames = new Set(inactiveRentersInFlat.map(r => String(r.RenterName || "").trim().toLowerCase()).filter(Boolean));
+      const activeIds = new Set(activeRentersInFlat.map(r => String(r.RenterID || "").trim()).filter(Boolean));
+      const activeNames = new Set(activeRentersInFlat.map(r => String(r.RenterName || "").trim().toLowerCase()).filter(Boolean));
+
+      let activeUsersBills = [];
+      if (activeRentersInFlat.length > 0) {
+        activeUsersBills = allFlatBills.filter(b => {
+          const bRId = String(b.RenterID || "").trim();
+          const bTName = String(b.TenantName || "").trim().toLowerCase();
+          if (bRId) {
+            return activeIds.has(bRId) && !inactiveIds.has(bRId);
+          }
+          if (bTName) {
+            if (activeNames.has(bTName)) return true;
+            if (inactiveNames.has(bTName)) return false;
+          }
+          return true;
+        });
+      }
+
+      const firstGraphHtml = buildFirstExpenseBreakdownGraphHtml(activeUsersBills, prop, flat);
       const secondGraphHtml = buildSecondThreeYearConsolidatedGraphHtml(allFlatBills, prop, flat);
 
       container.innerHTML = firstGraphHtml + secondGraphHtml;
@@ -7819,10 +8078,27 @@ function renderRegisteredUsersList() {
       return digits;
     }
 
-    // Requirements 4, 5, 6, 7 & 8: Clean Receipt, Auto-Fetched Active Renter Mobile Number, & Direct WhatsApp Web on Desktop
+    // Requirements 1, 6, 7 & 8: Clean Receipt, Pay UPI Name, Instant Client-Side QR Code with Centered UPI ID Below, & Reliable WhatsApp Receipt Image Sending
     let lastQrFetchToken = 0;
 
     async function fetchQrCodeAsDataUrl(upiUri) {
+      // Requirement 7: Generate QR code instantaneously on the client using QRious so it never fails or taints canvas
+      if (window.QRious) {
+        try {
+          const qr = new window.QRious({
+            value: String(upiUri || ""),
+            size: 240,
+            padding: 12,
+            level: "M",
+            background: "#ffffff",
+            foreground: "#0f172a"
+          });
+          const dataUrl = qr.toDataURL("image/png");
+          if (dataUrl && dataUrl.startsWith("data:image/")) {
+            return dataUrl;
+          }
+        } catch (qrErr) {}
+      }
       const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(upiUri)}`;
       try {
         const resp = await fetch(qrApiUrl, { mode: "cors", cache: "force-cache" });
@@ -7927,9 +8203,10 @@ function renderRegisteredUsersList() {
             <strong style="color:var(--accent-green);">₹${(parseFloat(bill.PaidAmount) || 0).toLocaleString('en-IN')}</strong>
           </div>
 
+          <!-- Requirement 6: Replaced Remaining Balance / Status with Pay UPI Name -->
           <div class="receipt-line" id="row_rec_balance">
-            <span>Remaining Balance / Status:</span>
-            <strong id="recDynamicBalanceDisplay">--</strong>
+            <span>Pay UPI Name:</span>
+            <strong id="recDynamicUpiNameDisplay" style="color:var(--primary);">${upiName || '--'}</strong>
           </div>
 
           <div class="receipt-line" id="row_rec_contact">
@@ -7950,11 +8227,12 @@ function renderRegisteredUsersList() {
           </div>` : ''}
         </div>
 
-        <!-- Requirement 6: Dynamic Exact-Amount UPI QR Code Box Shared in Receipt -->
-        <div id="receiptUpiQrBox" class="receipt-line" style="display:flex; flex-direction:column; align-items:center; justify-content:center; margin: 12px 0; padding: 12px; background:var(--bg-input); border-radius:12px; border:1px solid var(--glass-border);">
-          <div style="font-size:0.76rem; font-weight:700; margin-bottom:8px; color:var(--text-muted);">Scan QR Code to Pay via UPI</div>
-          <img id="receiptUpiQrImg" crossOrigin="anonymous" src="" alt="UPI QR Code" style="width:142px; height:142px; border-radius:10px; background:#ffffff; padding:6px; display:none;">
-          <div id="receiptUpiTextHint" style="font-size:0.74rem; color:var(--text-muted); margin-top:6px;">--</div>
+        <!-- Requirement 7 & 8: Working QR Code + UPI ID Shown Below in Center -->
+        <div id="receiptUpiQrBox" class="receipt-line" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; margin: 12px 0; padding: 14px; background:var(--bg-input); border-radius:12px; border:1px solid var(--glass-border);">
+          <div style="font-size:0.76rem; font-weight:700; margin-bottom:8px; color:var(--text-muted); text-align:center;">Scan QR Code to Pay via UPI</div>
+          <img id="receiptUpiQrImg" src="" alt="UPI QR Code" style="width:154px; height:154px; border-radius:10px; background:#ffffff; padding:6px; display:none; margin:0 auto; box-shadow:0 4px 12px rgba(0,0,0,0.12);">
+          <div id="receiptQrUpiIdCenter" style="width:100%; text-align:center; font-size:0.86rem; font-weight:800; color:var(--primary); margin-top:8px; letter-spacing:0.2px; word-break:break-all;">${upiId ? `UPI ID: ${upiId}` : '--'}</div>
+          <div id="receiptUpiTextHint" style="width:100%; text-align:center; font-size:0.72rem; color:var(--text-muted); margin-top:4px;">--</div>
         </div>
 
         <!-- Requirement 4: AI Personal-Use Disclaimer on Receipt -->
@@ -7988,7 +8266,7 @@ function renderRegisteredUsersList() {
             <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="carry" data-row="row_rec_carry" data-amount="${carryVal}" checked onchange="recalculateReceiptSelection()"> <span>Carry-Forward</span></label>
             <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="total" data-row="row_rec_total" checked onchange="recalculateReceiptSelection()"> <span>Total Billed</span></label>
             <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="paid" data-row="row_rec_paid" checked onchange="recalculateReceiptSelection()"> <span>Amount Paid</span></label>
-            <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="balance" data-row="row_rec_balance" checked onchange="recalculateReceiptSelection()"> <span>Balance Status</span></label>
+            <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="balance" data-row="row_rec_balance" checked onchange="recalculateReceiptSelection()"> <span>Pay UPI Name</span></label>
             <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="contact" data-row="row_rec_contact" checked onchange="recalculateReceiptSelection()"> <span>Contact Phone</span></label>
             <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="upi" data-row="row_rec_upi" checked onchange="recalculateReceiptSelection()"> <span>UPI &amp; QR Code</span></label>
             ${bill.Notes ? `<label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="notes" data-row="row_rec_notes" checked onchange="recalculateReceiptSelection()"> <span>Notes</span></label>` : ''}
@@ -8048,18 +8326,18 @@ function renderRegisteredUsersList() {
         totalDisplay.innerText = `₹${selectedTotal.toLocaleString('en-IN')}`;
       }
 
-      const balDisplay = document.getElementById("recDynamicBalanceDisplay");
-      if (balDisplay) {
-        if (netClosing > 0) {
-          balDisplay.innerText = `Due: ₹${netClosing.toLocaleString('en-IN')} [Pending]`;
-          balDisplay.style.color = "var(--accent-red)";
-        } else if (netClosing < 0) {
-          balDisplay.innerText = `Advance: ₹${Math.abs(netClosing).toLocaleString('en-IN')} [Paid]`;
-          balDisplay.style.color = "var(--accent-green)";
-        } else {
-          balDisplay.innerText = `Fully Paid (₹0 Due)`;
-          balDisplay.style.color = "var(--accent-green)";
-        }
+      // Requirement 6: Display Pay UPI Name instead of Remaining Balance / Status
+      const upiNameDisplay = document.getElementById("recDynamicUpiNameDisplay");
+      if (upiNameDisplay) {
+        const resolvedContact = resolveFlatUpiAndContact(
+          currentOpenedReceiptBill?.PropertyName,
+          currentOpenedReceiptFlat,
+          currentOpenedReceiptRenter
+        );
+        const upiName = (currentOpenedReceiptBill?.UPIName && String(currentOpenedReceiptBill.UPIName).trim())
+          ? String(currentOpenedReceiptBill.UPIName).trim()
+          : resolvedContact.upiName;
+        upiNameDisplay.innerText = upiName || "--";
       }
 
       const qrPayableAmount = netClosing > 0 ? netClosing : selectedTotal;
@@ -8071,6 +8349,7 @@ function renderRegisteredUsersList() {
     async function updateReceiptUpiQr(exactAmount) {
       const qrBox = document.getElementById("receiptUpiQrBox");
       const qrImg = document.getElementById("receiptUpiQrImg");
+      const qrUpiCenter = document.getElementById("receiptQrUpiIdCenter");
       const qrHint = document.getElementById("receiptUpiTextHint");
       const upiCheckbox = document.querySelector('#waChecklistInputsContainer .rec-item-check[data-key="upi"]');
 
@@ -8097,14 +8376,23 @@ function renderRegisteredUsersList() {
 
       if (!upiId) {
         qrImg.style.display = "none";
-        qrHint.innerText = "No UPI ID configured in property or flat details.";
+        if (qrUpiCenter) qrUpiCenter.innerText = "UPI ID Not Set";
+        qrHint.innerText = "Add a UPI ID in Flat Profile (3. Profile) to enable QR code.";
         return;
       }
 
-      const upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(upiName || 'Rental Payment')}&am=${exactAmount.toFixed(2)}&cu=INR`;
+      if (qrUpiCenter) {
+        qrUpiCenter.innerText = upiId;
+      }
+
+      const cleanAmt = Math.max(0, Number(exactAmount) || 0);
+      const upiUri = cleanAmt > 0
+        ? `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(upiName || 'Rental Payment')}&am=${cleanAmt.toFixed(2)}&cu=INR`
+        : `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(upiName || 'Rental Payment')}&cu=INR`;
+
       const fetchToken = ++lastQrFetchToken;
-      qrHint.innerText = `Scan QR to pay ₹${exactAmount.toLocaleString('en-IN')} to ${upiId}`;
-      qrImg.style.display = "inline-block";
+      qrHint.innerText = `${upiName ? upiName + ' • ' : ''}Amount: ₹${cleanAmt.toLocaleString('en-IN')}`;
+      qrImg.style.display = "block";
 
       const dataUrl = await fetchQrCodeAsDataUrl(upiUri);
       if (fetchToken === lastQrFetchToken && qrImg) {
@@ -8119,49 +8407,49 @@ function renderRegisteredUsersList() {
       recalculateReceiptSelection();
     }
 
-    // Requirement 7 & 8: Auto-fetch active renter's mobile number from profile and open WhatsApp Web directly on Desktop/Computer
-    async function shareSelectedReceiptOnWhatsApp() {
-      if (!currentOpenedReceiptBill) return;
-      const bill = currentOpenedReceiptBill;
-
-      // Requirement 8: Automatically fetch mobile number from active renter's profile
-      const rawPhone = resolveReceiptTargetMobile(bill, currentOpenedReceiptRenter);
-      let formattedPhone = formatWhatsAppPhone(rawPhone);
-
-      recalculateReceiptSelection();
+    // Helper: capture #printableReceiptArea as a clean, untainted PNG Blob
+    async function renderReceiptElementToPngBlob() {
+      const receiptCardEl = document.getElementById("printableReceiptArea");
+      if (!receiptCardEl) throw new Error("Receipt element not found");
 
       const checkedKeys = new Set();
       document.querySelectorAll("#waChecklistInputsContainer .rec-item-check:checked").forEach(cb => {
         checkedKeys.add(cb.dataset.key);
       });
 
-      const sendBtn = document.getElementById("btnConfirmSendWhatsApp");
-      if (sendBtn) {
-        sendBtn.disabled = true;
-        sendBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Preparing Receipt Image...`;
-      }
-
-      // Ensure QR code image is converted to inline data URL before capturing with html2canvas
+      // Ensure QR code is an inline base64 data URL so html2canvas never taints the canvas
       const qrImg = document.getElementById("receiptUpiQrImg");
-      if (checkedKeys.has("upi") && qrImg && qrImg.src && !qrImg.src.startsWith("data:")) {
-        try {
-          qrImg.src = await fetchQrCodeAsDataUrl(qrImg.src);
-        } catch (e) {}
+      if (checkedKeys.has("upi") && qrImg && qrImg.style.display !== "none") {
+        if (!qrImg.src || !qrImg.src.startsWith("data:image/")) {
+          const resolvedContact = resolveFlatUpiAndContact(
+            currentOpenedReceiptBill?.PropertyName,
+            currentOpenedReceiptFlat,
+            currentOpenedReceiptRenter
+          );
+          const upiId = (currentOpenedReceiptBill?.UPIID && String(currentOpenedReceiptBill.UPIID).trim())
+            ? String(currentOpenedReceiptBill.UPIID).trim()
+            : resolvedContact.upiId;
+          const upiName = (currentOpenedReceiptBill?.UPIName && String(currentOpenedReceiptBill.UPIName).trim())
+            ? String(currentOpenedReceiptBill.UPIName).trim()
+            : resolvedContact.upiName;
+          if (upiId) {
+            const upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(upiName || 'Rental Payment')}&cu=INR`;
+            qrImg.src = await fetchQrCodeAsDataUrl(upiUri);
+          }
+        }
       }
 
-      const receiptCardEl = document.getElementById("printableReceiptArea");
-      let receiptBlob = null;
-      try {
-        receiptCardEl.classList.add("capturing-receipt");
-        const prevMaxHeight = receiptCardEl.style.maxHeight;
-        const prevOverflow = receiptCardEl.style.overflow;
-        receiptCardEl.style.maxHeight = "none";
-        receiptCardEl.style.overflow = "visible";
+      receiptCardEl.classList.add("capturing-receipt");
+      const prevMaxHeight = receiptCardEl.style.maxHeight;
+      const prevOverflow = receiptCardEl.style.overflow;
+      receiptCardEl.style.maxHeight = "none";
+      receiptCardEl.style.overflow = "visible";
 
+      try {
         const canvas = await html2canvas(receiptCardEl, {
           scale: 2,
           useCORS: true,
-          allowTaint: true,
+          allowTaint: false,
           letterRendering: true,
           scrollY: 0,
           scrollX: 0,
@@ -8170,12 +8458,62 @@ function renderRegisteredUsersList() {
           backgroundColor: document.body.classList.contains("theme-white") ? "#ffffff" : "#0f172a"
         });
 
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png", 1.0));
+        if (blob) return blob;
+
+        // Fallback via dataURL if toBlob returned null
+        const dataUrl = canvas.toDataURL("image/png");
+        const res = await fetch(dataUrl);
+        return await res.blob();
+      } finally {
         receiptCardEl.style.maxHeight = prevMaxHeight;
         receiptCardEl.style.overflow = prevOverflow;
         receiptCardEl.classList.remove("capturing-receipt");
-        receiptBlob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+      }
+    }
+
+    // Requirement 1, 7 & 8: Reliable Receipt Image Sending to WhatsApp (Clipboard Promise + Auto-Download + Mobile Share)
+    async function shareSelectedReceiptOnWhatsApp() {
+      if (!currentOpenedReceiptBill) return;
+      const bill = currentOpenedReceiptBill;
+
+      // Requirement 8: Automatically fetch mobile number from active renter's profile
+      const rawPhone = resolveReceiptTargetMobile(bill, currentOpenedReceiptRenter);
+      const formattedPhone = formatWhatsAppPhone(rawPhone);
+
+      recalculateReceiptSelection();
+
+      const sendBtn = document.getElementById("btnConfirmSendWhatsApp");
+      if (sendBtn) {
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Preparing Receipt Image...`;
+      }
+
+      // Start generating the PNG Blob immediately and bind ClipboardItem synchronously within the user click gesture
+      const blobPromise = renderReceiptElementToPngBlob();
+      let copiedToClipboard = false;
+
+      if (navigator.clipboard && window.ClipboardItem) {
+        try {
+          const item = new ClipboardItem({ "image/png": blobPromise });
+          await navigator.clipboard.write([item]);
+          copiedToClipboard = true;
+        } catch (syncClipErr) {
+          copiedToClipboard = false;
+        }
+      }
+
+      let receiptBlob = null;
+      try {
+        receiptBlob = await blobPromise;
+        if (!copiedToClipboard && receiptBlob && navigator.clipboard && window.ClipboardItem) {
+          try {
+            await navigator.clipboard.write([new ClipboardItem({ "image/png": receiptBlob })]);
+            copiedToClipboard = true;
+          } catch (fallbackClipErr) {}
+        }
       } catch (err) {
-        receiptCardEl.classList.remove("capturing-receipt");
+        console.error("Receipt image generation error:", err);
       } finally {
         if (sendBtn) {
           sendBtn.disabled = false;
@@ -8183,50 +8521,67 @@ function renderRegisteredUsersList() {
         }
       }
 
+      if (!receiptBlob) {
+        triggerSideToast("Receipt Image Error", "Could not generate the receipt image. Please try again.", false);
+        return;
+      }
+
+      const safeFlat = String(bill.FlatName || "Flat").replace(/[^a-zA-Z0-9_-]/g, "_");
+      const safeMonth = String(bill.MonthYear || "Month").replace(/[^a-zA-Z0-9_-]/g, "_");
+      const fileName = `Receipt_Flat_${safeFlat}_${safeMonth}.png`;
       const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || "");
 
-      if (receiptBlob) {
-        // Copy the receipt image to clipboard so WhatsApp Web (on Desktop) or App can immediately paste (Ctrl+V) the image
-        if (navigator.clipboard && window.ClipboardItem) {
+      // On Mobile devices, invoke native share sheet with the actual PNG image file so WhatsApp receives the image directly
+      if (isMobileDevice && navigator.canShare && navigator.share) {
+        const receiptFile = new File([receiptBlob], fileName, { type: "image/png" });
+        if (navigator.canShare({ files: [receiptFile] })) {
           try {
-            await navigator.clipboard.write([new ClipboardItem({ "image/png": receiptBlob })]);
-          } catch (clipErr) {}
-        }
-
-        // Only trigger native OS share sheet on Mobile phones — NEVER on Desktop/Computer (Requirement 7)
-        if (isMobileDevice && (!formattedPhone || formattedPhone.length < 10)) {
-          const fileName = `Receipt_Flat_${bill.FlatName}_${bill.MonthYear}.png`;
-          const receiptFile = new File([receiptBlob], fileName, { type: "image/png" });
-          if (navigator.canShare && navigator.canShare({ files: [receiptFile] })) {
-            try {
-              await navigator.share({ files: [receiptFile] });
-              triggerSideToast("Receipt Image Shared", "Receipt image shared to WhatsApp!", true);
-              return;
-            } catch (shareErr) {
-              if (shareErr && shareErr.name === "AbortError") return;
-            }
+            await navigator.share({
+              files: [receiptFile],
+              title: `Rent Receipt - Flat ${bill.FlatName}`
+            });
+            triggerSideToast("Receipt Image Sent", "Receipt image shared directly to WhatsApp!", true);
+            return;
+          } catch (shareErr) {
+            if (shareErr && shareErr.name === "AbortError") return;
           }
         }
       }
 
+      // Also save a clean PNG copy to the device so the user always has the image file ready if clipboard paste is blocked
+      try {
+        const blobUrl = URL.createObjectURL(receiptBlob);
+        const dlLink = document.createElement("a");
+        dlLink.href = blobUrl;
+        dlLink.download = fileName;
+        document.body.appendChild(dlLink);
+        dlLink.click();
+        document.body.removeChild(dlLink);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 6000);
+      } catch (dlErr) {}
+
       if (!formattedPhone || formattedPhone.length < 10) {
         triggerSideToast(
-          "Mobile Number Missing in Profile",
-          "Please save a 10-digit Mobile Number in the Renter Profile so WhatsApp can open their chat directly.",
+          "Receipt Image Ready — Mobile Missing",
+          copiedToClipboard
+            ? "Receipt image copied to clipboard & downloaded! Save a valid +91 10-digit mobile number in Renter Profile to open their WhatsApp chat automatically."
+            : "Receipt image downloaded! Save a valid +91 10-digit mobile number in Renter Profile to open their WhatsApp chat automatically.",
           false
         );
         return;
       }
 
-      // Requirement 7 & 8: On Desktop/Computer, open directly inside WhatsApp Web in the browser (never wa.me which prompts app download)
+      // Requirement 7 & 8: On Desktop/Computer, open directly inside WhatsApp Web in the browser
       const whatsappUrl = isMobileDevice
         ? `https://api.whatsapp.com/send?phone=${formattedPhone}`
         : `https://web.whatsapp.com/send?phone=${formattedPhone}`;
 
       window.open(whatsappUrl, "_blank", "noopener,noreferrer");
       triggerSideToast(
-        "WhatsApp Web Opened Directly",
-        `Opened WhatsApp Web chat for +${formattedPhone}. Receipt image is copied — press Ctrl+V to send!`,
+        "Receipt Image Ready for WhatsApp",
+        copiedToClipboard
+          ? `WhatsApp chat opened for +${formattedPhone}. Receipt image is copied to clipboard (press Ctrl+V in chat to send) and downloaded as PNG!`
+          : `WhatsApp chat opened for +${formattedPhone}. Receipt image downloaded as ${fileName} — attach or drag it into the chat to send!`,
         true
       );
     }
@@ -9301,6 +9656,13 @@ function renderRegisteredUsersList() {
       const exactWaterRate = parseInputRateOrEmpty("profWaterRate");
       const exactElecRate = parseInputRateOrEmpty("profElecRate");
 
+      const rawContractMobile = document.getElementById("profContractMobile").value.trim();
+      if (rawContractMobile && rawContractMobile !== "+91" && !isValidIndianMobilePlus91(rawContractMobile)) {
+        return triggerSideToast("Invalid Contract Mobile", "Contract Mobile Number must start with +91 followed by exactly 10 digits (e.g. +919876543210).", false);
+      }
+      const cleanContractMobile = (rawContractMobile && rawContractMobile !== "+91") ? formatIndianMobilePlus91(rawContractMobile) : "";
+      if (cleanContractMobile) document.getElementById("profContractMobile").value = cleanContractMobile;
+
       const payload = {
         action: "updateFlatUtilities",
         propertyName: selectedFlat.PropertyName,
@@ -9320,7 +9682,7 @@ function renderRegisteredUsersList() {
         elecFixedRate: exactElecRate,
         upiName: document.getElementById("profUpiName").value.trim(),
         upiId: document.getElementById("profUpiId").value.trim(),
-        contractMobile: document.getElementById("profContractMobile").value.trim()
+        contractMobile: cleanContractMobile
       };
 
       // Update both selectedFlat and the matching entry in DB.flats so changes always persist across the flat
@@ -9429,7 +9791,7 @@ function renderRegisteredUsersList() {
 
     // Requirement 1: Aadhaar Number Lookup for Left / Returning Renters + Reactivate Option to Specific Property & Flat
     function normalizeAadhaarString(val) {
-      return String(val || "").replace(/[\s-]+/g, "").trim().toLowerCase();
+      return String(val || "").replace(/\D+/g, "").slice(0, 12);
     }
 
     function handleAadhaarLookupInput(rawVal) {
@@ -9513,8 +9875,60 @@ function renderRegisteredUsersList() {
         return triggerSideToast("Renter Name Required", "Please enter the Renter Name.", false);
       }
 
+      // Requirement 11: Aadhaar card must be exactly 12 digits (neither more nor less)
+      const rawAadhaar = document.getElementById("renterIdentityNum").value.trim();
+      const cleanAadhaar = sanitizeAadhaar12Digits(rawAadhaar);
+      if (!isValidAadhaar12Digits(cleanAadhaar)) {
+        return triggerSideToast("Invalid Aadhaar Number", "Aadhaar Card Number must be exactly 12 digits (neither more nor less).", false);
+      }
+      document.getElementById("renterIdentityNum").value = cleanAadhaar;
+
+      // Requirement 12: Mobile Number must start with +91 followed by exactly 10 digits
+      const rawMobile = document.getElementById("renterMobile").value.trim();
+      if (!isValidIndianMobilePlus91(rawMobile)) {
+        return triggerSideToast("Invalid Mobile Number", "Mobile Number must start with +91 followed by exactly 10 digits (e.g. +919876543210).", false);
+      }
+      const cleanMobile = formatIndianMobilePlus91(rawMobile);
+      document.getElementById("renterMobile").value = cleanMobile;
+
+      const rawAltMobile = document.getElementById("renterAltMobile").value.trim();
+      let cleanAltMobile = "";
+      if (rawAltMobile && rawAltMobile !== "+91") {
+        if (!isValidIndianMobilePlus91(rawAltMobile)) {
+          return triggerSideToast("Invalid Alternate Mobile", "Alternate Mobile Number must start with +91 followed by exactly 10 digits.", false);
+        }
+        cleanAltMobile = formatIndianMobilePlus91(rawAltMobile);
+        document.getElementById("renterAltMobile").value = cleanAltMobile;
+      } else {
+        document.getElementById("renterAltMobile").value = "";
+      }
+
+      const rawContractMobile = document.getElementById("profContractMobile").value.trim();
+      let cleanContractMobile = "";
+      if (rawContractMobile && rawContractMobile !== "+91") {
+        if (!isValidIndianMobilePlus91(rawContractMobile)) {
+          return triggerSideToast("Invalid Contract Mobile", "Contract Mobile Number must start with +91 followed by exactly 10 digits.", false);
+        }
+        cleanContractMobile = formatIndianMobilePlus91(rawContractMobile);
+        document.getElementById("profContractMobile").value = cleanContractMobile;
+      }
+
       const targetRenterId = activeFlatRenterObj?.RenterID || ("R-" + Date.now());
       const wasAlreadyInactive = activeFlatRenterObj && String(activeFlatRenterObj.Status || "").trim().toLowerCase() === "inactive";
+
+      // Requirement 4: If a Left / Inactive renter is switched to Active, open the Property & Flat destination popup instead of auto-reactivating in their old flat
+      if (wasAlreadyInactive && statusVal === "Active" && activeFlatRenterObj) {
+        activeFlatRenterObj.RenterName = rName;
+        activeFlatRenterObj.IdentityDocNumber = cleanAadhaar;
+        activeFlatRenterObj.MobileNumber = cleanMobile;
+        activeFlatRenterObj.AltMobileNumber = cleanAltMobile;
+        activeFlatRenterObj.Address = document.getElementById("renterAddress").value.trim();
+        activeFlatRenterObj.TotalFamilyMembers = document.getElementById("renterFamily").value || 1;
+        document.getElementById("renterStatus").value = "Inactive";
+        reactivatePreviousRenterProfile(activeFlatRenterObj.RenterID);
+        return;
+      }
+
       const currentProfileSrc = document.getElementById("profilePicturePreview").src;
       const currentIdentitySrc = document.getElementById("identityPicturePreview").src;
 
@@ -9533,9 +9947,9 @@ function renderRegisteredUsersList() {
         propertyName: selectedFlat.PropertyName,
         flatName: selectedFlat.FlatName,
         renterName: rName,
-        identityDocNumber: document.getElementById("renterIdentityNum").value.trim(),
-        mobileNumber: document.getElementById("renterMobile").value.trim(),
-        altMobileNumber: document.getElementById("renterAltMobile").value.trim(),
+        identityDocNumber: cleanAadhaar,
+        mobileNumber: cleanMobile,
+        altMobileNumber: cleanAltMobile,
         address: document.getElementById("renterAddress").value.trim(),
         familyMembers: document.getElementById("renterFamily").value || 1,
         renterStatus: statusVal,
@@ -9556,7 +9970,7 @@ function renderRegisteredUsersList() {
         elecFixedRate: exactElecRate,
         upiName: document.getElementById("profUpiName").value.trim(),
         upiId: document.getElementById("profUpiId").value.trim(),
-        contractMobile: document.getElementById("profContractMobile").value.trim()
+        contractMobile: cleanContractMobile
       };
 
       // Requirement 6: Save utility numbers and dates to local metadata cache + flat record so they always display
@@ -9737,7 +10151,7 @@ function renderRegisteredUsersList() {
     function clearRenterRightForm() {
       document.getElementById("renterName").value = "";
       document.getElementById("renterIdentityNum").value = "";
-      document.getElementById("renterMobile").value = "";
+      document.getElementById("renterMobile").value = "+91";
       document.getElementById("renterAltMobile").value = "";
       document.getElementById("renterAddress").value = "";
       document.getElementById("renterFamily").value = "1";
@@ -9786,6 +10200,7 @@ function renderRegisteredUsersList() {
     }
 
     function syncPropertyDropdowns() {
+      sortPropertiesAlphabetically();
       const editSelect = document.getElementById("editPropDropdown");
       const delSelect = document.getElementById("deletePropDropdown");
       const addFlatSelect = document.getElementById("addFlatPropDropdown");
