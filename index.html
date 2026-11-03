@@ -2001,17 +2001,36 @@
         </div>
         <div class="form-group">
           <label>Assign Role <span class="req-star">*</span></label>
-          <select id="createUserRole" class="form-control">
-            <option value="Admin">Admin (Full Access - Can View & Edit Everything)</option>
-            <option value="Viewer">Viewer (Read-Only - Can Only View Everything)</option>
+          <select id="createUserRole" class="form-control" onchange="handleCreateUserRoleChange()">
+            <option value="Admin">Admin (Full Access - Can View &amp; Edit Everything)</option>
+            <option value="Viewer">Viewer / Regular User (Restricted to Selected Flat Only)</option>
           </select>
         </div>
+
+        <!-- Requirement 3: Prompt to select Property & Specific Flat when creating a Viewer account -->
+        <div id="viewerScopeSelectionBox" style="display:none; background:rgba(79, 70, 229, 0.1); border:1.5px solid var(--primary); border-radius:12px; padding:12px; margin-bottom:14px;">
+          <div style="font-size:0.78rem; font-weight:800; color:var(--primary); margin-bottom:8px;">
+            <i class="fa-solid fa-building-lock"></i> Select Property &amp; Flat for Viewer Account
+          </div>
+          <div class="form-group" style="margin-bottom:10px;">
+            <label>Select Property to Display <span class="req-star">*</span></label>
+            <select id="createUserAssignedProp" class="form-control" onchange="populateCreateUserFlatsDropdown()"></select>
+          </div>
+          <div class="form-group" style="margin-bottom:6px;">
+            <label>Select Specific Flat to Display <span class="req-star">*</span></label>
+            <select id="createUserAssignedFlat" class="form-control"></select>
+          </div>
+          <div style="font-size:0.72rem; color:var(--text-muted); line-height:1.35;">
+            Once a specific flat is selected, this Viewer user ID will strictly only be allowed to view the details of this particular flat and nothing else.
+          </div>
+        </div>
+
         <button class="btn-primary" onclick="submitCreateNewUser()">Create New User ID</button>
       </div>
 
-      <!-- Settings Tab 3: Other (Active Account Details Removed; Last Login History Locked & Admin-Only) -->
+      <!-- Settings Tab 3: Other (Registered User Management & Admin-Only Last Login History; Google Sheet Auto-Create Removed) -->
       <div id="setSubOther" class="tab-content">
-        <!-- Two Dedicated Options: Registered Users & Admin-Only Last Login History -->
+        <!-- Two Dedicated Options: Registered User & Admin-Only Last Login History -->
         <div id="otherOptionsBtnGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
           <button
             type="button"
@@ -2020,7 +2039,7 @@
             style="padding: 9px 12px; font-size: 0.8rem;"
             onclick="switchOtherSubOption('users')"
           >
-            <i class="fa-solid fa-users"></i> Registered Users
+            <i class="fa-solid fa-users-gear"></i> Registered User
           </button>
           <button
             type="button"
@@ -2033,10 +2052,13 @@
           </button>
         </div>
 
-        <!-- Option 1 Panel: Registered Users -->
+        <!-- Option 1 Panel: Registered User (Admin can Delete Users, Demote Admin to Regular User, or Promote Regular User to Admin) -->
         <div id="otherPanelUsers" class="stat-pill" style="text-align: left;">
-          <span>REGISTERED PORTAL USERS</span>
-          <div id="otherUsersList" style="margin-top: 8px; font-size: 0.82rem; max-height: 240px; overflow-y: auto;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+            <span>REGISTERED USER MANAGEMENT</span>
+            <span style="font-size:0.7rem; color:var(--text-muted); font-weight:600;">Delete • Change Role (Admin ↔ Regular User)</span>
+          </div>
+          <div id="otherUsersList" style="margin-top: 8px; font-size: 0.82rem; max-height: 290px; overflow-y: auto;">
             <!-- Populated dynamically -->
           </div>
         </div>
@@ -2073,23 +2095,6 @@
               Next Page <i class="fa-solid fa-chevron-right"></i>
             </button>
           </div>
-        </div>
-
-        <!-- Auto-Create & Repair Google Sheet (Sheets, Columns & Rows) -->
-        <div class="stat-pill admin-only" style="text-align: left; margin-top: 12px;">
-          <span>GOOGLE SHEET AUTO-CREATE (SHEETS, COLUMNS &amp; ROWS)</span>
-          <p style="font-size: 0.76rem; color: var(--text-muted); margin: 4px 0 8px 0;">
-            Missing sheets, columns, and rows are automatically recreated on every login. You can also trigger an instant repair &amp; sync below:
-          </p>
-          <button
-            type="button"
-            id="btnAutoCreateGoogleSheet"
-            class="btn-primary"
-            style="padding: 9px 12px; font-size: 0.8rem;"
-            onclick="triggerGoogleSheetAutoSetupAndSync()"
-          >
-            <i class="fa-solid fa-table-columns"></i> Auto-Create &amp; Sync Google Sheet Now
-          </button>
         </div>
       </div>
     </div>
@@ -2577,7 +2582,12 @@
               <input type="file" id="fileProfilePic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'profile')">
             </div>
             <div class="form-group"><label>Renter Name <span class="req-star">*</span></label><input type="text" id="renterName" class="form-control"></div>
-            <div class="form-group"><label>Aadhaar / Identity Document Number</label><input type="text" id="renterIdentityNum" class="form-control" maxlength="12" placeholder="12-digit Aadhaar / ID No."></div>
+            <div class="form-group">
+              <label>Aadhaar / Identity Document Number</label>
+              <input type="text" id="renterIdentityNum" class="form-control" maxlength="16" placeholder="12-digit Aadhaar / ID No." oninput="handleAadhaarLookupInput(this.value)" onchange="handleAadhaarLookupInput(this.value)">
+              <!-- Requirement 5: Returning Renter Aadhaar Match & Reactivate Same Profile Banner -->
+              <div id="aadhaarPreviousRenterPrompt" style="display:none; margin-top:8px;"></div>
+            </div>
             <div class="form-group admin-only">
               <label>Aadhaar / ID Card Upload (Auto-Saves to Cloud Drive)</label>
               <input type="file" id="fileIdentityPic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'identity')">
@@ -2685,6 +2695,8 @@
     let activeUserFullName = "Administrator";
     let activeUserMobile = "";
     let activeRole = "Admin";
+    let activeAssignedProperty = "";
+    let activeAssignedFlat = "";
     let activeThemePref = "black";
     let selectedProperty = null;
     let selectedFlat = null;
@@ -2704,8 +2716,8 @@
 
     /**
      * ============================================================================
-     * STRICT MONTH NORMALIZER & FORMATTER (NO TIMESTAMPS OR SHIFTING DATES)
-     * Guarantees MonthYear is always "YYYY-MM" and displays cleanly (e.g., "Oct 2026")
+     * STRICT MONTH NORMALIZER & FORMATTER (NO BRACKETS AROUND MONTH)
+     * Requirement 4: Removes brackets around month and formats month name cleanly
      * ============================================================================
      */
     function normalizeMonthYear(rawVal) {
@@ -2728,11 +2740,21 @@
 
     function formatMonthLabel(rawVal) {
       const clean = normalizeMonthYear(rawVal);
-      if (!/^\d{4}-\d{2}$/.test(clean)) return clean || "--";
+      if (!/^\d{4}-\d{2}$/.test(clean)) return String(clean || "--").replace(/[()[\]]/g, "").trim();
       const [year, month] = clean.split("-");
-      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
       const mIdx = parseInt(month, 10) - 1;
-      return `${monthNames[mIdx] || month} ${year} (${clean})`;
+      return `${monthNames[mIdx] || month} ${year}`;
+    }
+
+    // Requirement 4: Strictly displays ONLY the name of the month with zero brackets in Flat History
+    function formatMonthNameOnly(rawVal) {
+      const clean = normalizeMonthYear(rawVal);
+      if (!/^\d{4}-\d{2}$/.test(clean)) return String(clean || "--").replace(/[()[\]]/g, "").trim();
+      const [, month] = clean.split("-");
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      const mIdx = parseInt(month, 10) - 1;
+      return monthNames[mIdx] || month;
     }
 
     function sanitizeAllBillsMonths(billsArray) {
@@ -2745,6 +2767,10 @@
     function findPropertyObject(propertyName) {
       const target = String(propertyName || "").trim().toLowerCase();
       return (DB.properties || []).find(p => String(p.PropertyName || "").trim().toLowerCase() === target) || null;
+    }
+
+    function findFlatObject(propertyName, flatName) {
+      return (DB.flats || []).find(f => isSamePropAndFlat(f.PropertyName, f.FlatName, propertyName, flatName)) || null;
     }
 
     function resolveFlatUpiAndContact(propertyName, flatObj, renterObj) {
@@ -2942,6 +2968,15 @@
           border: 1px solid var(--glass-border);
           font-size: 0.77rem;
         }
+        /* Requirement 3: Viewer Account Strictly Restricted to Assigned Flat Only (Hides Everything Else) */
+        body.role-viewer #searchContainer,
+        body.role-viewer .pnl-tracker,
+        body.role-viewer .properties-bar,
+        body.role-viewer button[onclick="openFdModal()"],
+        body.role-viewer button[onclick="openKhetModal()"],
+        body.role-viewer button[onclick="openSettingsModal()"] {
+          display: none !important;
+        }
         @media (max-width: 640px) {
           .wa-checklist-grid {
             grid-template-columns: 1fr;
@@ -3013,6 +3048,8 @@
       const savedRole = sessionStorage.getItem("active_session_role") || "Admin";
       const savedFullName = sessionStorage.getItem("active_session_fullname") || savedSessionUser;
       const savedMobile = sessionStorage.getItem("active_session_mobile") || "";
+      const savedAssignedProp = sessionStorage.getItem("active_session_assigned_prop") || "";
+      const savedAssignedFlat = sessionStorage.getItem("active_session_assigned_flat") || "";
       const savedSelectedProp = sessionStorage.getItem("active_selected_property");
 
       if (savedSelectedProp) selectedProperty = savedSelectedProp;
@@ -3043,6 +3080,8 @@
         activeRole = savedRole;
         activeUserFullName = savedFullName;
         activeUserMobile = savedMobile;
+        activeAssignedProperty = savedAssignedProp;
+        activeAssignedFlat = savedAssignedFlat;
         applyRolePermissions(activeRole);
         unlockDashboardInstant(false);
       } else {
@@ -3103,7 +3142,52 @@
       );
     }
 
+    let hasAutoOpenedViewerFlatOnce = false;
+    function resolveViewerAssignedScope() {
+      if (activeRole !== "Viewer") return null;
+      let prop = String(activeAssignedProperty || "").trim();
+      let flat = String(activeAssignedFlat || "").trim();
+      if ((!prop || !flat) && activeUser) {
+        const matchedU = (DB.users || []).find(u => String(u.Username || "").trim().toLowerCase() === String(activeUser).trim().toLowerCase());
+        if (matchedU) {
+          prop = String(matchedU.AssignedProperty || prop || "").trim();
+          flat = String(matchedU.AssignedFlat || flat || "").trim();
+          activeAssignedProperty = prop;
+          activeAssignedFlat = flat;
+        }
+      }
+      if (!prop || !flat) return null;
+      return { prop, flat };
+    }
+
     function renderAllDashboardUI() {
+      const viewerScope = resolveViewerAssignedScope();
+      if (activeRole === "Viewer") {
+        const flatsContainer = document.getElementById("flatsList");
+        if (viewerScope) {
+          selectedProperty = viewerScope.prop;
+          renderFlatsGrid(viewerScope.prop);
+          const assignedFlatObj = findFlatObject(viewerScope.prop, viewerScope.flat);
+          if (assignedFlatObj && !hasAutoOpenedViewerFlatOnce) {
+            hasAutoOpenedViewerFlatOnce = true;
+            const assignedRenter = (DB.renters || []).find(r =>
+              isSamePropAndFlat(r.PropertyName, r.FlatName, assignedFlatObj.PropertyName, assignedFlatObj.FlatName) &&
+              String(r.Status || "").trim().toLowerCase() === "active"
+            );
+            openFlatDetailsModal(assignedFlatObj, assignedRenter);
+          }
+        } else if (flatsContainer) {
+          flatsContainer.innerHTML = `
+            <div class="empty-flats-prompt">
+              <i class="fa-solid fa-door-closed"></i>
+              <h3>No Flat Assigned to This Viewer Account</h3>
+              <p>Please ask an Admin to assign a specific flat to your Viewer User ID.</p>
+            </div>
+          `;
+        }
+        return;
+      }
+
       updateGlobalProfitAndLoss();
       renderPropertiesRow();
 
@@ -3172,7 +3256,9 @@
           fullName: details.fullName || existing.fullName || String(username).trim(),
           role: details.role || existing.role || "Admin",
           theme: details.theme || existing.theme || "black",
-          mobile: details.mobile !== undefined ? details.mobile : (existing.mobile || "")
+          mobile: details.mobile !== undefined ? details.mobile : (existing.mobile || ""),
+          assignedProperty: details.assignedProperty !== undefined ? details.assignedProperty : (existing.assignedProperty || ""),
+          assignedFlat: details.assignedFlat !== undefined ? details.assignedFlat : (existing.assignedFlat || "")
         };
         localStorage.setItem("portal_verified_auth_map", JSON.stringify(map));
       } catch (e) {}
@@ -3191,7 +3277,9 @@
               fullName: u.FullName || uName,
               role: u.Role || "Admin",
               theme: u.Theme || "black",
-              mobile: u.MobileNumber || ""
+              mobile: u.MobileNumber || "",
+              assignedProperty: u.AssignedProperty || "",
+              assignedFlat: u.AssignedFlat || ""
             };
           }
         });
@@ -3246,7 +3334,10 @@
       document.body.classList.toggle("role-viewer", activeRole === "Viewer");
       const badge = document.getElementById("headerRoleBadge");
       if (badge) {
-        badge.innerText = activeRole;
+        const scope = resolveViewerAssignedScope();
+        badge.innerText = (activeRole === "Viewer" && scope)
+          ? `Viewer • ${scope.prop} (Flat ${scope.flat})`
+          : activeRole;
         badge.style.background = activeRole === "Admin" ? "rgba(16, 185, 129, 0.2)" : "rgba(245, 158, 11, 0.2)";
       }
       const btnLoginHist = document.getElementById("btnOtherOptLoginHistory");
@@ -3269,27 +3360,35 @@
       activeRole = res.role || "Admin";
       const sheetTheme = res.theme || "black";
 
-      sessionStorage.setItem("active_session_user", activeUser);
-      sessionStorage.setItem("active_session_fullname", activeUserFullName);
-      sessionStorage.setItem("active_session_mobile", activeUserMobile);
-      sessionStorage.setItem("active_session_role", activeRole);
-
-      saveVerifiedUserAuth(activeUser, userPass, {
-        fullName: activeUserFullName,
-        role: activeRole,
-        theme: sheetTheme,
-        mobile: activeUserMobile
-      });
-
-      applyVisualTheme(sheetTheme);
-      applyRolePermissions(activeRole);
-
       DB.properties = res.properties || [];
       DB.flats = res.flats || [];
       DB.renters = res.renters || [];
       DB.bills = sanitizeAllBillsMonths(res.bills || []);
       DB.users = res.users || [];
       syncUsersListToVerifiedAuthMap(DB.users);
+
+      const matchedU = (DB.users || []).find(u => String(u.Username || "").trim().toLowerCase() === String(activeUser).trim().toLowerCase());
+      activeAssignedProperty = res.assignedProperty || matchedU?.AssignedProperty || "";
+      activeAssignedFlat = res.assignedFlat || matchedU?.AssignedFlat || "";
+
+      sessionStorage.setItem("active_session_user", activeUser);
+      sessionStorage.setItem("active_session_fullname", activeUserFullName);
+      sessionStorage.setItem("active_session_mobile", activeUserMobile);
+      sessionStorage.setItem("active_session_role", activeRole);
+      sessionStorage.setItem("active_session_assigned_prop", activeAssignedProperty);
+      sessionStorage.setItem("active_session_assigned_flat", activeAssignedFlat);
+
+      saveVerifiedUserAuth(activeUser, userPass, {
+        fullName: activeUserFullName,
+        role: activeRole,
+        theme: sheetTheme,
+        mobile: activeUserMobile,
+        assignedProperty: activeAssignedProperty,
+        assignedFlat: activeAssignedFlat
+      });
+
+      applyVisualTheme(sheetTheme);
+      applyRolePermissions(activeRole);
 
       // Requirement 4: Continuous Login History saved to Google Sheet; strictly Admin-only view
       const localLogRaw = localStorage.getItem("portal_login_history_backup");
@@ -3381,8 +3480,11 @@
         activeUserFullName = (matchedUserInDb && matchedUserInDb.FullName) || (cachedAuth && cachedAuth.fullName) || activeUser;
         activeUserMobile = (matchedUserInDb && matchedUserInDb.MobileNumber) || (cachedAuth && cachedAuth.mobile) || "";
         activeRole = (matchedUserInDb && matchedUserInDb.Role) || (cachedAuth && cachedAuth.role) || "Admin";
+        activeAssignedProperty = (matchedUserInDb && matchedUserInDb.AssignedProperty) || (cachedAuth && cachedAuth.assignedProperty) || "";
+        activeAssignedFlat = (matchedUserInDb && matchedUserInDb.AssignedFlat) || (cachedAuth && cachedAuth.assignedFlat) || "";
         const userTheme = (matchedUserInDb && matchedUserInDb.Theme) || (cachedAuth && cachedAuth.theme) || "black";
 
+        hasAutoOpenedViewerFlatOnce = false;
         selectedProperty = null;
         sessionStorage.removeItem("active_selected_property");
 
@@ -3390,12 +3492,16 @@
         sessionStorage.setItem("active_session_fullname", activeUserFullName);
         sessionStorage.setItem("active_session_mobile", activeUserMobile);
         sessionStorage.setItem("active_session_role", activeRole);
+        sessionStorage.setItem("active_session_assigned_prop", activeAssignedProperty);
+        sessionStorage.setItem("active_session_assigned_flat", activeAssignedFlat);
 
         saveVerifiedUserAuth(activeUser, pass, {
           fullName: activeUserFullName,
           role: activeRole,
           theme: userTheme,
-          mobile: activeUserMobile
+          mobile: activeUserMobile,
+          assignedProperty: activeAssignedProperty,
+          assignedFlat: activeAssignedFlat
         });
 
         applyVisualTheme(userTheme);
@@ -3521,11 +3627,21 @@
           rebindSelectedFlatAndRenterReferences();
           saveDbSnapshotToCache();
 
+          if (res.userAssignedProperty !== undefined) {
+            activeAssignedProperty = res.userAssignedProperty || "";
+            sessionStorage.setItem("active_session_assigned_prop", activeAssignedProperty);
+          }
+          if (res.userAssignedFlat !== undefined) {
+            activeAssignedFlat = res.userAssignedFlat || "";
+            sessionStorage.setItem("active_session_assigned_flat", activeAssignedFlat);
+          }
           if (res.userTheme && res.userTheme !== activeThemePref) {
             applyVisualTheme(res.userTheme);
           }
           if (res.userRole && res.userRole !== activeRole) {
             applyRolePermissions(res.userRole);
+          } else if (activeRole === "Viewer") {
+            applyRolePermissions("Viewer");
           }
           if (res.userFullName) {
             activeUserFullName = res.userFullName;
@@ -3550,14 +3666,15 @@
     function getBillsForSpecificRenter(propertyName, flatName, renterObj) {
       if (!renterObj) return [];
       return DB.bills.filter(b => {
-        if (!isSamePropAndFlat(b.PropertyName, b.FlatName, propertyName, flatName)) return false;
-
         const billRenterId = String(b.RenterID || "").trim();
         const targetRenterId = String(renterObj.RenterID || "").trim();
 
+        // Requirement 5: When a returning renter is reactivated with the same profile (RenterID),
+        // all past and new bills linked to that RenterID belong to that same profile
         if (billRenterId && targetRenterId) {
           return billRenterId === targetRenterId;
         }
+        if (!isSamePropAndFlat(b.PropertyName, b.FlatName, propertyName, flatName)) return false;
         return String(b.TenantName || "").trim().toLowerCase() === String(renterObj.RenterName || "").trim().toLowerCase();
       });
     }
@@ -3662,20 +3779,24 @@
       renderAllDashboardUI();
     }
 
-    // 4. Render Flat Cards Strictly Filtered by Selected Property Only
+    // 4. Render Flat Cards Strictly Filtered by Selected Property Only (and Single Assigned Flat for Viewer Accounts)
     function renderFlatsGrid(propertyName) {
       const container = document.getElementById("flatsList");
       container.innerHTML = "";
-      const targetPropClean = String(propertyName || "").trim().toLowerCase();
+      const viewerScope = resolveViewerAssignedScope();
+      const targetPropClean = String((viewerScope ? viewerScope.prop : propertyName) || "").trim().toLowerCase();
 
-      const flats = DB.flats.filter(f => String(f.PropertyName || "").trim().toLowerCase() === targetPropClean);
+      let flats = DB.flats.filter(f => String(f.PropertyName || "").trim().toLowerCase() === targetPropClean);
+      if (activeRole === "Viewer" && viewerScope) {
+        flats = flats.filter(f => isSamePropAndFlat(f.PropertyName, f.FlatName, viewerScope.prop, viewerScope.flat));
+      }
 
       if (flats.length === 0) {
         container.innerHTML = `
           <div class="empty-flats-prompt">
             <i class="fa-solid fa-door-closed"></i>
             <h3>No Flats in ${propertyName}</h3>
-            <p>Click the (+) button in the header and select "Add Flat" to create flats for ${propertyName}.</p>
+            <p>${activeRole === "Viewer" ? "Your assigned flat could not be found." : `Click the (+) button in the header and select "Add Flat" to create flats for ${propertyName}.`}</p>
           </div>
         `;
         return;
@@ -4309,38 +4430,193 @@
       }).join("");
     }
 
-    async function triggerGoogleSheetAutoSetupAndSync(silent = false) {
-      const btn = document.getElementById("btnAutoCreateGoogleSheet");
-      if (btn && !silent) {
-        btn.disabled = true;
-        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Auto-Creating Sheets, Columns & Rows...`;
+    // Requirement 2 & 3: Registered User Management (Delete, Change Role Admin <-> Regular User/Viewer) & Flat-Scoped Viewer Creation
+    function handleCreateUserRoleChange() {
+      const roleSelect = document.getElementById("createUserRole");
+      const scopeBox = document.getElementById("viewerScopeSelectionBox");
+      if (!roleSelect || !scopeBox) return;
+      if (roleSelect.value === "Viewer") {
+        scopeBox.style.display = "block";
+        populateCreateUserFlatsDropdown();
+      } else {
+        scopeBox.style.display = "none";
       }
-      try {
-        const res = await sendGasPost({
-          action: "syncAllData",
-          properties: DB.properties || [],
-          flats: DB.flats || [],
-          renters: DB.renters || [],
-          bills: DB.bills || []
-        });
-        if (res && res.status === "success") {
-          if (!silent) {
-            triggerSideToast("Google Sheet Ready", "All Sheets, Columns & Rows auto-created and synced!", true);
-          }
-          await syncDataLive(true);
-        } else if (!silent) {
-          triggerSideToast("Sync Notice", (res && res.message) || "Google Sheet schema initialized.", "warning");
-        }
-      } catch (e) {
-        if (!silent) {
-          triggerSideToast("Connection Error", "Could not reach Google Apps Script Web App URL.", false);
-        }
-      } finally {
-        if (btn && !silent) {
-          btn.disabled = false;
-          btn.innerHTML = `<i class="fa-solid fa-table-columns"></i> Auto-Create & Sync Google Sheet Now`;
-        }
+    }
+
+    function populateCreateUserFlatsDropdown() {
+      const propSelect = document.getElementById("createUserAssignedProp");
+      const flatSelect = document.getElementById("createUserAssignedFlat");
+      if (!propSelect || !flatSelect) return;
+
+      const currentProp = propSelect.value;
+      const props = DB.properties || [];
+      propSelect.innerHTML = props.length > 0
+        ? props.map(p => `<option value="${p.PropertyName}">${p.PropertyName}</option>`).join("")
+        : `<option value="">No Properties Available</option>`;
+
+      if (currentProp && props.some(p => p.PropertyName === currentProp)) {
+        propSelect.value = currentProp;
       }
+
+      const chosenProp = propSelect.value;
+      const matchingFlats = (DB.flats || []).filter(f =>
+        String(f.PropertyName || "").trim().toLowerCase() === String(chosenProp || "").trim().toLowerCase()
+      );
+      flatSelect.innerHTML = matchingFlats.length > 0
+        ? matchingFlats.map(f => `<option value="${f.FlatName}">Flat ${f.FlatName}</option>`).join("")
+        : `<option value="">No Flats in Selected Property</option>`;
+    }
+
+    function renderRegisteredUsersList() {
+      const usersContainer = document.getElementById("otherUsersList");
+      if (!usersContainer) return;
+      const isAdmin = String(activeRole || "").trim().toLowerCase() === "admin";
+      const list = DB.users || [];
+
+      if (list.length === 0) {
+        usersContainer.innerHTML = `<div style="padding:10px 0; color:var(--text-muted); text-align:center;">No registered users loaded.</div>`;
+        return;
+      }
+
+      usersContainer.innerHTML = list.map(u => {
+        const uName = String(u.Username || "").trim();
+        const safeUName = uName.replace(/'/g, "\\'");
+        const isTargetAdmin = String(u.Role || "Admin").trim().toLowerCase() === "admin";
+        const displayRoleLabel = isTargetAdmin ? "Admin" : "Regular User (Viewer)";
+        const isCurrentLoggedUser = String(activeUser || "").trim().toLowerCase() === uName.toLowerCase();
+        const assignedInfo = (!isTargetAdmin && u.AssignedProperty && u.AssignedFlat)
+          ? `<div style="font-size:0.72rem; color:var(--primary); margin-top:2px;"><i class="fa-solid fa-door-open"></i> Assigned Flat: <strong>${u.AssignedProperty} - Flat ${u.AssignedFlat}</strong></div>`
+          : "";
+
+        let adminControlsHtml = "";
+        if (isAdmin) {
+          const roleToggleBtn = isTargetAdmin
+            ? `<button type="button" class="btn-ledger-action" style="padding:5px 9px; font-size:0.72rem; font-weight:700;" onclick="promptDemoteAdminToRegularUser('${safeUName}')" title="Change role from Admin to Regular User (Viewer)">
+                 <i class="fa-solid fa-user-shield"></i> Make Regular User
+               </button>`
+            : `<button type="button" class="btn-ledger-action" style="padding:5px 9px; font-size:0.72rem; font-weight:700; color:var(--accent-green); border-color:rgba(16,185,129,0.4);" onclick="changeRegisteredUserRole('${safeUName}', 'Admin', '', '')" title="Promote Regular User to Admin">
+                 <i class="fa-solid fa-arrow-up-right-dots"></i> Promote to Admin
+               </button>`;
+
+          const deleteBtn = `<button type="button" class="btn-ledger-action" style="padding:5px 9px; font-size:0.72rem; font-weight:700; color:var(--accent-red); border-color:rgba(239,68,68,0.4);" onclick="confirmDeleteRegisteredUser('${safeUName}')" title="Delete Registered User">
+              <i class="fa-solid fa-trash-can"></i> Delete
+            </button>`;
+
+          adminControlsHtml = `
+            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:6px;">
+              ${roleToggleBtn}
+              ${deleteBtn}
+            </div>
+          `;
+        }
+
+        return `
+          <div style="padding:10px 6px; border-bottom:1px solid var(--glass-border);">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; flex-wrap:wrap;">
+              <div>
+                <div>
+                  <strong>${u.FullName || uName}</strong>
+                  <span style="color:var(--text-muted); font-size:0.76rem;">(@${uName})</span>
+                  ${isCurrentLoggedUser ? `<span style="font-size:0.66rem; color:var(--accent-green); font-weight:800; margin-left:4px;">(You)</span>` : ''}
+                </div>
+                <div style="font-size:0.73rem; color:var(--text-muted); margin-top:2px;">
+                  ${u.MobileNumber ? `<i class="fa-solid fa-phone"></i> ${u.MobileNumber}` : 'No mobile set'}
+                </div>
+                ${assignedInfo}
+              </div>
+              <span class="role-badge" style="background:${isTargetAdmin ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)'};">${displayRoleLabel}</span>
+            </div>
+            ${adminControlsHtml}
+          </div>
+        `;
+      }).join("");
+    }
+
+    function promptDemoteAdminToRegularUser(targetUsername) {
+      if (String(activeRole || "").trim().toLowerCase() !== "admin") return;
+      const defaultFlat = (DB.flats && DB.flats.length > 0) ? DB.flats[0] : null;
+      const assignedProp = selectedFlat?.PropertyName || defaultFlat?.PropertyName || "";
+      const assignedFlat = selectedFlat?.FlatName || defaultFlat?.FlatName || "";
+
+      openCenteredConfirmModal(
+        "Change Role to Regular User (Viewer)",
+        `Are you sure you want to change @${targetUsername} from Admin to a Regular User (Viewer)${assignedFlat ? ` assigned to ${assignedProp} - Flat ${assignedFlat}` : ""}?`,
+        () => {
+          changeRegisteredUserRole(targetUsername, "Viewer", assignedProp, assignedFlat);
+        }
+      );
+    }
+
+    async function changeRegisteredUserRole(targetUsername, newRole, assignedProp = "", assignedFlat = "") {
+      if (String(activeRole || "").trim().toLowerCase() !== "admin") return;
+      const targetClean = String(targetUsername || "").trim().toLowerCase();
+      const matchedUser = (DB.users || []).find(u => String(u.Username || "").trim().toLowerCase() === targetClean);
+      if (!matchedUser) return;
+
+      matchedUser.Role = newRole;
+      matchedUser.AssignedProperty = newRole === "Viewer" ? assignedProp : "";
+      matchedUser.AssignedFlat = newRole === "Viewer" ? assignedFlat : "";
+
+      const authMap = getVerifiedAuthMap();
+      if (authMap[targetClean]) {
+        authMap[targetClean].role = newRole;
+        authMap[targetClean].assignedProperty = matchedUser.AssignedProperty;
+        authMap[targetClean].assignedFlat = matchedUser.AssignedFlat;
+        localStorage.setItem("portal_verified_auth_map", JSON.stringify(authMap));
+      }
+
+      if (String(activeUser || "").trim().toLowerCase() === targetClean) {
+        activeAssignedProperty = matchedUser.AssignedProperty;
+        activeAssignedFlat = matchedUser.AssignedFlat;
+        sessionStorage.setItem("active_session_assigned_prop", activeAssignedProperty);
+        sessionStorage.setItem("active_session_assigned_flat", activeAssignedFlat);
+        applyRolePermissions(newRole);
+      }
+
+      saveDbSnapshotToCache();
+      renderRegisteredUsersList();
+      renderAllDashboardUI();
+
+      triggerSideToast(
+        "Role Updated",
+        `@${targetUsername} is now ${newRole === "Admin" ? "an Admin" : "a Regular User (Viewer)"}!`,
+        true
+      );
+
+      await sendGasPost({
+        action: "updateUserRole",
+        requesterUsername: activeUser,
+        targetUsername: targetUsername,
+        newRole: newRole,
+        assignedProperty: matchedUser.AssignedProperty,
+        assignedFlat: matchedUser.AssignedFlat
+      });
+    }
+
+    function confirmDeleteRegisteredUser(targetUsername) {
+      if (String(activeRole || "").trim().toLowerCase() !== "admin") return;
+      const targetClean = String(targetUsername || "").trim().toLowerCase();
+      if (targetClean === String(activeUser || "").trim().toLowerCase()) {
+        return triggerSideToast("Action Blocked", "You cannot delete the currently logged-in Admin account.", false);
+      }
+
+      openCenteredConfirmModal(
+        "Delete Registered User",
+        `Are you sure you want to permanently delete user @${targetUsername}?`,
+        async () => {
+          DB.users = (DB.users || []).filter(u => String(u.Username || "").trim().toLowerCase() !== targetClean);
+          removeVerifiedUserAuth(targetUsername);
+          saveDbSnapshotToCache();
+          renderRegisteredUsersList();
+          triggerSideToast("User Deleted", `User @${targetUsername} has been removed.`, "warning");
+
+          await sendGasPost({
+            action: "deleteUser",
+            requesterUsername: activeUser,
+            targetUsername: targetUsername
+          });
+        }
+      );
     }
 
     function openSettingsModal() {
@@ -4348,6 +4624,9 @@
       const btnLoginHist = document.getElementById("btnOtherOptLoginHistory");
       const panelLoginHist = document.getElementById("otherPanelLoginHistory");
       const btnGrid = document.getElementById("otherOptionsBtnGrid");
+
+      populateCreateUserFlatsDropdown();
+      handleCreateUserRoleChange();
 
       if (!isAdmin) {
         if (btnLoginHist) btnLoginHist.style.display = "none";
@@ -4360,16 +4639,7 @@
         renderLoginHistoryPage();
       }
 
-      const usersContainer = document.getElementById("otherUsersList");
-      if (usersContainer) {
-        usersContainer.innerHTML = (DB.users || []).map(u => `
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--glass-border);">
-            <span><strong>${u.FullName}</strong> (@${u.Username}) ${u.MobileNumber ? '• ' + u.MobileNumber : ''}</span>
-            <span class="role-badge">${u.Role}</span>
-          </div>
-        `).join("") || "No user list loaded.";
-      }
-
+      renderRegisteredUsersList();
       openModal("settingsModal");
     }
 
@@ -4379,6 +4649,12 @@
       parent.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
       evt.currentTarget.classList.add("active");
       document.getElementById(subTabId).classList.add("active");
+      if (subTabId === "setSubCreateUser") {
+        populateCreateUserFlatsDropdown();
+        handleCreateUserRoleChange();
+      } else if (subTabId === "setSubOther") {
+        renderRegisteredUsersList();
+      }
     }
 
     function applyVisualTheme(themePref) {
@@ -4420,9 +4696,15 @@
       const newU = document.getElementById("createUserLoginId").value.trim();
       const newP = document.getElementById("createUserPass").value;
       const role = document.getElementById("createUserRole").value;
+      const assignedProperty = role === "Viewer" ? (document.getElementById("createUserAssignedProp")?.value || "").trim() : "";
+      const assignedFlat = role === "Viewer" ? (document.getElementById("createUserAssignedFlat")?.value || "").trim() : "";
 
       if (!fullName || !newU || !newP) {
         return triggerSideToast("Missing Fields", "Please fill in Name, Username, and Password.", false);
+      }
+
+      if (role === "Viewer" && (!assignedProperty || !assignedFlat)) {
+        return triggerSideToast("Select Flat for Viewer", "Please select which Property and specific Flat this Viewer account is allowed to view.", false);
       }
 
       if (DB.users && DB.users.some(u => String(u.Username).toLowerCase() === newU.toLowerCase())) {
@@ -4436,16 +4718,29 @@
         mobile: mobile,
         newUsername: newU,
         newPassword: newP,
-        role: role
+        role: role,
+        assignedProperty: assignedProperty,
+        assignedFlat: assignedFlat
       });
 
       if (res.status === "success") {
-        DB.users.push({ Username: newU, FullName: fullName, Role: role, Theme: "black", MobileNumber: mobile });
+        DB.users.push({
+          Username: newU,
+          Password: newP,
+          FullName: fullName,
+          Role: role,
+          Theme: "black",
+          MobileNumber: mobile,
+          AssignedProperty: assignedProperty,
+          AssignedFlat: assignedFlat
+        });
         saveVerifiedUserAuth(newU, newP, {
           fullName: fullName,
           role: role,
           theme: "black",
-          mobile: mobile
+          mobile: mobile,
+          assignedProperty: assignedProperty,
+          assignedFlat: assignedFlat
         });
         saveDbSnapshotToCache();
         document.getElementById("createUserName").value = "";
@@ -4632,7 +4927,7 @@
       );
 
       if (existingBill) {
-        statusTag.innerText = `Existing Bill Found (${formatMonthLabel(chosenMonth)}) - Locked Snapshot`;
+        statusTag.innerText = `Existing Bill Found - ${formatMonthLabel(chosenMonth)} - Locked Snapshot`;
         statusTag.className = "calc-month-status-tag existing";
         submitBtnText.innerText = `Update & Replace Bill for ${formatMonthLabel(chosenMonth)}`;
 
@@ -4666,7 +4961,7 @@
         document.getElementById("pngRolloverHint").innerText = "Loaded from saved bill snapshot";
         document.getElementById("waterRolloverHint").innerText = "Loaded from saved bill snapshot";
       } else {
-        statusTag.innerText = `New Month Calculation (${formatMonthLabel(chosenMonth)})`;
+        statusTag.innerText = `New Month Calculation - ${formatMonthLabel(chosenMonth)}`;
         statusTag.className = "calc-month-status-tag";
         submitBtnText.innerText = "Calculate Bill";
 
@@ -4746,6 +5041,13 @@
     }
 
     function openFlatDetailsModal(flat, renter) {
+      const viewerScope = resolveViewerAssignedScope();
+      if (activeRole === "Viewer" && viewerScope) {
+        if (!isSamePropAndFlat(flat.PropertyName, flat.FlatName, viewerScope.prop, viewerScope.flat)) {
+          return triggerSideToast("Access Restricted", "Your Viewer account is only permitted to view your assigned flat.", false);
+        }
+      }
+
       selectedFlat = flat;
       activeFlatRenterObj = renter || null;
       document.getElementById("modalHeaderTitle").innerText = `${flat.PropertyName} - Space Details`;
@@ -4771,6 +5073,12 @@
       document.getElementById("profUpiName").value = resolvedContact.upiName;
       document.getElementById("profUpiId").value = resolvedContact.upiId;
       document.getElementById("profContractMobile").value = resolvedContact.contractMobile;
+
+      const aadhaarPromptEl = document.getElementById("aadhaarPreviousRenterPrompt");
+      if (aadhaarPromptEl) {
+        aadhaarPromptEl.style.display = "none";
+        aadhaarPromptEl.innerHTML = "";
+      }
 
       if (renter) {
         document.getElementById("renterName").value = renter.RenterName || "";
@@ -5064,7 +5372,7 @@
 
       newestFirstBills.forEach(bill => {
         const cleanMonth = normalizeMonthYear(bill.MonthYear);
-        const displayMonth = formatMonthLabel(cleanMonth);
+        const displayMonth = formatMonthNameOnly(cleanMonth);
         const carryVal = parseFloat(bill.PrevCarryBalance) || 0;
         const carryText = carryVal > 0 ? `+₹${carryVal} (Due)` : (carryVal < 0 ? `-₹${Math.abs(carryVal)} (Adv)` : `₹0`);
 
@@ -6505,6 +6813,159 @@
       await sendGasPost(payload);
     }
 
+    // Requirement 5: Aadhaar Number Lookup for Left / Returning Renters + Reactivate Same Profile & Continue Billing
+    function normalizeAadhaarString(val) {
+      return String(val || "").replace(/[\s-]+/g, "").trim().toLowerCase();
+    }
+
+    function handleAadhaarLookupInput(rawVal) {
+      const promptEl = document.getElementById("aadhaarPreviousRenterPrompt");
+      if (!promptEl) return;
+
+      const cleanAadhaar = normalizeAadhaarString(rawVal);
+      if (!cleanAadhaar || cleanAadhaar.length < 4) {
+        promptEl.style.display = "none";
+        promptEl.innerHTML = "";
+        return;
+      }
+
+      // Find matching saved renter profiles with this Aadhaar number (prioritizing renters who have left / Inactive)
+      const matches = (DB.renters || [])
+        .map((r, idx) => ({ r, rId: r.RenterID || `IDX-${idx}` }))
+        .filter(({ r }) => {
+          const rAadhaar = normalizeAadhaarString(r.IdentityDocNumber);
+          if (!rAadhaar || rAadhaar !== cleanAadhaar) return false;
+          // Show if the renter has left (Inactive) or if it's a saved profile different from the currently loaded active profile
+          if (String(r.Status || "").trim().toLowerCase() !== "active") return true;
+          if (!activeFlatRenterObj || String(r.RenterID || "") !== String(activeFlatRenterObj.RenterID || "")) return true;
+          return false;
+        });
+
+      if (matches.length === 0) {
+        promptEl.style.display = "none";
+        promptEl.innerHTML = "";
+        return;
+      }
+
+      // Sort so Inactive (left) renters appear first
+      matches.sort((a, b) => {
+        const aLeft = String(a.r.Status || "").toLowerCase() !== "active" ? 0 : 1;
+        const bLeft = String(b.r.Status || "").toLowerCase() !== "active" ? 0 : 1;
+        return aLeft - bLeft;
+      });
+
+      const bestMatch = matches[0];
+      const pastRenter = bestMatch.r;
+      const pastBills = getBillsForSpecificRenter(pastRenter.PropertyName, pastRenter.FlatName, pastRenter);
+      const safeRId = String(bestMatch.rId || "").replace(/'/g, "\\'");
+      const avatarSrc = (!isPlaceholderImageUrl(pastRenter.ProfileImageURL))
+        ? pastRenter.ProfileImageURL
+        : EMPTY_PROFILE_PLACEHOLDER;
+
+      promptEl.style.display = "block";
+      promptEl.innerHTML = `
+        <div style="background:rgba(16, 185, 129, 0.12); border:1.5px solid var(--accent-green); border-radius:12px; padding:12px; text-align:left;">
+          <div style="display:flex; align-items:center; gap:6px; font-size:0.76rem; font-weight:800; color:var(--accent-green); margin-bottom:8px;">
+            <i class="fa-solid fa-clock-rotate-left"></i> Returning Renter Found — This Renter Has Stayed Before!
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+            <div class="renter-avatar" style="width:44px; height:44px; flex-shrink:0;">
+              <img src="${avatarSrc}" alt="${pastRenter.RenterName || 'Tenant'}">
+            </div>
+            <div style="font-size:0.78rem; line-height:1.35;">
+              <div><strong>${pastRenter.RenterName || 'Saved Renter'}</strong> <span class="badge-unpaid" style="font-size:0.65rem; margin-left:4px;">${pastRenter.Status || 'Past Stay'}</span></div>
+              <div style="color:var(--text-muted);">Previous Flat: <strong>${pastRenter.PropertyName || '--'} - Flat ${pastRenter.FlatName || '--'}</strong> • Phone: ${pastRenter.MobileNumber || '--'}</div>
+              <div style="color:var(--text-muted);">Stay: ${pastRenter.JoinDate || '--'} to ${pastRenter.EndDate || 'Left'} • Past Bills in Profile: <strong>${pastBills.length}</strong></div>
+            </div>
+          </div>
+          <button
+            type="button"
+            class="btn-primary"
+            style="padding:9px 12px; font-size:0.78rem; background:var(--accent-green);"
+            onclick="reactivatePreviousRenterProfile('${safeRId}')"
+          >
+            <i class="fa-solid fa-user-check"></i> Reactivate &amp; Continue With Same Profile
+          </button>
+        </div>
+      `;
+    }
+
+    async function reactivatePreviousRenterProfile(renterIdOrIdx) {
+      if (activeRole === "Viewer" || !selectedFlat) return;
+
+      let matchedRenter = null;
+      if (String(renterIdOrIdx).startsWith("IDX-")) {
+        const idx = parseInt(String(renterIdOrIdx).replace("IDX-", ""), 10);
+        if (!isNaN(idx) && DB.renters[idx]) matchedRenter = DB.renters[idx];
+      }
+      if (!matchedRenter) {
+        matchedRenter = (DB.renters || []).find(r => String(r.RenterID || "").trim() === String(renterIdOrIdx).trim());
+      }
+      if (!matchedRenter) {
+        return triggerSideToast("Not Found", "Could not find the saved renter profile to reactivate.", false);
+      }
+
+      if (!matchedRenter.RenterID) {
+        matchedRenter.RenterID = "R-" + Date.now();
+      }
+
+      // Archive any other currently active renter in this flat so only the reactivated profile is Active
+      DB.renters.forEach(r => {
+        if (
+          r !== matchedRenter &&
+          isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName) &&
+          String(r.Status || "").trim().toLowerCase() === "active"
+        ) {
+          r.Status = "Inactive";
+          r.EndDate = new Date().toISOString().split("T")[0];
+        }
+      });
+
+      // Reactivate the returning renter within this flat while preserving their exact RenterID and profile
+      matchedRenter.PropertyName = selectedFlat.PropertyName;
+      matchedRenter.FlatName = selectedFlat.FlatName;
+      matchedRenter.Status = "Active";
+      matchedRenter.EndDate = "";
+      activeFlatRenterObj = matchedRenter;
+
+      // Populate form fields with the returning renter's saved profile
+      document.getElementById("renterName").value = matchedRenter.RenterName || "";
+      document.getElementById("renterIdentityNum").value = matchedRenter.IdentityDocNumber || "";
+      document.getElementById("renterMobile").value = matchedRenter.MobileNumber || "";
+      document.getElementById("renterAltMobile").value = matchedRenter.AltMobileNumber || "";
+      document.getElementById("renterAddress").value = matchedRenter.Address || "";
+      document.getElementById("renterFamily").value = matchedRenter.TotalFamilyMembers || "1";
+      document.getElementById("renterStatus").value = "Active";
+      document.getElementById("renterJoinDate").value = matchedRenter.JoinDate || new Date().toISOString().split("T")[0];
+      document.getElementById("renterEndDate").value = "";
+
+      updateRenterImageSlotUI("profile", matchedRenter.ProfileImageURL || "");
+      updateRenterImageSlotUI("identity", matchedRenter.IdentityImageURL || "");
+
+      const promptEl = document.getElementById("aadhaarPreviousRenterPrompt");
+      if (promptEl) {
+        promptEl.innerHTML = `
+          <div style="background:rgba(16, 185, 129, 0.14); border:1px solid var(--accent-green); border-radius:10px; padding:8px 12px; font-size:0.76rem; color:var(--accent-green); font-weight:700;">
+            <i class="fa-solid fa-circle-check"></i> Profile Reactivated (${matchedRenter.RenterName})! All new bills will now generate within this same profile.
+          </div>
+        `;
+      }
+
+      handleBillingMonthChange();
+      populateHistoryLedger(selectedFlat.PropertyName, selectedFlat.FlatName);
+      populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
+      saveDbSnapshotToCache();
+      renderAllDashboardUI();
+
+      triggerSideToast(
+        "Same Profile Reactivated",
+        `${matchedRenter.RenterName}'s profile is now Active! All new bills will generate within this same profile.`,
+        true
+      );
+
+      await submitRenterProfileRight();
+    }
+
     async function submitRenterProfileRight() {
       if (activeRole === "Viewer" || !selectedFlat) return;
       rebindSelectedFlatAndRenterReferences();
@@ -6575,7 +7036,10 @@
         }
       });
 
+      // Match by RenterID first (so reactivated returning renters update in-place), otherwise active renter in this flat
       let existingActiveRenter = DB.renters.find(r =>
+        targetRenterId && String(r.RenterID || "").trim() === String(targetRenterId).trim()
+      ) || DB.renters.find(r =>
         isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName) &&
         String(r.Status).trim().toLowerCase() === "active"
       );
@@ -6590,6 +7054,10 @@
         triggerSideToast("Renter Archived", "Past renter locked in history. Form cleared for new renter!", true);
       } else {
         if (existingActiveRenter) {
+          existingActiveRenter.PropertyName = payload.propertyName;
+          existingActiveRenter.FlatName = payload.flatName;
+          existingActiveRenter.Status = "Active";
+          existingActiveRenter.EndDate = "";
           existingActiveRenter.RenterName = payload.renterName;
           existingActiveRenter.IdentityDocNumber = payload.identityDocNumber;
           existingActiveRenter.MobileNumber = payload.mobileNumber;
@@ -6672,6 +7140,11 @@
       document.getElementById("renterStatus").value = "Active";
       document.getElementById("renterJoinDate").value = new Date().toISOString().split('T')[0];
       document.getElementById("renterEndDate").value = "";
+      const promptEl = document.getElementById("aadhaarPreviousRenterPrompt");
+      if (promptEl) {
+        promptEl.style.display = "none";
+        promptEl.innerHTML = "";
+      }
       updateRenterImageSlotUI("profile", "");
       updateRenterImageSlotUI("identity", "");
     }
