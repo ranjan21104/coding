@@ -1615,7 +1615,7 @@
       }
     }
   </style>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body class="theme-black">
 
   <!-- PERMANENT HOUSE BACKGROUND CANVAS FOR HOME PAGE & LOGIN -->
@@ -3298,6 +3298,35 @@
         return triggerSideToast("Destination Required", "Please choose both property and flat/room.", false);
       }
 
+      if (!pendingReactivatingRenter.RenterID) {
+        pendingReactivatingRenter.RenterID = "R-" + Date.now();
+      }
+
+      // Archive any other currently active renter in the destination flat and stamp their bills
+      const todayIso = new Date().toISOString().split("T")[0];
+      (DB.renters || []).forEach(r => {
+        if (
+          r !== pendingReactivatingRenter &&
+          isSamePropAndFlat(r.PropertyName, r.FlatName, destProp, destFlat) &&
+          String(r.Status || "").trim().toLowerCase() === "active"
+        ) {
+          const outgoingId = r.RenterID || ("R-" + Date.now());
+          r.RenterID = outgoingId;
+          r.Status = "Inactive";
+          r.EndDate = r.EndDate || todayIso;
+          const outgoingNameClean = String(r.RenterName || "").trim().toLowerCase();
+          (DB.bills || []).forEach(b => {
+            if (isSamePropAndFlat(b.PropertyName, b.FlatName, destProp, destFlat)) {
+              const bRId = String(b.RenterID || "").trim();
+              const bTName = String(b.TenantName || "").trim().toLowerCase();
+              if (!bRId && (!outgoingNameClean || bTName === outgoingNameClean)) {
+                b.RenterID = outgoingId;
+              }
+            }
+          });
+        }
+      });
+
       // Requirement 6: Reactivate strictly into the selected destination flat, not automatically into previous flat
       pendingReactivatingRenter.PropertyName = destProp;
       pendingReactivatingRenter.FlatName = destFlat;
@@ -3313,6 +3342,28 @@
         selectedFlat = targetFlatObj;
       }
       activeFlatRenterObj = pendingReactivatingRenter;
+
+      if (selectedFlat && isSamePropAndFlat(selectedFlat.PropertyName, selectedFlat.FlatName, destProp, destFlat)) {
+        const rNameEl = document.getElementById("renterName");
+        if (rNameEl) {
+          document.getElementById("profRent").value = rentAmt;
+          document.getElementById("renterName").value = pendingReactivatingRenter.RenterName || "";
+          document.getElementById("renterIdentityNum").value = pendingReactivatingRenter.IdentityDocNumber || "";
+          document.getElementById("renterMobile").value = pendingReactivatingRenter.MobileNumber || "";
+          document.getElementById("renterAltMobile").value = pendingReactivatingRenter.AltMobileNumber || "";
+          document.getElementById("renterAddress").value = pendingReactivatingRenter.Address || "";
+          document.getElementById("renterFamily").value = pendingReactivatingRenter.TotalFamilyMembers || "1";
+          document.getElementById("renterStatus").value = "Active";
+          document.getElementById("renterJoinDate").value = joinDate;
+          document.getElementById("renterEndDate").value = "";
+          updateRenterImageSlotUI("profile", pendingReactivatingRenter.ProfileImageURL || "");
+          updateRenterImageSlotUI("identity", pendingReactivatingRenter.IdentityImageURL || "");
+        }
+        handleBillingMonthChange();
+        populateHistoryLedger(destProp, destFlat);
+        populateIsolatedRenterHistoryDropdown(destProp, destFlat, true);
+        renderAllRentersGraphForFlat(destProp, destFlat);
+      }
 
       closeModal("reactivateDestinationModal");
       triggerSideToast(
@@ -3338,7 +3389,9 @@
         renterStatus: "Active",
         joinDate: joinDate,
         endDate: "",
-        rentAmount: rentAmt
+        rentAmount: rentAmt,
+        profileImageUrl: pendingReactivatingRenter.ProfileImageURL || "",
+        identityImageUrl: pendingReactivatingRenter.IdentityImageURL || ""
       });
     }
 
@@ -3931,9 +3984,7 @@ function formatMonthLabel(rawVal) {
       if (activeRole !== "Viewer") return null;
       let prop = String(activeAssignedProperty || "").trim();
       let flat = String(activeAssignedFlat || "").trim();
-      if (prop === "ALL") return { prop: "ALL", flat: "" };
-      if (prop.includes(",")) return { prop: prop, flat: "" };
-      if ((!prop || !flat) && activeUser) {
+      if (!prop && activeUser) {
         const matchedU = (DB.users || []).find(u => String(u.Username || "").trim().toLowerCase() === String(activeUser).trim().toLowerCase());
         if (matchedU) {
           prop = String(matchedU.AssignedProperty || prop || "").trim();
@@ -3942,15 +3993,32 @@ function formatMonthLabel(rawVal) {
           activeAssignedFlat = flat;
         }
       }
-      if (!prop || !flat) return null;
-      return { prop, flat };
+      if (!prop) return null;
+      if (prop.toUpperCase() === "ALL") return { mode: "ALL", prop: "ALL", flat: "" };
+      if (prop.includes(",") || !flat) {
+        const allowedProps = prop.split(",").map(s => s.trim()).filter(Boolean);
+        return { mode: "SELECTED", prop: prop, allowedProps, flat: "" };
+      }
+      return { mode: "FLAT", prop, flat };
+    }
+
+    function isPropertyAllowedForViewer(propertyName, viewerScope) {
+      if (!viewerScope) return false;
+      if (viewerScope.mode === "ALL") return true;
+      const target = String(propertyName || "").trim().toLowerCase();
+      if (viewerScope.mode === "SELECTED") {
+        return (viewerScope.allowedProps || []).some(p => p.toLowerCase() === target);
+      }
+      return String(viewerScope.prop || "").trim().toLowerCase() === target;
     }
 
     function renderAllDashboardUI() {
       const viewerScope = resolveViewerAssignedScope();
       if (activeRole === "Viewer") {
         const flatsContainer = document.getElementById("flatsList");
-        if (viewerScope) {
+        const propsBar = document.querySelector(".properties-bar");
+        if (viewerScope && viewerScope.mode === "FLAT") {
+          if (propsBar) propsBar.style.display = "none";
           selectedProperty = viewerScope.prop;
           renderFlatsGrid(viewerScope.prop);
           const assignedFlatObj = findFlatObject(viewerScope.prop, viewerScope.flat);
@@ -3962,17 +4030,41 @@ function formatMonthLabel(rawVal) {
             );
             openFlatDetailsModal(assignedFlatObj, assignedRenter);
           }
+        } else if (viewerScope && (viewerScope.mode === "ALL" || viewerScope.mode === "SELECTED")) {
+          if (propsBar) propsBar.style.display = "flex";
+          renderPropertiesRow();
+          if (selectedProperty && isPropertyAllowedForViewer(selectedProperty, viewerScope)) {
+            renderFlatsGrid(selectedProperty);
+          } else {
+            const firstAllowedProp = (DB.properties || []).find(p => isPropertyAllowedForViewer(p.PropertyName, viewerScope));
+            if (firstAllowedProp) {
+              selectedProperty = firstAllowedProp.PropertyName;
+              renderPropertiesRow();
+              renderFlatsGrid(selectedProperty);
+            } else if (flatsContainer) {
+              flatsContainer.innerHTML = `
+                <div class="empty-flats-prompt">
+                  <i class="fa-solid fa-door-closed"></i>
+                  <h3>No Properties Found</h3>
+                  <p>No properties match your Viewer access scope yet.</p>
+                </div>
+              `;
+            }
+          }
         } else if (flatsContainer) {
           flatsContainer.innerHTML = `
             <div class="empty-flats-prompt">
               <i class="fa-solid fa-door-closed"></i>
               <h3>No Flat Assigned to This Viewer Account</h3>
-              <p>Please ask an Admin to assign a specific flat to your Viewer User ID.</p>
+              <p>Please ask an Admin to assign a specific flat or property to your Viewer User ID.</p>
             </div>
           `;
         }
         return;
       }
+
+      const propsBar = document.querySelector(".properties-bar");
+      if (propsBar) propsBar.style.display = "";
 
       updateGlobalProfitAndLoss();
       renderPropertiesRow();
@@ -4129,21 +4221,30 @@ function formatMonthLabel(rawVal) {
       const badge = document.getElementById("headerRoleBadge");
       if (badge) {
         const scope = resolveViewerAssignedScope();
-        badge.innerText = (activeRole === "Viewer" && scope)
-          ? `Viewer • ${scope.prop} (Flat ${scope.flat})`
-          : activeRole;
+        if (activeRole === "Viewer" && scope) {
+          if (scope.mode === "ALL") badge.innerText = "Viewer • All Properties";
+          else if (scope.mode === "SELECTED") badge.innerText = `Viewer • ${scope.prop}`;
+          else badge.innerText = `Viewer • ${scope.prop} (Flat ${scope.flat})`;
+        } else {
+          badge.innerText = activeRole;
+        }
         badge.style.background = activeRole === "Admin" ? "rgba(16, 185, 129, 0.2)" : "rgba(245, 158, 11, 0.2)";
       }
       const btnLoginHist = document.getElementById("btnOtherOptLoginHistory");
       const panelLoginHist = document.getElementById("otherPanelLoginHistory");
+      const btnEditEvery = document.getElementById("btnOtherOptEditEverything");
+      const panelEditEvery = document.getElementById("otherPanelEditEverything");
       const btnGrid = document.getElementById("otherOptionsBtnGrid");
       if (activeRole !== "Admin") {
         if (btnLoginHist) btnLoginHist.style.display = "none";
         if (panelLoginHist) panelLoginHist.style.display = "none";
+        if (btnEditEvery) btnEditEvery.style.display = "none";
+        if (panelEditEvery) panelEditEvery.style.display = "none";
         if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr";
       } else {
         if (btnLoginHist) btnLoginHist.style.display = "flex";
-        if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr 1fr";
+        if (btnEditEvery) btnEditEvery.style.display = "flex";
+        if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr 1fr 1fr";
       }
     }
 
@@ -4689,7 +4790,12 @@ function formatMonthLabel(rawVal) {
     function renderPropertiesRow() {
       const container = document.getElementById("propertiesList");
       container.innerHTML = "";
-      DB.properties.forEach(prop => {
+      const viewerScope = resolveViewerAssignedScope();
+      const visibleProps = (activeRole === "Viewer" && viewerScope)
+        ? DB.properties.filter(p => isPropertyAllowedForViewer(p.PropertyName, viewerScope))
+        : DB.properties;
+
+      visibleProps.forEach(prop => {
         const div = document.createElement("div");
         div.className = `prop-card ${selectedProperty === prop.PropertyName ? 'active' : ''}`;
         div.onclick = () => selectProperty(prop.PropertyName);
@@ -4721,11 +4827,16 @@ function formatMonthLabel(rawVal) {
       const container = document.getElementById("flatsList");
       container.innerHTML = "";
       const viewerScope = resolveViewerAssignedScope();
-      const targetPropClean = String((viewerScope ? viewerScope.prop : propertyName) || "").trim().toLowerCase();
+      const effectivePropName = (viewerScope && viewerScope.mode === "FLAT") ? viewerScope.prop : propertyName;
+      const targetPropClean = String(effectivePropName || "").trim().toLowerCase();
 
       let flats = DB.flats.filter(f => String(f.PropertyName || "").trim().toLowerCase() === targetPropClean);
       if (activeRole === "Viewer" && viewerScope) {
-        flats = flats.filter(f => isSamePropAndFlat(f.PropertyName, f.FlatName, viewerScope.prop, viewerScope.flat));
+        if (viewerScope.mode === "FLAT") {
+          flats = flats.filter(f => isSamePropAndFlat(f.PropertyName, f.FlatName, viewerScope.prop, viewerScope.flat));
+        } else {
+          flats = flats.filter(f => isPropertyAllowedForViewer(f.PropertyName, viewerScope));
+        }
       }
 
       if (flats.length === 0) {
@@ -5282,32 +5393,6 @@ function formatMonthLabel(rawVal) {
       });
     }
 
-    function switchOtherSubOption(optionMode) {
-      const usersPanel = document.getElementById("otherPanelUsers");
-      const historyPanel = document.getElementById("otherPanelLoginHistory");
-      const btnUsers = document.getElementById("btnOtherOptUsers");
-      const btnHistory = document.getElementById("btnOtherOptLoginHistory");
-      const isAdmin = String(activeRole || "").trim().toLowerCase() === "admin";
-
-      if (optionMode === "history") {
-        if (!isAdmin) {
-          triggerSideToast("Admin Permission Required", "Only Admin users have permission to view Last Login History.", false);
-          return;
-        }
-        if (usersPanel) usersPanel.style.display = "none";
-        if (historyPanel) historyPanel.style.display = "block";
-        if (btnUsers) btnUsers.className = "btn-ledger-action";
-        if (btnHistory) btnHistory.className = "btn-primary admin-only";
-        currentLoginHistoryPage = 1;
-        renderLoginHistoryPage();
-      } else {
-        if (usersPanel) usersPanel.style.display = "block";
-        if (historyPanel) historyPanel.style.display = "none";
-        if (btnUsers) btnUsers.className = "btn-primary";
-        if (btnHistory) btnHistory.className = "btn-ledger-action admin-only";
-      }
-    }
-
     function changeLoginHistoryPage(delta) {
       if (String(activeRole || "").trim().toLowerCase() !== "admin") return;
       const logs = Array.isArray(DB.loginHistory) ? DB.loginHistory : [];
@@ -5484,13 +5569,21 @@ function formatMonthLabel(rawVal) {
       const btnUsers = document.getElementById("btnOtherOptUsers");
       const btnHistory = document.getElementById("btnOtherOptLoginHistory");
       const btnEe = document.getElementById("btnOtherOptEditEverything");
+      const isAdmin = String(activeRole || "").trim().toLowerCase() === "admin";
+
+      if ((opt === "history" || opt === "editEverything") && !isAdmin) {
+        triggerSideToast("Admin Permission Required", "Only Admin users have permission to access this section.", false);
+        opt = "users";
+      }
 
       [usersPanel, historyPanel, eePanel].forEach(p => { if (p) p.style.display = "none"; });
-      [btnUsers, btnHistory, btnEe].forEach(b => { if (b) b.className = "btn-ledger-action admin-only"; });
+      if (btnUsers) btnUsers.className = "btn-ledger-action";
+      [btnHistory, btnEe].forEach(b => { if (b) b.className = "btn-ledger-action admin-only"; });
 
       if (opt === "history") {
         if (historyPanel) historyPanel.style.display = "block";
         if (btnHistory) btnHistory.className = "btn-primary admin-only";
+        currentLoginHistoryPage = 1;
         renderLoginHistoryPage();
       } else if (opt === "editEverything") {
         if (eePanel) eePanel.style.display = "block";
@@ -5956,6 +6049,8 @@ function renderRegisteredUsersList() {
       const isAdmin = String(activeRole || "").trim().toLowerCase() === "admin";
       const btnLoginHist = document.getElementById("btnOtherOptLoginHistory");
       const panelLoginHist = document.getElementById("otherPanelLoginHistory");
+      const btnEditEvery = document.getElementById("btnOtherOptEditEverything");
+      const panelEditEvery = document.getElementById("otherPanelEditEverything");
       const btnGrid = document.getElementById("otherOptionsBtnGrid");
 
       populateCreateUserFlatsDropdown();
@@ -5964,11 +6059,14 @@ function renderRegisteredUsersList() {
       if (!isAdmin) {
         if (btnLoginHist) btnLoginHist.style.display = "none";
         if (panelLoginHist) panelLoginHist.style.display = "none";
+        if (btnEditEvery) btnEditEvery.style.display = "none";
+        if (panelEditEvery) panelEditEvery.style.display = "none";
         if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr";
         switchOtherSubOption("users");
       } else {
         if (btnLoginHist) btnLoginHist.style.display = "flex";
-        if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr 1fr";
+        if (btnEditEvery) btnEditEvery.style.display = "flex";
+        if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr 1fr 1fr";
         renderLoginHistoryPage();
       }
 
@@ -6050,8 +6148,13 @@ function renderRegisteredUsersList() {
         return triggerSideToast("Missing Fields", "Please fill in Name, Username, and Password.", false);
       }
 
-      if (role === "Viewer" && (!assignedProperty || !assignedFlat)) {
-        return triggerSideToast("Select Flat for Viewer", "Please select which Property and specific Flat this Viewer account is allowed to view.", false);
+      if (role === "Viewer") {
+        if (scopeMode === "SELECTED" && !assignedProperty) {
+          return triggerSideToast("Select Properties", "Please select at least one Property for this Viewer account.", false);
+        }
+        if (scopeMode === "FLAT" && (!assignedProperty || !assignedFlat)) {
+          return triggerSideToast("Select Flat for Viewer", "Please select which Property and specific Flat this Viewer account is allowed to view.", false);
+        }
       }
 
       if (DB.users && DB.users.some(u => String(u.Username).toLowerCase() === newU.toLowerCase())) {
@@ -6535,9 +6638,11 @@ function renderRegisteredUsersList() {
       document.getElementById("editLeftAddress").value = targetRenter.Address || "";
       document.getElementById("editLeftFamily").value = targetRenter.TotalFamilyMembers || 1;
       document.getElementById("editLeftStatus").value = targetRenter.Status || "Inactive";
-      // Requirement 8: Set exact YYYY-MM-DD date without timezone conversion or shift
-      document.getElementById("editLeftJoinDate").value = formatDateOnly(targetRenter.JoinDate);
-      document.getElementById("editLeftEndDate").value = formatDateOnly(targetRenter.EndDate);
+      // Requirement 8: Set exact YYYY-MM-DD date without timezone conversion or shift (and empty string "" instead of "--" for <input type="date">)
+      const cleanJoin = formatDateOnly(targetRenter.JoinDate);
+      const cleanEnd = formatDateOnly(targetRenter.EndDate);
+      document.getElementById("editLeftJoinDate").value = cleanJoin === "--" ? "" : cleanJoin;
+      document.getElementById("editLeftEndDate").value = cleanEnd === "--" ? "" : cleanEnd;
 
       openModal("editLeftRenterModal");
     }
@@ -6750,6 +6855,7 @@ function renderRegisteredUsersList() {
     function setRhGraphYear(year) {
       rhSelectedGraphYear = parseInt(year, 10);
       if (selectedFlat) {
+        renderAllRentersGraphForFlat(selectedFlat.PropertyName, selectedFlat.FlatName);
         renderRhThreeYearMonthlyChart(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj);
       }
     }
@@ -6892,8 +6998,11 @@ function renderRegisteredUsersList() {
 function openFlatDetailsModal(flat, renter) {
       const viewerScope = resolveViewerAssignedScope();
       if (activeRole === "Viewer" && viewerScope) {
-        if (!isSamePropAndFlat(flat.PropertyName, flat.FlatName, viewerScope.prop, viewerScope.flat)) {
+        if (viewerScope.mode === "FLAT" && !isSamePropAndFlat(flat.PropertyName, flat.FlatName, viewerScope.prop, viewerScope.flat)) {
           return triggerSideToast("Access Restricted", "Your Viewer account is only permitted to view your assigned flat.", false);
+        }
+        if (viewerScope.mode === "SELECTED" && !isPropertyAllowedForViewer(flat.PropertyName, viewerScope)) {
+          return triggerSideToast("Access Restricted", "Your Viewer account is not permitted to view this property.", false);
         }
       }
 
@@ -7178,9 +7287,11 @@ function openFlatDetailsModal(flat, renter) {
       handleBillingMonthChange();
       populateHistoryLedger(selectedFlat.PropertyName, selectedFlat.FlatName);
       populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName);
+      renderAllRentersGraphForFlat(selectedFlat.PropertyName, selectedFlat.FlatName);
 
       await sendGasPost({
         action: "recordBill",
+        billId: newBillObj.BillID,
         propertyName: newBillObj.PropertyName,
         flatName: newBillObj.FlatName,
         monthYear: chosenMonth,
@@ -7667,7 +7778,7 @@ function openFlatDetailsModal(flat, renter) {
       const bill = currentOpenedReceiptBill;
 
       const rawPhone = currentOpenedReceiptRenter?.MobileNumber || currentOpenedReceiptRenter?.AltMobileNumber || bill.TenantMobile || "";
-      const formattedPhone = formatWhatsAppPhone(rawPhone);
+      let formattedPhone = formatWhatsAppPhone(rawPhone);
 
       recalculateReceiptSelection();
 
@@ -8388,12 +8499,19 @@ function openFlatDetailsModal(flat, renter) {
       const target = list.find(item => String(item.id || item.FDID) === String(id));
       if (!target) return;
 
-      editingFdRecordId = String(target.id);
+      editingFdRecordId = String(target.id || target.FDID);
       document.getElementById("fdBankName").value = target.bank || target.BankName || "";
       document.getElementById("fdAmount").value = target.amount !== undefined ? target.amount : (target.PrincipalAmount !== undefined ? target.PrincipalAmount : "");
       document.getElementById("fdRate").value = target.rate !== undefined ? target.rate : (target.InterestRate || "");
-      document.getElementById("fdMaturityDate").value = target.maturity || target.MaturityDate || "";
+      const rawMat = target.maturity || target.MaturityDate || "";
+      const cleanMat = formatDateOnly(rawMat);
+      document.getElementById("fdMaturityDate").value = cleanMat === "--" ? "" : cleanMat;
       document.getElementById("fdNotes").value = target.notes || target.Notes || "";
+      const srcPropEl = document.getElementById("fdSourceProperty");
+      const savedSrcProp = target.sourceProperty || target.SourceProperty || "All Properties";
+      if (srcPropEl) {
+        srcPropEl.value = savedSrcProp;
+      }
 
       const titleEl = document.getElementById("fdFormTitle");
       const btnTextEl = document.getElementById("btnSubmitFdRecordText");
@@ -8442,16 +8560,25 @@ function openFlatDetailsModal(flat, renter) {
       const isEditing = Boolean(editingFdRecordId);
 
       if (isEditing) {
-        const idx = list.findIndex(item => String(item.id) === String(editingFdRecordId));
+        const idx = list.findIndex(item => String(item.id || item.FDID) === String(editingFdRecordId));
         if (idx !== -1) {
+          const recId = list[idx].id || list[idx].FDID || editingFdRecordId;
           savedRecord = {
             ...list[idx],
+            id: recId,
+            FDID: recId,
             bank,
+            BankName: bank,
             amount,
+            PrincipalAmount: amount,
             rate,
+            InterestRate: rate,
             maturity,
+            MaturityDate: maturity,
             notes,
+            Notes: notes,
             sourceProperty,
+            SourceProperty: sourceProperty,
             updatedAt: new Date().toISOString()
           };
           list[idx] = savedRecord;
@@ -8459,14 +8586,22 @@ function openFlatDetailsModal(flat, renter) {
       }
 
       if (!savedRecord) {
+        const newId = editingFdRecordId || ("FD-" + Date.now());
         savedRecord = {
-          id: editingFdRecordId || ("FD-" + Date.now()),
+          id: newId,
+          FDID: newId,
           bank,
+          BankName: bank,
           amount,
+          PrincipalAmount: amount,
           rate,
+          InterestRate: rate,
           maturity,
+          MaturityDate: maturity,
           notes,
+          Notes: notes,
           sourceProperty,
+          SourceProperty: sourceProperty,
           createdAt: nowDate,
           updatedAt: new Date().toISOString()
         };
@@ -8583,7 +8718,7 @@ function openFlatDetailsModal(flat, renter) {
       const target = list.find(item => String(item.id || item.KhetID) === String(id));
       if (!target) return;
 
-      editingKhetRecordId = String(target.id);
+      editingKhetRecordId = String(target.id || target.KhetID);
       document.getElementById("khetName").value = target.name || target.KhetName || "";
       document.getElementById("khetCrop").value = target.crop !== undefined ? target.crop : (target.CropOrPurpose || "");
       document.getElementById("khetIncome").value = target.income !== undefined ? target.income : (target.IncomeAmount !== undefined ? target.IncomeAmount : "");
@@ -8636,15 +8771,23 @@ function openFlatDetailsModal(flat, renter) {
       const isEditing = Boolean(editingKhetRecordId);
 
       if (isEditing) {
-        const idx = list.findIndex(item => String(item.id) === String(editingKhetRecordId));
+        const idx = list.findIndex(item => String(item.id || item.KhetID) === String(editingKhetRecordId));
         if (idx !== -1) {
+          const recId = list[idx].id || list[idx].KhetID || editingKhetRecordId;
           savedRecord = {
             ...list[idx],
+            id: recId,
+            KhetID: recId,
             name,
+            KhetName: name,
             crop,
+            CropOrPurpose: crop,
             income,
+            IncomeAmount: income,
             expense,
+            ExpenseAmount: expense,
             notes,
+            Notes: notes,
             updatedAt: new Date().toISOString()
           };
           list[idx] = savedRecord;
@@ -8652,13 +8795,20 @@ function openFlatDetailsModal(flat, renter) {
       }
 
       if (!savedRecord) {
+        const newId = editingKhetRecordId || ("KHET-" + Date.now());
         savedRecord = {
-          id: editingKhetRecordId || ("KHET-" + Date.now()),
+          id: newId,
+          KhetID: newId,
           name,
+          KhetName: name,
           crop,
+          CropOrPurpose: crop,
           income,
+          IncomeAmount: income,
           expense,
+          ExpenseAmount: expense,
           notes,
+          Notes: notes,
           createdAt: nowDate,
           updatedAt: new Date().toISOString()
         };
@@ -8990,82 +9140,6 @@ function openFlatDetailsModal(flat, renter) {
           </button>
         </div>
       `;
-    }
-
-    async function reactivatePreviousRenterProfile(renterIdOrIdx) {
-      if (activeRole === "Viewer" || !selectedFlat) return;
-
-      let matchedRenter = null;
-      if (String(renterIdOrIdx).startsWith("IDX-")) {
-        const idx = parseInt(String(renterIdOrIdx).replace("IDX-", ""), 10);
-        if (!isNaN(idx) && DB.renters[idx]) matchedRenter = DB.renters[idx];
-      }
-      if (!matchedRenter) {
-        matchedRenter = (DB.renters || []).find(r => String(r.RenterID || "").trim() === String(renterIdOrIdx).trim());
-      }
-      if (!matchedRenter) {
-        return triggerSideToast("Not Found", "Could not find the saved renter profile to reactivate.", false);
-      }
-
-      if (!matchedRenter.RenterID) {
-        matchedRenter.RenterID = "R-" + Date.now();
-      }
-
-      // Archive any other currently active renter in this flat so only the reactivated profile is Active
-      DB.renters.forEach(r => {
-        if (
-          r !== matchedRenter &&
-          isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName) &&
-          String(r.Status || "").trim().toLowerCase() === "active"
-        ) {
-          r.Status = "Inactive";
-          r.EndDate = new Date().toISOString().split("T")[0];
-        }
-      });
-
-      // Reactivate the returning renter within this flat while preserving their exact RenterID and profile
-      matchedRenter.PropertyName = selectedFlat.PropertyName;
-      matchedRenter.FlatName = selectedFlat.FlatName;
-      matchedRenter.Status = "Active";
-      matchedRenter.EndDate = "";
-      activeFlatRenterObj = matchedRenter;
-
-      // Populate form fields with the returning renter's saved profile
-      document.getElementById("renterName").value = matchedRenter.RenterName || "";
-      document.getElementById("renterIdentityNum").value = matchedRenter.IdentityDocNumber || "";
-      document.getElementById("renterMobile").value = matchedRenter.MobileNumber || "";
-      document.getElementById("renterAltMobile").value = matchedRenter.AltMobileNumber || "";
-      document.getElementById("renterAddress").value = matchedRenter.Address || "";
-      document.getElementById("renterFamily").value = matchedRenter.TotalFamilyMembers || "1";
-      document.getElementById("renterStatus").value = "Active";
-      document.getElementById("renterJoinDate").value = matchedRenter.JoinDate || new Date().toISOString().split("T")[0];
-      document.getElementById("renterEndDate").value = "";
-
-      updateRenterImageSlotUI("profile", matchedRenter.ProfileImageURL || "");
-      updateRenterImageSlotUI("identity", matchedRenter.IdentityImageURL || "");
-
-      const promptEl = document.getElementById("aadhaarPreviousRenterPrompt");
-      if (promptEl) {
-        promptEl.innerHTML = `
-          <div style="background:rgba(16, 185, 129, 0.14); border:1px solid var(--accent-green); border-radius:10px; padding:8px 12px; font-size:0.76rem; color:var(--accent-green); font-weight:700;">
-            <i class="fa-solid fa-circle-check"></i> Profile Reactivated (${matchedRenter.RenterName})! All new bills will now generate within this same profile.
-          </div>
-        `;
-      }
-
-      handleBillingMonthChange();
-      populateHistoryLedger(selectedFlat.PropertyName, selectedFlat.FlatName);
-      populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
-      saveDbSnapshotToCache();
-      renderAllDashboardUI();
-
-      triggerSideToast(
-        "Same Profile Reactivated",
-        `${matchedRenter.RenterName}'s profile is now Active! All new bills will generate within this same profile.`,
-        true
-      );
-
-      await submitRenterProfileRight();
     }
 
     async function submitRenterProfileRight() {
