@@ -514,7 +514,7 @@
     header.top-nav {
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 900;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
@@ -567,9 +567,9 @@
     .nav-center {
       position: relative;
       flex: 1;
-      max-width: 310px;
+      max-width: 340px;
       min-width: 160px;
-      z-index: 300;
+      z-index: 950;
     }
     .search-input {
       width: 100%;
@@ -596,16 +596,16 @@
       position: absolute;
       top: calc(100% + 8px);
       left: 0;
-      width: 380px;
+      width: 400px;
       max-width: 92vw;
-      max-height: 410px;
+      max-height: 420px;
       overflow-y: auto;
       background: var(--bg-modal);
       border: 1.5px solid var(--primary);
       border-radius: 14px;
-      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.65);
+      box-shadow: 0 22px 48px rgba(0, 0, 0, 0.75);
       padding: 10px;
-      z-index: 950;
+      z-index: 9999;
     }
     .search-results-dropdown.active {
       display: block;
@@ -620,13 +620,16 @@
       background: var(--bg-input);
       border: 1px solid var(--glass-border);
       margin-bottom: 8px;
-      transition: border-color 0.2s;
+      cursor: pointer;
+      transition: all 0.18s ease;
     }
     .search-result-person-item:last-child {
       margin-bottom: 0;
     }
     .search-result-person-item:hover {
       border-color: var(--primary);
+      background: rgba(79, 70, 229, 0.14);
+      transform: translateY(-1px);
     }
 
     /* Right Controls & Action Icons */
@@ -971,6 +974,72 @@
       background: rgba(0, 0, 0, 0.28);
       color: #ffffff;
       border: 1px solid rgba(255, 255, 255, 0.22);
+    }
+
+    /* Requirement 5: 3-Parameter Graph on All Flats (1. Base Rent, 2. Utilities, 3. Paid Collected) */
+    .flat-3param-graph-box {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.58);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #f8fafc;
+    }
+    .flat-3param-graph-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 8px;
+    }
+    .flat-3param-bars-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .flat-3param-row {
+      display: grid;
+      grid-template-columns: 74px 1fr 64px;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.71rem;
+    }
+    .flat-3param-label {
+      font-weight: 700;
+      color: #e2e8f0;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .flat-3param-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .flat-3param-track {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      overflow: hidden;
+    }
+    .flat-3param-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.35s ease;
+    }
+    .flat-3param-val {
+      text-align: right;
+      font-weight: 800;
+      color: #ffffff;
+      font-size: 0.72rem;
+      white-space: nowrap;
     }
 
     /* Global Modal Window */
@@ -1583,26 +1652,36 @@
   </div>
 
   <!-- ==========================================================================
-       COMPLETE TENANT PROFILE POP-UP WINDOW (OPENED VIA "VIEW PROFILE" ON SEARCH)
+       COMPLETE TENANT PROFILE POP-UP WINDOW (OPENED VIA "VIEW PROFILE" OR CLICKING ANY SEARCH PROFILE)
        ========================================================================== -->
-  <div id="tenantFullProfileModal" class="modal-overlay" style="z-index: 2750;">
+  <div id="tenantFullProfileModal" class="modal-overlay" style="z-index: 12000;">
     <div class="modal-window" style="max-width: 780px;">
       <button class="modal-close-btn" onclick="closeModal('tenantFullProfileModal')"><i class="fa-solid fa-xmark"></i></button>
       <div id="tenantFullProfileModalContent">
-        <!-- Populated dynamically when "View Profile" is clicked -->
+        <!-- Populated dynamically when any profile or "View Profile" is clicked -->
       </div>
     </div>
   </div>
 
-  <!-- FD (FIXED DEPOSIT) POP-UP MODAL -->
-  <div id="fdModal" class="modal-overlay" style="z-index: 2400;">
-    <div class="modal-window" style="max-width: 580px;">
+  <!-- FD (FIXED DEPOSIT) POP-UP MODAL (AUTO-SAVES TO GOOGLE SHEET + EDIT SUPPORT) -->
+  <div id="fdModal" class="modal-overlay" style="z-index: 2800;">
+    <div class="modal-window" style="max-width: 600px;">
       <button class="modal-close-btn" onclick="closeModal('fdModal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
-        <i class="fa-solid fa-building-columns" style="color:var(--primary);"></i> Fixed Deposit (FD) Records
-      </h3>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding-right:36px; margin-bottom: 12px;">
+        <h3 style="display:flex; align-items:center; gap:8px; margin:0;">
+          <i class="fa-solid fa-building-columns" style="color:var(--primary);"></i> Fixed Deposit (FD) Details
+        </h3>
+        <span style="font-size:0.7rem; font-weight:700; color:var(--accent-green); background:rgba(16,185,129,0.14); padding:3px 9px; border-radius:20px;">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Auto-Saves to Google Sheet
+        </span>
+      </div>
       <div class="calc-grid-card admin-only" style="margin-bottom: 14px;">
-        <div class="calc-grid-title"><span><i class="fa-solid fa-plus-circle"></i> Add New FD Record</span></div>
+        <div class="calc-grid-title">
+          <span id="fdFormTitle"><i class="fa-solid fa-plus-circle"></i> Add New FD Record</span>
+          <button type="button" id="btnCancelFdEdit" class="btn-ledger-action" style="display:none; padding:4px 10px; font-size:0.72rem;" onclick="cancelFdEdit()">
+            <i class="fa-solid fa-xmark"></i> Cancel Edit
+          </button>
+        </div>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
           <div class="form-group" style="margin-bottom:8px;">
             <label>Bank / FD Name <span class="req-star">*</span></label>
@@ -1625,24 +1704,36 @@
           <label>Notes / Account Number</label>
           <input type="text" id="fdNotes" class="form-control" placeholder="FD Account / Receipt No. or remarks">
         </div>
-        <button type="button" class="btn-primary" onclick="addFdRecord()"><i class="fa-solid fa-check"></i> Save FD Record</button>
+        <button type="button" id="btnSubmitFdRecord" class="btn-primary" onclick="addFdRecord()">
+          <i class="fa-solid fa-check"></i> <span id="btnSubmitFdRecordText">Save FD Record to Google Sheet</span>
+        </button>
       </div>
-      <div id="fdRecordsList" style="max-height: 280px; overflow-y: auto; display:flex; flex-direction:column; gap:8px;"></div>
+      <div id="fdRecordsList" style="max-height: 290px; overflow-y: auto; display:flex; flex-direction:column; gap:8px;"></div>
     </div>
   </div>
 
-  <!-- KHET (FIELD) POP-UP MODAL -->
-  <div id="khetModal" class="modal-overlay" style="z-index: 2400;">
-    <div class="modal-window" style="max-width: 580px;">
+  <!-- KHET (FARMLAND / FIELD) POP-UP MODAL (AUTO-SAVES TO GOOGLE SHEET + EDIT SUPPORT) -->
+  <div id="khetModal" class="modal-overlay" style="z-index: 2800;">
+    <div class="modal-window" style="max-width: 600px;">
       <button class="modal-close-btn" onclick="closeModal('khetModal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
-        <i class="fa-solid fa-seedling" style="color:var(--accent-green);"></i> Khet (Field) Records
-      </h3>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding-right:36px; margin-bottom: 12px;">
+        <h3 style="display:flex; align-items:center; gap:8px; margin:0;">
+          <i class="fa-solid fa-seedling" style="color:var(--accent-green);"></i> Khet (Farmland / Field) Details
+        </h3>
+        <span style="font-size:0.7rem; font-weight:700; color:var(--accent-green); background:rgba(16,185,129,0.14); padding:3px 9px; border-radius:20px;">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Auto-Saves to Google Sheet
+        </span>
+      </div>
       <div class="calc-grid-card admin-only" style="margin-bottom: 14px;">
-        <div class="calc-grid-title"><span><i class="fa-solid fa-plus-circle"></i> Add New Khet (Field) Entry</span></div>
+        <div class="calc-grid-title">
+          <span id="khetFormTitle"><i class="fa-solid fa-plus-circle"></i> Add New Khet (Farmland) Entry</span>
+          <button type="button" id="btnCancelKhetEdit" class="btn-ledger-action" style="display:none; padding:4px 10px; font-size:0.72rem;" onclick="cancelKhetEdit()">
+            <i class="fa-solid fa-xmark"></i> Cancel Edit
+          </button>
+        </div>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
           <div class="form-group" style="margin-bottom:8px;">
-            <label>Khet / Plot Name <span class="req-star">*</span></label>
+            <label>Khet / Farmland / Plot Name <span class="req-star">*</span></label>
             <input type="text" id="khetName" class="form-control" placeholder="e.g. North Field / Plot 4">
           </div>
           <div class="form-group" style="margin-bottom:8px;">
@@ -1662,9 +1753,11 @@
           <label>Date &amp; Notes</label>
           <input type="text" id="khetNotes" class="form-control" placeholder="Season, area, or payment remarks">
         </div>
-        <button type="button" class="btn-primary" onclick="addKhetRecord()"><i class="fa-solid fa-check"></i> Save Khet Record</button>
+        <button type="button" id="btnSubmitKhetRecord" class="btn-primary" onclick="addKhetRecord()">
+          <i class="fa-solid fa-check"></i> <span id="btnSubmitKhetRecordText">Save Farmland / Khet Record to Google Sheet</span>
+        </button>
       </div>
-      <div id="khetRecordsList" style="max-height: 280px; overflow-y: auto; display:flex; flex-direction:column; gap:8px;"></div>
+      <div id="khetRecordsList" style="max-height: 290px; overflow-y: auto; display:flex; flex-direction:column; gap:8px;"></div>
     </div>
   </div>
 
@@ -1928,6 +2021,16 @@
 
         <button class="btn-primary" onclick="submitChangeNameAndMobile()">Update Name & Mobile No.</button>
         <div id="nameChangeBottomMsg" class="bottom-status-msg"></div>
+      </div>
+
+      <!-- Requirement 4: Quick Access to Fixed Deposit (FD) & Farmland (Khet) Details within Profile -->
+      <div class="admin-only" style="margin-top:14px; padding-top:12px; border-top:1px solid var(--glass-border); display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <button type="button" class="btn-ledger-action" style="justify-content:center; padding:10px; font-size:0.8rem;" onclick="openFdModal()">
+          <i class="fa-solid fa-building-columns" style="color:#818cf8;"></i> Fixed Deposit (FD) Details
+        </button>
+        <button type="button" class="btn-ledger-action" style="justify-content:center; padding:10px; font-size:0.8rem;" onclick="openKhetModal()">
+          <i class="fa-solid fa-seedling" style="color:#34d399;"></i> Farmland (Khet) Details
+        </button>
       </div>
     </div>
   </div>
@@ -2230,6 +2333,9 @@
         <h3 id="modalHeaderTitle">Flat Space</h3>
         <span id="modalFlatTag" style="background:var(--primary); color:#ffffff; padding:4px 12px; border-radius:20px; font-size:0.82rem; font-weight:700;">--</span>
       </div>
+
+      <!-- Requirement 5: 3-Parameter Flat Analytics Graph inside Flat Details Modal -->
+      <div id="flatModalThreeParamGraph" style="margin-top: 12px;"></div>
 
       <!-- Navigation Bar -->
       <nav class="flat-nav-bar">
@@ -2683,7 +2789,9 @@
       renters: [],
       bills: [],
       users: [],
-      loginHistory: []
+      loginHistory: [],
+      fdRecords: [],
+      khetRecords: []
     };
 
     const EMPTY_PROFILE_PLACEHOLDER = "https://via.placeholder.com/150?text=No+Profile+Photo";
@@ -3064,13 +3172,17 @@
           DB.bills = sanitizeAllBillsMonths(parsed.bills || []);
           DB.users = parsed.users || [];
           DB.loginHistory = parsed.loginHistory || [];
+          DB.fdRecords = parsed.fdRecords || [];
+          DB.khetRecords = parsed.khetRecords || [];
           lastSyncedDataHash = JSON.stringify({
             p: DB.properties,
             f: DB.flats,
             r: DB.renters,
             b: DB.bills,
             u: DB.users,
-            l: DB.loginHistory
+            l: DB.loginHistory,
+            fd: DB.fdRecords,
+            kh: DB.khetRecords
           });
         } catch (e) {}
       }
@@ -3103,7 +3215,9 @@
           (DB.properties && DB.properties.length > 0) ||
           (DB.flats && DB.flats.length > 0) ||
           (DB.renters && DB.renters.length > 0) ||
-          (DB.bills && DB.bills.length > 0)
+          (DB.bills && DB.bills.length > 0) ||
+          (DB.fdRecords && DB.fdRecords.length > 0) ||
+          (DB.khetRecords && DB.khetRecords.length > 0)
         ) {
           localStorage.setItem("portal_full_db_backup", serialized);
         }
@@ -3113,7 +3227,9 @@
           r: DB.renters,
           b: DB.bills,
           u: DB.users,
-          l: DB.loginHistory
+          l: DB.loginHistory,
+          fd: DB.fdRecords,
+          kh: DB.khetRecords
         });
       } catch (e) {}
     }
@@ -3314,6 +3430,14 @@
           DB.renters = res.renters || [];
           DB.bills = sanitizeAllBillsMonths(res.bills || []);
           DB.users = res.users || [];
+          if (Array.isArray(res.fdRecords)) {
+            DB.fdRecords = res.fdRecords;
+            localStorage.setItem("portal_fd_records_v1", JSON.stringify(res.fdRecords));
+          }
+          if (Array.isArray(res.khetRecords)) {
+            DB.khetRecords = res.khetRecords;
+            localStorage.setItem("portal_khet_records_v1", JSON.stringify(res.khetRecords));
+          }
           syncUsersListToVerifiedAuthMap(DB.users);
           if (Array.isArray(res.loginHistory) && res.loginHistory.length > 0) {
             DB.loginHistory = res.loginHistory;
@@ -3365,6 +3489,26 @@
       DB.renters = res.renters || [];
       DB.bills = sanitizeAllBillsMonths(res.bills || []);
       DB.users = res.users || [];
+      if (Array.isArray(res.fdRecords) && res.fdRecords.length > 0) {
+        DB.fdRecords = res.fdRecords;
+        localStorage.setItem("portal_fd_records_v1", JSON.stringify(res.fdRecords));
+      } else {
+        try {
+          DB.fdRecords = JSON.parse(localStorage.getItem("portal_fd_records_v1") || "[]");
+        } catch (e) {
+          DB.fdRecords = [];
+        }
+      }
+      if (Array.isArray(res.khetRecords) && res.khetRecords.length > 0) {
+        DB.khetRecords = res.khetRecords;
+        localStorage.setItem("portal_khet_records_v1", JSON.stringify(res.khetRecords));
+      } else {
+        try {
+          DB.khetRecords = JSON.parse(localStorage.getItem("portal_khet_records_v1") || "[]");
+        } catch (e) {
+          DB.khetRecords = [];
+        }
+      }
       syncUsersListToVerifiedAuthMap(DB.users);
 
       const matchedU = (DB.users || []).find(u => String(u.Username || "").trim().toLowerCase() === String(activeUser).trim().toLowerCase());
@@ -3417,13 +3561,17 @@
         if (Array.isArray(clientBackup.flats) && clientBackup.flats.length > DB.flats.length) needsRowRestore = true;
         if (Array.isArray(clientBackup.renters) && clientBackup.renters.length > DB.renters.length) needsRowRestore = true;
         if (Array.isArray(clientBackup.bills) && clientBackup.bills.length > DB.bills.length) needsRowRestore = true;
+        if (Array.isArray(clientBackup.fdRecords) && clientBackup.fdRecords.length > (res.fdRecords || []).length) needsRowRestore = true;
+        if (Array.isArray(clientBackup.khetRecords) && clientBackup.khetRecords.length > (res.khetRecords || []).length) needsRowRestore = true;
         if (needsRowRestore) {
           sendGasPost({
             action: "syncAllData",
             properties: clientBackup.properties || [],
             flats: clientBackup.flats || [],
             renters: clientBackup.renters || [],
-            bills: clientBackup.bills || []
+            bills: clientBackup.bills || [],
+            fdRecords: clientBackup.fdRecords || DB.fdRecords || [],
+            khetRecords: clientBackup.khetRecords || DB.khetRecords || []
           }).then(() => syncDataLive(true)).catch(() => {});
         }
       }
@@ -3590,6 +3738,8 @@
           const incomingRenters = res.renters || [];
           const incomingBills = sanitizeAllBillsMonths(res.bills || []);
           const incomingUsers = res.users || [];
+          const incomingFdRecords = Array.isArray(res.fdRecords) ? res.fdRecords : (DB.fdRecords || []);
+          const incomingKhetRecords = Array.isArray(res.khetRecords) ? res.khetRecords : (DB.khetRecords || []);
           let incomingLoginHistory = res.loginHistory;
           if (!Array.isArray(incomingLoginHistory) || incomingLoginHistory.length === 0) {
             try {
@@ -3612,7 +3762,9 @@
             r: incomingRenters,
             b: incomingBills,
             u: incomingUsers,
-            l: incomingLoginHistory
+            l: incomingLoginHistory,
+            fd: incomingFdRecords,
+            kh: incomingKhetRecords
           });
 
           const hasDataChanged = incomingHash !== lastSyncedDataHash;
@@ -3623,6 +3775,12 @@
           DB.bills = incomingBills;
           DB.users = incomingUsers;
           DB.loginHistory = incomingLoginHistory;
+          DB.fdRecords = incomingFdRecords;
+          DB.khetRecords = incomingKhetRecords;
+          try {
+            localStorage.setItem("portal_fd_records_v1", JSON.stringify(incomingFdRecords));
+            localStorage.setItem("portal_khet_records_v1", JSON.stringify(incomingKhetRecords));
+          } catch (e) {}
           syncUsersListToVerifiedAuthMap(DB.users);
           rebindSelectedFlatAndRenterReferences();
           saveDbSnapshotToCache();
@@ -3665,21 +3823,70 @@
 
     function getBillsForSpecificRenter(propertyName, flatName, renterObj) {
       if (!renterObj) return [];
+      const targetRenterId = String(renterObj.RenterID || "").trim();
+      const targetRenterName = String(renterObj.RenterName || "").trim().toLowerCase();
+      if (!targetRenterId && !targetRenterName) return [];
+
       return DB.bills.filter(b => {
         const billRenterId = String(b.RenterID || "").trim();
-        const targetRenterId = String(renterObj.RenterID || "").trim();
 
-        // Requirement 5: When a returning renter is reactivated with the same profile (RenterID),
-        // all past and new bills linked to that RenterID belong to that same profile
+        // Requirement 3 & 5: Match strictly by RenterID when available so a new tenant NEVER inherits
+        // any previous tenant's unpaid dues or advance balance, while returning reactivated tenants keep their own history.
         if (billRenterId && targetRenterId) {
           return billRenterId === targetRenterId;
         }
+        // If the bill is stamped with a different RenterID, it belongs to a previous tenant — never attach to a new tenant
+        if (billRenterId && !targetRenterId) {
+          return false;
+        }
         if (!isSamePropAndFlat(b.PropertyName, b.FlatName, propertyName, flatName)) return false;
-        return String(b.TenantName || "").trim().toLowerCase() === String(renterObj.RenterName || "").trim().toLowerCase();
+        return String(b.TenantName || "").trim().toLowerCase() === targetRenterName;
       });
     }
 
+    // Requirement 3: When a tenant vacates a flat, previous meter readings for Electricity, PNG, and Water
+    // are NEVER erased or reset. They remain permanently recorded in the flat's consumption history.
+    function getFlatLastRecordedMeterReadings(propertyName, flatName, beforeMonthYear) {
+      const cleanTargetMonth = normalizeMonthYear(beforeMonthYear);
+      const allFlatBills = (DB.bills || [])
+        .filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, propertyName, flatName))
+        .filter(b => !cleanTargetMonth || normalizeMonthYear(b.MonthYear) < cleanTargetMonth)
+        .sort((a, b) => normalizeMonthYear(a.MonthYear).localeCompare(normalizeMonthYear(b.MonthYear)));
+
+      if (allFlatBills.length > 0) {
+        const latestFlatBill = allFlatBills[allFlatBills.length - 1];
+        return {
+          hasPriorReading: true,
+          elecPrev: parseFloat(latestFlatBill.ElecCurr) || parseFloat(latestFlatBill.ElecPrev) || 0,
+          pngPrev: parseFloat(latestFlatBill.PNGCurr) || parseFloat(latestFlatBill.PNGPrev) || 0,
+          waterPrev: parseFloat(latestFlatBill.WaterCurr) || parseFloat(latestFlatBill.WaterPrev) || 0,
+          sourceMonth: latestFlatBill.MonthYear
+        };
+      }
+
+      const flatObj = findFlatObject(propertyName, flatName);
+      if (flatObj && (flatObj.LastElecReading || flatObj.LastPNGReading || flatObj.LastWaterReading)) {
+        return {
+          hasPriorReading: true,
+          elecPrev: parseFloat(flatObj.LastElecReading) || 0,
+          pngPrev: parseFloat(flatObj.LastPNGReading) || 0,
+          waterPrev: parseFloat(flatObj.LastWaterReading) || 0,
+          sourceMonth: ""
+        };
+      }
+
+      return {
+        hasPriorReading: false,
+        elecPrev: 0,
+        pngPrev: 0,
+        waterPrev: 0,
+        sourceMonth: ""
+      };
+    }
+
     function calculateNetBalanceForRenterBeforeMonth(propertyName, flatName, renterObj, targetMonthYear) {
+      // Requirement 3: If no active tenant or new tenant has 0 prior bills of their own, carry-forward balance is strictly 0
+      if (!renterObj) return 0;
       const cleanTargetMonth = normalizeMonthYear(targetMonthYear);
       const renterBills = getBillsForSpecificRenter(propertyName, flatName, renterObj);
       const priorBills = renterBills
@@ -3705,6 +3912,7 @@
     }
 
     function calculateCurrentNetBalanceForRenter(propertyName, flatName, renterObj) {
+      if (!renterObj) return { totalStandaloneBilled: 0, totalPaid: 0, netBalance: 0, billCount: 0 };
       const renterBills = getBillsForSpecificRenter(propertyName, flatName, renterObj);
       if (renterBills.length === 0) return { totalStandaloneBilled: 0, totalPaid: 0, netBalance: 0, billCount: 0 };
 
@@ -3724,6 +3932,64 @@
         netBalance: totalStandaloneBilled - totalPaid,
         billCount: renterBills.length
       };
+    }
+
+    // Requirement 5: 3-Parameter Graph for All Flats (1. Base Rent, 2. Utilities [Elec+PNG+Water], 3. Paid Collected)
+    function buildFlatThreeParamGraphHTML(flat, renter, isModalView = false) {
+      if (!flat) return "";
+      const allFlatBills = (DB.bills || [])
+        .filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, flat.PropertyName, flat.FlatName))
+        .sort((a, b) => normalizeMonthYear(a.MonthYear).localeCompare(normalizeMonthYear(b.MonthYear)));
+
+      const activeRenterBills = renter ? getBillsForSpecificRenter(flat.PropertyName, flat.FlatName, renter) : [];
+      const sourceBills = activeRenterBills.length > 0 ? activeRenterBills : allFlatBills;
+
+      let paramRent = parseFloat(flat.RentAmount || renter?.RentAmount || 0) || 0;
+      let paramUtilities = 0;
+      let paramPaid = 0;
+      let periodLabel = "Current Profile";
+
+      if (sourceBills.length > 0) {
+        const latestBill = sourceBills[sourceBills.length - 1];
+        paramRent = parseFloat(latestBill.BaseRent) || paramRent;
+        const eTot = parseFloat(latestBill.ElecTotal) || 0;
+        const pTot = parseFloat(latestBill.PNGTotal) || 0;
+        const wTot = parseFloat(latestBill.WaterTotal) || 0;
+        paramUtilities = eTot + pTot + wTot;
+        paramPaid = parseFloat(latestBill.PaidAmount) || 0;
+        periodLabel = formatMonthNameOnly(latestBill.MonthYear) || "Latest Bill";
+      }
+
+      const maxVal = Math.max(paramRent, paramUtilities, paramPaid, 1);
+      const rentPct = Math.min(100, Math.max(paramRent > 0 ? 8 : 2, Math.round((paramRent / maxVal) * 100)));
+      const utilPct = Math.min(100, Math.max(paramUtilities > 0 ? 8 : 2, Math.round((paramUtilities / maxVal) * 100)));
+      const paidPct = Math.min(100, Math.max(paramPaid > 0 ? 8 : 2, Math.round((paramPaid / maxVal) * 100)));
+
+      return `
+        <div class="flat-3param-graph-box" ${isModalView ? 'style="margin-top:0; background:rgba(15,23,42,0.55);"' : ''}>
+          <div class="flat-3param-graph-header">
+            <span><i class="fa-solid fa-chart-Simple"></i> 3-Parameter Flat Graph</span>
+            <span>${periodLabel}</span>
+          </div>
+          <div class="flat-3param-bars-wrap">
+            <div class="flat-3param-row">
+              <div class="flat-3param-label"><span class="flat-3param-dot rent"></span>1. Rent</div>
+              <div class="flat-3param-track"><div class="flat-3param-fill rent" style="width:${rentPct}%;"></div></div>
+              <div class="flat-3param-val">₹${paramRent.toLocaleString('en-IN')}</div>
+            </div>
+            <div class="flat-3param-row">
+              <div class="flat-3param-label"><span class="flat-3param-dot util"></span>2. Utility</div>
+              <div class="flat-3param-track"><div class="flat-3param-fill util" style="width:${utilPct}%;"></div></div>
+              <div class="flat-3param-val">₹${paramUtilities.toLocaleString('en-IN')}</div>
+            </div>
+            <div class="flat-3param-row">
+              <div class="flat-3param-label"><span class="flat-3param-dot paid"></span>3. Paid</div>
+              <div class="flat-3param-track"><div class="flat-3param-fill paid" style="width:${paidPct}%;"></div></div>
+              <div class="flat-3param-val">₹${paramPaid.toLocaleString('en-IN')}</div>
+            </div>
+          </div>
+        </div>
+      `;
     }
 
     function updateGlobalProfitAndLoss() {
@@ -3870,6 +4136,7 @@
               <div class="renter-name">${renter ? renter.RenterName : 'Vacant / Ready'}</div>
             </div>
             ${paymentBannerHTML}
+            ${buildFlatThreeParamGraphHTML(flat, renter, false)}
           </div>
           <div class="flat-bottom-row">
             <span><i class="fa-solid fa-bolt"></i> Elec: ₹${dispElec !== "" ? dispElec : 0}/U</span>
@@ -3894,8 +4161,9 @@
         return;
       }
 
-      // 1. Search across ALL renters (especially people who have left / Inactive, as well as Active tenants)
-      //    and display their details right below the search bar with a "View Profile" button
+      // 1. Search across ALL renters (both Active tenants and people who have left / Inactive)
+      //    and display their profile right below the search bar. Clicking anywhere on the profile or "View Profile"
+      //    immediately opens the full profile pop-up window right there!
       const matchingRenters = (DB.renters || [])
         .map((r, idx) => ({ r, rId: r.RenterID || `IDX-${idx}` }))
         .filter(({ r }) => {
@@ -3942,9 +4210,10 @@
             const safeProp = String(r.PropertyName || "").replace(/'/g, "\\'");
             const safeFlat = String(r.FlatName || "").replace(/'/g, "\\'");
             const safeId = String(rId || "").replace(/'/g, "\\'");
+            const safeName = String(r.RenterName || "").replace(/'/g, "\\'");
 
             return `
-              <div class="search-result-person-item">
+              <div class="search-result-person-item" onclick="event.stopPropagation(); openTenantFullProfilePopup('${safeId}', '${safeProp}', '${safeFlat}', '${safeName}')">
                 <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1;">
                   <div class="renter-avatar" style="width:42px; height:42px; flex-shrink:0;">
                     <img src="${avatarSrc}" alt="${r.RenterName || 'Tenant'}">
@@ -3966,7 +4235,7 @@
                   type="button"
                   class="btn-primary"
                   style="width:auto; padding:7px 12px; font-size:0.74rem; white-space:nowrap; flex-shrink:0;"
-                  onclick="openTenantFullProfilePopup('${safeId}', '${safeProp}', '${safeFlat}')"
+                  onclick="event.stopPropagation(); openTenantFullProfilePopup('${safeId}', '${safeProp}', '${safeFlat}', '${safeName}')"
                 >
                   <i class="fa-solid fa-id-card"></i> View Profile
                 </button>
@@ -4035,13 +4304,14 @@
           const leftRId = String(matchedLeftRenter.RenterID || `IDX-${leftIdx}`).replace(/'/g, "\\'");
           const safeProp = String(flat.PropertyName || "").replace(/'/g, "\\'");
           const safeFlat = String(flat.FlatName || "").replace(/'/g, "\\'");
+          const safeLeftName = String(matchedLeftRenter.RenterName || "").replace(/'/g, "\\'");
           leftRenterQuickBar = `
-            <div style="margin-top:10px; padding:8px 10px; border-radius:10px; background:rgba(15,23,42,0.55); border:1px solid rgba(255,255,255,0.28); display:flex; align-items:center; justify-content:space-between; gap:8px;" onclick="event.stopPropagation();">
+            <div style="margin-top:10px; padding:8px 10px; border-radius:10px; background:rgba(15,23,42,0.55); border:1px solid rgba(255,255,255,0.28); display:flex; align-items:center; justify-content:space-between; gap:8px; cursor:pointer;" onclick="event.stopPropagation(); openTenantFullProfilePopup('${leftRId}', '${safeProp}', '${safeFlat}', '${safeLeftName}')">
               <div style="font-size:0.76rem;">
                 <span class="badge-unpaid" style="font-size:0.65rem; margin-right:4px;">Left Tenant</span>
                 <strong>${matchedLeftRenter.RenterName}</strong> (${matchedLeftRenter.MobileNumber || '--'})
               </div>
-              <button type="button" class="btn-primary" style="width:auto; padding:5px 10px; font-size:0.72rem;" onclick="event.stopPropagation(); openTenantFullProfilePopup('${leftRId}', '${safeProp}', '${safeFlat}')">
+              <button type="button" class="btn-primary" style="width:auto; padding:5px 10px; font-size:0.72rem;" onclick="event.stopPropagation(); openTenantFullProfilePopup('${leftRId}', '${safeProp}', '${safeFlat}', '${safeLeftName}')">
                 <i class="fa-solid fa-id-card"></i> View Profile
               </button>
             </div>
@@ -4064,6 +4334,7 @@
               <div class="renter-name">${renter ? renter.RenterName : 'Vacant / Ready'}</div>
             </div>
             ${paymentBannerHTML}
+            ${buildFlatThreeParamGraphHTML(flat, renter, false)}
             ${leftRenterQuickBar}
           </div>
           <div class="flat-bottom-row">
@@ -4972,15 +5243,23 @@
         document.getElementById("calcPngRate").value = resolveExactRateValue(selectedFlat.PNGRate, activeFlatRenterObj?.PNGFixedRate);
         document.getElementById("calcWaterRate").value = resolveExactRateValue(selectedFlat.WaterRate, activeFlatRenterObj?.WaterFixedRate);
 
-        const priorBills = sortedBills.filter(b => normalizeMonthYear(b.MonthYear) < chosenMonth);
-        const lastPriorBill = priorBills.length > 0 ? priorBills[priorBills.length - 1] : null;
+        // Requirement 3: Previous meter readings for Electricity, PNG, and Water are pulled from the flat's
+        // permanent consumption history (across all past and current tenants) so they NEVER reset when a tenant vacates.
+        // Meanwhile, autoCarryBalance is calculated strictly for activeFlatRenterObj so a new tenant starts with 0 dues/advance!
+        const flatMeterHistory = getFlatLastRecordedMeterReadings(
+          selectedFlat.PropertyName,
+          selectedFlat.FlatName,
+          chosenMonth
+        );
 
-        if (lastPriorBill) {
-          document.getElementById("calcElecPrev").value = lastPriorBill.ElecCurr || 0;
-          document.getElementById("calcPngPrev").value = lastPriorBill.PNGCurr || 0;
-          document.getElementById("calcWaterPrev").value = lastPriorBill.WaterCurr || 0;
+        if (flatMeterHistory.hasPriorReading) {
+          document.getElementById("calcElecPrev").value = flatMeterHistory.elecPrev;
+          document.getElementById("calcPngPrev").value = flatMeterHistory.pngPrev;
+          document.getElementById("calcWaterPrev").value = flatMeterHistory.waterPrev;
 
-          const hintText = `Auto-loaded from ${formatMonthLabel(lastPriorBill.MonthYear)} final reading`;
+          const hintText = flatMeterHistory.sourceMonth
+            ? `Permanent flat meter reading from ${formatMonthLabel(flatMeterHistory.sourceMonth)}`
+            : "Permanent recorded flat meter reading";
           document.getElementById("elecRolloverHint").innerText = hintText;
           document.getElementById("pngRolloverHint").innerText = hintText;
           document.getElementById("waterRolloverHint").innerText = hintText;
@@ -5002,6 +5281,11 @@
         document.getElementById("calcPrevCarryBalance").value = autoCarryBalance;
         document.getElementById("calcPaidNow").value = 0;
         document.getElementById("calcNotes").value = "";
+      }
+
+      const modalGraphContainer = document.getElementById("flatModalThreeParamGraph");
+      if (modalGraphContainer && selectedFlat) {
+        modalGraphContainer.innerHTML = buildFlatThreeParamGraphHTML(selectedFlat, activeFlatRenterObj, true);
       }
 
       runBillMath();
@@ -5314,6 +5598,11 @@
         DB.bills.push(newBillObj);
         triggerSideToast("Bill Recorded", `Monthly bill for ${formatMonthLabel(chosenMonth)} saved to top of History!`, true);
       }
+
+      // Keep latest meter readings permanently recorded on the flat object as well
+      selectedFlat.LastElecReading = elecCurr;
+      selectedFlat.LastPNGReading = pngCurr;
+      selectedFlat.LastWaterReading = waterCurr;
 
       saveDbSnapshotToCache();
       renderAllDashboardUI();
@@ -5643,10 +5932,10 @@
             ${bill.Notes ? `<label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="notes" data-row="row_rec_notes" checked onchange="recalculateReceiptSelection()"> <span>Notes</span></label>` : ''}
           </div>
           <div style="font-size:0.72rem; color:var(--text-muted); margin-bottom:8px;">
-            Unchecked items are automatically hidden from both the receipt image and WhatsApp message.
+            Unchecked items are automatically hidden from the receipt image before sharing to WhatsApp.
           </div>
           <button type="button" id="btnConfirmSendWhatsApp" class="btn-whatsapp-share" style="margin-top:0;" onclick="shareSelectedReceiptOnWhatsApp()">
-            <i class="fa-solid fa-paper-plane"></i> Send Receipt Image &amp; Details to WhatsApp
+            <i class="fa-solid fa-paper-plane"></i> Share Receipt Image Only to WhatsApp
           </button>
         </div>
       `;
@@ -5768,8 +6057,7 @@
       recalculateReceiptSelection();
     }
 
-    // Requirements 4, 5 & 6: Captures complete clean receipt image (including QR code, contact number, AI disclaimer,
-    // and only checked items) and sends it directly into WhatsApp chat without requiring a manual mobile download first
+    // Requirement 1 (Latest): Share ONLY the receipt image on WhatsApp — completely remove all text beneath the image!
     async function shareSelectedReceiptOnWhatsApp() {
       if (!currentOpenedReceiptBill) return;
       const bill = currentOpenedReceiptBill;
@@ -5777,90 +6065,13 @@
       const rawPhone = bill.TenantMobile || currentOpenedReceiptRenter?.MobileNumber || currentOpenedReceiptRenter?.AltMobileNumber || "";
       const formattedPhone = formatWhatsAppPhone(rawPhone);
 
-      const { selectedTotal, paidAmt, netClosing } = recalculateReceiptSelection();
+      recalculateReceiptSelection();
 
       const checkedKeys = new Set();
       document.querySelectorAll("#waChecklistInputsContainer .rec-item-check:checked").forEach(cb => {
         checkedKeys.add(cb.dataset.key);
       });
 
-      const resolvedContact = resolveFlatUpiAndContact(
-        bill.PropertyName,
-        currentOpenedReceiptFlat,
-        currentOpenedReceiptRenter
-      );
-      const snapshotUpiId = (bill.UPIID && String(bill.UPIID).trim()) ? String(bill.UPIID).trim() : resolvedContact.upiId;
-      const snapshotUpiName = (bill.UPIName && String(bill.UPIName).trim()) ? String(bill.UPIName).trim() : resolvedContact.upiName;
-      const snapshotContactPhone = (bill.ContractMobile && String(bill.ContractMobile).trim())
-        ? String(bill.ContractMobile).trim()
-        : (resolvedContact.contractMobile || activeUserMobile || "");
-
-      const lines = [];
-      lines.push(`*🧾 MONTHLY RENT & UTILITY RECEIPT*`);
-      lines.push(`🏢 *Property:* ${bill.PropertyName} (Flat ${bill.FlatName})`);
-      lines.push(`📅 *Billing Month:* ${formatMonthLabel(bill.MonthYear)}`);
-      lines.push(`--------------------------------`);
-
-      if (checkedKeys.has("tenant")) {
-        lines.push(`👤 *Tenant:* ${bill.TenantName || '--'}`);
-      }
-      if (checkedKeys.has("rent")) {
-        lines.push(`🏠 *Base Rent:* ₹${(parseFloat(bill.BaseRent) || 0).toLocaleString('en-IN')}`);
-      }
-      if (checkedKeys.has("elec")) {
-        lines.push(`⚡ *Electricity:* ₹${(parseFloat(bill.ElecTotal) || 0).toLocaleString('en-IN')} _(${bill.ElecPrev} → ${bill.ElecCurr} = ${bill.ElecUnits}U @ ₹${bill.ElecRate}/U)_`);
-      }
-      if (checkedKeys.has("png")) {
-        lines.push(`🔥 *PNG Gas:* ₹${(parseFloat(bill.PNGTotal) || 0).toLocaleString('en-IN')} _(${bill.PNGPrev} → ${bill.PNGCurr} = ${bill.PNGUnits}U @ ₹${bill.PNGRate}/U)_`);
-      }
-      if (checkedKeys.has("water")) {
-        lines.push(`🚰 *Water:* ₹${(parseFloat(bill.WaterTotal) || 0).toLocaleString('en-IN')} _(${bill.WaterPrev} → ${bill.WaterCurr} = ${bill.WaterUnits}U @ ₹${bill.WaterRate}/U)_`);
-      }
-      if (checkedKeys.has("additional")) {
-        const addAmt = parseFloat(bill.AdditionalAmount) || 0;
-        const sign = addAmt >= 0 ? "+" : "-";
-        lines.push(`➕ *Additional (${bill.AdditionalName || 'Misc'}):* ${sign}₹${Math.abs(addAmt).toLocaleString('en-IN')}`);
-      }
-      if (checkedKeys.has("carry")) {
-        const carryVal = parseFloat(bill.PrevCarryBalance) || 0;
-        if (carryVal > 0) {
-          lines.push(`📌 *Previous Month Due:* +₹${carryVal.toLocaleString('en-IN')}`);
-        } else if (carryVal < 0) {
-          lines.push(`📌 *Previous Advance Credit:* -₹${Math.abs(carryVal).toLocaleString('en-IN')}`);
-        } else {
-          lines.push(`📌 *Carry-Forward Balance:* ₹0`);
-        }
-      }
-
-      lines.push(`--------------------------------`);
-
-      if (checkedKeys.has("total")) {
-        lines.push(`💰 *Total Billed:* *₹${selectedTotal.toLocaleString('en-IN')}*`);
-      }
-      if (checkedKeys.has("paid")) {
-        lines.push(`✅ *Amount Paid (${bill.PaymentMode || 'UPI'}):* ₹${paidAmt.toLocaleString('en-IN')}`);
-      }
-      if (checkedKeys.has("balance")) {
-        if (netClosing > 0) {
-          lines.push(`⚠️ *Net Payable / Pending Due:* *₹${netClosing.toLocaleString('en-IN')}*`);
-        } else if (netClosing < 0) {
-          lines.push(`🎉 *Status:* Fully Paid (Advance Credit: ₹${Math.abs(netClosing).toLocaleString('en-IN')})`);
-        } else {
-          lines.push(`🎉 *Status:* *Fully Paid (₹0 Due)*`);
-        }
-      }
-      if (checkedKeys.has("contact") && snapshotContactPhone) {
-        lines.push(`📞 *Contact Phone:* ${snapshotContactPhone}`);
-      }
-      if (checkedKeys.has("upi") && snapshotUpiId) {
-        lines.push(`💳 *Pay via UPI:* ${snapshotUpiId}${snapshotUpiName ? ' (' + snapshotUpiName + ')' : ''}`);
-      }
-      if (checkedKeys.has("notes") && bill.Notes) {
-        lines.push(`📝 *Note:* ${bill.Notes}`);
-      }
-      lines.push(`_Disclaimer: This receipt is generated by AI and is meant only for personal use, not for official or government use._`);
-
-      const messageText = lines.join("\n");
       const sendBtn = document.getElementById("btnConfirmSendWhatsApp");
       if (sendBtn) {
         sendBtn.disabled = true;
@@ -5892,29 +6103,27 @@
       } finally {
         if (sendBtn) {
           sendBtn.disabled = false;
-          sendBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Send Receipt Image & Details to WhatsApp`;
+          sendBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Share Receipt Image Only to WhatsApp`;
         }
       }
 
-      // 1. Direct Mobile / Native Share Sheet with Receipt Image File (Sends directly into WhatsApp chat without downloading first)
+      // 1. Direct Mobile / Native Share Sheet with ONLY the Receipt Image File (ZERO text or title beneath the image)
       if (receiptBlob) {
         const fileName = `Receipt_Flat_${bill.FlatName}_${bill.MonthYear}.png`;
         const receiptFile = new File([receiptBlob], fileName, { type: "image/png" });
         if (navigator.canShare && navigator.canShare({ files: [receiptFile] })) {
           try {
             await navigator.share({
-              files: [receiptFile],
-              title: `Rent Receipt - Flat ${bill.FlatName} (${formatMonthLabel(bill.MonthYear)})`,
-              text: messageText
+              files: [receiptFile]
             });
-            triggerSideToast("Shared to WhatsApp", "Complete receipt image & details shared directly!", true);
+            triggerSideToast("Receipt Image Shared", "Receipt image shared to WhatsApp with no text!", true);
             return;
           } catch (shareErr) {
             if (shareErr && shareErr.name === "AbortError") return;
           }
         }
 
-        // Copy receipt image directly to clipboard so desktop WhatsApp Web / App users can paste (Ctrl+V) immediately without downloading
+        // Copy ONLY the receipt image to clipboard so desktop WhatsApp Web / App users can paste (Ctrl+V) the pure image
         if (navigator.clipboard && window.ClipboardItem) {
           try {
             await navigator.clipboard.write([new ClipboardItem({ "image/png": receiptBlob })]);
@@ -5922,16 +6131,16 @@
         }
       }
 
+      // Open WhatsApp chat with ZERO text parameter so no text ever appears beneath the image
       if (!formattedPhone || formattedPhone.length < 10) {
-        const waDirectUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`;
-        window.open(waDirectUrl, "_blank");
-        triggerSideToast("Receipt Copied for WhatsApp", "Receipt image copied to clipboard! Paste (Ctrl+V) directly in WhatsApp chat.", true);
+        window.open("https://web.whatsapp.com/", "_blank");
+        triggerSideToast("Receipt Image Copied", "Receipt image copied to clipboard! Paste (Ctrl+V) in WhatsApp to send image only.", true);
         return;
       }
 
-      const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(messageText)}`;
+      const whatsappUrl = `https://wa.me/${formattedPhone}`;
       window.open(whatsappUrl, "_blank");
-      triggerSideToast("Opening WhatsApp Chat", `Receipt image copied to clipboard & opening chat for +${formattedPhone}`, true);
+      triggerSideToast("Receipt Image Ready", `Receipt image copied (no text)! Paste (Ctrl+V) in chat for +${formattedPhone}.`, true);
     }
 
     function printCurrentReceipt() {
@@ -6077,8 +6286,9 @@
                   const safeId = String(item.rId || "").replace(/'/g, "\\'");
                   const safeProp = String(prop || "").replace(/'/g, "\\'");
                   const safeFlat = String(flat || "").replace(/'/g, "\\'");
+                  const safeName = String(r.RenterName || "").replace(/'/g, "\\'");
                   return `
-                    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:10px; padding:8px 12px;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:10px; padding:8px 12px; cursor:pointer;" onclick="event.stopPropagation(); openTenantFullProfilePopup('${safeId}', '${safeProp}', '${safeFlat}', '${safeName}')">
                       <div style="display:flex; align-items:center; gap:10px;">
                         <div class="renter-avatar" style="width:40px; height:40px; flex-shrink:0;">
                           <img src="${avatarSrc}" alt="${r.RenterName || 'Tenant'}">
@@ -6093,7 +6303,7 @@
                           </div>
                         </div>
                       </div>
-                      <button type="button" class="btn-primary" style="width:auto; padding:7px 14px; font-size:0.76rem;" onclick="openTenantFullProfilePopup('${safeId}', '${safeProp}', '${safeFlat}')">
+                      <button type="button" class="btn-primary" style="width:auto; padding:7px 14px; font-size:0.76rem;" onclick="event.stopPropagation(); openTenantFullProfilePopup('${safeId}', '${safeProp}', '${safeFlat}', '${safeName}')">
                         <i class="fa-solid fa-id-card"></i> View Profile
                       </button>
                     </div>
@@ -6239,15 +6449,16 @@
         const safeId = String(item.rId || "").replace(/'/g, "\\'");
         const safeProp = String(prop || "").replace(/'/g, "\\'");
         const safeFlat = String(flat || "").replace(/'/g, "\\'");
+        const safeName = String(targetRenter.RenterName || "").replace(/'/g, "\\'");
 
         return `
           <div class="rh-tenant-card-box ${isAct ? 'active-tenant-box' : ''}">
             <!-- Top Identity Row inside Tenant Box -->
             <div style="display:flex; flex-wrap:wrap; align-items:center; gap:14px;">
-              <div class="renter-avatar" style="width:56px; height:56px; flex-shrink:0;">
+              <div class="renter-avatar" style="width:56px; height:56px; flex-shrink:0; cursor:pointer;" onclick="openTenantFullProfilePopup('${safeId}', '${safeProp}', '${safeFlat}', '${safeName}')">
                 <img src="${avatarSrc}" alt="${targetRenter.RenterName || 'Tenant'}">
               </div>
-              <div style="flex:1; min-width:200px;">
+              <div style="flex:1; min-width:200px; cursor:pointer;" onclick="openTenantFullProfilePopup('${safeId}', '${safeProp}', '${safeFlat}', '${safeName}')">
                 <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
                   <h3 style="font-size:1.05rem; font-weight:800;">${targetRenter.RenterName || 'Unnamed Tenant'}</h3>
                   <span class="${statusBadgeClass}" style="font-size:0.72rem;">${statusBadgeText}</span>
@@ -6260,7 +6471,7 @@
                 </div>
               </div>
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <button type="button" class="btn-primary" style="width:auto; padding:8px 14px; font-size:0.78rem;" onclick="openTenantFullProfilePopup('${safeId}', '${safeProp}', '${safeFlat}')">
+                <button type="button" class="btn-primary" style="width:auto; padding:8px 14px; font-size:0.78rem;" onclick="event.stopPropagation(); openTenantFullProfilePopup('${safeId}', '${safeProp}', '${safeFlat}', '${safeName}')">
                   <i class="fa-solid fa-id-card"></i> View Profile
                 </button>
                 ${isAct ? `
@@ -6309,8 +6520,9 @@
       }
     }
 
-    // Requirement 3: Open New Pop-Up Window Showing Complete Tenant Details Directly From Search ("View Profile")
-    function openTenantFullProfilePopup(renterIdOrIdx, propName, flatName) {
+    // Requirement 2 (Latest): Clicking on ANY profile or "View Profile" in search immediately opens a new pop-up window
+    // right there showing their entire profile and all their details
+    function openTenantFullProfilePopup(renterIdOrIdx, propName, flatName, fallbackName = "") {
       let targetRenter = null;
       if (renterIdOrIdx && String(renterIdOrIdx).startsWith("IDX-")) {
         const idx = parseInt(String(renterIdOrIdx).replace("IDX-", ""), 10);
@@ -6320,6 +6532,14 @@
       }
       if (!targetRenter && renterIdOrIdx) {
         targetRenter = (DB.renters || []).find(r => String(r.RenterID || "").trim() === String(renterIdOrIdx).trim());
+      }
+      if (!targetRenter && fallbackName) {
+        targetRenter = (DB.renters || []).find(r =>
+          isSamePropAndFlat(r.PropertyName, r.FlatName, propName, flatName) &&
+          String(r.RenterName || "").trim().toLowerCase() === String(fallbackName).trim().toLowerCase()
+        ) || (DB.renters || []).find(r =>
+          String(r.RenterName || "").trim().toLowerCase() === String(fallbackName).trim().toLowerCase()
+        );
       }
       if (!targetRenter) {
         targetRenter = (DB.renters || []).find(r =>
@@ -6333,6 +6553,9 @@
       const prop = targetRenter.PropertyName || propName || "";
       const flat = targetRenter.FlatName || flatName || "";
       const flatObj = findFlatObject(prop, flat);
+      if (flatObj) {
+        selectedFlat = flatObj;
+      }
       const isAct = String(targetRenter.Status || "").trim().toLowerCase() === "active";
       const statusBadgeText = isAct ? "Active Tenant" : "Left / Past Tenant";
       const statusBadgeClass = isAct ? "badge-paid" : "badge-unpaid";
@@ -6495,22 +6718,82 @@
       openModal("tenantFullProfileModal");
     }
 
-    // Requirement 4: FD & Khet (Field) Header Buttons & Pop-Up Modals
+    // Requirement 4 (Latest): Fixed Deposit (FD) & Farmland (Khet) Auto-Save to Google Sheet + Full Edit Feature
+    let editingFdRecordId = null;
+    let editingKhetRecordId = null;
+
     function getStoredFdRecords() {
-      try {
-        return JSON.parse(localStorage.getItem("portal_fd_records_v1") || "[]");
-      } catch (e) {
-        return [];
+      if (Array.isArray(DB.fdRecords) && DB.fdRecords.length > 0) {
+        return DB.fdRecords;
       }
+      try {
+        const local = JSON.parse(localStorage.getItem("portal_fd_records_v1") || "[]");
+        if (Array.isArray(local)) {
+          DB.fdRecords = local;
+          return local;
+        }
+      } catch (e) {}
+      return [];
     }
+
     function saveStoredFdRecords(list) {
-      localStorage.setItem("portal_fd_records_v1", JSON.stringify(list || []));
+      const cleanList = Array.isArray(list) ? list : [];
+      DB.fdRecords = cleanList;
+      try {
+        localStorage.setItem("portal_fd_records_v1", JSON.stringify(cleanList));
+      } catch (e) {}
+      saveDbSnapshotToCache();
     }
+
     function openFdModal() {
+      cancelFdEdit();
       renderFdRecordsList();
       openModal("fdModal");
     }
-    function addFdRecord() {
+
+    function editFdRecord(id) {
+      const list = getStoredFdRecords();
+      const target = list.find(item => String(item.id) === String(id));
+      if (!target) return;
+
+      editingFdRecordId = String(target.id);
+      document.getElementById("fdBankName").value = target.bank || "";
+      document.getElementById("fdAmount").value = target.amount !== undefined ? target.amount : "";
+      document.getElementById("fdRate").value = target.rate || "";
+      document.getElementById("fdMaturityDate").value = target.maturity || "";
+      document.getElementById("fdNotes").value = target.notes || "";
+
+      const titleEl = document.getElementById("fdFormTitle");
+      const btnTextEl = document.getElementById("btnSubmitFdRecordText");
+      const cancelBtn = document.getElementById("btnCancelFdEdit");
+      if (titleEl) titleEl.innerText = "Edit Fixed Deposit (FD)";
+      if (btnTextEl) btnTextEl.innerText = "Update FD Record (Auto-Save to Google Sheet)";
+      if (cancelBtn) cancelBtn.style.display = "inline-flex";
+    }
+
+    function cancelFdEdit() {
+      editingFdRecordId = null;
+      const bankEl = document.getElementById("fdBankName");
+      const amtEl = document.getElementById("fdAmount");
+      const rateEl = document.getElementById("fdRate");
+      const matEl = document.getElementById("fdMaturityDate");
+      const notesEl = document.getElementById("fdNotes");
+      if (bankEl) bankEl.value = "";
+      if (amtEl) amtEl.value = "";
+      if (rateEl) rateEl.value = "";
+      if (matEl) matEl.value = "";
+      if (notesEl) notesEl.value = "";
+
+      const titleEl = document.getElementById("fdFormTitle");
+      const btnTextEl = document.getElementById("btnSubmitFdRecordText");
+      const cancelBtn = document.getElementById("btnCancelFdEdit");
+      if (titleEl) titleEl.innerText = "Add New Fixed Deposit";
+      if (btnTextEl) btnTextEl.innerText = "Save FD Record (Auto-Save to Google Sheet)";
+      if (cancelBtn) cancelBtn.style.display = "none";
+    }
+
+    async function addFdRecord() {
+      if (activeRole === "Viewer") return;
       const bank = document.getElementById("fdBankName")?.value.trim();
       const amount = parseFloat(document.getElementById("fdAmount")?.value) || 0;
       const rate = document.getElementById("fdRate")?.value.trim() || "";
@@ -6519,31 +6802,80 @@
       if (!bank || amount <= 0) {
         return triggerSideToast("Required Fields", "Please enter Bank/FD Name and Principal Amount.", false);
       }
-      const list = getStoredFdRecords();
-      list.unshift({
-        id: "FD-" + Date.now(),
-        bank,
-        amount,
-        rate,
-        maturity,
-        notes,
-        createdAt: new Date().toISOString().split("T")[0]
+
+      const list = [...getStoredFdRecords()];
+      const nowDate = new Date().toISOString().split("T")[0];
+      let savedRecord = null;
+      const isEditing = Boolean(editingFdRecordId);
+
+      if (isEditing) {
+        const idx = list.findIndex(item => String(item.id) === String(editingFdRecordId));
+        if (idx !== -1) {
+          savedRecord = {
+            ...list[idx],
+            bank,
+            amount,
+            rate,
+            maturity,
+            notes,
+            updatedAt: new Date().toISOString()
+          };
+          list[idx] = savedRecord;
+        }
+      }
+
+      if (!savedRecord) {
+        savedRecord = {
+          id: editingFdRecordId || ("FD-" + Date.now()),
+          bank,
+          amount,
+          rate,
+          maturity,
+          notes,
+          createdAt: nowDate,
+          updatedAt: new Date().toISOString()
+        };
+        list.unshift(savedRecord);
+      }
+
+      saveStoredFdRecords(list);
+      cancelFdEdit();
+      renderFdRecordsList();
+
+      triggerSideToast(
+        isEditing ? "FD Updated & Saved" : "FD Saved to Google Sheet",
+        `${isEditing ? "Updated" : "Saved"} FD record for ${bank} and synced to Google Sheet!`,
+        true
+      );
+
+      await sendGasPost({
+        action: "saveFdRecord",
+        id: savedRecord.id,
+        bank: savedRecord.bank,
+        amount: savedRecord.amount,
+        rate: savedRecord.rate,
+        maturity: savedRecord.maturity,
+        notes: savedRecord.notes,
+        createdAt: savedRecord.createdAt
       });
-      saveStoredFdRecords(list);
-      document.getElementById("fdBankName").value = "";
-      document.getElementById("fdAmount").value = "";
-      document.getElementById("fdRate").value = "";
-      document.getElementById("fdMaturityDate").value = "";
-      document.getElementById("fdNotes").value = "";
-      renderFdRecordsList();
-      triggerSideToast("FD Saved", `Added FD record for ${bank}`, true);
     }
-    function deleteFdRecord(id) {
-      const list = getStoredFdRecords().filter(item => item.id !== id);
+
+    async function deleteFdRecord(id) {
+      if (activeRole === "Viewer") return;
+      const list = getStoredFdRecords().filter(item => String(item.id) !== String(id));
       saveStoredFdRecords(list);
+      if (editingFdRecordId && String(editingFdRecordId) === String(id)) {
+        cancelFdEdit();
+      }
       renderFdRecordsList();
-      triggerSideToast("FD Removed", "FD record deleted.", "warning");
+      triggerSideToast("FD Removed", "FD record deleted from app & Google Sheet.", "warning");
+
+      await sendGasPost({
+        action: "deleteFdRecord",
+        id: id
+      });
     }
+
     function renderFdRecordsList() {
       const container = document.getElementById("fdRecordsList");
       if (!container) return;
@@ -6552,36 +6884,101 @@
         container.innerHTML = `<div style="text-align:center; padding:18px; color:var(--text-muted); font-size:0.82rem;">No FD records added yet.</div>`;
         return;
       }
-      container.innerHTML = list.map(item => `
-        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:10px;">
-          <div>
-            <div style="font-weight:800; font-size:0.88rem;">${item.bank} — <span style="color:var(--accent-green);">₹${Number(item.amount || 0).toLocaleString('en-IN')}</span></div>
-            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
-              Rate: ${item.rate ? item.rate + '%' : '--'} | Maturity: ${item.maturity || '--'} ${item.notes ? ' | ' + item.notes : ''}
+      container.innerHTML = list.map(item => {
+        const safeId = String(item.id || "").replace(/'/g, "\\'");
+        return `
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:10px;">
+            <div style="flex:1; min-width:0;">
+              <div style="font-weight:800; font-size:0.88rem;">${item.bank} — <span style="color:var(--accent-green);">₹${Number(item.amount || 0).toLocaleString('en-IN')}</span></div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+                Rate: ${item.rate ? item.rate + '%' : '--'} | Maturity: ${item.maturity || '--'} ${item.notes ? ' | ' + item.notes : ''}
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
+              <button type="button" class="btn-ledger-action edit-btn admin-only" onclick="editFdRecord('${safeId}')" title="Edit FD Details">
+                <i class="fa-solid fa-pen-to-square"></i> Edit
+              </button>
+              <button type="button" class="btn-ledger-action admin-only" style="color:var(--accent-red);" onclick="deleteFdRecord('${safeId}')" title="Delete FD Record">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
             </div>
           </div>
-          <button type="button" class="btn-ledger-action admin-only" style="color:var(--accent-red);" onclick="deleteFdRecord('${item.id}')">
-            <i class="fa-solid fa-trash-can"></i>
-          </button>
-        </div>
-      `).join("");
+        `;
+      }).join("");
     }
 
     function getStoredKhetRecords() {
-      try {
-        return JSON.parse(localStorage.getItem("portal_khet_records_v1") || "[]");
-      } catch (e) {
-        return [];
+      if (Array.isArray(DB.khetRecords) && DB.khetRecords.length > 0) {
+        return DB.khetRecords;
       }
+      try {
+        const local = JSON.parse(localStorage.getItem("portal_khet_records_v1") || "[]");
+        if (Array.isArray(local)) {
+          DB.khetRecords = local;
+          return local;
+        }
+      } catch (e) {}
+      return [];
     }
+
     function saveStoredKhetRecords(list) {
-      localStorage.setItem("portal_khet_records_v1", JSON.stringify(list || []));
+      const cleanList = Array.isArray(list) ? list : [];
+      DB.khetRecords = cleanList;
+      try {
+        localStorage.setItem("portal_khet_records_v1", JSON.stringify(cleanList));
+      } catch (e) {}
+      saveDbSnapshotToCache();
     }
+
     function openKhetModal() {
+      cancelKhetEdit();
       renderKhetRecordsList();
       openModal("khetModal");
     }
-    function addKhetRecord() {
+
+    function editKhetRecord(id) {
+      const list = getStoredKhetRecords();
+      const target = list.find(item => String(item.id) === String(id));
+      if (!target) return;
+
+      editingKhetRecordId = String(target.id);
+      document.getElementById("khetName").value = target.name || "";
+      document.getElementById("khetCrop").value = target.crop || "";
+      document.getElementById("khetIncome").value = target.income !== undefined ? target.income : "";
+      document.getElementById("khetExpense").value = target.expense !== undefined ? target.expense : "";
+      document.getElementById("khetNotes").value = target.notes || "";
+
+      const titleEl = document.getElementById("khetFormTitle");
+      const btnTextEl = document.getElementById("btnSubmitKhetRecordText");
+      const cancelBtn = document.getElementById("btnCancelKhetEdit");
+      if (titleEl) titleEl.innerText = "Edit Farmland (Khet) Details";
+      if (btnTextEl) btnTextEl.innerText = "Update Farmland Record (Auto-Save to Google Sheet)";
+      if (cancelBtn) cancelBtn.style.display = "inline-flex";
+    }
+
+    function cancelKhetEdit() {
+      editingKhetRecordId = null;
+      const nameEl = document.getElementById("khetName");
+      const cropEl = document.getElementById("khetCrop");
+      const incEl = document.getElementById("khetIncome");
+      const expEl = document.getElementById("khetExpense");
+      const notesEl = document.getElementById("khetNotes");
+      if (nameEl) nameEl.value = "";
+      if (cropEl) cropEl.value = "";
+      if (incEl) incEl.value = "";
+      if (expEl) expEl.value = "";
+      if (notesEl) notesEl.value = "";
+
+      const titleEl = document.getElementById("khetFormTitle");
+      const btnTextEl = document.getElementById("btnSubmitKhetRecordText");
+      const cancelBtn = document.getElementById("btnCancelKhetEdit");
+      if (titleEl) titleEl.innerText = "Add Khet / Field Record";
+      if (btnTextEl) btnTextEl.innerText = "Save Khet Record (Auto-Save to Google Sheet)";
+      if (cancelBtn) cancelBtn.style.display = "none";
+    }
+
+    async function addKhetRecord() {
+      if (activeRole === "Viewer") return;
       const name = document.getElementById("khetName")?.value.trim();
       const crop = document.getElementById("khetCrop")?.value.trim() || "";
       const income = parseFloat(document.getElementById("khetIncome")?.value) || 0;
@@ -6590,31 +6987,80 @@
       if (!name) {
         return triggerSideToast("Required Field", "Please enter the Khet / Field Name.", false);
       }
-      const list = getStoredKhetRecords();
-      list.unshift({
-        id: "KHET-" + Date.now(),
-        name,
-        crop,
-        income,
-        expense,
-        notes,
-        createdAt: new Date().toISOString().split("T")[0]
+
+      const list = [...getStoredKhetRecords()];
+      const nowDate = new Date().toISOString().split("T")[0];
+      let savedRecord = null;
+      const isEditing = Boolean(editingKhetRecordId);
+
+      if (isEditing) {
+        const idx = list.findIndex(item => String(item.id) === String(editingKhetRecordId));
+        if (idx !== -1) {
+          savedRecord = {
+            ...list[idx],
+            name,
+            crop,
+            income,
+            expense,
+            notes,
+            updatedAt: new Date().toISOString()
+          };
+          list[idx] = savedRecord;
+        }
+      }
+
+      if (!savedRecord) {
+        savedRecord = {
+          id: editingKhetRecordId || ("KHET-" + Date.now()),
+          name,
+          crop,
+          income,
+          expense,
+          notes,
+          createdAt: nowDate,
+          updatedAt: new Date().toISOString()
+        };
+        list.unshift(savedRecord);
+      }
+
+      saveStoredKhetRecords(list);
+      cancelKhetEdit();
+      renderKhetRecordsList();
+
+      triggerSideToast(
+        isEditing ? "Khet Updated & Saved" : "Khet Saved to Google Sheet",
+        `${isEditing ? "Updated" : "Saved"} Farmland (Khet) record for ${name} and synced to Google Sheet!`,
+        true
+      );
+
+      await sendGasPost({
+        action: "saveKhetRecord",
+        id: savedRecord.id,
+        name: savedRecord.name,
+        crop: savedRecord.crop,
+        income: savedRecord.income,
+        expense: savedRecord.expense,
+        notes: savedRecord.notes,
+        createdAt: savedRecord.createdAt
       });
-      saveStoredKhetRecords(list);
-      document.getElementById("khetName").value = "";
-      document.getElementById("khetCrop").value = "";
-      document.getElementById("khetIncome").value = "";
-      document.getElementById("khetExpense").value = "";
-      document.getElementById("khetNotes").value = "";
-      renderKhetRecordsList();
-      triggerSideToast("Khet Record Saved", `Saved record for ${name}`, true);
     }
-    function deleteKhetRecord(id) {
-      const list = getStoredKhetRecords().filter(item => item.id !== id);
+
+    async function deleteKhetRecord(id) {
+      if (activeRole === "Viewer") return;
+      const list = getStoredKhetRecords().filter(item => String(item.id) !== String(id));
       saveStoredKhetRecords(list);
+      if (editingKhetRecordId && String(editingKhetRecordId) === String(id)) {
+        cancelKhetEdit();
+      }
       renderKhetRecordsList();
-      triggerSideToast("Khet Record Removed", "Khet record deleted.", "warning");
+      triggerSideToast("Khet Record Removed", "Khet record deleted from app & Google Sheet.", "warning");
+
+      await sendGasPost({
+        action: "deleteKhetRecord",
+        id: id
+      });
     }
+
     function renderKhetRecordsList() {
       const container = document.getElementById("khetRecordsList");
       if (!container) return;
@@ -6623,19 +7069,27 @@
         container.innerHTML = `<div style="text-align:center; padding:18px; color:var(--text-muted); font-size:0.82rem;">No Khet (Field) records added yet.</div>`;
         return;
       }
-      container.innerHTML = list.map(item => `
-        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:10px;">
-          <div>
-            <div style="font-weight:800; font-size:0.88rem;">${item.name} ${item.crop ? `(${item.crop})` : ''}</div>
-            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
-              Income: <strong style="color:var(--accent-green);">₹${Number(item.income || 0).toLocaleString('en-IN')}</strong> | Expense: <strong style="color:var(--accent-red);">₹${Number(item.expense || 0).toLocaleString('en-IN')}</strong> ${item.notes ? ' | ' + item.notes : ''}
+      container.innerHTML = list.map(item => {
+        const safeId = String(item.id || "").replace(/'/g, "\\'");
+        return `
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:10px;">
+            <div style="flex:1; min-width:0;">
+              <div style="font-weight:800; font-size:0.88rem;">${item.name} ${item.crop ? `(${item.crop})` : ''}</div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+                Income: <strong style="color:var(--accent-green);">₹${Number(item.income || 0).toLocaleString('en-IN')}</strong> | Expense: <strong style="color:var(--accent-red);">₹${Number(item.expense || 0).toLocaleString('en-IN')}</strong> ${item.notes ? ' | ' + item.notes : ''}
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
+              <button type="button" class="btn-ledger-action edit-btn admin-only" onclick="editKhetRecord('${safeId}')" title="Edit Farmland (Khet) Details">
+                <i class="fa-solid fa-pen-to-square"></i> Edit
+              </button>
+              <button type="button" class="btn-ledger-action admin-only" style="color:var(--accent-red);" onclick="deleteKhetRecord('${safeId}')" title="Delete Farmland (Khet) Record">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
             </div>
           </div>
-          <button type="button" class="btn-ledger-action admin-only" style="color:var(--accent-red);" onclick="deleteKhetRecord('${item.id}')">
-            <i class="fa-solid fa-trash-can"></i>
-          </button>
-        </div>
-      `).join("");
+        `;
+      }).join("");
     }
 
     // Helper: Propagate UPI Name, UPI ID, and Contact Mobile across the parent Property and all associated Flats & Active Renters
@@ -7046,12 +7500,29 @@
 
       if (statusVal === "Inactive") {
         if (existingActiveRenter) {
+          const vacatedId = existingActiveRenter.RenterID || targetRenterId;
+          existingActiveRenter.RenterID = vacatedId;
           existingActiveRenter.Status = "Inactive";
           existingActiveRenter.EndDate = payload.endDate || new Date().toISOString().split('T')[0];
+
+          // Requirement 3: Permanently stamp the vacating tenant's RenterID onto their bills so their unpaid dues
+          // or advance balances remain strictly attached to the outgoing tenant and become 0 for the next tenant,
+          // while all meter readings for Electricity, PNG, and Water remain permanently recorded on the flat!
+          const vacatedNameClean = String(existingActiveRenter.RenterName || "").trim().toLowerCase();
+          DB.bills.forEach(b => {
+            if (isSamePropAndFlat(b.PropertyName, b.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName)) {
+              const bRId = String(b.RenterID || "").trim();
+              const bTName = String(b.TenantName || "").trim().toLowerCase();
+              if (!bRId && (!vacatedNameClean || bTName === vacatedNameClean)) {
+                b.RenterID = vacatedId;
+              }
+            }
+          });
         }
         activeFlatRenterObj = null;
         clearRenterRightForm();
-        triggerSideToast("Renter Archived", "Past renter locked in history. Form cleared for new renter!", true);
+        handleBillingMonthChange();
+        triggerSideToast("Renter Vacated & Meter History Preserved", "Previous meter readings kept permanently! Carry-forward dues reset to ₹0 for the new tenant.", true);
       } else {
         if (existingActiveRenter) {
           existingActiveRenter.PropertyName = payload.propertyName;
