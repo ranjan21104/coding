@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Real Estate & Tenant Financial Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1506,50 +1509,70 @@
     @media (max-width: 768px) {
       header.top-nav {
         padding: 10px 12px;
-        gap: 8px;
+        gap: 10px 8px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
       }
       .nav-left {
         order: 1;
-        flex: 1 1 auto;
+        flex: 0 0 auto;
       }
       .nav-left h2 {
         font-size: 1.08rem;
       }
       .nav-right {
         order: 2;
-        width: 100%;
-        justify-content: space-between;
-        gap: 8px;
+        flex: 1 1 auto;
+        justify-content: flex-end;
+        gap: 6px;
       }
       .nav-actions-group {
-        margin-left: auto;
-        gap: 8px;
-        justify-content: flex-end;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      .dropdown-anchor {
+        position: relative;
+        flex-shrink: 0;
+      }
+      .plus-btn-highlight {
+        min-width: 38px !important;
+        width: 38px !important;
+        height: 38px !important;
+        flex-shrink: 0 !important;
       }
       .nav-btn {
+        min-width: 38px;
         width: 38px;
         height: 38px;
         font-size: 0.92rem;
+        flex-shrink: 0;
       }
       .pnl-tracker {
-        flex: 1 1 auto;
+        order: 4;
+        width: 100%;
         justify-content: space-around;
         padding: 7px 10px;
         font-size: 0.74rem;
+        margin-top: 2px;
       }
       .nav-center {
         order: 3;
+        width: 100%;
         min-width: 100%;
         max-width: 100%;
+        margin-top: 2px;
       }
       .action-menu {
-        position: fixed;
-        top: 64px;
-        right: 12px;
-        left: 12px;
-        width: auto;
-        max-width: 340px;
-        margin-left: auto;
+        position: fixed !important;
+        top: 56px !important;
+        right: 14px !important;
+        left: auto !important;
+        width: 230px !important;
+        max-width: calc(100vw - 28px) !important;
+        z-index: 10000 !important;
       }
       .properties-bar {
         padding: 12px 12px 6px 12px;
@@ -1921,6 +1944,119 @@
   </section>
 
   <!-- ==================== POPUP MODALS ==================== -->
+
+  <!-- REACTIVATION DESTINATION MODAL (Requirement 6) -->
+  <div id="reactivateDestinationModal" class="modal-overlay" style="z-index: 5200;">
+    <div class="modal-window" style="max-width: 480px;">
+      <button class="modal-close-btn" onclick="closeModal('reactivateDestinationModal')"><i class="fa-solid fa-xmark"></i></button>
+      <div style="margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--glass-border);">
+        <h3 style="margin:0; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-building-circle-check" style="color:var(--accent-green);"></i> Reactivate Returning Renter
+        </h3>
+        <p style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">
+          Select the specific property and flat/room where this renter is moving in.
+        </p>
+      </div>
+
+      <input type="hidden" id="reactivateTargetRenterId">
+
+      <div class="form-group">
+        <label>Renter Name</label>
+        <input type="text" id="reactivateTargetName" class="form-control" readonly>
+      </div>
+
+      <div class="form-group">
+        <label>Destination Property <span class="req-star">*</span></label>
+        <select id="reactivatePropertySelect" class="form-control" onchange="populateReactivateFlatsDropdown()"></select>
+      </div>
+
+      <div class="form-group">
+        <label>Destination Flat / Room <span class="req-star">*</span></label>
+        <select id="reactivateFlatSelect" class="form-control"></select>
+      </div>
+
+      <div class="form-group">
+        <label>New Stay Joining Date</label>
+        <input type="date" id="reactivateJoinDate" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label>Agreed Monthly Rent (₹)</label>
+        <input type="number" id="reactivateRentAmount" class="form-control" placeholder="0">
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:14px; padding-top:12px; border-top:1px solid var(--glass-border);">
+        <button type="button" class="btn-confirm-cancel" onclick="closeModal('reactivateDestinationModal')">Cancel</button>
+        <button type="button" class="btn-primary" onclick="confirmReactivateRenterToDestination()">
+          <i class="fa-solid fa-circle-check"></i> Reactivate in Selected Flat
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT DEPARTED RENTER POPUP MODAL (Requirement 5) -->
+  <div id="editLeftRenterModal" class="modal-overlay" style="z-index: 5000;">
+    <div class="modal-window" style="max-width: 620px;">
+      <button class="modal-close-btn" onclick="closeModal('editLeftRenterModal')"><i class="fa-solid fa-xmark"></i></button>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding-right:34px; margin-bottom: 14px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;">
+        <h3 style="margin:0; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-user-pen" style="color:var(--primary);"></i> Edit Departed Renter Profile
+        </h3>
+        <span id="editLeftModalBadge" class="badge-unpaid" style="font-size:0.74rem;">Departed Tenant</span>
+      </div>
+
+      <input type="hidden" id="editLeftRenterId">
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+        <div class="form-group">
+          <label>Full Name <span class="req-star">*</span></label>
+          <input type="text" id="editLeftName" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Aadhaar / ID Card Number</label>
+          <input type="text" id="editLeftIdentityNum" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="tel" id="editLeftMobile" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Alternative Mobile Number</label>
+          <input type="tel" id="editLeftAltMobile" class="form-control">
+        </div>
+        <div class="form-group" style="grid-column: span 2;">
+          <label>Permanent Address</label>
+          <input type="text" id="editLeftAddress" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Total Family Members</label>
+          <input type="number" id="editLeftFamily" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="editLeftStatus" class="form-control">
+            <option value="Inactive" selected>Inactive (Departed)</option>
+            <option value="Active">Active</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Stay Joining Date</label>
+          <input type="date" id="editLeftJoinDate" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Stay Ending Date</label>
+          <input type="date" id="editLeftEndDate" class="form-control">
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:14px; padding-top:12px; border-top:1px solid var(--glass-border);">
+        <button type="button" class="btn-confirm-cancel" onclick="closeModal('editLeftRenterModal')">Cancel</button>
+        <button type="button" class="btn-primary admin-only" style="width:auto; padding:10px 24px;" onclick="saveDepartedRenterChanges()">
+          <i class="fa-solid fa-floppy-disk"></i> Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- 1. PROFILE MODAL -->
   <div id="profileModal" class="modal-overlay">
@@ -2379,7 +2515,6 @@
         <div class="flat-nav-item" onclick="switchFlatTab(event, 'tabProfile')">3. Profile</div>
         <div class="flat-nav-item" onclick="switchFlatTab(event, 'tabRenterHistory')">4. Renter History</div>
         <div class="flat-nav-item" onclick="switchFlatTab(event, 'tabGraph')">5. Graph</div>
-        <div class="flat-nav-item" id="navItemEditLeftRenter" style="display:none;" onclick="switchFlatTab(event, 'tabEditLeftRenter')">6. Edit Left Renter</div>
       </nav>
 
       <!-- TAB 1: CALCULATION WORKFLOW -->
@@ -2825,75 +2960,7 @@
         <div id="tabGraphContainer" style="margin-bottom:14px;"></div>
       </div>
 
-      <!-- TAB 6: EDIT LEFT RENTER (Requirement 1: Dedicated Tab for Editing Departed Tenant) -->
-      <div id="tabEditLeftRenter" class="tab-content">
-        <div style="background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:16px; padding:18px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;">
-            <div>
-              <h4 style="font-size:1.05rem; font-weight:800; color:var(--primary); margin:0;">
-                <i class="fa-solid fa-user-pen"></i> Edit Departed Renter Profile
-              </h4>
-              <p style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">
-                Changes saved here remain permanently locked to this renter and will never change on their own.
-              </p>
-            </div>
-            <span id="editLeftRenterStatusBadge" class="badge-unpaid">Inactive (Departed)</span>
-          </div>
-
-          <input type="hidden" id="editLeftRenterId">
-
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-            <div class="form-group">
-              <label>Renter Name <span class="req-star">*</span></label>
-              <input type="text" id="editLeftName" class="form-control">
-            </div>
-            <div class="form-group">
-              <label>Aadhaar / ID Card Number</label>
-              <input type="text" id="editLeftIdentityNum" class="form-control">
-            </div>
-            <div class="form-group">
-              <label>Mobile Number</label>
-              <input type="tel" id="editLeftMobile" class="form-control">
-            </div>
-            <div class="form-group">
-              <label>Alternative Mobile Number</label>
-              <input type="tel" id="editLeftAltMobile" class="form-control">
-            </div>
-            <div class="form-group" style="grid-column: span 2;">
-              <label>Permanent Address</label>
-              <input type="text" id="editLeftAddress" class="form-control">
-            </div>
-            <div class="form-group">
-              <label>Total Family Members</label>
-              <input type="number" id="editLeftFamily" class="form-control">
-            </div>
-            <div class="form-group">
-              <label>Renter Status</label>
-              <select id="editLeftStatus" class="form-control">
-                <option value="Inactive" selected>Inactive (Departed / Left)</option>
-                <option value="Active">Reactivate to Active Renter</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Stay Join Date</label>
-              <input type="date" id="editLeftJoinDate" class="form-control">
-            </div>
-            <div class="form-group">
-              <label>Stay End Date (Date Left)</label>
-              <input type="date" id="editLeftEndDate" class="form-control">
-            </div>
-          </div>
-
-          <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:14px; padding-top:12px; border-top:1px solid var(--glass-border);">
-            <button type="button" class="btn-ledger-action" onclick="switchFlatTabToRenterHistory()">
-              <i class="fa-solid fa-arrow-left"></i> Back to Renter History
-            </button>
-            <button type="button" class="btn-primary admin-only" style="width:auto; padding:10px 22px;" onclick="saveDepartedRenterChanges()">
-              <i class="fa-solid fa-floppy-disk"></i> Save Renter Changes
-            </button>
-          </div>
-        </div>
-      </div>
+      
 
     </div>
   </div>
@@ -2936,6 +3003,112 @@
     let syncTimer = null;
     let sideToastTimeout = null;
     let pendingConfirmCallback = null;
+
+    let pendingReactivatingRenter = null;
+
+    function populateReactivateFlatsDropdown() {
+      const propName = document.getElementById("reactivatePropertySelect")?.value;
+      const flatSelect = document.getElementById("reactivateFlatSelect");
+      if (!flatSelect) return;
+      const matching = (DB.flats || []).filter(f => String(f.PropertyName || "").trim().toLowerCase() === String(propName || "").trim().toLowerCase());
+      flatSelect.innerHTML = matching.length > 0
+        ? matching.map(f => '<option value="' + f.FlatName + '">Flat ' + f.FlatName + ' (Rent: ₹' + (f.RentAmount || 0) + ')</option>').join("")
+        : '<option value="">No flats available in this property</option>';
+    }
+
+    function reactivatePreviousRenterProfile(renterIdOrIdx) {
+      if (activeRole === "Viewer") return;
+
+      let matchedRenter = null;
+      if (String(renterIdOrIdx).startsWith("IDX-")) {
+        const idx = parseInt(String(renterIdOrIdx).replace("IDX-", ""), 10);
+        if (!isNaN(idx) && DB.renters[idx]) matchedRenter = DB.renters[idx];
+      }
+      if (!matchedRenter) {
+        matchedRenter = (DB.renters || []).find(r => String(r.RenterID || "").trim() === String(renterIdOrIdx).trim());
+      }
+      if (!matchedRenter) {
+        return triggerSideToast("Not Found", "Could not find the saved renter profile.", false);
+      }
+
+      pendingReactivatingRenter = matchedRenter;
+      document.getElementById("reactivateTargetRenterId").value = matchedRenter.RenterID || "";
+      document.getElementById("reactivateTargetName").value = matchedRenter.RenterName || "";
+      document.getElementById("reactivateJoinDate").value = new Date().toISOString().split("T")[0];
+      document.getElementById("reactivateRentAmount").value = matchedRenter.RentAmount || 0;
+
+      // Populate Properties
+      const propSelect = document.getElementById("reactivatePropertySelect");
+      if (propSelect) {
+        propSelect.innerHTML = (DB.properties || []).map(p => '<option value="' + p.PropertyName + '">' + p.PropertyName + '</option>').join("");
+        if (selectedFlat?.PropertyName) {
+          propSelect.value = selectedFlat.PropertyName;
+        }
+      }
+      populateReactivateFlatsDropdown();
+      if (selectedFlat?.FlatName) {
+        const flatSelect = document.getElementById("reactivateFlatSelect");
+        if (flatSelect) flatSelect.value = selectedFlat.FlatName;
+      }
+
+      openModal("reactivateDestinationModal");
+    }
+
+    async function confirmReactivateRenterToDestination() {
+      if (!pendingReactivatingRenter) return;
+      const destProp = document.getElementById("reactivatePropertySelect")?.value;
+      const destFlat = document.getElementById("reactivateFlatSelect")?.value;
+      const joinDate = document.getElementById("reactivateJoinDate")?.value || new Date().toISOString().split("T")[0];
+      const rentAmt = parseFloat(document.getElementById("reactivateRentAmount")?.value) || 0;
+
+      if (!destProp || !destFlat) {
+        return triggerSideToast("Destination Required", "Please choose both property and flat/room.", false);
+      }
+
+      // Requirement 6: Reactivate strictly into the selected destination flat, not automatically into previous flat
+      pendingReactivatingRenter.PropertyName = destProp;
+      pendingReactivatingRenter.FlatName = destFlat;
+      pendingReactivatingRenter.Status = "Active";
+      pendingReactivatingRenter.JoinDate = joinDate;
+      pendingReactivatingRenter.EndDate = "";
+      pendingReactivatingRenter.RentAmount = rentAmt;
+
+      // Update target flat in DB.flats
+      const targetFlatObj = (DB.flats || []).find(f => isSamePropAndFlat(f.PropertyName, f.FlatName, destProp, destFlat));
+      if (targetFlatObj) {
+        targetFlatObj.RentAmount = rentAmt;
+        selectedFlat = targetFlatObj;
+      }
+      activeFlatRenterObj = pendingReactivatingRenter;
+
+      closeModal("reactivateDestinationModal");
+      triggerSideToast(
+        "Renter Reactivated",
+        pendingReactivatingRenter.RenterName + " is now active in " + destProp + " - Flat " + destFlat + "!",
+        true
+      );
+
+      saveDbSnapshotToCache();
+      renderAllDashboardUI();
+
+      await sendGasPost({
+        action: "updateRenterProfile",
+        renterId: pendingReactivatingRenter.RenterID,
+        propertyName: destProp,
+        flatName: destFlat,
+        renterName: pendingReactivatingRenter.RenterName,
+        identityDocNumber: pendingReactivatingRenter.IdentityDocNumber,
+        mobileNumber: pendingReactivatingRenter.MobileNumber,
+        altMobileNumber: pendingReactivatingRenter.AltMobileNumber,
+        address: pendingReactivatingRenter.Address,
+        familyMembers: pendingReactivatingRenter.TotalFamilyMembers || 1,
+        renterStatus: "Active",
+        joinDate: joinDate,
+        endDate: "",
+        rentAmount: rentAmt
+      });
+    }
+
     let currentEditingBillId = null;
 
     // Receipt WhatsApp & Checkbox State
@@ -2971,7 +3144,32 @@
       return str;
     }
 
-    function formatMonthLabel(rawVal) {
+    
+    /**
+     * Requirement 4 & 8: Display Year, Month, and Date ONLY (strictly NO time)
+     */
+    function formatDateOnly(rawDate) {
+      if (!rawDate) return "--";
+      const s = String(rawDate).trim().replace(/^'+/, "");
+      if (s.includes("T")) return s.split("T")[0];
+      if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0, 10);
+      const parsed = new Date(s);
+      if (!isNaN(parsed.getTime())) {
+        const y = parsed.getFullYear();
+        const m = String(parsed.getMonth() + 1).padStart(2, "0");
+        const d = String(parsed.getDate()).padStart(2, "0");
+        return y + "-" + m + "-" + d;
+      }
+      return s.split(" ")[0];
+    }
+
+    function formatStayDurationDisplay(joinDate, endDate, isAct) {
+      const j = formatDateOnly(joinDate);
+      const e = isAct ? "Present" : (endDate ? formatDateOnly(endDate) : "Departed");
+      return j + " to " + e;
+    }
+
+function formatMonthLabel(rawVal) {
       const clean = normalizeMonthYear(rawVal);
       if (!/^\d{4}-\d{2}$/.test(clean)) return String(clean || "--").replace(/[()[\]]/g, "").trim();
       const [year, month] = clean.split("-");
@@ -3089,7 +3287,7 @@
           background: #0f172a !important;
           color: #ffffff !important;
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-          padding: 24px 20px !important;
+          padding: 26px 22px 34px 22px !important; box-sizing: border-box !important;
           border-radius: 16px !important;
           box-sizing: border-box !important;
         }
@@ -3337,6 +3535,11 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
+      // Requirement 1: Zero browser caching of sensitive property & tenant data
+      try {
+        localStorage.clear();
+        sessionStorage.clear();
+      } catch (e) {}
       injectReceiptWhatsAppStyles();
 
       // Prevent mouse scroll wheel and up/down arrow keys from accidentally changing monetary values or meter readings
@@ -3429,7 +3632,7 @@
     function saveDbSnapshotToCache() {
       try {
         const serialized = JSON.stringify(DB);
-        sessionStorage.setItem("cached_db_snapshot", serialized);
+        // No-cache: sessionStorage backup disabled
         if (
           (DB.properties && DB.properties.length > 0) ||
           (DB.flats && DB.flats.length > 0) ||
@@ -3438,7 +3641,7 @@
           (DB.fdRecords && DB.fdRecords.length > 0) ||
           (DB.khetRecords && DB.khetRecords.length > 0)
         ) {
-          localStorage.setItem("portal_full_db_backup", serialized);
+          // No-cache: localStorage backup disabled
         }
         lastSyncedDataHash = JSON.stringify({
           p: DB.properties,
@@ -3661,7 +3864,7 @@
           if (Array.isArray(res.loginHistory) && res.loginHistory.length > 0) {
             DB.loginHistory = res.loginHistory;
             try {
-              localStorage.setItem("portal_login_history_backup", JSON.stringify(res.loginHistory.slice(0, 500)));
+              // No-cache: login history storage disabled
             } catch (e) {}
           }
           saveDbSnapshotToCache();
@@ -3769,7 +3972,7 @@
         ? res.loginHistory
         : [newLoginEntry, ...localBackupLogs];
       try {
-        localStorage.setItem("portal_login_history_backup", JSON.stringify(combinedLogs.slice(0, 500)));
+        // No-cache: login history storage disabled
       } catch (e) {}
       DB.loginHistory = (String(activeRole).toLowerCase() === "admin") ? combinedLogs : [];
 
@@ -3888,7 +4091,7 @@
           LoginTimestamp: new Date().toISOString()
         };
         const updatedLogs = [instantLoginEntry, ...localBackupLogs].slice(0, 500);
-        try { localStorage.setItem("portal_login_history_backup", JSON.stringify(updatedLogs)); } catch (err) {}
+        try { // No-cache: login history storage disabled } catch (err) {}
         DB.loginHistory = (String(activeRole).toLowerCase() === "admin") ? updatedLogs : [];
 
         document.getElementById("loginPassword").value = "";
@@ -3969,7 +4172,7 @@
             }
           } else {
             try {
-              localStorage.setItem("portal_login_history_backup", JSON.stringify(incomingLoginHistory.slice(0, 500)));
+              // No-cache: login history storage disabled
             } catch (e) {}
           }
           if (String(activeRole).toLowerCase() !== "admin") {
@@ -4446,7 +4649,7 @@
                       <strong>${r.PropertyName || '--'} - Flat ${r.FlatName || '--'}</strong> • <i class="fa-solid fa-phone"></i> ${r.MobileNumber || '--'}
                     </div>
                     <div style="font-size:0.71rem; color:var(--text-muted); margin-top:2px;">
-                      Stay: ${r.JoinDate || '--'} to ${isAct ? 'Present' : (r.EndDate || 'Left')} • <strong>${balLabel}</strong>
+                      Stay: ${formatDateOnly(r.JoinDate)} to ${isAct ? 'Present' : formatDateOnly(r.EndDate)} • <strong>${balLabel}</strong>
                     </div>
                   </div>
                 </div>
@@ -5654,7 +5857,37 @@
     }
 
     // Requirement 1: Open Dedicated Tab to Edit Departed Renter
-    function openDedicatedEditLeftRenterTab(renterIdOrIdx) {
+    function openEditLeftRenterModal(renterIdOrIdx) {
+      if (activeRole === "Viewer" || !selectedFlat) return;
+
+      let targetRenter = null;
+      if (String(renterIdOrIdx).startsWith("IDX-")) {
+        const idx = parseInt(String(renterIdOrIdx).replace("IDX-", ""), 10);
+        if (!isNaN(idx) && DB.renters[idx]) targetRenter = DB.renters[idx];
+      }
+      if (!targetRenter) {
+        targetRenter = (DB.renters || []).find(r => String(r.RenterID || "").trim() === String(renterIdOrIdx).trim());
+      }
+      if (!targetRenter) {
+        return triggerSideToast("Renter Not Found", "Could not locate departed renter details.", false);
+      }
+
+      document.getElementById("editLeftRenterId").value = targetRenter.RenterID || "";
+      document.getElementById("editLeftName").value = targetRenter.RenterName || "";
+      document.getElementById("editLeftIdentityNum").value = targetRenter.IdentityDocNumber || "";
+      document.getElementById("editLeftMobile").value = targetRenter.MobileNumber || "";
+      document.getElementById("editLeftAltMobile").value = targetRenter.AltMobileNumber || "";
+      document.getElementById("editLeftAddress").value = targetRenter.Address || "";
+      document.getElementById("editLeftFamily").value = targetRenter.TotalFamilyMembers || 1;
+      document.getElementById("editLeftStatus").value = targetRenter.Status || "Inactive";
+      // Requirement 8: Set exact YYYY-MM-DD date without timezone conversion or shift
+      document.getElementById("editLeftJoinDate").value = formatDateOnly(targetRenter.JoinDate);
+      document.getElementById("editLeftEndDate").value = formatDateOnly(targetRenter.EndDate);
+
+      openModal("editLeftRenterModal");
+    }
+
+    function _disabledOldTab(renterIdOrIdx) {
       if (activeRole === "Viewer" || !selectedFlat) return;
 
       let targetRenter = null;
@@ -5747,7 +5980,7 @@
         endDate: targetRenter.EndDate
       });
 
-      switchFlatTabToRenterHistory();
+      closeModal("editLeftRenterModal");
     }
 
     // Helper: Formats stay duration as Month and Year only (NO time!) (Requirement 8)
@@ -6806,12 +7039,26 @@ function openFlatDetailsModal(flat, renter) {
       let receiptBlob = null;
       try {
         receiptCardEl.classList.add("capturing-receipt");
+        // Requirement 3: Ensure zero cropping by unsetting overflow and scroll clamps
+        const prevMaxHeight = receiptCardEl.style.maxHeight;
+        const prevOverflow = receiptCardEl.style.overflow;
+        receiptCardEl.style.maxHeight = "none";
+        receiptCardEl.style.overflow = "visible";
+
         const canvas = await html2canvas(receiptCardEl, {
           scale: 2,
           useCORS: true,
           allowTaint: true,
+          letterRendering: true,
+          scrollY: 0,
+          scrollX: 0,
+          windowWidth: 500,
+          height: receiptCardEl.scrollHeight,
           backgroundColor: document.body.classList.contains("theme-white") ? "#ffffff" : "#0f172a"
         });
+
+        receiptCardEl.style.maxHeight = prevMaxHeight;
+        receiptCardEl.style.overflow = prevOverflow;
         receiptCardEl.classList.remove("capturing-receipt");
         receiptBlob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
       } catch (err) {
@@ -6849,8 +7096,18 @@ function openFlatDetailsModal(flat, renter) {
 
       // Open WhatsApp chat with ZERO text parameter so no text ever appears beneath the image
       if (!formattedPhone || formattedPhone.length < 10) {
-        window.open("https://web.whatsapp.com/", "_blank");
-        triggerSideToast("Receipt Image Copied", "Receipt image copied to clipboard! Paste (Ctrl+V) in WhatsApp to send image only.", true);
+        // Requirement 7: Prompt user for mobile number if none is saved in profile
+        const promptPhone = prompt("No mobile number is saved in " + (currentOpenedReceiptRenter?.RenterName || "this renter") + "\'s profile.\nPlease enter the WhatsApp mobile number to send this receipt to:", "");
+        if (promptPhone && promptPhone.trim()) {
+          const userFormatted = formatWhatsAppPhone(promptPhone.trim());
+          if (userFormatted && userFormatted.length >= 10) {
+            formattedPhone = userFormatted;
+          }
+        }
+      }
+
+      if (!formattedPhone || formattedPhone.length < 10) {
+        triggerSideToast("Receipt Image Ready", "No mobile number entered. Receipt image copied to clipboard!", true);
         return;
       }
 
@@ -7173,13 +7430,13 @@ function openFlatDetailsModal(flat, renter) {
         const safeFlat = String(flat || "").replace(/'/g, "\\'");
         const safeName = String(targetRenter.RenterName || "").replace(/'/g, "\\'");
 
-        const joinMonthYear = formatStayMonthYearOnly(targetRenter.JoinDate);
-        const endMonthYear = isAct ? "Present" : formatStayMonthYearOnly(targetRenter.EndDate || "Departed");
+        const joinMonthYear = formatDateOnly(targetRenter.JoinDate);
+        const endMonthYear = isAct ? "Present" : formatDateOnly(targetRenter.EndDate || "Departed");
         const stayDurationLabel = joinMonthYear + " to " + endMonthYear;
 
         const editButtonHtml = isAct
           ? '<button type="button" class="btn-ledger-action edit-btn admin-only" style="padding:8px 14px; font-size:0.76rem; font-weight:700;" onclick="switchFlatTabToProfile()"><i class="fa-solid fa-pen"></i> Edit Profile</button>'
-          : '<button type="button" class="btn-ledger-action edit-btn admin-only" style="padding:8px 14px; font-size:0.76rem; font-weight:700; color:#818cf8; border-color:rgba(129,140,248,0.5);" onclick="openDedicatedEditLeftRenterTab(\'' + safeId + '\')"><i class="fa-solid fa-user-pen"></i> Edit Left Renter</button>';
+          : '<button type="button" class="btn-ledger-action edit-btn admin-only" style="padding:8px 14px; font-size:0.76rem; font-weight:700; color:#818cf8; border-color:rgba(129,140,248,0.5);" onclick="openEditLeftRenterModal(\'' + safeId + '\')"><i class="fa-solid fa-user-pen"></i> Edit Left Renter</button>';
 
         return `
           <div class="rh-tenant-card-box ${isAct ? 'active-tenant-box' : ''}">
@@ -7370,7 +7627,7 @@ function openFlatDetailsModal(flat, renter) {
                 <span class="${statusBadgeClass}" style="font-size:0.74rem;">${statusBadgeText}</span>
               </div>
               <div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">
-                <strong>${prop} — Flat ${flat}</strong> &nbsp;|&nbsp; Stay: <strong>${targetRenter.JoinDate || '--'}</strong> to <strong>${isAct ? 'Present' : (targetRenter.EndDate || 'Left')}</strong>
+                <strong>${prop} — Flat ${flat}</strong> &nbsp;|&nbsp; Stay: <strong>${formatDateOnly(targetRenter.JoinDate)}</strong> to <strong>${isAct ? 'Present' : formatDateOnly(targetRenter.EndDate)}</strong>
               </div>
             </div>
           </div>
@@ -7385,8 +7642,8 @@ function openFlatDetailsModal(flat, renter) {
             <div><span style="color:var(--text-muted);">Aadhaar / ID No:</span> <strong>${targetRenter.IdentityDocNumber || '--'}</strong></div>
             <div><span style="color:var(--text-muted);">Permanent Address:</span> <strong>${targetRenter.Address || '--'}</strong></div>
             <div><span style="color:var(--text-muted);">Total Family Members:</span> <strong>${targetRenter.TotalFamilyMembers || '1'}</strong></div>
-            <div><span style="color:var(--text-muted);">Join Date:</span> <strong>${targetRenter.JoinDate || '--'}</strong></div>
-            <div><span style="color:var(--text-muted);">End / Left Date:</span> <strong>${isAct ? 'Active (Present)' : (targetRenter.EndDate || '--')}</strong></div>
+            <div><span style="color:var(--text-muted);">Join Date:</span> <strong>${formatDateOnly(targetRenter.JoinDate)}</strong></div>
+            <div><span style="color:var(--text-muted);">End / Left Date:</span> <strong>${isAct ? 'Active (Present)' : formatDateOnly(targetRenter.EndDate)}</strong></div>
             <div><span style="color:var(--text-muted);">Monthly Base Rent:</span> <strong>₹${targetRenter.RentAmount ?? flatObj?.RentAmount ?? 0}</strong></div>
             <div><span style="color:var(--text-muted);">Fixed Rates (E / P / W):</span> <strong>₹${elecRateVal !== "" ? elecRateVal : 0} / ₹${pngRateVal !== "" ? pngRateVal : 0} / ₹${waterRateVal !== "" ? waterRateVal : 0}</strong></div>
             <div><span style="color:var(--text-muted);">Elec Meter No:</span> <strong>${targetRenter.ElecMeterNumber || flatObj?.ElecMeterNumber || '--'}</strong></div>
@@ -8187,8 +8444,8 @@ function openFlatDetailsModal(flat, renter) {
         address: document.getElementById("renterAddress").value,
         familyMembers: document.getElementById("renterFamily").value,
         renterStatus: statusVal,
-        joinDate: document.getElementById("renterJoinDate").value || new Date().toISOString().split('T')[0],
-        endDate: document.getElementById("renterEndDate").value,
+        joinDate: document.getElementById("renterJoinDate").value || activeFlatRenterObj?.JoinDate || new Date().toISOString().split('T')[0],
+        endDate: document.getElementById("renterEndDate").value || (statusVal === "Inactive" ? (activeFlatRenterObj?.EndDate || new Date().toISOString().split('T')[0]) : ""), 
         profileImageUrl: isPlaceholderImageUrl(currentProfileSrc) ? "" : currentProfileSrc,
         identityImageUrl: isPlaceholderImageUrl(currentIdentitySrc) ? "" : currentIdentitySrc,
         rentAmount: exactRentVal !== "" ? exactRentVal : 0,
