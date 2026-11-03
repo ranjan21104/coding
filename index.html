@@ -113,12 +113,12 @@
       max-width: 425px;
       padding: 36px 28px;
       text-align: center;
-      background: transparent !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      border: 1.5px solid rgba(255, 255, 255, 0.65) !important;
+      background: rgba(15, 23, 42, 0.34) !important;
+      backdrop-filter: blur(18px) !important;
+      -webkit-backdrop-filter: blur(18px) !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.72) !important;
       border-radius: 22px !important;
-      box-shadow: none !important;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45) !important;
       color: #ffffff !important;
     }
 
@@ -277,16 +277,20 @@
       position: relative;
       display: flex;
       align-items: center;
-      background: transparent !important;
+      background: rgba(255, 255, 255, 0.88) !important;
+      backdrop-filter: blur(16px) !important;
+      -webkit-backdrop-filter: blur(16px) !important;
+      border-radius: 12px !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
     }
     #loginScreen .login-field-icon {
       position: absolute;
       left: 14px;
-      color: #ffffff;
+      color: #334155 !important;
       font-size: 0.95rem;
       pointer-events: none;
       z-index: 2;
-      filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.9));
+      filter: none !important;
     }
     .form-control {
       width: 100%;
@@ -304,39 +308,40 @@
       border-style: dashed;
     }
     #loginScreen .form-control {
-      background: transparent !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      color: #ffffff !important;
-      border: 1.5px solid rgba(255, 255, 255, 0.85) !important;
+      background: rgba(255, 255, 255, 0.92) !important;
+      backdrop-filter: blur(16px) !important;
+      -webkit-backdrop-filter: blur(16px) !important;
+      color: #0f172a !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.98) !important;
       border-radius: 12px !important;
       padding: 13px 14px 13px 40px !important;
       font-size: 0.95rem !important;
       font-weight: 700 !important;
-      text-shadow: 0 1px 5px rgba(0, 0, 0, 0.92) !important;
-      box-shadow: none !important;
+      text-shadow: none !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
       transition: all 0.2s ease !important;
     }
     #loginScreen #loginPassword {
       padding-right: 44px !important;
     }
     #loginScreen .form-control::placeholder {
-      color: rgba(255, 255, 255, 0.9) !important;
+      color: #64748b !important;
       font-weight: 600;
-      text-shadow: 0 1px 5px rgba(0, 0, 0, 0.9);
+      text-shadow: none !important;
     }
     #loginScreen .form-control:focus {
       outline: none !important;
-      background: transparent !important;
-      border-color: #ffffff !important;
-      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.28) !important;
+      background: #ffffff !important;
+      color: #0f172a !important;
+      border-color: #4f46e5 !important;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.35), 0 8px 22px rgba(0, 0, 0, 0.22) !important;
     }
     #loginScreen .eye-toggle-btn {
-      color: #ffffff !important;
-      filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.9));
+      color: #334155 !important;
+      filter: none !important;
     }
     #loginScreen .eye-toggle-btn:hover {
-      color: #fbbf24 !important;
+      color: #4f46e5 !important;
     }
     .form-control:focus:not([readonly]) {
       outline: none;
@@ -1888,9 +1893,9 @@
             <span>Khet</span>
           </button>
 
-          <!-- Dynamic Add Plus (+) Icon -->
+          <!-- Dynamic Add Plus (+) Icon (Delete Property & Delete Flat Moved to Internal Home Settings) -->
           <div class="dropdown-anchor admin-only">
-            <button class="nav-btn plus-btn-highlight" onclick="toggleActionMenu()" title="Add / Manage">
+            <button class="nav-btn plus-btn-highlight" onclick="toggleActionMenu()" title="Add / Edit">
               <i class="fa-solid fa-plus"></i>
             </button>
             <div id="actionMenu" class="action-menu">
@@ -1900,14 +1905,8 @@
               <div class="menu-item" onclick="openModal('editPropertyModal')">
                 <i class="fa-solid fa-pen-to-square"></i> Edit Property Name
               </div>
-              <div class="menu-item" onclick="openModal('deletePropertyModal')">
-                <i class="fa-solid fa-trash-can"></i> Delete Property
-              </div>
               <div class="menu-item" onclick="openAddFlatModal()">
                 <i class="fa-solid fa-door-open"></i> Add Flat
-              </div>
-              <div class="menu-item" onclick="openModal('deleteFlatModal')">
-                <i class="fa-solid fa-rectangle-xmark"></i> Delete Flat
               </div>
             </div>
           </div>
@@ -1936,6 +1935,9 @@
         <!-- Rendered Instantly -->
       </div>
     </section>
+
+    <!-- Requirement 10: Always-Visible Multi-Series Flat Section Analytics Graph on Dashboard -->
+    <section id="dashboardFlatAnalyticsSection" style="display:none; padding: 6px 18px 8px 18px; width: 100%;"></section>
 
     <!-- 3-Units Merged Wide Flat Cards Layout (Hidden until a Property is clicked) -->
     <main class="flats-container" id="flatsList">
@@ -2124,7 +2126,7 @@
     </div>
   </div>
 
-  <!-- REACTIVATION DESTINATION MODAL (Requirement 6) -->
+  <!-- REACTIVATION DESTINATION MODAL (Requirement 1: Ask Which Property & Which Flat to Assign Returning Renter) -->
   <div id="reactivateDestinationModal" class="modal-overlay" style="z-index: 5200;">
     <div class="modal-window" style="max-width: 480px;">
       <button class="modal-close-btn" onclick="closeModal('reactivateDestinationModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -2133,25 +2135,25 @@
           <i class="fa-solid fa-building-circle-check" style="color:var(--accent-green);"></i> Reactivate Returning Renter
         </h3>
         <p style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">
-          Select the specific property and flat/room where this renter is moving in.
+          Select which Property and which Flat within that property this returning renter should be assigned to.
         </p>
       </div>
 
       <input type="hidden" id="reactivateTargetRenterId">
 
       <div class="form-group">
-        <label>Renter Name</label>
+        <label>Returning Renter Name &amp; Aadhaar</label>
         <input type="text" id="reactivateTargetName" class="form-control" readonly>
       </div>
 
       <div class="form-group">
-        <label>Destination Property <span class="req-star">*</span></label>
+        <label>Select Property <span class="req-star">*</span></label>
         <select id="reactivatePropertySelect" class="form-control" onchange="populateReactivateFlatsDropdown()"></select>
       </div>
 
       <div class="form-group">
-        <label>Destination Flat / Room <span class="req-star">*</span></label>
-        <select id="reactivateFlatSelect" class="form-control"></select>
+        <label>Select Flat Within Property <span class="req-star">*</span></label>
+        <select id="reactivateFlatSelect" class="form-control" onchange="handleReactivateFlatChange()"></select>
       </div>
 
       <div class="form-group">
@@ -2166,22 +2168,22 @@
 
       <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:14px; padding-top:12px; border-top:1px solid var(--glass-border);">
         <button type="button" class="btn-confirm-cancel" onclick="closeModal('reactivateDestinationModal')">Cancel</button>
-        <button type="button" class="btn-primary" onclick="confirmReactivateRenterToDestination()">
-          <i class="fa-solid fa-circle-check"></i> Reactivate in Selected Flat
+        <button type="button" class="btn-primary" style="background:var(--accent-green);" onclick="confirmReactivateRenterToDestination()">
+          <i class="fa-solid fa-circle-check"></i> Reactivate Renter in Selected Flat
         </button>
       </div>
     </div>
   </div>
 
-  <!-- EDIT DEPARTED RENTER POPUP MODAL (Requirement 5) -->
+  <!-- EDIT RENTER PROFILE FROM HISTORY POPUP MODAL (Requirement 5: Status Remains Unchanged When Editing Profile) -->
   <div id="editLeftRenterModal" class="modal-overlay" style="z-index: 5000;">
     <div class="modal-window" style="max-width: 620px;">
       <button class="modal-close-btn" onclick="closeModal('editLeftRenterModal')"><i class="fa-solid fa-xmark"></i></button>
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding-right:34px; margin-bottom: 14px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;">
         <h3 style="margin:0; display:flex; align-items:center; gap:8px;">
-          <i class="fa-solid fa-user-pen" style="color:var(--primary);"></i> Edit Departed Renter Profile
+          <i class="fa-solid fa-user-pen" style="color:var(--primary);"></i> Edit Renter Profile Details
         </h3>
-        <span id="editLeftModalBadge" class="badge-unpaid" style="font-size:0.74rem;">Departed Tenant</span>
+        <span id="editLeftModalBadge" class="badge-unpaid" style="font-size:0.74rem;">Left Tenant (Status Preserved)</span>
       </div>
 
       <input type="hidden" id="editLeftRenterId">
@@ -2212,10 +2214,10 @@
           <input type="number" id="editLeftFamily" class="form-control">
         </div>
         <div class="form-group">
-          <label>Status</label>
-          <select id="editLeftStatus" class="form-control">
-            <option value="Inactive" selected>Inactive (Departed)</option>
-            <option value="Active">Active</option>
+          <label>Current Status (Unchanged on Edit)</label>
+          <select id="editLeftStatus" class="form-control" disabled style="opacity:0.85; cursor:not-allowed;">
+            <option value="Inactive">Left / Inactive (Remains Left)</option>
+            <option value="Active">Active (Remains Active)</option>
           </select>
         </div>
         <div class="form-group">
@@ -2228,11 +2230,16 @@
         </div>
       </div>
 
-      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:14px; padding-top:12px; border-top:1px solid var(--glass-border);">
-        <button type="button" class="btn-confirm-cancel" onclick="closeModal('editLeftRenterModal')">Cancel</button>
-        <button type="button" class="btn-primary admin-only" style="width:auto; padding:10px 24px;" onclick="saveDepartedRenterChanges()">
-          <i class="fa-solid fa-floppy-disk"></i> Save Changes
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:14px; padding-top:12px; border-top:1px solid var(--glass-border);">
+        <button type="button" id="btnReactivateFromEditModal" class="btn-ledger-action admin-only" style="color:var(--accent-green); border-color:rgba(16,185,129,0.5); padding:9px 14px; font-weight:700;" onclick="triggerReactivateFromEditModal()">
+          <i class="fa-solid fa-user-check"></i> Reactivate Returning Renter...
         </button>
+        <div style="display:flex; gap:10px; margin-left:auto;">
+          <button type="button" class="btn-confirm-cancel" onclick="closeModal('editLeftRenterModal')">Cancel</button>
+          <button type="button" class="btn-primary admin-only" style="width:auto; padding:10px 24px;" onclick="saveDepartedRenterChanges()">
+            <i class="fa-solid fa-floppy-disk"></i> Save Profile Changes
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -2363,15 +2370,16 @@
       </div>
   </div>
 
-  <!-- 2. SETTINGS MODAL (Theme, Create User ID, Other) -->
+  <!-- 2. SETTINGS MODAL (Theme, Create User ID, Delete Property/Flat, Other) -->
   <div id="settingsModal" class="modal-overlay">
     <div class="modal-window">
       <button class="modal-close-btn" onclick="closeModal('settingsModal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 12px;"><i class="fa-solid fa-sliders" style="color:var(--primary); margin-right:8px;"></i>Settings</h3>
+      <h3 style="margin-bottom: 12px;"><i class="fa-solid fa-sliders" style="color:var(--primary); margin-right:8px;"></i>Home Settings</h3>
 
-      <div class="flat-nav-bar" style="grid-template-columns: repeat(3, 1fr); margin-top: 8px;">
+      <div class="flat-nav-bar" style="grid-template-columns: repeat(4, 1fr); margin-top: 8px;">
         <div class="flat-nav-item active" onclick="switchSettingsSubTab(event, 'setSubTheme')">Theme</div>
         <div class="flat-nav-item admin-only" onclick="switchSettingsSubTab(event, 'setSubCreateUser')">Create User ID</div>
+        <div class="flat-nav-item admin-only" onclick="switchSettingsSubTab(event, 'setSubDeleteManage')">Delete Property / Flat</div>
         <div class="flat-nav-item" onclick="switchSettingsSubTab(event, 'setSubOther')">Other</div>
       </div>
 
@@ -2479,7 +2487,34 @@
         <button class="btn-primary" onclick="submitCreateNewUser()">Create New User ID</button>
       </div>
 
-      <!-- Settings Tab 3: Other (Registered User Management & Admin-Only Last Login History; Google Sheet Auto-Create Removed) -->
+      <!-- Settings Tab 3 (Requirement 4): Internal Home Settings Path for Delete Property & Delete Flat -->
+      <div id="setSubDeleteManage" class="tab-content">
+        <div style="background:rgba(239, 68, 68, 0.08); border:1.5px solid rgba(239, 68, 68, 0.35); border-radius:14px; padding:16px; margin-bottom:14px;">
+          <h4 style="font-size:0.95rem; font-weight:800; color:var(--accent-red); display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+            <i class="fa-solid fa-building-circle-xmark"></i> Delete Property
+          </h4>
+          <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:12px;">
+            Permanently delete a property along with all flats, renter records, and bills inside it.
+          </p>
+          <button type="button" class="btn-primary admin-only" style="background:var(--accent-red);" onclick="closeModal('settingsModal'); syncPropertyDropdowns(); openModal('deletePropertyModal');">
+            <i class="fa-solid fa-trash-can"></i> Open Delete Property
+          </button>
+        </div>
+
+        <div style="background:rgba(239, 68, 68, 0.08); border:1.5px solid rgba(239, 68, 68, 0.35); border-radius:14px; padding:16px;">
+          <h4 style="font-size:0.95rem; font-weight:800; color:var(--accent-red); display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+            <i class="fa-solid fa-rectangle-xmark"></i> Delete Flat
+          </h4>
+          <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:12px;">
+            Permanently delete a specific flat and all associated tenant and billing records for that flat.
+          </p>
+          <button type="button" class="btn-primary admin-only" style="background:var(--accent-red);" onclick="closeModal('settingsModal'); syncPropertyDropdowns(); openModal('deleteFlatModal');">
+            <i class="fa-solid fa-rectangle-xmark"></i> Open Delete Flat
+          </button>
+        </div>
+      </div>
+
+      <!-- Settings Tab 4: Other (Registered User Management & Admin-Only Last Login History; Google Sheet Auto-Create Removed) -->
       <div id="setSubOther" class="tab-content">
         <!-- Two Dedicated Options: Registered User & Admin-Only Last Login History -->
         <div id="otherOptionsBtnGrid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px;">
@@ -3188,12 +3223,13 @@
         </div>
       </div>
 
-      <!-- TAB 5: GRAPH (Requirement 5: 3-Year Monthly View for All Flat Renters Jan - Dec) -->
+      <!-- TAB 5: GRAPH (Requirement 10: Multi-Series Analytics Graph for Rent, Electricity, Water, PNG & Total) -->
       <div id="tabGraph" class="tab-content">
         <div id="tabGraphContainer" style="margin-bottom:14px;"></div>
       </div>
 
-      
+      <!-- Requirement 10: Always-Visible Multi-Series Analytics Graph inside Flat Details Dashboard -->
+      <div id="flatModalAlwaysVisibleGraphContainer" style="margin-top:18px; padding-top:14px; border-top:1.5px solid var(--glass-border);"></div>
 
     </div>
   </div>
@@ -3247,6 +3283,26 @@
       flatSelect.innerHTML = matching.length > 0
         ? matching.map(f => '<option value="' + f.FlatName + '">Flat ' + f.FlatName + ' (Rent: ₹' + (f.RentAmount || 0) + ')</option>').join("")
         : '<option value="">No flats available in this property</option>';
+      handleReactivateFlatChange();
+    }
+
+    function handleReactivateFlatChange() {
+      const propName = document.getElementById("reactivatePropertySelect")?.value;
+      const flatName = document.getElementById("reactivateFlatSelect")?.value;
+      if (!propName || !flatName) return;
+      const targetFlatObj = (DB.flats || []).find(f => isSamePropAndFlat(f.PropertyName, f.FlatName, propName, flatName));
+      if (targetFlatObj && targetFlatObj.RentAmount !== undefined && targetFlatObj.RentAmount !== "") {
+        const rentInput = document.getElementById("reactivateRentAmount");
+        if (rentInput) rentInput.value = targetFlatObj.RentAmount;
+      }
+    }
+
+    function triggerReactivateFromEditModal() {
+      const rId = document.getElementById("editLeftRenterId")?.value;
+      closeModal("editLeftRenterModal");
+      if (rId) {
+        reactivatePreviousRenterProfile(rId);
+      }
     }
 
     function reactivatePreviousRenterProfile(renterIdOrIdx) {
@@ -3268,7 +3324,7 @@
       document.getElementById("reactivateTargetRenterId").value = matchedRenter.RenterID || "";
       document.getElementById("reactivateTargetName").value = matchedRenter.RenterName || "";
       document.getElementById("reactivateJoinDate").value = new Date().toISOString().split("T")[0];
-      document.getElementById("reactivateRentAmount").value = matchedRenter.RentAmount || 0;
+      document.getElementById("reactivateRentAmount").value = matchedRenter.RentAmount || selectedFlat?.RentAmount || 0;
 
       // Populate Properties
       const propSelect = document.getElementById("reactivatePropertySelect");
@@ -3276,13 +3332,18 @@
         propSelect.innerHTML = (DB.properties || []).map(p => '<option value="' + p.PropertyName + '">' + p.PropertyName + '</option>').join("");
         if (selectedFlat?.PropertyName) {
           propSelect.value = selectedFlat.PropertyName;
+        } else if (matchedRenter.PropertyName && (DB.properties || []).some(p => p.PropertyName === matchedRenter.PropertyName)) {
+          propSelect.value = matchedRenter.PropertyName;
         }
       }
       populateReactivateFlatsDropdown();
       if (selectedFlat?.FlatName) {
         const flatSelect = document.getElementById("reactivateFlatSelect");
-        if (flatSelect) flatSelect.value = selectedFlat.FlatName;
+        if (flatSelect && Array.from(flatSelect.options).some(o => o.value === selectedFlat.FlatName)) {
+          flatSelect.value = selectedFlat.FlatName;
+        }
       }
+      handleReactivateFlatChange();
 
       openModal("reactivateDestinationModal");
     }
@@ -3327,7 +3388,7 @@
         }
       });
 
-      // Requirement 6: Reactivate strictly into the selected destination flat, not automatically into previous flat
+      // Requirement 1: Reactivate strictly into the selected destination property & flat
       pendingReactivatingRenter.PropertyName = destProp;
       pendingReactivatingRenter.FlatName = destFlat;
       pendingReactivatingRenter.Status = "Active";
@@ -3335,45 +3396,35 @@
       pendingReactivatingRenter.EndDate = "";
       pendingReactivatingRenter.RentAmount = rentAmt;
 
-      // Update target flat in DB.flats
+      // Update target flat in DB.flats and switch active view to destination flat
       const targetFlatObj = (DB.flats || []).find(f => isSamePropAndFlat(f.PropertyName, f.FlatName, destProp, destFlat));
       if (targetFlatObj) {
         targetFlatObj.RentAmount = rentAmt;
         selectedFlat = targetFlatObj;
       }
+      selectedProperty = destProp;
+      sessionStorage.setItem("active_selected_property", destProp);
       activeFlatRenterObj = pendingReactivatingRenter;
 
-      if (selectedFlat && isSamePropAndFlat(selectedFlat.PropertyName, selectedFlat.FlatName, destProp, destFlat)) {
-        const rNameEl = document.getElementById("renterName");
-        if (rNameEl) {
-          document.getElementById("profRent").value = rentAmt;
-          document.getElementById("renterName").value = pendingReactivatingRenter.RenterName || "";
-          document.getElementById("renterIdentityNum").value = pendingReactivatingRenter.IdentityDocNumber || "";
-          document.getElementById("renterMobile").value = pendingReactivatingRenter.MobileNumber || "";
-          document.getElementById("renterAltMobile").value = pendingReactivatingRenter.AltMobileNumber || "";
-          document.getElementById("renterAddress").value = pendingReactivatingRenter.Address || "";
-          document.getElementById("renterFamily").value = pendingReactivatingRenter.TotalFamilyMembers || "1";
-          document.getElementById("renterStatus").value = "Active";
-          document.getElementById("renterJoinDate").value = joinDate;
-          document.getElementById("renterEndDate").value = "";
-          updateRenterImageSlotUI("profile", pendingReactivatingRenter.ProfileImageURL || "");
-          updateRenterImageSlotUI("identity", pendingReactivatingRenter.IdentityImageURL || "");
-        }
-        handleBillingMonthChange();
-        populateHistoryLedger(destProp, destFlat);
-        populateIsolatedRenterHistoryDropdown(destProp, destFlat, true);
-        renderAllRentersGraphForFlat(destProp, destFlat);
+      const promptEl = document.getElementById("aadhaarPreviousRenterPrompt");
+      if (promptEl) {
+        promptEl.style.display = "none";
+        promptEl.innerHTML = "";
       }
 
       closeModal("reactivateDestinationModal");
+      saveDbSnapshotToCache();
+      renderAllDashboardUI();
+
+      if (targetFlatObj) {
+        openFlatDetailsModal(targetFlatObj, pendingReactivatingRenter);
+      }
+
       triggerSideToast(
         "Renter Reactivated",
         pendingReactivatingRenter.RenterName + " is now active in " + destProp + " - Flat " + destFlat + "!",
         true
       );
-
-      saveDbSnapshotToCache();
-      renderAllDashboardUI();
 
       await sendGasPost({
         action: "updateRenterProfile",
@@ -3821,10 +3872,6 @@ function formatMonthLabel(rawVal) {
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      // Clear persistent disk storage, but preserve in-tab session identity across browser refresh
-      try {
-        localStorage.clear();
-      } catch (e) {}
       injectReceiptWhatsAppStyles();
 
       // Prevent mouse scroll wheel and up/down arrow keys from accidentally changing monetary values or meter readings
@@ -3854,36 +3901,11 @@ function formatMonthLabel(rawVal) {
         if (activeThemePref === "system") applyVisualTheme("system");
       });
 
-      localStorage.removeItem("active_session_user");
-
       const savedTheme = localStorage.getItem("app_visual_theme") || "black";
       applyVisualTheme(savedTheme);
 
-      const savedSessionUser = sessionStorage.getItem("active_session_user");
-      const savedRole = sessionStorage.getItem("active_session_role") || "Admin";
-      const savedFullName = sessionStorage.getItem("active_session_fullname") || savedSessionUser;
-      const savedMobile = sessionStorage.getItem("active_session_mobile") || "";
-      const savedAssignedProp = sessionStorage.getItem("active_session_assigned_prop") || "";
-      const savedAssignedFlat = sessionStorage.getItem("active_session_assigned_flat") || "";
-      const savedSelectedProp = sessionStorage.getItem("active_selected_property");
-
-      if (savedSelectedProp) selectedProperty = savedSelectedProp;
-
-      if (savedSessionUser) {
-        // Requirement 2: Browser refresh preserves login and fast-syncs fresh data
-        activeUser = savedSessionUser;
-        activeRole = savedRole;
-        activeUserFullName = savedFullName;
-        activeUserMobile = savedMobile;
-        activeAssignedProperty = savedAssignedProp;
-        activeAssignedFlat = savedAssignedFlat;
-        applyRolePermissions(activeRole);
-        unlockDashboardInstant(false);
-        syncDataLive(true);
-        return;
-      }
-
-      const cachedSnapshot = null;
+      // Requirement 2: Hydrate cached DB snapshot immediately (0ms) so browser refresh loads data with zero lag
+      const cachedSnapshot = sessionStorage.getItem("cached_db_snapshot") || localStorage.getItem("portal_full_db_backup");
       if (cachedSnapshot) {
         try {
           const parsed = JSON.parse(cachedSnapshot);
@@ -3908,7 +3930,18 @@ function formatMonthLabel(rawVal) {
         } catch (e) {}
       }
 
+      const savedSessionUser = sessionStorage.getItem("active_session_user");
+      const savedRole = sessionStorage.getItem("active_session_role") || "Admin";
+      const savedFullName = sessionStorage.getItem("active_session_fullname") || savedSessionUser;
+      const savedMobile = sessionStorage.getItem("active_session_mobile") || "";
+      const savedAssignedProp = sessionStorage.getItem("active_session_assigned_prop") || "";
+      const savedAssignedFlat = sessionStorage.getItem("active_session_assigned_flat") || "";
+      const savedSelectedProp = sessionStorage.getItem("active_selected_property");
+
+      if (savedSelectedProp) selectedProperty = savedSelectedProp;
+
       if (savedSessionUser) {
+        // Requirement 2: Instant 0ms dashboard render from cached snapshot, then background delta sync
         activeUser = savedSessionUser;
         activeRole = savedRole;
         activeUserFullName = savedFullName;
@@ -3917,6 +3950,7 @@ function formatMonthLabel(rawVal) {
         activeAssignedFlat = savedAssignedFlat;
         applyRolePermissions(activeRole);
         unlockDashboardInstant(false);
+        return;
       } else {
         // Pre-warm the Google Apps Script server & prefetch latest DB snapshot while user is on the Login screen
         prewarmServerInBackground();
@@ -3931,7 +3965,7 @@ function formatMonthLabel(rawVal) {
     function saveDbSnapshotToCache() {
       try {
         const serialized = JSON.stringify(DB);
-        // No-cache: sessionStorage backup disabled
+        sessionStorage.setItem("cached_db_snapshot", serialized);
         if (
           (DB.properties && DB.properties.length > 0) ||
           (DB.flats && DB.flats.length > 0) ||
@@ -3940,7 +3974,7 @@ function formatMonthLabel(rawVal) {
           (DB.fdRecords && DB.fdRecords.length > 0) ||
           (DB.khetRecords && DB.khetRecords.length > 0)
         ) {
-          // No-cache: localStorage backup disabled
+          localStorage.setItem("portal_full_db_backup", serialized);
         }
         lastSyncedDataHash = JSON.stringify({
           p: DB.properties,
@@ -3962,6 +3996,14 @@ function formatMonthLabel(rawVal) {
       );
       if (matchedFlat) {
         selectedFlat = matchedFlat;
+      }
+      // Preserve activeFlatRenterObj if we are currently editing a specific renter (e.g. a departed renter in Profile)
+      if (activeFlatRenterObj && activeFlatRenterObj.RenterID) {
+        const byId = (DB.renters || []).find(r => String(r.RenterID || "").trim() === String(activeFlatRenterObj.RenterID).trim());
+        if (byId) {
+          activeFlatRenterObj = byId;
+          return;
+        }
       }
       const matchedActiveRenter = (DB.renters || []).find(r =>
         isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName) &&
@@ -4075,6 +4117,7 @@ function formatMonthLabel(rawVal) {
       } else {
         selectedProperty = null;
         sessionStorage.removeItem("active_selected_property");
+        renderDashboardFlatAnalyticsSection(null);
         if (DB.properties.length > 0) {
           flatsContainer.innerHTML = `
             <div class="empty-flats-prompt">
@@ -4830,6 +4873,8 @@ function formatMonthLabel(rawVal) {
       const effectivePropName = (viewerScope && viewerScope.mode === "FLAT") ? viewerScope.prop : propertyName;
       const targetPropClean = String(effectivePropName || "").trim().toLowerCase();
 
+      renderDashboardFlatAnalyticsSection(effectivePropName);
+
       let flats = DB.flats.filter(f => String(f.PropertyName || "").trim().toLowerCase() === targetPropClean);
       if (activeRole === "Viewer" && viewerScope) {
         if (viewerScope.mode === "FLAT") {
@@ -5508,28 +5553,11 @@ function formatMonthLabel(rawVal) {
     }
 
     
-    // Requirement 1: Prompt Destination Popup when changing status to Active
+    // Requirement 1: Prompt Destination Popup when reactivating a departed renter
     function promptReactivateDestinationForLeftRenter(targetRenter) {
       if (!targetRenter) return;
       reactivatePreviousRenterProfile(targetRenter.RenterID);
     }
-
-    // Hook editLeftStatus onchange: if user selects Active in departed renter modal, open destination selector
-    document.addEventListener("DOMContentLoaded", () => {
-      const editLeftStatusEl = document.getElementById("editLeftStatus");
-      if (editLeftStatusEl) {
-        editLeftStatusEl.addEventListener("change", function() {
-          if (this.value === "Active") {
-            const rId = document.getElementById("editLeftRenterId")?.value;
-            const r = (DB.renters || []).find(item => String(item.RenterID || "").trim() === String(rId || "").trim());
-            if (r) {
-              closeModal("editLeftRenterModal");
-              promptReactivateDestinationForLeftRenter(r);
-            }
-          }
-        });
-      }
-    });
 
     // Requirement 3: Handler for Viewer Scope Mode change
     function handleViewerScopeTypeChange() {
@@ -6614,7 +6642,7 @@ function renderRegisteredUsersList() {
       tabs.forEach((tab, i) => tab.classList.toggle("active", i === 3));
     }
 
-    // Requirement 1: Open Dedicated Tab to Edit Departed Renter
+    // Requirement 5: Open Dedicated Modal to Edit Departed Renter while keeping their status unchanged
     function openEditLeftRenterModal(renterIdOrIdx) {
       if (activeRole === "Viewer" || !selectedFlat) return;
 
@@ -6630,6 +6658,7 @@ function renderRegisteredUsersList() {
         return triggerSideToast("Renter Not Found", "Could not locate departed renter details.", false);
       }
 
+      const existingStatus = String(targetRenter.Status || "Inactive").trim().toLowerCase() === "active" ? "Active" : "Inactive";
       document.getElementById("editLeftRenterId").value = targetRenter.RenterID || "";
       document.getElementById("editLeftName").value = targetRenter.RenterName || "";
       document.getElementById("editLeftIdentityNum").value = targetRenter.IdentityDocNumber || "";
@@ -6637,62 +6666,25 @@ function renderRegisteredUsersList() {
       document.getElementById("editLeftAltMobile").value = targetRenter.AltMobileNumber || "";
       document.getElementById("editLeftAddress").value = targetRenter.Address || "";
       document.getElementById("editLeftFamily").value = targetRenter.TotalFamilyMembers || 1;
-      document.getElementById("editLeftStatus").value = targetRenter.Status || "Inactive";
-      // Requirement 8: Set exact YYYY-MM-DD date without timezone conversion or shift (and empty string "" instead of "--" for <input type="date">)
-      const cleanJoin = formatDateOnly(targetRenter.JoinDate);
-      const cleanEnd = formatDateOnly(targetRenter.EndDate);
-      document.getElementById("editLeftJoinDate").value = cleanJoin === "--" ? "" : cleanJoin;
-      document.getElementById("editLeftEndDate").value = cleanEnd === "--" ? "" : cleanEnd;
+      document.getElementById("editLeftStatus").value = existingStatus;
+      const statusDispEl = document.getElementById("editLeftStatusDisplay");
+      if (statusDispEl) {
+        statusDispEl.value = existingStatus === "Active" ? "Active (Remains Active)" : "Left / Inactive (Remains Left)";
+      }
+      document.getElementById("editLeftJoinDate").value = toInputDateValue(targetRenter.JoinDate);
+      document.getElementById("editLeftEndDate").value = toInputDateValue(targetRenter.EndDate);
 
       openModal("editLeftRenterModal");
     }
 
     function _disabledOldTab(renterIdOrIdx) {
-      if (activeRole === "Viewer" || !selectedFlat) return;
-
-      let targetRenter = null;
-      if (String(renterIdOrIdx).startsWith("IDX-")) {
-        const idx = parseInt(String(renterIdOrIdx).replace("IDX-", ""), 10);
-        if (!isNaN(idx) && DB.renters[idx]) targetRenter = DB.renters[idx];
-      }
-      if (!targetRenter) {
-        targetRenter = (DB.renters || []).find(r => String(r.RenterID || "").trim() === String(renterIdOrIdx).trim());
-      }
-      if (!targetRenter) {
-        return triggerSideToast("Renter Not Found", "Could not locate departed renter details.", false);
-      }
-
-      document.getElementById("editLeftRenterId").value = targetRenter.RenterID || "";
-      document.getElementById("editLeftName").value = targetRenter.RenterName || "";
-      document.getElementById("editLeftIdentityNum").value = targetRenter.IdentityDocNumber || "";
-      document.getElementById("editLeftMobile").value = targetRenter.MobileNumber || "";
-      document.getElementById("editLeftAltMobile").value = targetRenter.AltMobileNumber || "";
-      document.getElementById("editLeftAddress").value = targetRenter.Address || "";
-      document.getElementById("editLeftFamily").value = targetRenter.TotalFamilyMembers || 1;
-      document.getElementById("editLeftStatus").value = targetRenter.Status || "Inactive";
-      document.getElementById("editLeftJoinDate").value = targetRenter.JoinDate || "";
-      document.getElementById("editLeftEndDate").value = targetRenter.EndDate || "";
-
-      const navItemEdit = document.getElementById("navItemEditLeftRenter");
-      if (navItemEdit) navItemEdit.style.display = "block";
-
-      const modal = document.getElementById("flatDetailsModal");
-      const navItems = modal.querySelectorAll(".flat-nav-item");
-      const tabs = modal.querySelectorAll(".tab-content");
-      navItems.forEach(item => item.classList.remove("active"));
-      tabs.forEach(tab => tab.classList.remove("active"));
-
-      if (navItemEdit) navItemEdit.classList.add("active");
-      document.getElementById("tabEditLeftRenter").classList.add("active");
-
-      triggerSideToast("Edit Tab Opened", "Editing departed tenant: " + targetRenter.RenterName, true);
+      openEditLeftRenterModal(renterIdOrIdx);
     }
 
     async function saveDepartedRenterChanges() {
       if (activeRole === "Viewer" || !selectedFlat) return;
       const targetRenterId = document.getElementById("editLeftRenterId").value;
       const newName = document.getElementById("editLeftName").value.trim();
-      const statusVal = document.getElementById("editLeftStatus").value;
 
       if (!newName) {
         return triggerSideToast("Name Required", "Renter name cannot be empty.", false);
@@ -6703,17 +6695,25 @@ function renderRegisteredUsersList() {
         return triggerSideToast("Error", "Renter record not found.", false);
       }
 
+      // Requirement 5: Status must remain unchanged (if left, stays Inactive; if active, stays Active)
+      const preservedStatus = String(targetRenter.Status || "Inactive").trim().toLowerCase() === "active" ? "Active" : "Inactive";
+
       targetRenter.RenterName = newName;
       targetRenter.IdentityDocNumber = document.getElementById("editLeftIdentityNum").value.trim();
       targetRenter.MobileNumber = document.getElementById("editLeftMobile").value.trim();
       targetRenter.AltMobileNumber = document.getElementById("editLeftAltMobile").value.trim();
       targetRenter.Address = document.getElementById("editLeftAddress").value.trim();
       targetRenter.TotalFamilyMembers = document.getElementById("editLeftFamily").value || 1;
-      targetRenter.Status = statusVal;
+      targetRenter.Status = preservedStatus;
       targetRenter.JoinDate = document.getElementById("editLeftJoinDate").value || targetRenter.JoinDate;
       targetRenter.EndDate = document.getElementById("editLeftEndDate").value;
 
-      if (statusVal === "Active") {
+      saveLocalFlatUtilityAndDateMeta(selectedFlat.PropertyName, selectedFlat.FlatName, targetRenter.RenterID, {
+        JoinDate: targetRenter.JoinDate,
+        EndDate: targetRenter.EndDate
+      });
+
+      if (preservedStatus === "Active") {
         activeFlatRenterObj = targetRenter;
       }
 
@@ -6722,20 +6722,20 @@ function renderRegisteredUsersList() {
       populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
       renderAllRentersGraphForFlat(selectedFlat.PropertyName, selectedFlat.FlatName);
 
-      triggerSideToast("Saved & Locked", "Departed renter details updated and permanently locked!", true);
+      triggerSideToast("Profile Updated", "Renter details saved while keeping their '" + (preservedStatus === "Active" ? "Active" : "Left") + "' status unchanged!", true);
 
       await sendGasPost({
         action: "updateRenterProfile",
         renterId: targetRenterId,
-        propertyName: selectedFlat.PropertyName,
-        flatName: selectedFlat.FlatName,
+        propertyName: targetRenter.PropertyName || selectedFlat.PropertyName,
+        flatName: targetRenter.FlatName || selectedFlat.FlatName,
         renterName: targetRenter.RenterName,
         identityDocNumber: targetRenter.IdentityDocNumber,
         mobileNumber: targetRenter.MobileNumber,
         altMobileNumber: targetRenter.AltMobileNumber,
         address: targetRenter.Address,
         familyMembers: targetRenter.TotalFamilyMembers,
-        renterStatus: statusVal,
+        renterStatus: preservedStatus,
         joinDate: targetRenter.JoinDate,
         endDate: targetRenter.EndDate
       });
@@ -6753,122 +6753,122 @@ function renderRegisteredUsersList() {
       return clean;
     }
 
-    /**
-     * Requirement 5: Graph Tab displaying all renters associated with this flat
-     * Illustrates 3 years of data (current year + 2 preceding years) from Jan to Dec.
-     */
-    function renderAllRentersGraphForFlat(prop, flat) {
-      const container = document.getElementById("tabGraphContainer");
-      if (!container) return;
-
-      const currentYear = new Date().getFullYear();
-      const yearsList = [currentYear, currentYear - 1, currentYear - 2];
-      if (!yearsList.includes(rhSelectedGraphYear)) {
-        rhSelectedGraphYear = currentYear;
-      }
-
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      const allFlatBills = (DB.bills || []).filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat));
-
-      const monthlyValues = [];
-      const monthlyPaidValues = [];
-      const monthlyTenantLabels = [];
-      let maxAmount = 1000;
-
-      for (let m = 1; m <= 12; m++) {
-        const monthKey = rhSelectedGraphYear + "-" + String(m).padStart(2, "0");
-        const matchedBill = allFlatBills.find(b => normalizeMonthYear(b.MonthYear) === monthKey);
-        const billedAmt = matchedBill ? (parseFloat(matchedBill.TotalBilled) || 0) : 0;
-        const paidAmt = matchedBill ? (parseFloat(matchedBill.PaidAmount) || 0) : 0;
-        const tenant = matchedBill ? (matchedBill.TenantName || "Tenant") : "";
-        monthlyValues.push(billedAmt);
-        monthlyPaidValues.push(paidAmt);
-        monthlyTenantLabels.push(tenant);
-        if (billedAmt > maxAmount) maxAmount = billedAmt;
-        if (paidAmt > maxAmount) maxAmount = paidAmt;
-      }
-
-      const chartWidth = 680;
-      const chartHeight = 175;
-      const padLeft = 48;
-      const padRight = 24;
-      const padTop = 24;
-      const padBottom = 34;
-      const usableW = chartWidth - padLeft - padRight;
-      const usableH = chartHeight - padTop - padBottom;
-
-      const points = monthlyValues.map((val, idx) => {
-        const x = padLeft + (idx * (usableW / 11));
-        const y = padTop + usableH - ((val / maxAmount) * usableH);
-        return { x, y, val, month: months[idx], tenant: monthlyTenantLabels[idx] };
-      });
-
-      const polylinePoints = points.map(p => p.x.toFixed(1) + "," + p.y.toFixed(1)).join(" ");
-
-      const barsHtml = points.map(p => {
-        const barW = 16;
-        const barH = ((p.val / maxAmount) * usableH);
-        const barY = padTop + usableH - barH;
-        const barX = p.x - (barW / 2);
-        const valLabel = p.val > 0 ? (p.val >= 1000 ? Math.round(p.val / 1000) + 'k' : p.val) : '';
-        return '<rect x="' + barX.toFixed(1) + '" y="' + barY.toFixed(1) + '" width="' + barW + '" height="' + barH.toFixed(1) + '" rx="3" fill="rgba(99, 102, 241, 0.32)" />' +
-               '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="4.5" fill="#818cf8" stroke="#ffffff" stroke-width="1.5" />' +
-               '<text x="' + p.x.toFixed(1) + '" y="' + (chartHeight - 12) + '" font-size="10" font-weight="700" fill="#94a3b8" text-anchor="middle">' + p.month + '</text>' +
-               (valLabel ? '<text x="' + p.x.toFixed(1) + '" y="' + (p.y - 7).toFixed(1) + '" font-size="9" font-weight="800" fill="#ffffff" text-anchor="middle">₹' + valLabel + '</text>' : '');
-      }).join("");
-
-      const yearButtons = yearsList.map(y => {
-        const isSel = y === rhSelectedGraphYear;
-        return '<button type="button" class="btn-ledger-action ' + (isSel ? 'active' : '') + '" style="padding:6px 14px; font-size:0.78rem; font-weight:800; ' + (isSel ? 'background:var(--primary); color:#ffffff; border-color:var(--primary);' : '') + '" onclick="setRhGraphYear(' + y + ')">' + y + (y === currentYear ? ' (Current)' : '') + '</button>';
-      }).join("");
-
-      container.innerHTML = '<div style="background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:16px; padding:18px; box-shadow:0 10px 28px rgba(0,0,0,0.25);">' +
-        '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px; border-bottom:1px solid var(--glass-border); padding-bottom:12px;">' +
-          '<div>' +
-            '<h4 style="font-size:1.05rem; font-weight:800; color:var(--text-main); margin:0; display:flex; align-items:center; gap:8px;">' +
-              '<i class="fa-solid fa-chart-line" style="color:var(--primary);"></i> 3-Year Historical &amp; Current Rent Graph (January to December)' +
-            '</h4>' +
-            '<p style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">' +
-              'Displays all renters for this flat (departed tenants for past years and active ones for ongoing months)' +
-            '</p>' +
-          '</div>' +
-          '<div style="display:flex; align-items:center; gap:6px;">' + yearButtons + '</div>' +
-        '</div>' +
-        '<div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">' +
-          '<svg viewBox="0 0 ' + chartWidth + ' ' + chartHeight + '" style="width:100%; min-width:540px; height:auto; overflow:visible;">' +
-            '<line x1="' + padLeft + '" y1="' + padTop + '" x2="' + (chartWidth - padRight) + '" y2="' + padTop + '" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,3" />' +
-            '<line x1="' + padLeft + '" y1="' + (padTop + (usableH / 2)) + '" x2="' + (chartWidth - padRight) + '" y2="' + (padTop + (usableH / 2)) + '" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,3" />' +
-            '<line x1="' + padLeft + '" y1="' + (padTop + usableH) + '" x2="' + (chartWidth - padRight) + '" y2="' + (padTop + usableH) + '" stroke="rgba(255,255,255,0.18)" />' +
-            '<text x="' + (padLeft - 6) + '" y="' + (padTop + 4) + '" font-size="9" fill="#94a3b8" text-anchor="end">₹' + Math.round(maxAmount) + '</text>' +
-            '<text x="' + (padLeft - 6) + '" y="' + (padTop + (usableH / 2) + 3) + '" font-size="9" fill="#94a3b8" text-anchor="end">₹' + Math.round(maxAmount / 2) + '</text>' +
-            '<text x="' + (padLeft - 6) + '" y="' + (padTop + usableH) + '" font-size="9" fill="#94a3b8" text-anchor="end">₹0</text>' +
-            barsHtml +
-            '<polyline fill="none" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="' + polylinePoints + '" />' +
-          '</svg>' +
-        '</div>' +
-      '</div>';
+    // Requirement 6 Helpers: Clean YYYY-MM-DD formatter & Local Persistence Fallback for Utility Numbers + Join/End Dates
+    function toInputDateValue(rawDate) {
+      if (!rawDate) return "";
+      const formatted = formatDateOnly(rawDate);
+      return (!formatted || formatted === "--") ? "" : formatted;
     }
 
-    // State for 3-Year Monthly Graph in Renter History
+    function getLocalFlatUtilityMetaMap() {
+      try {
+        const raw = localStorage.getItem("portal_flat_utility_meta_v1");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === "object") return parsed;
+        }
+      } catch (e) {}
+      return {};
+    }
+
+    function saveLocalFlatUtilityAndDateMeta(propName, flatName, renterId, dataObj) {
+      try {
+        const map = getLocalFlatUtilityMetaMap();
+        const flatKey = "FLAT::" + String(propName || "").trim().toLowerCase() + "::" + String(flatName || "").trim().toLowerCase();
+        map[flatKey] = { ...(map[flatKey] || {}), ...dataObj };
+        if (renterId) {
+          const renterKey = "RENTER::" + String(renterId).trim();
+          map[renterKey] = { ...(map[renterKey] || {}), ...dataObj };
+        }
+        localStorage.setItem("portal_flat_utility_meta_v1", JSON.stringify(map));
+      } catch (e) {}
+    }
+
+    function resolveFlatUtilityAndDateMeta(flatObj, renterObj) {
+      const propName = flatObj?.PropertyName || renterObj?.PropertyName || "";
+      const flatName = flatObj?.FlatName || renterObj?.FlatName || "";
+      const map = getLocalFlatUtilityMetaMap();
+      const flatKey = "FLAT::" + String(propName).trim().toLowerCase() + "::" + String(flatName).trim().toLowerCase();
+      const renterKey = renterObj?.RenterID ? ("RENTER::" + String(renterObj.RenterID).trim()) : "";
+      const cachedFlat = map[flatKey] || {};
+      const cachedRenter = renterKey ? (map[renterKey] || {}) : {};
+
+      // Also check any renter record associated with this flat in DB.renters
+      const anyRenterForFlat = (DB.renters || []).find(r =>
+        isSamePropAndFlat(r.PropertyName, r.FlatName, propName, flatName) &&
+        (r.PNGNumber || r.PNGMeterNumber || r.WaterNumber || r.WaterMeterNumber || r.ElecMeterNumber)
+      );
+
+      const cleanStr = (val) => (val !== undefined && val !== null && String(val).trim() !== "") ? String(val).replace(/^'+/, "").trim() : "";
+
+      return {
+        pngNumber: cleanStr(flatObj?.PNGNumber) || cleanStr(renterObj?.PNGNumber) || cleanStr(anyRenterForFlat?.PNGNumber) || cleanStr(cachedFlat.PNGNumber) || cleanStr(cachedRenter.PNGNumber),
+        pngMeterNumber: cleanStr(flatObj?.PNGMeterNumber) || cleanStr(renterObj?.PNGMeterNumber) || cleanStr(anyRenterForFlat?.PNGMeterNumber) || cleanStr(cachedFlat.PNGMeterNumber) || cleanStr(cachedRenter.PNGMeterNumber),
+        waterNumber: cleanStr(flatObj?.WaterNumber) || cleanStr(renterObj?.WaterNumber) || cleanStr(anyRenterForFlat?.WaterNumber) || cleanStr(cachedFlat.WaterNumber) || cleanStr(cachedRenter.WaterNumber),
+        waterMeterNumber: cleanStr(flatObj?.WaterMeterNumber) || cleanStr(renterObj?.WaterMeterNumber) || cleanStr(anyRenterForFlat?.WaterMeterNumber) || cleanStr(cachedFlat.WaterMeterNumber) || cleanStr(cachedRenter.WaterMeterNumber),
+        elecMeterNumber: cleanStr(flatObj?.ElecMeterNumber) || cleanStr(renterObj?.ElecMeterNumber) || cleanStr(anyRenterForFlat?.ElecMeterNumber) || cleanStr(cachedFlat.ElecMeterNumber) || cleanStr(cachedRenter.ElecMeterNumber),
+        joinDate: toInputDateValue(renterObj?.JoinDate || cachedRenter.JoinDate || cachedFlat.JoinDate),
+        endDate: toInputDateValue(renterObj?.EndDate || cachedRenter.EndDate || cachedFlat.EndDate)
+      };
+    }
+
+    /**
+     * ============================================================================
+     * REQUIREMENT 10: MULTI-SERIES ANALYTICS GRAPH WITH INTERACTIVE METRIC TOGGLES,
+     * UNIQUE DISTINCT COLORS, COLOR LEGEND BENEATH GRAPH & ALWAYS-VISIBLE PLACEMENT
+     * ============================================================================
+     */
     let rhSelectedGraphYear = new Date().getFullYear();
+    let dashboardSelectedAnalyticsFlat = "ALL";
+    let activeGraphSeriesFilters = {
+      total: true,
+      rent: true,
+      elec: true,
+      water: true,
+      png: true
+    };
+
+    const GRAPH_SERIES_CONFIG = [
+      { key: "total", label: "Total Aggregate", color: "#6366f1", bg: "rgba(99, 102, 241, 0.16)" },
+      { key: "rent",  label: "Rent",            color: "#10b981", bg: "rgba(16, 185, 129, 0.16)" },
+      { key: "elec",  label: "Electricity",     color: "#f59e0b", bg: "rgba(245, 158, 11, 0.16)" },
+      { key: "water", label: "Water",           color: "#06b6d4", bg: "rgba(6, 182, 212, 0.16)" },
+      { key: "png",   label: "PNG Gas",         color: "#ec4899", bg: "rgba(236, 72, 153, 0.16)" }
+    ];
+
+    function toggleGraphMetricSeries(seriesKey) {
+      if (seriesKey === "ALL_ON") {
+        Object.keys(activeGraphSeriesFilters).forEach(k => { activeGraphSeriesFilters[k] = true; });
+      } else if (activeGraphSeriesFilters.hasOwnProperty(seriesKey)) {
+        activeGraphSeriesFilters[seriesKey] = !activeGraphSeriesFilters[seriesKey];
+        if (!Object.values(activeGraphSeriesFilters).some(Boolean)) {
+          activeGraphSeriesFilters[seriesKey] = true;
+        }
+      }
+      refreshAllAnalyticsGraphs();
+    }
 
     function setRhGraphYear(year) {
       rhSelectedGraphYear = parseInt(year, 10);
+      refreshAllAnalyticsGraphs();
+    }
+
+    function setDashboardAnalyticsFlatFilter(flatVal) {
+      dashboardSelectedAnalyticsFlat = flatVal || "ALL";
+      refreshAllAnalyticsGraphs();
+    }
+
+    function refreshAllAnalyticsGraphs() {
+      if (selectedProperty) {
+        renderDashboardFlatAnalyticsSection(selectedProperty);
+      }
       if (selectedFlat) {
         renderAllRentersGraphForFlat(selectedFlat.PropertyName, selectedFlat.FlatName);
         renderRhThreeYearMonthlyChart(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj);
       }
     }
 
-    /**
-     * Requirement 6 & 7: 3-Year Monthly Graph for Active Renters (Jan - Dec)
-     * Displays current ongoing year and the 2 preceding years.
-     * Shows all 12 months with up/down trend lines and bars.
-     */
-    function renderRhThreeYearMonthlyChart(prop, flat, renter) {
-      const container = document.getElementById("rhThreeYearChartContainer");
-      if (!container) return;
-
+    function buildMultiSeriesChartHtml(billsList, titleText, subtitleText, extraHeaderControlsHtml = "", compactHeight = false) {
       const currentYear = new Date().getFullYear();
       const yearsList = [currentYear, currentYear - 1, currentYear - 2];
       if (!yearsList.includes(rhSelectedGraphYear)) {
@@ -6876,86 +6876,296 @@ function renderRegisteredUsersList() {
       }
 
       const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      const activeRenterBills = renter ? getBillsForSpecificRenter(prop, flat, renter) : [];
-      const allFlatBills = (DB.bills || []).filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat));
-      const billsSource = activeRenterBills.length > 0 ? activeRenterBills : allFlatBills;
-
-      const monthlyValues = [];
-      let maxAmount = 1000;
+      const monthlyMetrics = [];
+      let maxVal = 1000;
 
       for (let m = 1; m <= 12; m++) {
         const monthKey = rhSelectedGraphYear + "-" + String(m).padStart(2, "0");
-        const matchedBill = billsSource.find(b => normalizeMonthYear(b.MonthYear) === monthKey);
-        const billedAmt = matchedBill ? (parseFloat(matchedBill.TotalBilled) || 0) : 0;
-        monthlyValues.push(billedAmt);
-        if (billedAmt > maxAmount) maxAmount = billedAmt;
+        const monthBills = (billsList || []).filter(b => normalizeMonthYear(b.MonthYear) === monthKey);
+
+        let rentSum = 0, elecSum = 0, waterSum = 0, pngSum = 0, totalSum = 0;
+        monthBills.forEach(b => {
+          const r = parseFloat(b.BaseRent) || 0;
+          const ePrev = parseFloat(b.ElecPrev) || 0;
+          const eCurr = parseFloat(b.ElecCurr) || 0;
+          const eUnits = b.ElecUnits !== undefined && b.ElecUnits !== "" ? (parseFloat(b.ElecUnits) || 0) : Math.max(0, eCurr - ePrev);
+          const eRate = parseFloat(b.ElecRate) || 0;
+          const e = b.ElecTotal !== undefined && b.ElecTotal !== "" ? (parseFloat(b.ElecTotal) || 0) : (eUnits * eRate);
+
+          const pPrev = parseFloat(b.PNGPrev) || 0;
+          const pCurr = parseFloat(b.PNGCurr) || 0;
+          const pUnits = b.PNGUnits !== undefined && b.PNGUnits !== "" ? (parseFloat(b.PNGUnits) || 0) : Math.max(0, pCurr - pPrev);
+          const pRate = parseFloat(b.PNGRate) || 0;
+          const p = b.PNGTotal !== undefined && b.PNGTotal !== "" ? (parseFloat(b.PNGTotal) || 0) : (pUnits * pRate);
+
+          const wPrev = parseFloat(b.WaterPrev) || 0;
+          const wCurr = parseFloat(b.WaterCurr) || 0;
+          const wUnits = b.WaterUnits !== undefined && b.WaterUnits !== "" ? (parseFloat(b.WaterUnits) || 0) : Math.max(0, wCurr - wPrev);
+          const wRate = parseFloat(b.WaterRate) || 0;
+          const w = b.WaterTotal !== undefined && b.WaterTotal !== "" ? (parseFloat(b.WaterTotal) || 0) : (wUnits * wRate);
+
+          const tot = parseFloat(b.TotalBilled) || (r + e + p + w);
+          rentSum += r;
+          elecSum += e;
+          waterSum += w;
+          pngSum += p;
+          totalSum += tot;
+        });
+
+        const item = { month: months[m - 1], total: totalSum, rent: rentSum, elec: elecSum, water: waterSum, png: pngSum };
+        monthlyMetrics.push(item);
+
+        GRAPH_SERIES_CONFIG.forEach(s => {
+          if (activeGraphSeriesFilters[s.key] && item[s.key] > maxVal) {
+            maxVal = item[s.key];
+          }
+        });
       }
 
-      const chartWidth = 680;
-      const chartHeight = 160;
-      const padLeft = 46;
+      const chartWidth = 720;
+      const chartHeight = compactHeight ? 185 : 210;
+      const padLeft = 52;
       const padRight = 24;
-      const padTop = 20;
-      const padBottom = 32;
+      const padTop = 24;
+      const padBottom = 34;
       const usableW = chartWidth - padLeft - padRight;
       const usableH = chartHeight - padTop - padBottom;
 
-      const points = monthlyValues.map((val, idx) => {
-        const x = padLeft + (idx * (usableW / 11));
-        const y = padTop + usableH - ((val / maxAmount) * usableH);
-        return { x, y, val, month: months[idx] };
+      const enabledSeries = GRAPH_SERIES_CONFIG.filter(s => activeGraphSeriesFilters[s.key]);
+
+      // Grouped bars per month + multi-series trend lines
+      let barsSvg = "";
+      let linesSvg = "";
+      let labelsSvg = "";
+
+      monthlyMetrics.forEach((mData, idx) => {
+        const centerX = padLeft + (idx * (usableW / 11));
+        labelsSvg += `<text x="${centerX.toFixed(1)}" y="${chartHeight - 10}" font-size="10" font-weight="700" fill="#94a3b8" text-anchor="middle">${mData.month}</text>`;
+
+        const count = enabledSeries.length;
+        const barW = Math.max(4, Math.min(10, Math.floor(34 / Math.max(1, count))));
+        const totalGroupW = count * barW + Math.max(0, count - 1) * 2;
+        const startX = centerX - (totalGroupW / 2);
+
+        enabledSeries.forEach((s, sIdx) => {
+          const val = mData[s.key] || 0;
+          const barH = (val / maxVal) * usableH;
+          const barY = padTop + usableH - barH;
+          const barX = startX + sIdx * (barW + 2);
+          barsSvg += `<rect x="${barX.toFixed(1)}" y="${barY.toFixed(1)}" width="${barW}" height="${Math.max(0, barH).toFixed(1)}" rx="2" fill="${s.color}" fill-opacity="0.32"><title>${mData.month} - ${s.label}: ₹${val.toLocaleString('en-IN')}</title></rect>`;
+        });
       });
 
-      const polylinePoints = points.map(p => p.x.toFixed(1) + "," + p.y.toFixed(1)).join(" ");
+      enabledSeries.forEach(s => {
+        const pts = monthlyMetrics.map((mData, idx) => {
+          const x = padLeft + (idx * (usableW / 11));
+          const val = mData[s.key] || 0;
+          const y = padTop + usableH - ((val / maxVal) * usableH);
+          return { x, y, val, month: mData.month };
+        });
+        const poly = pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+        linesSvg += `<polyline fill="none" stroke="${s.color}" stroke-width="${s.key === 'total' ? '2.8' : '2'}" stroke-linecap="round" stroke-linejoin="round" points="${poly}" />`;
+        pts.forEach(p => {
+          const valLabel = (p.val > 0 && (s.key === "total" || enabledSeries.length === 1))
+            ? (p.val >= 1000 ? (p.val / 1000).toFixed(p.val % 1000 === 0 ? 0 : 1) + "k" : Math.round(p.val))
+            : "";
+          linesSvg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${s.key === 'total' ? '4.2' : '3.3'}" fill="${s.color}" stroke="#ffffff" stroke-width="1.2"><title>${p.month} - ${s.label}: ₹${p.val.toLocaleString('en-IN')}</title></circle>`;
+          if (valLabel) {
+            linesSvg += `<text x="${p.x.toFixed(1)}" y="${Math.max(12, p.y - 7).toFixed(1)}" font-size="8.5" font-weight="800" fill="${s.color}" text-anchor="middle">₹${valLabel}</text>`;
+          }
+        });
+      });
 
-      const barsHtml = points.map(p => {
-        const barW = 16;
-        const barH = ((p.val / maxAmount) * usableH);
-        const barY = padTop + usableH - barH;
-        const barX = p.x - (barW / 2);
-        const valLabel = p.val > 0 ? (p.val >= 1000 ? Math.round(p.val / 1000) + "k" : p.val) : "";
-        return "<rect x=\"" + barX.toFixed(1) + "\" y=\"" + barY.toFixed(1) + "\" width=\"" + barW + "\" height=\"" + barH.toFixed(1) + "\" rx=\"3\" fill=\"rgba(99, 102, 241, 0.28)\" />" +
-               "<circle cx=\"" + p.x.toFixed(1) + "\" cy=\"" + p.y.toFixed(1) + "\" r=\"4\" fill=\"#818cf8\" stroke=\"#ffffff\" stroke-width=\"1.5\" />" +
-               "<text x=\"" + p.x.toFixed(1) + "\" y=\"" + (chartHeight - 10) + "\" font-size=\"10\" font-weight=\"700\" fill=\"#94a3b8\" text-anchor=\"middle\">" + p.month + "</text>" +
-               (valLabel ? "<text x=\"" + p.x.toFixed(1) + "\" y=\"" + (p.y - 7).toFixed(1) + "\" font-size=\"9\" font-weight=\"800\" fill=\"#ffffff\" text-anchor=\"middle\">₹" + valLabel + "</text>" : "");
-      }).join("");
-
-      const tenantNameDisp = renter ? renter.RenterName : "Active Rental Flat";
-      const yearButtons = yearsList.map(y => {
+      const yearButtonsHtml = yearsList.map(y => {
         const isSel = y === rhSelectedGraphYear;
-        return "<button type=\"button\" class=\"btn-ledger-action " + (isSel ? "active" : "") + "\" style=\"padding:5px 12px; font-size:0.75rem; font-weight:800; " + (isSel ? "background:var(--primary); color:#ffffff; border-color:var(--primary);" : "") + "\" onclick=\"setRhGraphYear(" + y + ")\">" + y + (y === currentYear ? " (Current)" : "") + "</button>";
+        return `<button type="button" class="btn-ledger-action ${isSel ? 'active' : ''}" style="padding:5px 12px; font-size:0.74rem; font-weight:800; ${isSel ? 'background:var(--primary); color:#ffffff; border-color:var(--primary);' : ''}" onclick="setRhGraphYear(${y})">${y}${y === currentYear ? ' (Current)' : ''}</button>`;
       }).join("");
 
-      container.innerHTML = "<div style=\"background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:16px; padding:16px; box-shadow:0 10px 28px rgba(0,0,0,0.25);\">" +
-        "<div style=\"display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;\">" +
-          "<div>" +
-            "<div style=\"font-size:0.92rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px;\">" +
-              "<i class=\"fa-solid fa-chart-line\" style=\"color:var(--primary);\"></i> 3-Year Monthly Trend Graph (January to December)" +
-            "</div>" +
-            "<div style=\"font-size:0.75rem; color:var(--text-muted); margin-top:2px;\">" +
-              "Active Tenant: <strong style=\"color:var(--primary);\">" + tenantNameDisp + "</strong> • Illustrating monthly bill variations across 3 years" +
-            "</div>" +
-          "</div>" +
-          "<div style=\"display:flex; align-items:center; gap:6px;\">" + yearButtons + "</div>" +
-        "</div>" +
-        "<div style=\"overflow-x:auto; -webkit-overflow-scrolling:touch;\">" +
-          "<svg viewBox=\"0 0 " + chartWidth + " " + chartHeight + "\" style=\"width:100%; min-width:540px; height:auto; overflow:visible;\">" +
-            "<line x1=\"" + padLeft + "\" y1=\"" + padTop + "\" x2=\"" + (chartWidth - padRight) + "\" y2=\"" + padTop + "\" stroke=\"rgba(255,255,255,0.08)\" stroke-dasharray=\"3,3\" />" +
-            "<line x1=\"" + padLeft + "\" y1=\"" + (padTop + (usableH / 2)) + "\" x2=\"" + (chartWidth - padRight) + "\" y2=\"" + (padTop + (usableH / 2)) + "\" stroke=\"rgba(255,255,255,0.08)\" stroke-dasharray=\"3,3\" />" +
-            "<line x1=\"" + padLeft + "\" y1=\"" + (padTop + usableH) + "\" x2=\"" + (chartWidth - padRight) + "\" y2=\"" + (padTop + usableH) + "\" stroke=\"rgba(255,255,255,0.18)\" />" +
-            "<text x=\"" + (padLeft - 6) + "\" y=\"" + (padTop + 4) + "\" font-size=\"9\" fill=\"#94a3b8\" text-anchor=\"end\">₹" + Math.round(maxAmount) + "</text>" +
-            "<text x=\"" + (padLeft - 6) + "\" y=\"" + (padTop + (usableH / 2) + 3) + "\" font-size=\"9\" fill=\"#94a3b8\" text-anchor=\"end\">₹" + Math.round(maxAmount / 2) + "</text>" +
-            "<text x=\"" + (padLeft - 6) + "\" y=\"" + (padTop + usableH) + "\" font-size=\"9\" fill=\"#94a3b8\" text-anchor=\"end\">₹0</text>" +
-            barsHtml +
-            "<polyline fill=\"none\" stroke=\"#6366f1\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" points=\"" + polylinePoints + "\" />" +
-          "</svg>" +
-        "</div>" +
-      "</div>";
+      const filterTogglesHtml = GRAPH_SERIES_CONFIG.map(s => {
+        const isOn = Boolean(activeGraphSeriesFilters[s.key]);
+        return `
+          <button
+            type="button"
+            onclick="toggleGraphMetricSeries('${s.key}')"
+            style="display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:999px; font-size:0.73rem; font-weight:800; cursor:pointer; transition:all 0.18s ease; border:1.5px solid ${isOn ? s.color : 'var(--glass-border)'}; background:${isOn ? s.bg : 'rgba(255,255,255,0.03)'}; color:${isOn ? '#ffffff' : 'var(--text-muted)'}; opacity:${isOn ? '1' : '0.6'};"
+          >
+            <span style="width:9px; height:9px; border-radius:50%; background:${s.color}; display:inline-block; box-shadow:0 0 6px ${s.color};"></span>
+            <span>${s.label}</span>
+            <i class="fa-solid ${isOn ? 'fa-check' : 'fa-plus'}" style="font-size:0.65rem;"></i>
+          </button>
+        `;
+      }).join("");
+
+      // Calculate Annual Breakdown Totals for Legend Beneath Graph
+      const annualTotals = { total: 0, rent: 0, elec: 0, water: 0, png: 0 };
+      monthlyMetrics.forEach(m => {
+        annualTotals.total += m.total;
+        annualTotals.rent += m.rent;
+        annualTotals.elec += m.elec;
+        annualTotals.water += m.water;
+        annualTotals.png += m.png;
+      });
+
+      const legendBelowHtml = GRAPH_SERIES_CONFIG.map(s => {
+        const isOn = Boolean(activeGraphSeriesFilters[s.key]);
+        return `
+          <div
+            onclick="toggleGraphMetricSeries('${s.key}')"
+            style="display:flex; align-items:center; gap:8px; padding:6px 12px; border-radius:10px; background:rgba(255,255,255,0.03); border:1px solid ${isOn ? s.color : 'var(--glass-border)'}; cursor:pointer; opacity:${isOn ? '1' : '0.5'};"
+            title="Click to toggle ${s.label}"
+          >
+            <span style="width:12px; height:12px; border-radius:3px; background:${s.color}; display:inline-block; flex-shrink:0;"></span>
+            <div style="font-size:0.74rem; line-height:1.2;">
+              <div style="font-weight:800; color:var(--text-main);">${s.label}</div>
+              <div style="color:${s.color}; font-weight:700;">₹${annualTotals[s.key].toLocaleString('en-IN')}</div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      return `
+        <div style="background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:16px; padding:16px; box-shadow:0 10px 28px rgba(0,0,0,0.22);">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;">
+            <div>
+              <h4 style="font-size:0.98rem; font-weight:800; color:var(--text-main); margin:0; display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-chart-column" style="color:var(--primary);"></i> ${titleText}
+              </h4>
+              <p style="font-size:0.74rem; color:var(--text-muted); margin:3px 0 0 0;">${subtitleText}</p>
+            </div>
+            <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
+              ${extraHeaderControlsHtml}
+              ${yearButtonsHtml}
+            </div>
+          </div>
+
+          <!-- Multi-Series Selection Toggles / Filters -->
+          <div style="display:flex; align-items:center; flex-wrap:wrap; gap:7px; margin-bottom:12px;">
+            <span style="font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-right:4px;">
+              <i class="fa-solid fa-filter"></i> Filter Metrics:
+            </span>
+            ${filterTogglesHtml}
+            <button type="button" class="btn-ledger-action" style="padding:4px 9px; font-size:0.68rem;" onclick="toggleGraphMetricSeries('ALL_ON')">Show All</button>
+          </div>
+
+          <!-- Multi-Series SVG Chart -->
+          <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
+            <svg viewBox="0 0 ${chartWidth} ${chartHeight}" style="width:100%; min-width:560px; height:auto; overflow:visible;">
+              <line x1="${padLeft}" y1="${padTop}" x2="${chartWidth - padRight}" y2="${padTop}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,3" />
+              <line x1="${padLeft}" y1="${padTop + (usableH / 2)}" x2="${chartWidth - padRight}" y2="${padTop + (usableH / 2)}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,3" />
+              <line x1="${padLeft}" y1="${padTop + usableH}" x2="${chartWidth - padRight}" y2="${padTop + usableH}" stroke="rgba(255,255,255,0.18)" />
+              <text x="${padLeft - 6}" y="${padTop + 4}" font-size="9" fill="#94a3b8" text-anchor="end">₹${Math.round(maxVal).toLocaleString('en-IN')}</text>
+              <text x="${padLeft - 6}" y="${padTop + (usableH / 2) + 3}" font-size="9" fill="#94a3b8" text-anchor="end">₹${Math.round(maxVal / 2).toLocaleString('en-IN')}</text>
+              <text x="${padLeft - 6}" y="${padTop + usableH}" font-size="9" fill="#94a3b8" text-anchor="end">₹0</text>
+              ${barsSvg}
+              ${linesSvg}
+              ${labelsSvg}
+            </svg>
+          </div>
+
+          <!-- Distinct Color Legend Placed Directly Beneath the Graph -->
+          <div style="margin-top:12px; padding-top:10px; border-top:1px dashed var(--glass-border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+            <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
+              ${legendBelowHtml}
+            </div>
+            <div style="font-size:0.71rem; color:var(--text-muted);">
+              Click any metric pill or legend item to toggle visibility
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Always-visible Flat Section Analytics Graph on the Main Dashboard
+    function renderDashboardFlatAnalyticsSection(propertyName) {
+      const dashContainer = document.getElementById("dashboardFlatAnalyticsSection");
+      if (!dashContainer) return;
+
+      const targetProp = propertyName || (DB.properties && DB.properties[0] ? DB.properties[0].PropertyName : "");
+      if (!targetProp) {
+        dashContainer.style.display = "none";
+        dashContainer.innerHTML = "";
+        return;
+      }
+
+      dashContainer.style.display = "block";
+      const propFlats = (DB.flats || []).filter(f =>
+        String(f.PropertyName || "").trim().toLowerCase() === String(targetProp).trim().toLowerCase()
+      );
+
+      if (
+        dashboardSelectedAnalyticsFlat !== "ALL" &&
+        !propFlats.some(f => String(f.FlatName || "").trim().toLowerCase() === String(dashboardSelectedAnalyticsFlat).trim().toLowerCase())
+      ) {
+        dashboardSelectedAnalyticsFlat = "ALL";
+      }
+
+      const flatOptionsHtml = `<option value="ALL" ${dashboardSelectedAnalyticsFlat === "ALL" ? "selected" : ""}>All Flats in ${targetProp}</option>` +
+        propFlats.map(f => `<option value="${f.FlatName}" ${String(dashboardSelectedAnalyticsFlat) === String(f.FlatName) ? "selected" : ""}>Flat ${f.FlatName}</option>`).join("");
+
+      const flatSelectControl = `
+        <select class="form-control" style="width:auto; min-width:155px; padding:5px 10px; font-size:0.75rem; font-weight:700;" onchange="setDashboardAnalyticsFlatFilter(this.value)">
+          ${flatOptionsHtml}
+        </select>
+      `;
+
+      const filteredBills = (DB.bills || []).filter(b => {
+        const sameProp = String(b.PropertyName || "").trim().toLowerCase() === String(targetProp).trim().toLowerCase();
+        if (!sameProp) return false;
+        if (dashboardSelectedAnalyticsFlat === "ALL") return true;
+        return String(b.FlatName || "").trim().toLowerCase() === String(dashboardSelectedAnalyticsFlat).trim().toLowerCase();
+      });
+
+      const scopeTitle = dashboardSelectedAnalyticsFlat === "ALL"
+        ? `${targetProp} — Flat Section Analytics Breakdown (All Flats)`
+        : `${targetProp} — Flat ${dashboardSelectedAnalyticsFlat} Analytics Breakdown`;
+
+      dashContainer.innerHTML = buildMultiSeriesChartHtml(
+        filteredBills,
+        scopeTitle,
+        "Multi-series breakdown for Rent, Electricity, Water, PNG, and Total Aggregate (Always Visible on Dashboard)",
+        flatSelectControl,
+        true
+      );
+    }
+
+    function renderAllRentersGraphForFlat(prop, flat) {
+      const allFlatBills = (DB.bills || []).filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat));
+      const chartHtml = buildMultiSeriesChartHtml(
+        allFlatBills,
+        `Flat ${flat} — Multi-Series Rent, Electricity, Water, PNG & Total Graph`,
+        `3-Year monthly breakdown for ${prop} - Flat ${flat} (January to December)`,
+        "",
+        true
+      );
+
+      const container = document.getElementById("tabGraphContainer");
+      if (container) container.innerHTML = chartHtml;
+
+      const alwaysVisibleModalGraph = document.getElementById("flatModalAlwaysVisibleGraphContainer");
+      if (alwaysVisibleModalGraph) alwaysVisibleModalGraph.innerHTML = chartHtml;
+    }
+
+    function renderRhThreeYearMonthlyChart(prop, flat, renter) {
+      const container = document.getElementById("rhThreeYearChartContainer");
+      if (!container) return;
+
+      const activeRenterBills = renter ? getBillsForSpecificRenter(prop, flat, renter) : [];
+      const allFlatBills = (DB.bills || []).filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat));
+      const billsSource = activeRenterBills.length > 0 ? activeRenterBills : allFlatBills;
+      const tenantNameDisp = renter ? renter.RenterName : `Flat ${flat}`;
+
+      container.innerHTML = buildMultiSeriesChartHtml(
+        billsSource,
+        `3-Year Monthly Breakdown Graph (${tenantNameDisp})`,
+        "Filter by Rent, Electricity, Water, PNG, or Total Aggregate across 3 years",
+        "",
+        true
+      );
     }
 
     /**
-     * Requirement 8: Edit any renter (including lenders/renters who have already left)
-     * Loads their full profile into the profile editor with their saved RenterID.
+     * Requirement 5 & 6: Edit any renter (including departed renters) while preserving their status
+     * and ensuring all utility numbers + Join/End dates display reliably.
      */
     function loadRenterIntoProfileForEditing(renterIdOrIdx) {
       if (activeRole === "Viewer" || !selectedFlat) return;
@@ -6973,6 +7183,13 @@ function renderRegisteredUsersList() {
       }
 
       activeFlatRenterObj = targetRenter;
+      const resolvedMeta = resolveFlatUtilityAndDateMeta(selectedFlat, targetRenter);
+
+      document.getElementById("profPngNumber").value = resolvedMeta.pngNumber;
+      document.getElementById("profPngMeter").value = resolvedMeta.pngMeterNumber;
+      document.getElementById("profWaterNumber").value = resolvedMeta.waterNumber;
+      document.getElementById("profWaterMeter").value = resolvedMeta.waterMeterNumber;
+      document.getElementById("profElecMeter").value = resolvedMeta.elecMeterNumber;
 
       document.getElementById("renterName").value = targetRenter.RenterName || "";
       document.getElementById("renterIdentityNum").value = targetRenter.IdentityDocNumber || "";
@@ -6980,9 +7197,9 @@ function renderRegisteredUsersList() {
       document.getElementById("renterAltMobile").value = targetRenter.AltMobileNumber || "";
       document.getElementById("renterAddress").value = targetRenter.Address || "";
       document.getElementById("renterFamily").value = targetRenter.TotalFamilyMembers || 1;
-      document.getElementById("renterStatus").value = targetRenter.Status || "Active";
-      document.getElementById("renterJoinDate").value = targetRenter.JoinDate || "";
-      document.getElementById("renterEndDate").value = targetRenter.EndDate || "";
+      document.getElementById("renterStatus").value = String(targetRenter.Status || "Active").trim().toLowerCase() === "active" ? "Active" : "Inactive";
+      document.getElementById("renterJoinDate").value = resolvedMeta.joinDate;
+      document.getElementById("renterEndDate").value = resolvedMeta.endDate;
       updateRenterImageSlotUI("profile", targetRenter.ProfileImageURL);
       updateRenterImageSlotUI("identity", targetRenter.IdentityImageURL);
 
@@ -6991,11 +7208,12 @@ function renderRegisteredUsersList() {
       const isAct = String(targetRenter.Status || "").toLowerCase() === "active";
       triggerSideToast(
         "Editing Renter Profile",
-        "Loaded " + targetRenter.RenterName + " (" + (isAct ? "Active" : "Left Tenant") + ") into Profile. You can now edit and save their details!",
+        "Loaded " + targetRenter.RenterName + " (" + (isAct ? "Active" : "Left Tenant") + ") into Profile. Status will remain " + (isAct ? "Active" : "Left") + " on save.",
         true
       );
     }
-function openFlatDetailsModal(flat, renter) {
+
+    function openFlatDetailsModal(flat, renter) {
       const viewerScope = resolveViewerAssignedScope();
       if (activeRole === "Viewer" && viewerScope) {
         if (viewerScope.mode === "FLAT" && !isSamePropAndFlat(flat.PropertyName, flat.FlatName, viewerScope.prop, viewerScope.flat)) {
@@ -7016,6 +7234,7 @@ function openFlatDetailsModal(flat, renter) {
       document.getElementById("calcMonthPicker").value = currentYearMonth;
 
       const resolvedContact = resolveFlatUpiAndContact(flat.PropertyName, flat, renter);
+      const resolvedMeta = resolveFlatUtilityAndDateMeta(flat, renter);
 
       const savedRent = resolveExactRateValue(flat.RentAmount, renter?.RentAmount);
       document.getElementById("profRent").value = savedRent !== "" ? savedRent : 0;
@@ -7023,11 +7242,11 @@ function openFlatDetailsModal(flat, renter) {
       document.getElementById("profElecRate").value = resolveExactRateValue(flat.ElecRate, renter?.ElecFixedRate);
       document.getElementById("profPngRate").value = resolveExactRateValue(flat.PNGRate, renter?.PNGFixedRate);
       document.getElementById("profWaterRate").value = resolveExactRateValue(flat.WaterRate, renter?.WaterFixedRate);
-      document.getElementById("profPngNumber").value = flat.PNGNumber || renter?.PNGNumber || "";
-      document.getElementById("profPngMeter").value = flat.PNGMeterNumber || renter?.PNGMeterNumber || "";
-      document.getElementById("profWaterNumber").value = flat.WaterNumber || renter?.WaterNumber || "";
-      document.getElementById("profWaterMeter").value = flat.WaterMeterNumber || renter?.WaterMeterNumber || "";
-      document.getElementById("profElecMeter").value = flat.ElecMeterNumber || renter?.ElecMeterNumber || "";
+      document.getElementById("profPngNumber").value = resolvedMeta.pngNumber;
+      document.getElementById("profPngMeter").value = resolvedMeta.pngMeterNumber;
+      document.getElementById("profWaterNumber").value = resolvedMeta.waterNumber;
+      document.getElementById("profWaterMeter").value = resolvedMeta.waterMeterNumber;
+      document.getElementById("profElecMeter").value = resolvedMeta.elecMeterNumber;
       document.getElementById("profUpiName").value = resolvedContact.upiName;
       document.getElementById("profUpiId").value = resolvedContact.upiId;
       document.getElementById("profContractMobile").value = resolvedContact.contractMobile;
@@ -7045,9 +7264,9 @@ function openFlatDetailsModal(flat, renter) {
         document.getElementById("renterAltMobile").value = renter.AltMobileNumber || "";
         document.getElementById("renterAddress").value = renter.Address || "";
         document.getElementById("renterFamily").value = renter.TotalFamilyMembers || 1;
-        document.getElementById("renterStatus").value = renter.Status || "Active";
-        document.getElementById("renterJoinDate").value = renter.JoinDate || "";
-        document.getElementById("renterEndDate").value = renter.EndDate || "";
+        document.getElementById("renterStatus").value = String(renter.Status || "Active").trim().toLowerCase() === "active" ? "Active" : "Inactive";
+        document.getElementById("renterJoinDate").value = resolvedMeta.joinDate;
+        document.getElementById("renterEndDate").value = resolvedMeta.endDate;
         updateRenterImageSlotUI("profile", renter.ProfileImageURL);
         updateRenterImageSlotUI("identity", renter.IdentityImageURL);
       } else {
@@ -7434,11 +7653,12 @@ function openFlatDetailsModal(flat, renter) {
     // Helper: Finds the matching renter profile and extracts their saved mobile number
     function findRenterForBill(bill) {
       if (!bill) return null;
-      // Requirement 4: Strictly match the departed or active renter of this specific bill
+      // 1. Match by explicit RenterID on the bill
       if (bill.RenterID) {
         const byId = (DB.renters || []).find(r => String(r.RenterID || "").trim() === String(bill.RenterID).trim());
         if (byId) return byId;
       }
+      // 2. Match by TenantName within the same Property & Flat
       if (bill.TenantName) {
         const targetName = String(bill.TenantName).trim().toLowerCase();
         const byName = (DB.renters || []).find(r =>
@@ -7447,11 +7667,39 @@ function openFlatDetailsModal(flat, renter) {
         );
         if (byName) return byName;
       }
-      // If bill is for active renter
-      if (activeFlatRenterObj && String(bill.TenantName || "").toLowerCase() === String(activeFlatRenterObj.RenterName || "").toLowerCase()) {
-        return activeFlatRenterObj;
-      }
+      // 3. Requirement 8: Fallback to the currently active renter of this flat so active renters always auto-fetch their profile mobile number
+      const activeInFlat = (DB.renters || []).find(r =>
+        isSamePropAndFlat(r.PropertyName, r.FlatName, bill.PropertyName, bill.FlatName) &&
+        String(r.Status || "").trim().toLowerCase() === "active"
+      );
+      if (activeInFlat) return activeInFlat;
+      if (activeFlatRenterObj) return activeFlatRenterObj;
       return null;
+    }
+
+    // Requirement 8: Automatically resolve the active renter's mobile number from their profile
+    function resolveReceiptTargetMobile(bill, renterObj) {
+      const domRenterMobile = document.getElementById("renterMobile")?.value?.trim() || "";
+      const domRenterAltMobile = document.getElementById("renterAltMobile")?.value?.trim() || "";
+      const activeInFlat = bill
+        ? (DB.renters || []).find(r =>
+            isSamePropAndFlat(r.PropertyName, r.FlatName, bill.PropertyName, bill.FlatName) &&
+            String(r.Status || "").trim().toLowerCase() === "active"
+          )
+        : null;
+
+      return (
+        renterObj?.MobileNumber ||
+        renterObj?.AltMobileNumber ||
+        activeInFlat?.MobileNumber ||
+        activeInFlat?.AltMobileNumber ||
+        activeFlatRenterObj?.MobileNumber ||
+        activeFlatRenterObj?.AltMobileNumber ||
+        bill?.TenantMobile ||
+        domRenterMobile ||
+        domRenterAltMobile ||
+        ""
+      );
     }
 
     // Helper: Formats phone number for WhatsApp API (automatically adds 91 for 10-digit numbers)
@@ -7463,16 +7711,7 @@ function openFlatDetailsModal(flat, renter) {
       return digits;
     }
 
-
-
-
-
-
-
-
-
-    // Requirements 4, 5 & 6: Clean Receipt (No Checkboxes on Receipt), Contact Phone, AI Personal-Use Disclaimer,
-    // Embedded Base64 QR Code for Image Capture, Checklist Option on "Share to WhatsApp", & Direct Image Share to WhatsApp
+    // Requirements 4, 5, 6, 7 & 8: Clean Receipt, Auto-Fetched Active Renter Mobile Number, & Direct WhatsApp Web on Desktop
     let lastQrFetchToken = 0;
 
     async function fetchQrCodeAsDataUrl(upiUri) {
@@ -7509,7 +7748,7 @@ function openFlatDetailsModal(flat, renter) {
       currentOpenedReceiptRenter = findRenterForBill(bill);
       currentOpenedReceiptFlat = DB.flats.find(f => isSamePropAndFlat(f.PropertyName, f.FlatName, bill.PropertyName, bill.FlatName)) || selectedFlat;
 
-      const targetTenantMobile = currentOpenedReceiptRenter?.MobileNumber || currentOpenedReceiptRenter?.AltMobileNumber || bill.TenantMobile || "";
+      const targetTenantMobile = resolveReceiptTargetMobile(bill, currentOpenedReceiptRenter);
       const targetRenterIsDeparted = currentOpenedReceiptRenter ? (String(currentOpenedReceiptRenter.Status || "").toLowerCase() !== "active") : false;
 
       document.getElementById("recPropAndFlat").innerText = `${bill.PropertyName} — Flat ${bill.FlatName}`;
@@ -7772,12 +8011,13 @@ function openFlatDetailsModal(flat, renter) {
       recalculateReceiptSelection();
     }
 
-    // Requirement 1 (Latest): Share ONLY the receipt image on WhatsApp — completely remove all text beneath the image!
+    // Requirement 7 & 8: Auto-fetch active renter's mobile number from profile and open WhatsApp Web directly on Desktop/Computer
     async function shareSelectedReceiptOnWhatsApp() {
       if (!currentOpenedReceiptBill) return;
       const bill = currentOpenedReceiptBill;
 
-      const rawPhone = currentOpenedReceiptRenter?.MobileNumber || currentOpenedReceiptRenter?.AltMobileNumber || bill.TenantMobile || "";
+      // Requirement 8: Automatically fetch mobile number from active renter's profile
+      const rawPhone = resolveReceiptTargetMobile(bill, currentOpenedReceiptRenter);
       let formattedPhone = formatWhatsAppPhone(rawPhone);
 
       recalculateReceiptSelection();
@@ -7805,7 +8045,6 @@ function openFlatDetailsModal(flat, renter) {
       let receiptBlob = null;
       try {
         receiptCardEl.classList.add("capturing-receipt");
-        // Requirement 3: Ensure zero cropping by unsetting overflow and scroll clamps
         const prevMaxHeight = receiptCardEl.style.maxHeight;
         const prevOverflow = receiptCardEl.style.overflow;
         receiptCardEl.style.maxHeight = "none";
@@ -7836,50 +8075,52 @@ function openFlatDetailsModal(flat, renter) {
         }
       }
 
-      // 1. Direct Mobile / Native Share Sheet with ONLY the Receipt Image File (ZERO text or title beneath the image)
-      if (receiptBlob) {
-        const fileName = `Receipt_Flat_${bill.FlatName}_${bill.MonthYear}.png`;
-        const receiptFile = new File([receiptBlob], fileName, { type: "image/png" });
-        if (navigator.canShare && navigator.canShare({ files: [receiptFile] })) {
-          try {
-            await navigator.share({
-              files: [receiptFile]
-            });
-            triggerSideToast("Receipt Image Shared", "Receipt image shared to WhatsApp with no text!", true);
-            return;
-          } catch (shareErr) {
-            if (shareErr && shareErr.name === "AbortError") return;
-          }
-        }
+      const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || "");
 
-        // Copy ONLY the receipt image to clipboard so desktop WhatsApp Web / App users can paste (Ctrl+V) the pure image
+      if (receiptBlob) {
+        // Copy the receipt image to clipboard so WhatsApp Web (on Desktop) or App can immediately paste (Ctrl+V) the image
         if (navigator.clipboard && window.ClipboardItem) {
           try {
             await navigator.clipboard.write([new ClipboardItem({ "image/png": receiptBlob })]);
           } catch (clipErr) {}
         }
-      }
 
-      // Open WhatsApp chat with ZERO text parameter so no text ever appears beneath the image
-      if (!formattedPhone || formattedPhone.length < 10) {
-        // Requirement 7: Prompt user for mobile number if none is saved in profile
-        const promptPhone = prompt("No mobile number is saved in " + (currentOpenedReceiptRenter?.RenterName || "this renter") + "\'s profile.\nPlease enter the WhatsApp mobile number to send this receipt to:", "");
-        if (promptPhone && promptPhone.trim()) {
-          const userFormatted = formatWhatsAppPhone(promptPhone.trim());
-          if (userFormatted && userFormatted.length >= 10) {
-            formattedPhone = userFormatted;
+        // Only trigger native OS share sheet on Mobile phones — NEVER on Desktop/Computer (Requirement 7)
+        if (isMobileDevice && (!formattedPhone || formattedPhone.length < 10)) {
+          const fileName = `Receipt_Flat_${bill.FlatName}_${bill.MonthYear}.png`;
+          const receiptFile = new File([receiptBlob], fileName, { type: "image/png" });
+          if (navigator.canShare && navigator.canShare({ files: [receiptFile] })) {
+            try {
+              await navigator.share({ files: [receiptFile] });
+              triggerSideToast("Receipt Image Shared", "Receipt image shared to WhatsApp!", true);
+              return;
+            } catch (shareErr) {
+              if (shareErr && shareErr.name === "AbortError") return;
+            }
           }
         }
       }
 
       if (!formattedPhone || formattedPhone.length < 10) {
-        triggerSideToast("Receipt Image Ready", "No mobile number entered. Receipt image copied to clipboard!", true);
+        triggerSideToast(
+          "Mobile Number Missing in Profile",
+          "Please save a 10-digit Mobile Number in the Renter Profile so WhatsApp can open their chat directly.",
+          false
+        );
         return;
       }
 
-      const whatsappUrl = `https://wa.me/${formattedPhone}`;
-      window.open(whatsappUrl, "_blank");
-      triggerSideToast("Receipt Image Ready", `Receipt image copied (no text)! Paste (Ctrl+V) in chat for +${formattedPhone}.`, true);
+      // Requirement 7 & 8: On Desktop/Computer, open directly inside WhatsApp Web in the browser (never wa.me which prompts app download)
+      const whatsappUrl = isMobileDevice
+        ? `https://api.whatsapp.com/send?phone=${formattedPhone}`
+        : `https://web.whatsapp.com/send?phone=${formattedPhone}`;
+
+      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+      triggerSideToast(
+        "WhatsApp Web Opened Directly",
+        `Opened WhatsApp Web chat for +${formattedPhone}. Receipt image is copied — press Ctrl+V to send!`,
+        true
+      );
     }
 
     function printCurrentReceipt() {
@@ -8201,8 +8442,8 @@ function openFlatDetailsModal(flat, renter) {
         const stayDurationLabel = joinMonthYear + " to " + endMonthYear;
 
         const editButtonHtml = isAct
-          ? '<button type="button" class="btn-ledger-action edit-btn admin-only" style="padding:8px 14px; font-size:0.76rem; font-weight:700;" onclick="switchFlatTabToProfile()"><i class="fa-solid fa-pen"></i> Edit Profile</button>'
-          : '<button type="button" class="btn-ledger-action edit-btn admin-only" style="padding:8px 14px; font-size:0.76rem; font-weight:700; color:#818cf8; border-color:rgba(129,140,248,0.5);" onclick="openEditLeftRenterModal(\'' + safeId + '\')"><i class="fa-solid fa-user-pen"></i> Edit Left Renter</button>';
+          ? '<button type="button" class="btn-ledger-action edit-btn admin-only" style="padding:8px 14px; font-size:0.76rem; font-weight:700;" onclick="loadRenterIntoProfileForEditing(\'' + safeId + '\')"><i class="fa-solid fa-pen"></i> Edit Profile</button>'
+          : '<button type="button" class="btn-ledger-action edit-btn admin-only" style="padding:8px 14px; font-size:0.76rem; font-weight:700; color:#818cf8; border-color:rgba(129,140,248,0.5);" onclick="openEditLeftRenterModal(\'' + safeId + '\')"><i class="fa-solid fa-user-pen"></i> Edit Profile</button>';
 
         return `
           <div class="rh-tenant-card-box ${isAct ? 'active-tenant-box' : ''}">
@@ -8224,7 +8465,7 @@ function openFlatDetailsModal(flat, renter) {
                 </div>
               </div>
 
-              <!-- Action Buttons: View Profile & Edit Button (Opens dedicated tab for left renter) -->
+              <!-- Action Buttons: View Profile & Edit Button -->
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                 <button type="button" class="btn-primary" style="width:auto; padding:8px 14px; font-size:0.78rem;" onclick="event.stopPropagation(); openTenantFullProfilePopup('${safeId}', '${safeProp}', '${safeFlat}', '${safeName}')">
                   <i class="fa-solid fa-address-card"></i> View Profile
@@ -8242,10 +8483,10 @@ function openFlatDetailsModal(flat, renter) {
               <div class="stat-pill"><span>BALANCE STATUS</span><strong style="color:${balColor};">${balText}</strong></div>
             </div>
 
-            <!-- Monthly Bill Invoices -->
-            <details style="background:rgba(0,0,0,0.12); border:1px solid var(--glass-border); border-radius:10px; padding:10px 12px;" ${idx === 0 ? 'open' : ''}>
+            <!-- Requirement 9: Monthly Bill Invoices must NOT open automatically; only open when explicitly clicked -->
+            <details style="background:rgba(0,0,0,0.12); border:1px solid var(--glass-border); border-radius:10px; padding:10px 12px;">
               <summary style="cursor:pointer; font-weight:700; font-size:0.8rem; color:var(--primary);">
-                &gt; Monthly Bills &amp; Invoices (${bills.length})
+                &gt; Monthly Bills &amp; Invoices (${bills.length}) — Click to View
               </summary>
               <div style="margin-top:8px; font-size:0.8rem;">
                 ${invoicesHtml}
@@ -9050,6 +9291,19 @@ function openFlatDetailsModal(flat, renter) {
         payload.contractMobile
       );
 
+      saveLocalFlatUtilityAndDateMeta(
+        selectedFlat.PropertyName,
+        newFlatName,
+        activeFlatRenterObj?.RenterID || "",
+        {
+          PNGNumber: payload.pngNumber,
+          PNGMeterNumber: payload.pngMeterNumber,
+          WaterNumber: payload.waterNumber,
+          WaterMeterNumber: payload.waterMeterNumber,
+          ElecMeterNumber: payload.elecMeterNumber
+        }
+      );
+
       syncProfileRatesToLiveCalculator();
       populateHistoryLedger(selectedFlat.PropertyName, selectedFlat.FlatName);
       populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
@@ -9059,13 +9313,13 @@ function openFlatDetailsModal(flat, renter) {
 
       triggerSideToast(
         isAutoSave ? "Saved Across Flat" : "Utilities & Live Calc Updated",
-        "Exact Rent & Fixed Utility Rates saved across this flat! Past bills remain locked.",
+        "Exact Rent, Utility Numbers & Fixed Rates saved across this flat! Past bills remain locked.",
         true
       );
       await sendGasPost(payload);
     }
 
-    // Requirement 5: Aadhaar Number Lookup for Left / Returning Renters + Reactivate Same Profile & Continue Billing
+    // Requirement 1: Aadhaar Number Lookup for Left / Returning Renters + Reactivate Option to Specific Property & Flat
     function normalizeAadhaarString(val) {
       return String(val || "").replace(/[\s-]+/g, "").trim().toLowerCase();
     }
@@ -9087,7 +9341,6 @@ function openFlatDetailsModal(flat, renter) {
         .filter(({ r }) => {
           const rAadhaar = normalizeAadhaarString(r.IdentityDocNumber);
           if (!rAadhaar || rAadhaar !== cleanAadhaar) return false;
-          // Show if the renter has left (Inactive) or if it's a saved profile different from the currently loaded active profile
           if (String(r.Status || "").trim().toLowerCase() !== "active") return true;
           if (!activeFlatRenterObj || String(r.RenterID || "") !== String(activeFlatRenterObj.RenterID || "")) return true;
           return false;
@@ -9118,7 +9371,7 @@ function openFlatDetailsModal(flat, renter) {
       promptEl.innerHTML = `
         <div style="background:rgba(16, 185, 129, 0.12); border:1.5px solid var(--accent-green); border-radius:12px; padding:12px; text-align:left;">
           <div style="display:flex; align-items:center; gap:6px; font-size:0.76rem; font-weight:800; color:var(--accent-green); margin-bottom:8px;">
-            <i class="fa-solid fa-clock-rotate-left"></i> Returning Renter Found — This Renter Has Stayed Before!
+            <i class="fa-solid fa-clock-rotate-left"></i> Matching Aadhaar Found — Returning Renter Detected!
           </div>
           <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
             <div class="renter-avatar" style="width:44px; height:44px; flex-shrink:0;">
@@ -9127,7 +9380,7 @@ function openFlatDetailsModal(flat, renter) {
             <div style="font-size:0.78rem; line-height:1.35;">
               <div><strong>${pastRenter.RenterName || 'Saved Renter'}</strong> <span class="badge-unpaid" style="font-size:0.65rem; margin-left:4px;">${pastRenter.Status || 'Past Stay'}</span></div>
               <div style="color:var(--text-muted);">Previous Flat: <strong>${pastRenter.PropertyName || '--'} - Flat ${pastRenter.FlatName || '--'}</strong> • Phone: ${pastRenter.MobileNumber || '--'}</div>
-              <div style="color:var(--text-muted);">Stay: ${pastRenter.JoinDate || '--'} to ${pastRenter.EndDate || 'Left'} • Past Bills in Profile: <strong>${pastBills.length}</strong></div>
+              <div style="color:var(--text-muted);">Stay: ${formatDateOnly(pastRenter.JoinDate)} to ${formatDateOnly(pastRenter.EndDate) || 'Left'} • Past Bills: <strong>${pastBills.length}</strong></div>
             </div>
           </div>
           <button
@@ -9136,7 +9389,7 @@ function openFlatDetailsModal(flat, renter) {
             style="padding:9px 12px; font-size:0.78rem; background:var(--accent-green);"
             onclick="reactivatePreviousRenterProfile('${safeRId}')"
           >
-            <i class="fa-solid fa-user-check"></i> Reactivate &amp; Continue With Same Profile
+            <i class="fa-solid fa-user-check"></i> Reactivate Renter (Choose Property &amp; Flat)
           </button>
         </div>
       `;
@@ -9148,11 +9401,12 @@ function openFlatDetailsModal(flat, renter) {
       const statusVal = document.getElementById("renterStatus").value;
       const rName = document.getElementById("renterName").value.trim();
 
-      if (statusVal === "Active" && !rName) {
+      if (!rName) {
         return triggerSideToast("Renter Name Required", "Please enter the Renter Name.", false);
       }
 
       const targetRenterId = activeFlatRenterObj?.RenterID || ("R-" + Date.now());
+      const wasAlreadyInactive = activeFlatRenterObj && String(activeFlatRenterObj.Status || "").trim().toLowerCase() === "inactive";
       const currentProfileSrc = document.getElementById("profilePicturePreview").src;
       const currentIdentitySrc = document.getElementById("identityPicturePreview").src;
 
@@ -9161,20 +9415,24 @@ function openFlatDetailsModal(flat, renter) {
       const exactWaterRate = parseInputRateOrEmpty("profWaterRate");
       const exactElecRate = parseInputRateOrEmpty("profElecRate");
 
+      const joinDateVal = toInputDateValue(document.getElementById("renterJoinDate").value) || toInputDateValue(activeFlatRenterObj?.JoinDate) || new Date().toISOString().split('T')[0];
+      const rawEndInput = toInputDateValue(document.getElementById("renterEndDate").value);
+      const endDateVal = rawEndInput || (statusVal === "Inactive" ? (toInputDateValue(activeFlatRenterObj?.EndDate) || new Date().toISOString().split('T')[0]) : "");
+
       const payload = {
         action: "updateRenterProfile",
         renterId: targetRenterId,
         propertyName: selectedFlat.PropertyName,
         flatName: selectedFlat.FlatName,
         renterName: rName,
-        identityDocNumber: document.getElementById("renterIdentityNum").value,
-        mobileNumber: document.getElementById("renterMobile").value,
-        altMobileNumber: document.getElementById("renterAltMobile").value,
-        address: document.getElementById("renterAddress").value,
-        familyMembers: document.getElementById("renterFamily").value,
+        identityDocNumber: document.getElementById("renterIdentityNum").value.trim(),
+        mobileNumber: document.getElementById("renterMobile").value.trim(),
+        altMobileNumber: document.getElementById("renterAltMobile").value.trim(),
+        address: document.getElementById("renterAddress").value.trim(),
+        familyMembers: document.getElementById("renterFamily").value || 1,
         renterStatus: statusVal,
-        joinDate: document.getElementById("renterJoinDate").value || activeFlatRenterObj?.JoinDate || new Date().toISOString().split('T')[0],
-        endDate: document.getElementById("renterEndDate").value || (statusVal === "Inactive" ? (activeFlatRenterObj?.EndDate || new Date().toISOString().split('T')[0]) : ""), 
+        joinDate: joinDateVal,
+        endDate: endDateVal,
         profileImageUrl: isPlaceholderImageUrl(currentProfileSrc) ? "" : currentProfileSrc,
         identityImageUrl: isPlaceholderImageUrl(currentIdentitySrc) ? "" : currentIdentitySrc,
         rentAmount: exactRentVal !== "" ? exactRentVal : 0,
@@ -9193,7 +9451,23 @@ function openFlatDetailsModal(flat, renter) {
         contractMobile: document.getElementById("profContractMobile").value.trim()
       };
 
-      // Also apply Rent & Fixed Utility Rates to the Flat record in DB.flats so saving Renter Record saves left-column edits too!
+      // Requirement 6: Save utility numbers and dates to local metadata cache + flat record so they always display
+      saveLocalFlatUtilityAndDateMeta(
+        selectedFlat.PropertyName,
+        selectedFlat.FlatName,
+        targetRenterId,
+        {
+          PNGNumber: payload.pngNumber,
+          PNGMeterNumber: payload.pngMeterNumber,
+          WaterNumber: payload.waterNumber,
+          WaterMeterNumber: payload.waterMeterNumber,
+          ElecMeterNumber: payload.elecMeterNumber,
+          JoinDate: payload.joinDate,
+          EndDate: payload.endDate
+        }
+      );
+
+      // Apply Rent, Utility Numbers & Fixed Utility Rates to the Flat record in DB.flats
       DB.flats.forEach(f => {
         if (isSamePropAndFlat(f.PropertyName, f.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName)) {
           f.RentAmount = payload.rentAmount;
@@ -9212,8 +9486,8 @@ function openFlatDetailsModal(flat, renter) {
         }
       });
 
-      // Match by RenterID first (so reactivated returning renters update in-place), otherwise active renter in this flat
-      let existingActiveRenter = DB.renters.find(r =>
+      // Match by RenterID first (so departed or reactivated renters update in-place), otherwise active renter in this flat
+      let existingRenterRecord = DB.renters.find(r =>
         targetRenterId && String(r.RenterID || "").trim() === String(targetRenterId).trim()
       ) || DB.renters.find(r =>
         isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName) &&
@@ -9221,16 +9495,34 @@ function openFlatDetailsModal(flat, renter) {
       );
 
       if (statusVal === "Inactive") {
-        if (existingActiveRenter) {
-          const vacatedId = existingActiveRenter.RenterID || targetRenterId;
-          existingActiveRenter.RenterID = vacatedId;
-          existingActiveRenter.Status = "Inactive";
-          existingActiveRenter.EndDate = payload.endDate || new Date().toISOString().split('T')[0];
+        if (existingRenterRecord) {
+          const vacatedId = existingRenterRecord.RenterID || targetRenterId;
+          existingRenterRecord.RenterID = vacatedId;
+          existingRenterRecord.Status = "Inactive";
+          existingRenterRecord.RenterName = payload.renterName;
+          existingRenterRecord.IdentityDocNumber = payload.identityDocNumber;
+          existingRenterRecord.MobileNumber = payload.mobileNumber;
+          existingRenterRecord.AltMobileNumber = payload.altMobileNumber;
+          existingRenterRecord.Address = payload.address;
+          existingRenterRecord.TotalFamilyMembers = payload.familyMembers;
+          existingRenterRecord.JoinDate = payload.joinDate;
+          existingRenterRecord.EndDate = payload.endDate;
+          existingRenterRecord.ProfileImageURL = payload.profileImageUrl;
+          existingRenterRecord.IdentityImageURL = payload.identityImageUrl;
+          existingRenterRecord.RentAmount = payload.rentAmount;
+          existingRenterRecord.PNGNumber = payload.pngNumber;
+          existingRenterRecord.PNGMeterNumber = payload.pngMeterNumber;
+          existingRenterRecord.PNGFixedRate = payload.pngFixedRate;
+          existingRenterRecord.WaterNumber = payload.waterNumber;
+          existingRenterRecord.WaterMeterNumber = payload.waterMeterNumber;
+          existingRenterRecord.WaterFixedRate = payload.waterFixedRate;
+          existingRenterRecord.ElecMeterNumber = payload.elecMeterNumber;
+          existingRenterRecord.ElecFixedRate = payload.elecFixedRate;
+          existingRenterRecord.UPIName = payload.upiName;
+          existingRenterRecord.UPIID = payload.upiId;
+          existingRenterRecord.ContractMobile = payload.contractMobile;
 
-          // Requirement 3: Permanently stamp the vacating tenant's RenterID onto their bills so their unpaid dues
-          // or advance balances remain strictly attached to the outgoing tenant and become 0 for the next tenant,
-          // while all meter readings for Electricity, PNG, and Water remain permanently recorded on the flat!
-          const vacatedNameClean = String(existingActiveRenter.RenterName || "").trim().toLowerCase();
+          const vacatedNameClean = String(existingRenterRecord.RenterName || "").trim().toLowerCase();
           DB.bills.forEach(b => {
             if (isSamePropAndFlat(b.PropertyName, b.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName)) {
               const bRId = String(b.RenterID || "").trim();
@@ -9241,38 +9533,47 @@ function openFlatDetailsModal(flat, renter) {
             }
           });
         }
-        activeFlatRenterObj = null;
-        clearRenterRightForm();
-        handleBillingMonthChange();
-        triggerSideToast("Renter Vacated & Meter History Preserved", "Previous meter readings kept permanently! Carry-forward dues reset to ₹0 for the new tenant.", true);
+
+        // Requirement 5: If we were editing a departed renter from history, keep their edited data visible and status 'Inactive'
+        if (wasAlreadyInactive && existingRenterRecord) {
+          activeFlatRenterObj = existingRenterRecord;
+          document.getElementById("renterJoinDate").value = payload.joinDate;
+          document.getElementById("renterEndDate").value = payload.endDate;
+          triggerSideToast("Departed Renter Updated", "Updated details saved while preserving 'Left / Inactive' status!", true);
+        } else {
+          activeFlatRenterObj = null;
+          clearRenterRightForm();
+          handleBillingMonthChange();
+          triggerSideToast("Renter Vacated & Meter History Preserved", "Previous meter readings kept permanently! Carry-forward dues reset to ₹0 for the new tenant.", true);
+        }
       } else {
-        if (existingActiveRenter) {
-          existingActiveRenter.PropertyName = payload.propertyName;
-          existingActiveRenter.FlatName = payload.flatName;
-          existingActiveRenter.Status = "Active";
-          existingActiveRenter.EndDate = "";
-          existingActiveRenter.RenterName = payload.renterName;
-          existingActiveRenter.IdentityDocNumber = payload.identityDocNumber;
-          existingActiveRenter.MobileNumber = payload.mobileNumber;
-          existingActiveRenter.AltMobileNumber = payload.altMobileNumber;
-          existingActiveRenter.Address = payload.address;
-          existingActiveRenter.TotalFamilyMembers = payload.familyMembers;
-          existingActiveRenter.JoinDate = payload.joinDate;
-          existingActiveRenter.ProfileImageURL = payload.profileImageUrl;
-          existingActiveRenter.IdentityImageURL = payload.identityImageUrl;
-          existingActiveRenter.RentAmount = payload.rentAmount;
-          existingActiveRenter.PNGNumber = payload.pngNumber;
-          existingActiveRenter.PNGMeterNumber = payload.pngMeterNumber;
-          existingActiveRenter.PNGFixedRate = payload.pngFixedRate;
-          existingActiveRenter.WaterNumber = payload.waterNumber;
-          existingActiveRenter.WaterMeterNumber = payload.waterMeterNumber;
-          existingActiveRenter.WaterFixedRate = payload.waterFixedRate;
-          existingActiveRenter.ElecMeterNumber = payload.elecMeterNumber;
-          existingActiveRenter.ElecFixedRate = payload.elecFixedRate;
-          existingActiveRenter.UPIName = payload.upiName;
-          existingActiveRenter.UPIID = payload.upiId;
-          existingActiveRenter.ContractMobile = payload.contractMobile;
-          activeFlatRenterObj = existingActiveRenter;
+        if (existingRenterRecord) {
+          existingRenterRecord.PropertyName = payload.propertyName;
+          existingRenterRecord.FlatName = payload.flatName;
+          existingRenterRecord.Status = "Active";
+          existingRenterRecord.EndDate = payload.endDate;
+          existingRenterRecord.RenterName = payload.renterName;
+          existingRenterRecord.IdentityDocNumber = payload.identityDocNumber;
+          existingRenterRecord.MobileNumber = payload.mobileNumber;
+          existingRenterRecord.AltMobileNumber = payload.altMobileNumber;
+          existingRenterRecord.Address = payload.address;
+          existingRenterRecord.TotalFamilyMembers = payload.familyMembers;
+          existingRenterRecord.JoinDate = payload.joinDate;
+          existingRenterRecord.ProfileImageURL = payload.profileImageUrl;
+          existingRenterRecord.IdentityImageURL = payload.identityImageUrl;
+          existingRenterRecord.RentAmount = payload.rentAmount;
+          existingRenterRecord.PNGNumber = payload.pngNumber;
+          existingRenterRecord.PNGMeterNumber = payload.pngMeterNumber;
+          existingRenterRecord.PNGFixedRate = payload.pngFixedRate;
+          existingRenterRecord.WaterNumber = payload.waterNumber;
+          existingRenterRecord.WaterMeterNumber = payload.waterMeterNumber;
+          existingRenterRecord.WaterFixedRate = payload.waterFixedRate;
+          existingRenterRecord.ElecMeterNumber = payload.elecMeterNumber;
+          existingRenterRecord.ElecFixedRate = payload.elecFixedRate;
+          existingRenterRecord.UPIName = payload.upiName;
+          existingRenterRecord.UPIID = payload.upiId;
+          existingRenterRecord.ContractMobile = payload.contractMobile;
+          activeFlatRenterObj = existingRenterRecord;
         } else {
           const createdRenter = {
             RenterID: targetRenterId,
@@ -9285,7 +9586,7 @@ function openFlatDetailsModal(flat, renter) {
             Address: payload.address,
             TotalFamilyMembers: payload.familyMembers,
             JoinDate: payload.joinDate,
-            EndDate: "",
+            EndDate: payload.endDate,
             ProfileImageURL: payload.profileImageUrl,
             IdentityImageURL: payload.identityImageUrl,
             RentAmount: payload.rentAmount,
@@ -9305,7 +9606,9 @@ function openFlatDetailsModal(flat, renter) {
           DB.renters.push(createdRenter);
           activeFlatRenterObj = createdRenter;
         }
-        triggerSideToast("Profile & Rates Saved", "Renter record & flat utility rates saved! Past bills remain locked.", true);
+        document.getElementById("renterJoinDate").value = payload.joinDate;
+        document.getElementById("renterEndDate").value = payload.endDate;
+        triggerSideToast("Profile & Utility Details Saved", "Renter profile, dates & utility meter numbers saved and displayed!", true);
       }
 
       propagatePropertyWideUpiAndContactLocal(
