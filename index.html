@@ -1668,15 +1668,28 @@
 
   <!-- FD (FIXED DEPOSIT) POP-UP MODAL (AUTO-SAVES TO GOOGLE SHEET + EDIT SUPPORT) -->
   <div id="fdModal" class="modal-overlay" style="z-index: 2800;">
-    <div class="modal-window" style="max-width: 600px;">
+    <div class="modal-window" style="max-width: 640px;">
       <button class="modal-close-btn" onclick="closeModal('fdModal')"><i class="fa-solid fa-xmark"></i></button>
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding-right:36px; margin-bottom: 12px;">
         <h3 style="display:flex; align-items:center; gap:8px; margin:0;">
-          <i class="fa-solid fa-building-columns" style="color:var(--primary);"></i> Fixed Deposit (FD) Details
+          <i class="fa-solid fa-building-columns" style="color:var(--primary);"></i> Fixed Deposit (FD) Management
         </h3>
         <span style="font-size:0.7rem; font-weight:700; color:var(--accent-green); background:rgba(16,185,129,0.14); padding:3px 9px; border-radius:20px;">
-          <i class="fa-solid fa-cloud-arrow-up"></i> Auto-Saves to Google Sheet
+          <i class="fa-solid fa-cloud-arrow-up"></i> Live Sheet Sync
         </span>
+      </div>
+
+      <!-- Requirement 10: Total Amount Received from All Properties Banner -->
+      <div id="fdTotalCollectionsBanner" style="margin-bottom:14px; background:linear-gradient(135deg, rgba(79,70,229,0.2) 0%, rgba(16,185,129,0.2) 100%); border:1.5px solid var(--primary); border-radius:14px; padding:12px 14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <div>
+            <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.5px;">
+              <i class="fa-solid fa-wallet"></i> Total Amount Received From All Properties
+            </div>
+            <div id="fdTotalAmountDisplay" style="font-size:1.35rem; font-weight:800; color:var(--accent-green); margin-top:2px;">₹0</div>
+          </div>
+          <div id="fdPropertyBreakdownBadges" style="display:flex; gap:6px; flex-wrap:wrap; font-size:0.72rem;"></div>
+        </div>
       </div>
       <div class="calc-grid-card admin-only" style="margin-bottom: 14px;">
         <div class="calc-grid-title">
@@ -1684,6 +1697,10 @@
           <button type="button" id="btnCancelFdEdit" class="btn-ledger-action" style="display:none; padding:4px 10px; font-size:0.72rem;" onclick="cancelFdEdit()">
             <i class="fa-solid fa-xmark"></i> Cancel Edit
           </button>
+        </div>
+        <div class="form-group" style="margin-bottom:10px;">
+          <label>Fund Source Property <span class="req-star">*</span> (From which property's money are you creating this FD?)</label>
+          <select id="fdSourceProperty" class="form-control"></select>
         </div>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
           <div class="form-group" style="margin-bottom:8px;">
@@ -1814,8 +1831,10 @@
 
       <div class="nav-center" id="searchContainer">
         <i class="fa-solid fa-magnifying-glass search-icon"></i>
-        <input type="text" id="globalSearch" class="search-input" placeholder="Search properties, flats, active or left tenants..." oninput="handleGlobalSearch(this.value)" onfocus="if(this.value.trim()) handleGlobalSearch(this.value)">
-        <!-- Requirement 3: Search Results Box Directly Below Search Bar (Shows Left/Active Tenant Details + View Profile Button) -->
+        <input type="text" id="globalSearch" class="search-input" style="padding-right:34px;" placeholder="Search properties, flats, active or left tenants..." oninput="handleGlobalSearch(this.value); toggleSearchClearBtn(this.value);" onfocus="if(this.value.trim()) handleGlobalSearch(this.value)">
+        <button type="button" id="btnClearSearch" onclick="clearGlobalSearch()" title="Clear search" style="display:none; position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:0.9rem; padding:4px;">
+          <i class="fa-solid fa-circle-xmark"></i>
+        </button>
         <div id="globalSearchResultsBox" class="search-results-dropdown"></div>
       </div>
 
@@ -2354,11 +2373,13 @@
       <!-- Flat Header Tag -->
 
       <!-- Navigation Bar -->
-      <nav class="flat-nav-bar">
+      <nav class="flat-nav-bar" id="flatModalNavBar" style="grid-template-columns: repeat(5, 1fr);">
         <div class="flat-nav-item active" onclick="switchFlatTab(event, 'tabCalc')">1. Calculation</div>
         <div class="flat-nav-item" onclick="switchFlatTab(event, 'tabHistory')">2. History</div>
         <div class="flat-nav-item" onclick="switchFlatTab(event, 'tabProfile')">3. Profile</div>
         <div class="flat-nav-item" onclick="switchFlatTab(event, 'tabRenterHistory')">4. Renter History</div>
+        <div class="flat-nav-item" onclick="switchFlatTab(event, 'tabGraph')">5. Graph</div>
+        <div class="flat-nav-item" id="navItemEditLeftRenter" style="display:none;" onclick="switchFlatTab(event, 'tabEditLeftRenter')">6. Edit Left Renter</div>
       </nav>
 
       <!-- TAB 1: CALCULATION WORKFLOW -->
@@ -2618,9 +2639,19 @@
               </tr>
             </thead>
             <tbody id="ledgerTableBody">
-              <!-- Dynamically populated (Newest at the top) -->
+              <!-- Dynamically populated 6 items at a time -->
             </tbody>
           </table>
+        </div>
+        <!-- Requirement 6: Flat History 6-Items-per-Page Pagination Controls -->
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:12px; padding:10px 4px; border-top:1px solid var(--glass-border);">
+          <button type="button" id="btnLedgerPrev" class="btn-ledger-action" style="padding:7px 14px; font-weight:700;" onclick="changeLedgerPage(-1)">
+            <i class="fa-solid fa-chevron-left"></i> Previous 6
+          </button>
+          <span id="ledgerPageIndicator" style="font-size:0.78rem; font-weight:800; color:var(--text-muted);">Page 1 of 1 (0 Total Bills)</span>
+          <button type="button" id="btnLedgerNext" class="btn-ledger-action" style="padding:7px 14px; font-weight:700;" onclick="changeLedgerPage(1)">
+            Next 6 <i class="fa-solid fa-chevron-right"></i>
+          </button>
         </div>
       </div>
 
@@ -2734,8 +2765,7 @@
 
       <!-- TAB 4: RENTER HISTORY (Requirement 8 & 3: Top-Corner Search Bar + Quick Search Result Box Below Search Bar + View Profile Popup) -->
       <div id="tabRenterHistory" class="tab-content">
-        <!-- 3-Year Interactive Monthly Trend Chart for Active Renters (Jan - Dec) -->
-        <div id="rhThreeYearChartContainer" style="margin-bottom:16px;"></div>
+        
 
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
           <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">
@@ -2787,6 +2817,81 @@
         <!-- Dedicated List of All Active & Past Tenants for This Flat (Each Tenant in a Single Dedicated Box) -->
         <div id="rhAllTenantsListContainer" style="display:flex; flex-direction:column; gap:14px;">
           <!-- Dynamically populated with one dedicated box per tenant -->
+        </div>
+      </div>
+
+      <!-- TAB 5: GRAPH (Requirement 5: 3-Year Monthly View for All Flat Renters Jan - Dec) -->
+      <div id="tabGraph" class="tab-content">
+        <div id="tabGraphContainer" style="margin-bottom:14px;"></div>
+      </div>
+
+      <!-- TAB 6: EDIT LEFT RENTER (Requirement 1: Dedicated Tab for Editing Departed Tenant) -->
+      <div id="tabEditLeftRenter" class="tab-content">
+        <div style="background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:16px; padding:18px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;">
+            <div>
+              <h4 style="font-size:1.05rem; font-weight:800; color:var(--primary); margin:0;">
+                <i class="fa-solid fa-user-pen"></i> Edit Departed Renter Profile
+              </h4>
+              <p style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">
+                Changes saved here remain permanently locked to this renter and will never change on their own.
+              </p>
+            </div>
+            <span id="editLeftRenterStatusBadge" class="badge-unpaid">Inactive (Departed)</span>
+          </div>
+
+          <input type="hidden" id="editLeftRenterId">
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label>Renter Name <span class="req-star">*</span></label>
+              <input type="text" id="editLeftName" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Aadhaar / ID Card Number</label>
+              <input type="text" id="editLeftIdentityNum" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Mobile Number</label>
+              <input type="tel" id="editLeftMobile" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Alternative Mobile Number</label>
+              <input type="tel" id="editLeftAltMobile" class="form-control">
+            </div>
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Permanent Address</label>
+              <input type="text" id="editLeftAddress" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Total Family Members</label>
+              <input type="number" id="editLeftFamily" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Renter Status</label>
+              <select id="editLeftStatus" class="form-control">
+                <option value="Inactive" selected>Inactive (Departed / Left)</option>
+                <option value="Active">Reactivate to Active Renter</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Stay Join Date</label>
+              <input type="date" id="editLeftJoinDate" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Stay End Date (Date Left)</label>
+              <input type="date" id="editLeftEndDate" class="form-control">
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:14px; padding-top:12px; border-top:1px solid var(--glass-border);">
+            <button type="button" class="btn-ledger-action" onclick="switchFlatTabToRenterHistory()">
+              <i class="fa-solid fa-arrow-left"></i> Back to Renter History
+            </button>
+            <button type="button" class="btn-primary admin-only" style="width:auto; padding:10px 22px;" onclick="saveDepartedRenterChanges()">
+              <i class="fa-solid fa-floppy-disk"></i> Save Renter Changes
+            </button>
+          </div>
         </div>
       </div>
 
@@ -3034,6 +3139,42 @@
           margin: 0 auto !important;
           position: relative !important;
           letter-spacing: 0.2px !important;
+        }
+
+        
+        /* Theme-Adaptive Receipt Styling (Requirement 3) */
+        body.theme-white #receiptViewModal .receipt-card,
+        body.theme-white #printableReceiptArea {
+          background: #ffffff !important;
+          color: #0f172a !important;
+          border-color: #cbd5e1 !important;
+        }
+        body.theme-white #printableReceiptArea .receipt-line {
+          border-bottom: 1px dashed rgba(0, 0, 0, 0.15) !important;
+        }
+        body.theme-white #printableReceiptArea .receipt-line > span:first-child {
+          color: #475569 !important;
+        }
+        body.theme-white #printableReceiptArea .receipt-line > strong,
+        body.theme-white #printableReceiptArea .receipt-line > span:last-child {
+          color: #0f172a !important;
+        }
+        body.theme-white #printableReceiptArea .receipt-total-box {
+          background: #f1f5f9 !important;
+          border: 1.5px solid #cbd5e1 !important;
+          color: #0f172a !important;
+        }
+        body.theme-white #printableReceiptArea #receiptUpiQrBox {
+          background: #f8fafc !important;
+          border: 1px solid #e2e8f0 !important;
+        }
+        body.theme-white #printableReceiptArea #receiptUpiQrBox > div {
+          color: #334155 !important;
+        }
+        body.theme-white #printableReceiptArea .receipt-ai-disclaimer {
+          background: rgba(245, 158, 11, 0.12) !important;
+          border-color: rgba(245, 158, 11, 0.5) !important;
+          color: #78350f !important;
         }
 
         /* Clean Receipt Layout (No Checkboxes on Receipt) */
@@ -5262,10 +5403,38 @@
       const statusTag = document.getElementById("calcMonthStatusTag");
       const submitBtnText = document.getElementById("calcSubmitBtnText");
 
-      const renterBills = getBillsForSpecificRenter(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj);
-      const sortedBills = [...renterBills].sort((a, b) => normalizeMonthYear(a.MonthYear).localeCompare(normalizeMonthYear(b.MonthYear)));
+      // Check all flat bills for this month (including departed renters)
+      const allFlatBillsForMonth = (DB.bills || []).filter(b =>
+        isSamePropAndFlat(b.PropertyName, b.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName) &&
+        normalizeMonthYear(b.MonthYear) === chosenMonth
+      );
 
-      const existingBill = sortedBills.find(b => normalizeMonthYear(b.MonthYear) === chosenMonth);
+      // Prioritize active renter bill if exists, otherwise load historical departed tenant bill
+      const existingBill = allFlatBillsForMonth.find(b =>
+        activeFlatRenterObj && String(b.RenterID || "") === String(activeFlatRenterObj.RenterID || "")
+      ) || allFlatBillsForMonth[0] || null;
+
+      const activeJoinMonth = activeFlatRenterObj?.JoinDate ? normalizeMonthYear(activeFlatRenterObj.JoinDate.substring(0, 7)) : "";
+      const isPastMonthBeforeActiveJoin = Boolean(!existingBill && activeJoinMonth && chosenMonth < activeJoinMonth);
+
+      if (isPastMonthBeforeActiveJoin) {
+        statusTag.innerText = "No Bill Generated (" + formatMonthLabel(chosenMonth) + " - Previous Tenant Period)";
+        statusTag.className = "calc-month-status-tag";
+        submitBtnText.innerText = "Calculate Bill";
+        document.getElementById("calcRent").value = 0;
+        document.getElementById("calcElecPrev").value = 0;
+        document.getElementById("calcElecCurr").value = "";
+        document.getElementById("calcPngPrev").value = 0;
+        document.getElementById("calcPngCurr").value = "";
+        document.getElementById("calcWaterPrev").value = 0;
+        document.getElementById("calcWaterCurr").value = "";
+        document.getElementById("calcAddName").value = "";
+        document.getElementById("calcAddAmount").value = "";
+        document.getElementById("calcPrevCarryBalance").value = 0;
+        document.getElementById("calcPaidNow").value = 0;
+        runBillMath();
+        return;
+      }
 
       const autoCarryBalance = calculateNetBalanceForRenterBeforeMonth(
         selectedFlat.PropertyName,
@@ -5400,7 +5569,294 @@
       }
     }
 
-        // State for 3-Year Monthly Graph in Renter History
+        
+    // Search Clear Helper (Requirement 9)
+    function toggleSearchClearBtn(val) {
+      const btn = document.getElementById("btnClearSearch");
+      if (btn) btn.style.display = (val && val.trim().length > 0) ? "block" : "none";
+    }
+
+    function clearGlobalSearch() {
+      const input = document.getElementById("globalSearch");
+      if (input) input.value = "";
+      toggleSearchClearBtn("");
+      const dropdown = document.getElementById("globalSearchResultsBox");
+      if (dropdown) {
+        dropdown.classList.remove("active");
+        dropdown.innerHTML = "";
+      }
+      handleGlobalSearch("");
+    }
+
+    // Flat History Pagination State (Requirement 6)
+    let currentLedgerPage = 1;
+    const LEDGER_PAGE_SIZE = 6;
+
+    function changeLedgerPage(delta) {
+      if (!selectedFlat) return;
+      const matchingBills = DB.bills.filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName));
+      const totalPages = Math.max(1, Math.ceil(matchingBills.length / LEDGER_PAGE_SIZE));
+      const targetPage = currentLedgerPage + delta;
+      if (targetPage >= 1 && targetPage <= totalPages) {
+        currentLedgerPage = targetPage;
+        populateHistoryLedger(selectedFlat.PropertyName, selectedFlat.FlatName);
+      }
+    }
+
+    // FD Total Amount Received from All Properties (Requirement 10)
+    function updateFdTotalCollectionsDisplay() {
+      let grandTotalReceived = 0;
+      const propTotals = {};
+
+      (DB.properties || []).forEach(p => {
+        propTotals[p.PropertyName] = 0;
+      });
+
+      (DB.bills || []).forEach(b => {
+        const paid = parseFloat(b.PaidAmount) || 0;
+        grandTotalReceived += paid;
+        if (b.PropertyName) {
+          propTotals[b.PropertyName] = (propTotals[b.PropertyName] || 0) + paid;
+        }
+      });
+
+      const displayEl = document.getElementById("fdTotalAmountDisplay");
+      if (displayEl) {
+        displayEl.innerText = '₹' + grandTotalReceived.toLocaleString('en-IN');
+      }
+
+      const badgesContainer = document.getElementById("fdPropertyBreakdownBadges");
+      if (badgesContainer) {
+        badgesContainer.innerHTML = Object.entries(propTotals).map(([pName, amt]) => {
+          return '<span style="background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:6px; border:1px solid var(--glass-border);">' +
+                 pName + ': <strong style="color:var(--accent-green);">₹' + amt.toLocaleString('en-IN') + '</strong></span>';
+        }).join("");
+      }
+
+      // Populate Property selector dropdown for creating FD
+      const propSelect = document.getElementById("fdSourceProperty");
+      if (propSelect) {
+        const options = ['<option value="All Properties">All Properties (General Pool)</option>'];
+        (DB.properties || []).forEach(p => {
+          const pReceived = propTotals[p.PropertyName] || 0;
+          options.push('<option value="' + p.PropertyName + '">' + p.PropertyName + ' (Received: ₹' + pReceived.toLocaleString('en-IN') + ')</option>');
+        });
+        propSelect.innerHTML = options.join("");
+      }
+    }
+
+    function switchFlatTabToRenterHistory() {
+      const modal = document.getElementById("flatDetailsModal");
+      const navItems = modal.querySelectorAll(".flat-nav-item");
+      const tabs = modal.querySelectorAll(".tab-content");
+      navItems.forEach((item, i) => item.classList.toggle("active", i === 3));
+      tabs.forEach((tab, i) => tab.classList.toggle("active", i === 3));
+    }
+
+    // Requirement 1: Open Dedicated Tab to Edit Departed Renter
+    function openDedicatedEditLeftRenterTab(renterIdOrIdx) {
+      if (activeRole === "Viewer" || !selectedFlat) return;
+
+      let targetRenter = null;
+      if (String(renterIdOrIdx).startsWith("IDX-")) {
+        const idx = parseInt(String(renterIdOrIdx).replace("IDX-", ""), 10);
+        if (!isNaN(idx) && DB.renters[idx]) targetRenter = DB.renters[idx];
+      }
+      if (!targetRenter) {
+        targetRenter = (DB.renters || []).find(r => String(r.RenterID || "").trim() === String(renterIdOrIdx).trim());
+      }
+      if (!targetRenter) {
+        return triggerSideToast("Renter Not Found", "Could not locate departed renter details.", false);
+      }
+
+      document.getElementById("editLeftRenterId").value = targetRenter.RenterID || "";
+      document.getElementById("editLeftName").value = targetRenter.RenterName || "";
+      document.getElementById("editLeftIdentityNum").value = targetRenter.IdentityDocNumber || "";
+      document.getElementById("editLeftMobile").value = targetRenter.MobileNumber || "";
+      document.getElementById("editLeftAltMobile").value = targetRenter.AltMobileNumber || "";
+      document.getElementById("editLeftAddress").value = targetRenter.Address || "";
+      document.getElementById("editLeftFamily").value = targetRenter.TotalFamilyMembers || 1;
+      document.getElementById("editLeftStatus").value = targetRenter.Status || "Inactive";
+      document.getElementById("editLeftJoinDate").value = targetRenter.JoinDate || "";
+      document.getElementById("editLeftEndDate").value = targetRenter.EndDate || "";
+
+      const navItemEdit = document.getElementById("navItemEditLeftRenter");
+      if (navItemEdit) navItemEdit.style.display = "block";
+
+      const modal = document.getElementById("flatDetailsModal");
+      const navItems = modal.querySelectorAll(".flat-nav-item");
+      const tabs = modal.querySelectorAll(".tab-content");
+      navItems.forEach(item => item.classList.remove("active"));
+      tabs.forEach(tab => tab.classList.remove("active"));
+
+      if (navItemEdit) navItemEdit.classList.add("active");
+      document.getElementById("tabEditLeftRenter").classList.add("active");
+
+      triggerSideToast("Edit Tab Opened", "Editing departed tenant: " + targetRenter.RenterName, true);
+    }
+
+    async function saveDepartedRenterChanges() {
+      if (activeRole === "Viewer" || !selectedFlat) return;
+      const targetRenterId = document.getElementById("editLeftRenterId").value;
+      const newName = document.getElementById("editLeftName").value.trim();
+      const statusVal = document.getElementById("editLeftStatus").value;
+
+      if (!newName) {
+        return triggerSideToast("Name Required", "Renter name cannot be empty.", false);
+      }
+
+      const targetRenter = (DB.renters || []).find(r => String(r.RenterID || "").trim() === String(targetRenterId).trim());
+      if (!targetRenter) {
+        return triggerSideToast("Error", "Renter record not found.", false);
+      }
+
+      targetRenter.RenterName = newName;
+      targetRenter.IdentityDocNumber = document.getElementById("editLeftIdentityNum").value.trim();
+      targetRenter.MobileNumber = document.getElementById("editLeftMobile").value.trim();
+      targetRenter.AltMobileNumber = document.getElementById("editLeftAltMobile").value.trim();
+      targetRenter.Address = document.getElementById("editLeftAddress").value.trim();
+      targetRenter.TotalFamilyMembers = document.getElementById("editLeftFamily").value || 1;
+      targetRenter.Status = statusVal;
+      targetRenter.JoinDate = document.getElementById("editLeftJoinDate").value || targetRenter.JoinDate;
+      targetRenter.EndDate = document.getElementById("editLeftEndDate").value;
+
+      if (statusVal === "Active") {
+        activeFlatRenterObj = targetRenter;
+      }
+
+      saveDbSnapshotToCache();
+      renderAllDashboardUI();
+      populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
+      renderAllRentersGraphForFlat(selectedFlat.PropertyName, selectedFlat.FlatName);
+
+      triggerSideToast("Saved & Locked", "Departed renter details updated and permanently locked!", true);
+
+      await sendGasPost({
+        action: "updateRenterProfile",
+        renterId: targetRenterId,
+        propertyName: selectedFlat.PropertyName,
+        flatName: selectedFlat.FlatName,
+        renterName: targetRenter.RenterName,
+        identityDocNumber: targetRenter.IdentityDocNumber,
+        mobileNumber: targetRenter.MobileNumber,
+        altMobileNumber: targetRenter.AltMobileNumber,
+        address: targetRenter.Address,
+        familyMembers: targetRenter.TotalFamilyMembers,
+        renterStatus: statusVal,
+        joinDate: targetRenter.JoinDate,
+        endDate: targetRenter.EndDate
+      });
+
+      switchFlatTabToRenterHistory();
+    }
+
+    // Helper: Formats stay duration as Month and Year only (NO time!) (Requirement 8)
+    function formatStayMonthYearOnly(dateStr) {
+      if (!dateStr) return "--";
+      const clean = normalizeMonthYear(dateStr);
+      if (/^\d{4}-\d{2}$/.test(clean)) {
+        return formatMonthLabel(clean);
+      }
+      return clean;
+    }
+
+    /**
+     * Requirement 5: Graph Tab displaying all renters associated with this flat
+     * Illustrates 3 years of data (current year + 2 preceding years) from Jan to Dec.
+     */
+    function renderAllRentersGraphForFlat(prop, flat) {
+      const container = document.getElementById("tabGraphContainer");
+      if (!container) return;
+
+      const currentYear = new Date().getFullYear();
+      const yearsList = [currentYear, currentYear - 1, currentYear - 2];
+      if (!yearsList.includes(rhSelectedGraphYear)) {
+        rhSelectedGraphYear = currentYear;
+      }
+
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const allFlatBills = (DB.bills || []).filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat));
+
+      const monthlyValues = [];
+      const monthlyPaidValues = [];
+      const monthlyTenantLabels = [];
+      let maxAmount = 1000;
+
+      for (let m = 1; m <= 12; m++) {
+        const monthKey = rhSelectedGraphYear + "-" + String(m).padStart(2, "0");
+        const matchedBill = allFlatBills.find(b => normalizeMonthYear(b.MonthYear) === monthKey);
+        const billedAmt = matchedBill ? (parseFloat(matchedBill.TotalBilled) || 0) : 0;
+        const paidAmt = matchedBill ? (parseFloat(matchedBill.PaidAmount) || 0) : 0;
+        const tenant = matchedBill ? (matchedBill.TenantName || "Tenant") : "";
+        monthlyValues.push(billedAmt);
+        monthlyPaidValues.push(paidAmt);
+        monthlyTenantLabels.push(tenant);
+        if (billedAmt > maxAmount) maxAmount = billedAmt;
+        if (paidAmt > maxAmount) maxAmount = paidAmt;
+      }
+
+      const chartWidth = 680;
+      const chartHeight = 175;
+      const padLeft = 48;
+      const padRight = 24;
+      const padTop = 24;
+      const padBottom = 34;
+      const usableW = chartWidth - padLeft - padRight;
+      const usableH = chartHeight - padTop - padBottom;
+
+      const points = monthlyValues.map((val, idx) => {
+        const x = padLeft + (idx * (usableW / 11));
+        const y = padTop + usableH - ((val / maxAmount) * usableH);
+        return { x, y, val, month: months[idx], tenant: monthlyTenantLabels[idx] };
+      });
+
+      const polylinePoints = points.map(p => p.x.toFixed(1) + "," + p.y.toFixed(1)).join(" ");
+
+      const barsHtml = points.map(p => {
+        const barW = 16;
+        const barH = ((p.val / maxAmount) * usableH);
+        const barY = padTop + usableH - barH;
+        const barX = p.x - (barW / 2);
+        const valLabel = p.val > 0 ? (p.val >= 1000 ? Math.round(p.val / 1000) + 'k' : p.val) : '';
+        return '<rect x="' + barX.toFixed(1) + '" y="' + barY.toFixed(1) + '" width="' + barW + '" height="' + barH.toFixed(1) + '" rx="3" fill="rgba(99, 102, 241, 0.32)" />' +
+               '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="4.5" fill="#818cf8" stroke="#ffffff" stroke-width="1.5" />' +
+               '<text x="' + p.x.toFixed(1) + '" y="' + (chartHeight - 12) + '" font-size="10" font-weight="700" fill="#94a3b8" text-anchor="middle">' + p.month + '</text>' +
+               (valLabel ? '<text x="' + p.x.toFixed(1) + '" y="' + (p.y - 7).toFixed(1) + '" font-size="9" font-weight="800" fill="#ffffff" text-anchor="middle">₹' + valLabel + '</text>' : '');
+      }).join("");
+
+      const yearButtons = yearsList.map(y => {
+        const isSel = y === rhSelectedGraphYear;
+        return '<button type="button" class="btn-ledger-action ' + (isSel ? 'active' : '') + '" style="padding:6px 14px; font-size:0.78rem; font-weight:800; ' + (isSel ? 'background:var(--primary); color:#ffffff; border-color:var(--primary);' : '') + '" onclick="setRhGraphYear(' + y + ')">' + y + (y === currentYear ? ' (Current)' : '') + '</button>';
+      }).join("");
+
+      container.innerHTML = '<div style="background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:16px; padding:18px; box-shadow:0 10px 28px rgba(0,0,0,0.25);">' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px; border-bottom:1px solid var(--glass-border); padding-bottom:12px;">' +
+          '<div>' +
+            '<h4 style="font-size:1.05rem; font-weight:800; color:var(--text-main); margin:0; display:flex; align-items:center; gap:8px;">' +
+              '<i class="fa-solid fa-chart-line" style="color:var(--primary);"></i> 3-Year Historical &amp; Current Rent Graph (January to December)' +
+            '</h4>' +
+            '<p style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">' +
+              'Displays all renters for this flat (departed tenants for past years and active ones for ongoing months)' +
+            '</p>' +
+          '</div>' +
+          '<div style="display:flex; align-items:center; gap:6px;">' + yearButtons + '</div>' +
+        '</div>' +
+        '<div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">' +
+          '<svg viewBox="0 0 ' + chartWidth + ' ' + chartHeight + '" style="width:100%; min-width:540px; height:auto; overflow:visible;">' +
+            '<line x1="' + padLeft + '" y1="' + padTop + '" x2="' + (chartWidth - padRight) + '" y2="' + padTop + '" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,3" />' +
+            '<line x1="' + padLeft + '" y1="' + (padTop + (usableH / 2)) + '" x2="' + (chartWidth - padRight) + '" y2="' + (padTop + (usableH / 2)) + '" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,3" />' +
+            '<line x1="' + padLeft + '" y1="' + (padTop + usableH) + '" x2="' + (chartWidth - padRight) + '" y2="' + (padTop + usableH) + '" stroke="rgba(255,255,255,0.18)" />' +
+            '<text x="' + (padLeft - 6) + '" y="' + (padTop + 4) + '" font-size="9" fill="#94a3b8" text-anchor="end">₹' + Math.round(maxAmount) + '</text>' +
+            '<text x="' + (padLeft - 6) + '" y="' + (padTop + (usableH / 2) + 3) + '" font-size="9" fill="#94a3b8" text-anchor="end">₹' + Math.round(maxAmount / 2) + '</text>' +
+            '<text x="' + (padLeft - 6) + '" y="' + (padTop + usableH) + '" font-size="9" fill="#94a3b8" text-anchor="end">₹0</text>' +
+            barsHtml +
+            '<polyline fill="none" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="' + polylinePoints + '" />' +
+          '</svg>' +
+        '</div>' +
+      '</div>';
+    }
+
+    // State for 3-Year Monthly Graph in Renter History
     let rhSelectedGraphYear = new Date().getFullYear();
 
     function setRhGraphYear(year) {
@@ -5611,7 +6067,7 @@ function openFlatDetailsModal(flat, renter) {
       handleBillingMonthChange();
       populateHistoryLedger(flat.PropertyName, flat.FlatName);
       populateIsolatedRenterHistoryDropdown(flat.PropertyName, flat.FlatName);
-      renderRhThreeYearMonthlyChart(flat.PropertyName, flat.FlatName, renter);
+      renderAllRentersGraphForFlat(flat.PropertyName, flat.FlatName);
 
       const modal = document.getElementById("flatDetailsModal");
       modal.querySelectorAll(".flat-nav-item").forEach((el, idx) => el.classList.toggle("active", idx === 0));
@@ -5884,7 +6340,30 @@ function openFlatDetailsModal(flat, renter) {
       const matchingBills = DB.bills.filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat));
       const newestFirstBills = [...matchingBills].reverse();
 
-      newestFirstBills.forEach(bill => {
+      const totalBills = newestFirstBills.length;
+      const totalPages = Math.max(1, Math.ceil(totalBills / LEDGER_PAGE_SIZE));
+      if (currentLedgerPage > totalPages) currentLedgerPage = totalPages;
+      if (currentLedgerPage < 1) currentLedgerPage = 1;
+
+      const pageIndicator = document.getElementById("ledgerPageIndicator");
+      if (pageIndicator) {
+        pageIndicator.innerText = "Page " + currentLedgerPage + " of " + totalPages + " (" + totalBills + " Total Bills)";
+      }
+      const prevBtn = document.getElementById("btnLedgerPrev");
+      const nextBtn = document.getElementById("btnLedgerNext");
+      if (prevBtn) {
+        prevBtn.disabled = currentLedgerPage <= 1;
+        prevBtn.style.opacity = currentLedgerPage <= 1 ? "0.45" : "1";
+      }
+      if (nextBtn) {
+        nextBtn.disabled = currentLedgerPage >= totalPages;
+        nextBtn.style.opacity = currentLedgerPage >= totalPages ? "0.45" : "1";
+      }
+
+      const startIdx = (currentLedgerPage - 1) * LEDGER_PAGE_SIZE;
+      const pageBills = newestFirstBills.slice(startIdx, startIdx + LEDGER_PAGE_SIZE);
+
+      pageBills.forEach(bill => {
         const cleanMonth = normalizeMonthYear(bill.MonthYear);
         const displayMonth = formatMonthLabel(cleanMonth);
         const carryVal = parseFloat(bill.PrevCarryBalance) || 0;
@@ -5956,20 +6435,24 @@ function openFlatDetailsModal(flat, renter) {
     // Helper: Finds the matching renter profile and extracts their saved mobile number
     function findRenterForBill(bill) {
       if (!bill) return null;
+      // Requirement 4: Strictly match the departed or active renter of this specific bill
       if (bill.RenterID) {
-        const byId = DB.renters.find(r => String(r.RenterID || "").trim() === String(bill.RenterID).trim());
+        const byId = (DB.renters || []).find(r => String(r.RenterID || "").trim() === String(bill.RenterID).trim());
         if (byId) return byId;
       }
-      const byNameAndFlat = DB.renters.find(r =>
-        isSamePropAndFlat(r.PropertyName, r.FlatName, bill.PropertyName, bill.FlatName) &&
-        String(r.RenterName || "").trim().toLowerCase() === String(bill.TenantName || "").trim().toLowerCase()
-      );
-      if (byNameAndFlat) return byNameAndFlat;
-
-      return DB.renters.find(r =>
-        isSamePropAndFlat(r.PropertyName, r.FlatName, bill.PropertyName, bill.FlatName) &&
-        String(r.Status || "").trim().toLowerCase() === "active"
-      ) || null;
+      if (bill.TenantName) {
+        const targetName = String(bill.TenantName).trim().toLowerCase();
+        const byName = (DB.renters || []).find(r =>
+          isSamePropAndFlat(r.PropertyName, r.FlatName, bill.PropertyName, bill.FlatName) &&
+          String(r.RenterName || "").trim().toLowerCase() === targetName
+        );
+        if (byName) return byName;
+      }
+      // If bill is for active renter
+      if (activeFlatRenterObj && String(bill.TenantName || "").toLowerCase() === String(activeFlatRenterObj.RenterName || "").toLowerCase()) {
+        return activeFlatRenterObj;
+      }
+      return null;
     }
 
     // Helper: Formats phone number for WhatsApp API (automatically adds 91 for 10-digit numbers)
@@ -6027,6 +6510,9 @@ function openFlatDetailsModal(flat, renter) {
       currentOpenedReceiptRenter = findRenterForBill(bill);
       currentOpenedReceiptFlat = DB.flats.find(f => isSamePropAndFlat(f.PropertyName, f.FlatName, bill.PropertyName, bill.FlatName)) || selectedFlat;
 
+      const targetTenantMobile = currentOpenedReceiptRenter?.MobileNumber || currentOpenedReceiptRenter?.AltMobileNumber || bill.TenantMobile || "";
+      const targetRenterIsDeparted = currentOpenedReceiptRenter ? (String(currentOpenedReceiptRenter.Status || "").toLowerCase() !== "active") : false;
+
       document.getElementById("recPropAndFlat").innerText = `${bill.PropertyName} — Flat ${bill.FlatName}`;
       document.getElementById("recMonthLabel").innerText = `Billing Month: ${formatMonthLabel(bill.MonthYear)}`;
 
@@ -6047,7 +6533,12 @@ function openFlatDetailsModal(flat, renter) {
         <div id="receiptItemsListContainer">
           <div class="receipt-line" id="row_rec_tenant">
             <span>Tenant Name:</span>
-            <strong>${bill.TenantName || '--'}</strong>
+            <div style="text-align:right;">
+              <strong>${bill.TenantName || '--'}</strong>
+              <div style="font-size:0.7rem; color:${targetRenterIsDeparted ? 'var(--accent-red)' : 'var(--accent-green)'}; font-weight:700;">
+                <i class="fa-brands fa-whatsapp"></i> WhatsApp Target: ${targetTenantMobile || 'No mobile listed'} (${targetRenterIsDeparted ? 'Departed Tenant' : 'Active Tenant'})
+              </div>
+            </div>
           </div>
 
           <div class="receipt-line" id="row_rec_rent">
@@ -6287,7 +6778,7 @@ function openFlatDetailsModal(flat, renter) {
       if (!currentOpenedReceiptBill) return;
       const bill = currentOpenedReceiptBill;
 
-      const rawPhone = bill.TenantMobile || currentOpenedReceiptRenter?.MobileNumber || currentOpenedReceiptRenter?.AltMobileNumber || "";
+      const rawPhone = currentOpenedReceiptRenter?.MobileNumber || currentOpenedReceiptRenter?.AltMobileNumber || bill.TenantMobile || "";
       const formattedPhone = formatWhatsAppPhone(rawPhone);
 
       recalculateReceiptSelection();
@@ -6319,7 +6810,7 @@ function openFlatDetailsModal(flat, renter) {
           scale: 2,
           useCORS: true,
           allowTaint: true,
-          backgroundColor: getComputedStyle(document.body).getPropertyValue("--bg-modal").trim() || "#111827"
+          backgroundColor: document.body.classList.contains("theme-white") ? "#ffffff" : "#0f172a"
         });
         receiptCardEl.classList.remove("capturing-receipt");
         receiptBlob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
@@ -6682,56 +7173,53 @@ function openFlatDetailsModal(flat, renter) {
         const safeFlat = String(flat || "").replace(/'/g, "\\'");
         const safeName = String(targetRenter.RenterName || "").replace(/'/g, "\\'");
 
+        const joinMonthYear = formatStayMonthYearOnly(targetRenter.JoinDate);
+        const endMonthYear = isAct ? "Present" : formatStayMonthYearOnly(targetRenter.EndDate || "Departed");
+        const stayDurationLabel = joinMonthYear + " to " + endMonthYear;
+
+        const editButtonHtml = isAct
+          ? '<button type="button" class="btn-ledger-action edit-btn admin-only" style="padding:8px 14px; font-size:0.76rem; font-weight:700;" onclick="switchFlatTabToProfile()"><i class="fa-solid fa-pen"></i> Edit Profile</button>'
+          : '<button type="button" class="btn-ledger-action edit-btn admin-only" style="padding:8px 14px; font-size:0.76rem; font-weight:700; color:#818cf8; border-color:rgba(129,140,248,0.5);" onclick="openDedicatedEditLeftRenterTab(\'' + safeId + '\')"><i class="fa-solid fa-user-pen"></i> Edit Left Renter</button>';
+
         return `
           <div class="rh-tenant-card-box ${isAct ? 'active-tenant-box' : ''}">
-            <!-- Top Identity Row inside Tenant Box -->
+            <!-- Requirement 8: Concise Renter Card (Name, Mobile, Aadhaar, Stay Month/Year Only) -->
             <div style="display:flex; flex-wrap:wrap; align-items:center; gap:14px;">
-              <div class="renter-avatar" style="width:56px; height:56px; flex-shrink:0; cursor:pointer;" onclick="openTenantFullProfilePopup('${safeId}', '${safeProp}', '${safeFlat}', '${safeName}')">
+              <div class="renter-avatar" style="width:52px; height:52px; flex-shrink:0; cursor:pointer;" onclick="openTenantFullProfilePopup('${safeId}', '${safeProp}', '${safeFlat}', '${safeName}')">
                 <img src="${avatarSrc}" alt="${targetRenter.RenterName || 'Tenant'}">
               </div>
-              <div style="flex:1; min-width:200px; cursor:pointer;" onclick="openTenantFullProfilePopup('${safeId}', '${safeProp}', '${safeFlat}', '${safeName}')">
+              <div style="flex:1; min-width:200px;">
                 <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
-                  <h3 style="font-size:1.05rem; font-weight:800;">${targetRenter.RenterName || 'Unnamed Tenant'}</h3>
+                  <h3 style="font-size:1.05rem; font-weight:800; margin:0;">${targetRenter.RenterName || 'Unnamed Tenant'}</h3>
                   <span class="${statusBadgeClass}" style="font-size:0.72rem;">${statusBadgeText}</span>
                 </div>
-                <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">
-                  <i class="fa-solid fa-phone" style="color:var(--primary);"></i> ${targetRenter.MobileNumber || '--'}
-                  ${targetRenter.AltMobileNumber ? ` (Alt: ${targetRenter.AltMobileNumber})` : ''}
-                  &nbsp;|&nbsp;
-                  <i class="fa-regular fa-calendar" style="color:var(--primary);"></i> Stay: <strong>${targetRenter.JoinDate || '--'}</strong> to <strong>${isAct ? 'Present' : (targetRenter.EndDate || 'Left')}</strong>
+                <!-- Only Name, Mobile, Aadhaar, Stay Duration (Month & Year Only, NO Time) -->
+                <div style="display:flex; flex-wrap:wrap; gap:10px 18px; font-size:0.78rem; color:var(--text-muted); margin-top:5px;">
+                  <span><i class="fa-solid fa-phone" style="color:var(--primary);"></i> <strong>Mobile:</strong> ${targetRenter.MobileNumber || '--'} ${targetRenter.AltMobileNumber ? ' / ' + targetRenter.AltMobileNumber : ''}</span>
+                  <span><i class="fa-solid fa-id-card" style="color:var(--primary);"></i> <strong>Aadhaar:</strong> ${targetRenter.IdentityDocNumber || '--'}</span>
+                  <span><i class="fa-regular fa-calendar-check" style="color:var(--primary);"></i> <strong>Stay Duration:</strong> ${stayDurationLabel}</span>
                 </div>
               </div>
+
+              <!-- Action Buttons: View Profile & Edit Button (Opens dedicated tab for left renter) -->
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                 <button type="button" class="btn-primary" style="width:auto; padding:8px 14px; font-size:0.78rem;" onclick="event.stopPropagation(); openTenantFullProfilePopup('${safeId}', '${safeProp}', '${safeFlat}', '${safeName}')">
-                  <i class="fa-solid fa-id-card"></i> View Profile
+                  <i class="fa-solid fa-address-card"></i> View Profile
                 </button>
-                ${isAct ? `
-                <button type="button" class="btn-ledger-action edit-btn admin-only" style="padding:8px 12px; font-size:0.76rem;" onclick="loadRenterIntoProfileForEditing('${safeId}')" title="Edit this renter's profile and details">
-                  <i class="fa-solid fa-user-pen"></i> ${isAct ? "Edit Active Profile" : "Edit Left Renter Profile"}
-                </button>` : ''}
+                ${editButtonHtml}
               </div>
             </div>
 
-            <!-- Complete Personal & Flat Rate Details Inside Single Dedicated Box -->
-            <div class="rh-tenant-details-grid">
-              <div><span style="color:var(--text-muted);">Aadhaar / ID No:</span> <strong>${targetRenter.IdentityDocNumber || '--'}</strong></div>
-              <div><span style="color:var(--text-muted);">Family Members:</span> <strong>${targetRenter.TotalFamilyMembers || '1'}</strong></div>
-              <div><span style="color:var(--text-muted);">Address:</span> <strong>${targetRenter.Address || '--'}</strong></div>
-              <div><span style="color:var(--text-muted);">Base Rent:</span> <strong>₹${targetRenter.RentAmount ?? selectedFlat?.RentAmount ?? 0}</strong></div>
-              <div><span style="color:var(--text-muted);">Elec / PNG / Water Rate:</span> <strong>₹${resolveExactRateValue(targetRenter.ElecFixedRate, selectedFlat?.ElecRate) || 0} / ₹${resolveExactRateValue(targetRenter.PNGFixedRate, selectedFlat?.PNGRate) || 0} / ₹${resolveExactRateValue(targetRenter.WaterFixedRate, selectedFlat?.WaterRate) || 0}</strong></div>
-              <div><span style="color:var(--text-muted);">Meters (E / P / W):</span> <strong>${targetRenter.ElecMeterNumber || '--'} / ${targetRenter.PNGMeterNumber || '--'} / ${targetRenter.WaterMeterNumber || '--'}</strong></div>
-            </div>
-
-            <!-- Financial Summary Pills Inside Same Tenant Box -->
+            <!-- Financial Summary: Total Bill, Total Paid, Total Rent, Total Liability, Balance Status -->
             <div class="renter-history-overview" style="margin:12px 0 10px 0;">
               <div class="stat-pill"><span>TOTAL BILLED</span><strong>₹ ${totalStandaloneBilled.toLocaleString('en-IN')}</strong></div>
               <div class="stat-pill"><span>TOTAL PAID</span><strong>₹ ${totalPaid.toLocaleString('en-IN')}</strong></div>
               <div class="stat-pill"><span>TOTAL RENT</span><strong>₹ ${totalRent.toLocaleString('en-IN')}</strong></div>
-              <div class="stat-pill"><span>TOTAL UTILITY</span><strong>₹ ${totalUtility.toLocaleString('en-IN')}</strong></div>
+              <div class="stat-pill"><span>TOTAL LIABILITY</span><strong>₹ ${totalUtility.toLocaleString('en-IN')}</strong></div>
               <div class="stat-pill"><span>BALANCE STATUS</span><strong style="color:${balColor};">${balText}</strong></div>
             </div>
 
-            <!-- Invoices List Inside Same Tenant Box -->
+            <!-- Monthly Bill Invoices -->
             <details style="background:rgba(0,0,0,0.12); border:1px solid var(--glass-border); border-radius:10px; padding:10px 12px;" ${idx === 0 ? 'open' : ''}>
               <summary style="cursor:pointer; font-weight:700; font-size:0.8rem; color:var(--primary);">
                 &gt; Monthly Bills &amp; Invoices (${bills.length})
@@ -6977,6 +7465,7 @@ function openFlatDetailsModal(flat, renter) {
     }
 
     function openFdModal() {
+      updateFdTotalCollectionsDisplay();
       cancelFdEdit();
       renderFdRecordsList();
       openModal("fdModal");
@@ -7030,6 +7519,7 @@ function openFlatDetailsModal(flat, renter) {
       const rate = document.getElementById("fdRate")?.value.trim() || "";
       const maturity = document.getElementById("fdMaturityDate")?.value || "";
       const notes = document.getElementById("fdNotes")?.value.trim() || "";
+      const sourceProperty = document.getElementById("fdSourceProperty")?.value || "All Properties";
       if (!bank || amount <= 0) {
         return triggerSideToast("Required Fields", "Please enter Bank/FD Name and Principal Amount.", false);
       }
@@ -7049,6 +7539,7 @@ function openFlatDetailsModal(flat, renter) {
             rate,
             maturity,
             notes,
+            sourceProperty,
             updatedAt: new Date().toISOString()
           };
           list[idx] = savedRecord;
@@ -7063,6 +7554,7 @@ function openFlatDetailsModal(flat, renter) {
           rate,
           maturity,
           notes,
+          sourceProperty,
           createdAt: nowDate,
           updatedAt: new Date().toISOString()
         };
@@ -7087,6 +7579,7 @@ function openFlatDetailsModal(flat, renter) {
         rate: savedRecord.rate,
         maturity: savedRecord.maturity,
         notes: savedRecord.notes,
+        sourceProperty: savedRecord.sourceProperty || "All Properties",
         createdAt: savedRecord.createdAt
       });
     }
@@ -7128,7 +7621,7 @@ function openFlatDetailsModal(flat, renter) {
             <div style="flex:1; min-width:0;">
               <div style="font-weight:800; font-size:0.88rem;">${bankName} — <span style="color:var(--accent-green);">₹${amt.toLocaleString('en-IN')}</span></div>
               <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
-                Rate: ${rate ? rate + '%' : '--'} | Maturity: ${maturity} ${notes ? ' | ' + notes : ''}
+                Rate: ${rate ? rate + '%' : '--'} | Maturity: ${maturity} | <span style="color:var(--primary); font-weight:700;">Funded from: ${item.sourceProperty || item.SourceProperty || "General"}</span> ${notes ? ' | ' + notes : ''}
               </div>
             </div>
             <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
