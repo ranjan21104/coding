@@ -72,8 +72,7 @@
     .bg-canvas {
       position: fixed;
       inset: 0;
-      background: var(--bg-overlay),
-                  url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=85') center/cover no-repeat fixed;
+      background: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=90') center/cover no-repeat fixed !important;
       z-index: -1;
       transition: background 0.3s ease;
     }
@@ -83,12 +82,13 @@
       min-height: 100vh;
       min-height: 100dvh;
       width: 100%;
+      background: transparent !important;
     }
     .screen.active {
       display: flex !important;
     }
 
-    /* Login Screen - Crisp Clear House Background & Permanently White Frosted Login Card */
+    /* Login Screen - 100% Transparent Box & Input Fields so Heart & House Remain Clearly Visible */
     #loginScreen {
       align-items: center;
       justify-content: center;
@@ -108,48 +108,59 @@
     #loginScreen .login-container {
       width: 100%;
       max-width: 425px;
-      padding: 38px 30px;
+      padding: 36px 28px;
       text-align: center;
-      background: rgba(255, 255, 255, 0.82) !important;
-      backdrop-filter: blur(12px) saturate(140%) !important;
-      -webkit-backdrop-filter: blur(12px) saturate(140%) !important;
-      border: 1.5px solid rgba(255, 255, 255, 0.94) !important;
+      background: transparent !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.65) !important;
       border-radius: 22px !important;
-      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28), 0 4px 16px rgba(15, 23, 42, 0.12) !important;
-      color: #0f172a !important;
+      box-shadow: none !important;
+      color: #ffffff !important;
     }
 
     #loginScreen .login-brand {
-      margin-bottom: 26px;
+      margin-bottom: 24px;
     }
     #loginScreen .login-brand-icon-wrap {
-      width: 64px;
-      height: 64px;
+      width: 68px;
+      height: 68px;
       margin: 0 auto 12px auto;
       border-radius: 18px;
-      background: linear-gradient(135deg, rgba(79, 70, 229, 0.14) 0%, rgba(59, 130, 246, 0.18) 100%);
-      border: 1.5px solid rgba(79, 70, 229, 0.28);
+      background: transparent !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.78) !important;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.15);
+      box-shadow: none !important;
+      position: relative;
     }
-    #loginScreen .login-brand i {
-      font-size: 2rem;
-      color: #4f46e5 !important;
+    #loginScreen .login-brand i.house-main-icon {
+      font-size: 1.95rem;
+      color: #ffffff !important;
       margin: 0;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.85));
+    }
+    #loginScreen .login-brand i.heart-badge-icon {
+      font-size: 1.15rem;
+      color: #ff2e4c !important;
+      margin-left: -6px;
+      margin-top: -16px;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.9));
     }
     #loginScreen .login-brand h1 {
-      font-size: 1.72rem;
+      font-size: 1.75rem;
       font-weight: 800;
       letter-spacing: -0.5px;
-      color: #0f172a !important;
+      color: #ffffff !important;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.95);
     }
     #loginScreen .login-brand p {
-      font-size: 0.86rem;
-      color: #475569 !important;
-      font-weight: 600;
+      font-size: 0.88rem;
+      color: #ffffff !important;
+      font-weight: 700;
       margin-top: 4px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.95);
     }
 
     /* Universal Colorful Side Slide-In Notification Toast */
@@ -249,27 +260,30 @@
       margin-bottom: 18px;
     }
     #loginScreen .form-group label {
-      color: #1e293b !important;
-      font-size: 0.82rem;
+      color: #ffffff !important;
+      font-size: 0.84rem;
       font-weight: 800;
       letter-spacing: 0.2px;
       margin-bottom: 7px;
       display: flex;
       align-items: center;
       gap: 6px;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.92);
     }
     #loginScreen .login-input-shell {
       position: relative;
       display: flex;
       align-items: center;
+      background: transparent !important;
     }
     #loginScreen .login-field-icon {
       position: absolute;
       left: 14px;
-      color: #4f46e5;
+      color: #ffffff;
       font-size: 0.95rem;
       pointer-events: none;
       z-index: 2;
+      filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.9));
     }
     .form-control {
       width: 100%;
@@ -287,34 +301,39 @@
       border-style: dashed;
     }
     #loginScreen .form-control {
-      background: rgba(255, 255, 255, 0.96) !important;
-      color: #0f172a !important;
-      border: 1.5px solid #cbd5e1 !important;
+      background: transparent !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      color: #ffffff !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.85) !important;
       border-radius: 12px !important;
       padding: 13px 14px 13px 40px !important;
-      font-size: 0.94rem !important;
-      font-weight: 600 !important;
-      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05) !important;
+      font-size: 0.95rem !important;
+      font-weight: 700 !important;
+      text-shadow: 0 1px 5px rgba(0, 0, 0, 0.92) !important;
+      box-shadow: none !important;
       transition: all 0.2s ease !important;
     }
     #loginScreen #loginPassword {
       padding-right: 44px !important;
     }
     #loginScreen .form-control::placeholder {
-      color: #64748b !important;
-      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9) !important;
+      font-weight: 600;
+      text-shadow: 0 1px 5px rgba(0, 0, 0, 0.9);
     }
     #loginScreen .form-control:focus {
       outline: none !important;
-      background: #ffffff !important;
-      border-color: #4f46e5 !important;
-      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.16) !important;
+      background: transparent !important;
+      border-color: #ffffff !important;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.28) !important;
     }
     #loginScreen .eye-toggle-btn {
-      color: #475569 !important;
+      color: #ffffff !important;
+      filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.9));
     }
     #loginScreen .eye-toggle-btn:hover {
-      color: #4f46e5 !important;
+      color: #fbbf24 !important;
     }
     .form-control:focus:not([readonly]) {
       outline: none;
@@ -544,12 +563,13 @@
       border: 1px solid var(--glass-border);
     }
 
-    /* Search Bar */
+    /* Search Bar & Instant Search Results Dropdown Below Search Bar */
     .nav-center {
       position: relative;
       flex: 1;
-      max-width: 260px;
-      min-width: 140px;
+      max-width: 310px;
+      min-width: 160px;
+      z-index: 300;
     }
     .search-input {
       width: 100%;
@@ -565,10 +585,48 @@
     .search-icon {
       position: absolute;
       left: 13px;
-      top: 50%;
+      top: 19px;
       transform: translateY(-50%);
       color: var(--text-muted);
       font-size: 0.85rem;
+      pointer-events: none;
+    }
+    .search-results-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      width: 380px;
+      max-width: 92vw;
+      max-height: 410px;
+      overflow-y: auto;
+      background: var(--bg-modal);
+      border: 1.5px solid var(--primary);
+      border-radius: 14px;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.65);
+      padding: 10px;
+      z-index: 950;
+    }
+    .search-results-dropdown.active {
+      display: block;
+    }
+    .search-result-person-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      background: var(--bg-input);
+      border: 1px solid var(--glass-border);
+      margin-bottom: 8px;
+      transition: border-color 0.2s;
+    }
+    .search-result-person-item:last-child {
+      margin-bottom: 0;
+    }
+    .search-result-person-item:hover {
+      border-color: var(--primary);
     }
 
     /* Right Controls & Action Icons */
@@ -633,6 +691,16 @@
     .nav-btn:hover {
       border-color: var(--primary);
       transform: translateY(-1px);
+    }
+
+    .nav-pill-btn {
+      width: auto !important;
+      padding: 0 13px !important;
+      border-radius: 20px !important;
+      gap: 6px;
+      font-size: 0.8rem !important;
+      font-weight: 800;
+      letter-spacing: 0.2px;
     }
 
     .plus-btn-highlight {
@@ -1514,12 +1582,99 @@
     </div>
   </div>
 
-  <!-- SCREEN 1: LOGIN / LOGOUT SCREEN (Permanently White Frosted Theme on Crisp Clear House Background) -->
+  <!-- ==========================================================================
+       COMPLETE TENANT PROFILE POP-UP WINDOW (OPENED VIA "VIEW PROFILE" ON SEARCH)
+       ========================================================================== -->
+  <div id="tenantFullProfileModal" class="modal-overlay" style="z-index: 2750;">
+    <div class="modal-window" style="max-width: 780px;">
+      <button class="modal-close-btn" onclick="closeModal('tenantFullProfileModal')"><i class="fa-solid fa-xmark"></i></button>
+      <div id="tenantFullProfileModalContent">
+        <!-- Populated dynamically when "View Profile" is clicked -->
+      </div>
+    </div>
+  </div>
+
+  <!-- FD (FIXED DEPOSIT) POP-UP MODAL -->
+  <div id="fdModal" class="modal-overlay" style="z-index: 2400;">
+    <div class="modal-window" style="max-width: 580px;">
+      <button class="modal-close-btn" onclick="closeModal('fdModal')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
+        <i class="fa-solid fa-building-columns" style="color:var(--primary);"></i> Fixed Deposit (FD) Records
+      </h3>
+      <div class="calc-grid-card admin-only" style="margin-bottom: 14px;">
+        <div class="calc-grid-title"><span><i class="fa-solid fa-plus-circle"></i> Add New FD Record</span></div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div class="form-group" style="margin-bottom:8px;">
+            <label>Bank / FD Name <span class="req-star">*</span></label>
+            <input type="text" id="fdBankName" class="form-control" placeholder="e.g. SBI Fixed Deposit">
+          </div>
+          <div class="form-group" style="margin-bottom:8px;">
+            <label>Principal Amount (₹) <span class="req-star">*</span></label>
+            <input type="number" id="fdAmount" class="form-control" placeholder="100000">
+          </div>
+          <div class="form-group" style="margin-bottom:8px;">
+            <label>Interest Rate (%)</label>
+            <input type="number" step="0.01" id="fdRate" class="form-control" placeholder="7.25">
+          </div>
+          <div class="form-group" style="margin-bottom:8px;">
+            <label>Maturity Date</label>
+            <input type="date" id="fdMaturityDate" class="form-control">
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:10px;">
+          <label>Notes / Account Number</label>
+          <input type="text" id="fdNotes" class="form-control" placeholder="FD Account / Receipt No. or remarks">
+        </div>
+        <button type="button" class="btn-primary" onclick="addFdRecord()"><i class="fa-solid fa-check"></i> Save FD Record</button>
+      </div>
+      <div id="fdRecordsList" style="max-height: 280px; overflow-y: auto; display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+  </div>
+
+  <!-- KHET (FIELD) POP-UP MODAL -->
+  <div id="khetModal" class="modal-overlay" style="z-index: 2400;">
+    <div class="modal-window" style="max-width: 580px;">
+      <button class="modal-close-btn" onclick="closeModal('khetModal')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
+        <i class="fa-solid fa-seedling" style="color:var(--accent-green);"></i> Khet (Field) Records
+      </h3>
+      <div class="calc-grid-card admin-only" style="margin-bottom: 14px;">
+        <div class="calc-grid-title"><span><i class="fa-solid fa-plus-circle"></i> Add New Khet (Field) Entry</span></div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div class="form-group" style="margin-bottom:8px;">
+            <label>Khet / Plot Name <span class="req-star">*</span></label>
+            <input type="text" id="khetName" class="form-control" placeholder="e.g. North Field / Plot 4">
+          </div>
+          <div class="form-group" style="margin-bottom:8px;">
+            <label>Crop / Cultivator / Purpose</label>
+            <input type="text" id="khetCrop" class="form-control" placeholder="e.g. Wheat / Batai">
+          </div>
+          <div class="form-group" style="margin-bottom:8px;">
+            <label>Income / Batai Amount (₹)</label>
+            <input type="number" id="khetIncome" class="form-control" placeholder="0">
+          </div>
+          <div class="form-group" style="margin-bottom:8px;">
+            <label>Expense Amount (₹)</label>
+            <input type="number" id="khetExpense" class="form-control" placeholder="0">
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:10px;">
+          <label>Date &amp; Notes</label>
+          <input type="text" id="khetNotes" class="form-control" placeholder="Season, area, or payment remarks">
+        </div>
+        <button type="button" class="btn-primary" onclick="addKhetRecord()"><i class="fa-solid fa-check"></i> Save Khet Record</button>
+      </div>
+      <div id="khetRecordsList" style="max-height: 280px; overflow-y: auto; display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 1: LOGIN / LOGOUT SCREEN (100% Transparent Box & Inputs on Crisp Clear House & Heart Background) -->
   <section id="loginScreen" class="screen active">
     <div class="glass-card login-container">
       <div class="login-brand">
-        <div class="login-brand-icon-wrap">
-          <i class="fa-solid fa-building-user"></i>
+        <div class="login-brand-icon-wrap" title="Home & Heart">
+          <i class="fa-solid fa-house-chimney house-main-icon"></i>
+          <i class="fa-solid fa-heart heart-badge-icon"></i>
         </div>
         <h1>Property Cloud</h1>
         <p>Live Sheets Synchronized Portal</p>
@@ -1527,14 +1682,14 @@
 
       <form id="loginForm" onsubmit="handleLoginSubmit(event)">
         <div class="form-group">
-          <label for="loginUsername"><i class="fa-solid fa-user-shield" style="color:#4f46e5;"></i> Username</label>
+          <label for="loginUsername"><i class="fa-solid fa-user-shield" style="color:#ffffff;"></i> Username</label>
           <div class="login-input-shell">
             <i class="fa-solid fa-user login-field-icon"></i>
             <input type="text" id="loginUsername" class="form-control" placeholder="Enter your username" required autocomplete="off">
           </div>
         </div>
         <div class="form-group">
-          <label for="loginPassword"><i class="fa-solid fa-key" style="color:#4f46e5;"></i> Password</label>
+          <label for="loginPassword"><i class="fa-solid fa-key" style="color:#ffffff;"></i> Password</label>
           <div class="password-field-wrapper login-input-shell">
             <i class="fa-solid fa-lock login-field-icon"></i>
             <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required autocomplete="off">
@@ -1563,7 +1718,9 @@
 
       <div class="nav-center" id="searchContainer">
         <i class="fa-solid fa-magnifying-glass search-icon"></i>
-        <input type="text" id="globalSearch" class="search-input" placeholder="Search properties, flats, tenants..." oninput="handleGlobalSearch(this.value)">
+        <input type="text" id="globalSearch" class="search-input" placeholder="Search properties, flats, active or left tenants..." oninput="handleGlobalSearch(this.value)" onfocus="if(this.value.trim()) handleGlobalSearch(this.value)">
+        <!-- Requirement 3: Search Results Box Directly Below Search Bar (Shows Left/Active Tenant Details + View Profile Button) -->
+        <div id="globalSearchResultsBox" class="search-results-dropdown"></div>
       </div>
 
       <div class="nav-right">
@@ -1582,6 +1739,17 @@
 
         <!-- Action Icons Grouped Together -->
         <div class="nav-actions-group">
+          <!-- Requirement 4: Two Buttons to the Left Side of the Plus (+) Button: FD and Khet -->
+          <button type="button" class="nav-btn nav-pill-btn" onclick="openFdModal()" title="Fixed Deposit (FD)">
+            <i class="fa-solid fa-building-columns" style="color:#818cf8;"></i>
+            <span>FD</span>
+          </button>
+
+          <button type="button" class="nav-btn nav-pill-btn" onclick="openKhetModal()" title="Khet (Field)">
+            <i class="fa-solid fa-seedling" style="color:#34d399;"></i>
+            <span>Khet</span>
+          </button>
+
           <!-- Dynamic Add Plus (+) Icon -->
           <div class="dropdown-anchor admin-only">
             <button class="nav-btn plus-btn-highlight" onclick="toggleActionMenu()" title="Add / Manage">
@@ -2432,9 +2600,9 @@
         </div>
       </div>
 
-      <!-- TAB 4: RENTER HISTORY (Requirement 8: Top-Corner Search Bar + Every Active & Past Tenant in Dedicated Box) -->
+      <!-- TAB 4: RENTER HISTORY (Requirement 8 & 3: Top-Corner Search Bar + Quick Search Result Box Below Search Bar + View Profile Popup) -->
       <div id="tabRenterHistory" class="tab-content">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
           <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">
             Showing <span id="rhFilteredCountLabel" style="color:var(--primary); font-weight:800;">All</span> Tenant Record(s)
           </div>
@@ -2446,7 +2614,7 @@
                 id="rhSearchInput"
                 class="form-control"
                 style="padding:8px 12px 8px 34px; font-size:0.82rem; border-radius:20px;"
-                placeholder="Search tenant name, phone, status, month..."
+                placeholder="Search active or left tenant name, phone..."
                 oninput="filterRenterHistoryRecords()"
               >
             </div>
@@ -2477,6 +2645,9 @@
             </button>
           </div>
         </div>
+
+        <!-- Requirement 3: Matching Left / Past Tenant Quick Result Box Right Below Search Bar -->
+        <div id="rhQuickSearchResultBanner" style="display:none; margin-bottom:14px;"></div>
 
         <!-- Dedicated List of All Active & Past Tenants for This Flat (Each Tenant in a Single Dedicated Box) -->
         <div id="rhAllTenantsListContainer" style="display:flex; flex-direction:column; gap:14px;">
@@ -3590,24 +3761,115 @@
     }
 
     function handleGlobalSearch(query) {
-      const q = query.trim().toLowerCase();
+      const q = String(query || "").trim().toLowerCase();
+      const dropdown = document.getElementById("globalSearchResultsBox");
+
       if (!q) {
+        if (dropdown) {
+          dropdown.classList.remove("active");
+          dropdown.innerHTML = "";
+        }
         renderAllDashboardUI();
         return;
+      }
+
+      // 1. Search across ALL renters (especially people who have left / Inactive, as well as Active tenants)
+      //    and display their details right below the search bar with a "View Profile" button
+      const matchingRenters = (DB.renters || [])
+        .map((r, idx) => ({ r, rId: r.RenterID || `IDX-${idx}` }))
+        .filter(({ r }) => {
+          return (
+            String(r.RenterName || "").toLowerCase().includes(q) ||
+            String(r.MobileNumber || "").toLowerCase().includes(q) ||
+            String(r.AltMobileNumber || "").toLowerCase().includes(q) ||
+            String(r.IdentityDocNumber || "").toLowerCase().includes(q) ||
+            String(r.PropertyName || "").toLowerCase().includes(q) ||
+            String(r.FlatName || "").toLowerCase().includes(q) ||
+            String(r.Status || "").toLowerCase().includes(q)
+          );
+        });
+
+      // Sort so people who have left ("Inactive") or exact name matches appear prominently
+      matchingRenters.sort((a, b) => {
+        const aLeft = String(a.r.Status || "").toLowerCase() !== "active" ? 0 : 1;
+        const bLeft = String(b.r.Status || "").toLowerCase() !== "active" ? 0 : 1;
+        if (aLeft !== bLeft) return aLeft - bLeft;
+        return String(a.r.RenterName || "").localeCompare(String(b.r.RenterName || ""));
+      });
+
+      if (dropdown) {
+        if (matchingRenters.length === 0) {
+          dropdown.innerHTML = `
+            <div style="padding:10px; text-align:center; font-size:0.8rem; color:var(--text-muted);">
+              No active or past tenant found matching "<strong>${query}</strong>"
+            </div>
+          `;
+          dropdown.classList.add("active");
+        } else {
+          dropdown.innerHTML = matchingRenters.map(({ r, rId }) => {
+            const isAct = String(r.Status || "").trim().toLowerCase() === "active";
+            const statusLabel = isAct ? "Active Tenant" : "Left / Past Tenant";
+            const statusClass = isAct ? "badge-paid" : "badge-unpaid";
+            const avatarSrc = (!isPlaceholderImageUrl(r.ProfileImageURL))
+              ? r.ProfileImageURL
+              : "https://via.placeholder.com/80?text=Tenant";
+            const summary = calculateCurrentNetBalanceForRenter(r.PropertyName, r.FlatName, r);
+            const balLabel = summary.netBalance > 0
+              ? `Due: ₹${summary.netBalance.toLocaleString('en-IN')}`
+              : (summary.netBalance < 0 ? `Adv: ₹${Math.abs(summary.netBalance).toLocaleString('en-IN')}` : `Settled (₹0)`);
+
+            const safeProp = String(r.PropertyName || "").replace(/'/g, "\\'");
+            const safeFlat = String(r.FlatName || "").replace(/'/g, "\\'");
+            const safeId = String(rId || "").replace(/'/g, "\\'");
+
+            return `
+              <div class="search-result-person-item">
+                <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1;">
+                  <div class="renter-avatar" style="width:42px; height:42px; flex-shrink:0;">
+                    <img src="${avatarSrc}" alt="${r.RenterName || 'Tenant'}">
+                  </div>
+                  <div style="min-width:0; flex:1;">
+                    <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                      <strong style="font-size:0.86rem; color:var(--text-main);">${r.RenterName || 'Unnamed'}</strong>
+                      <span class="${statusClass}" style="font-size:0.65rem; padding:2px 6px;">${statusLabel}</span>
+                    </div>
+                    <div style="font-size:0.74rem; color:var(--text-muted); margin-top:2px;">
+                      <strong>${r.PropertyName || '--'} - Flat ${r.FlatName || '--'}</strong> • <i class="fa-solid fa-phone"></i> ${r.MobileNumber || '--'}
+                    </div>
+                    <div style="font-size:0.71rem; color:var(--text-muted); margin-top:2px;">
+                      Stay: ${r.JoinDate || '--'} to ${isAct ? 'Present' : (r.EndDate || 'Left')} • <strong>${balLabel}</strong>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  class="btn-primary"
+                  style="width:auto; padding:7px 12px; font-size:0.74rem; white-space:nowrap; flex-shrink:0;"
+                  onclick="openTenantFullProfilePopup('${safeId}', '${safeProp}', '${safeFlat}')"
+                >
+                  <i class="fa-solid fa-id-card"></i> View Profile
+                </button>
+              </div>
+            `;
+          }).join("");
+          dropdown.classList.add("active");
+        }
       }
 
       const container = document.getElementById("flatsList");
       container.innerHTML = "";
 
       const matchingFlats = DB.flats.filter(flat => {
-        const renter = DB.renters.find(r =>
-          isSamePropAndFlat(r.PropertyName, r.FlatName, flat.PropertyName, flat.FlatName) &&
-          String(r.Status).trim().toLowerCase() === "active"
+        const flatRenters = DB.renters.filter(r =>
+          isSamePropAndFlat(r.PropertyName, r.FlatName, flat.PropertyName, flat.FlatName)
         );
         return (
           String(flat.PropertyName).toLowerCase().includes(q) ||
           String(flat.FlatName).toLowerCase().includes(q) ||
-          (renter && String(renter.RenterName).toLowerCase().includes(q))
+          flatRenters.some(r =>
+            String(r.RenterName || "").toLowerCase().includes(q) ||
+            String(r.MobileNumber || "").toLowerCase().includes(q)
+          )
         );
       });
 
@@ -3615,6 +3877,12 @@
         const renter = DB.renters.find(r =>
           isSamePropAndFlat(r.PropertyName, r.FlatName, flat.PropertyName, flat.FlatName) &&
           String(r.Status).trim().toLowerCase() === "active"
+        );
+
+        const matchedLeftRenter = DB.renters.find(r =>
+          isSamePropAndFlat(r.PropertyName, r.FlatName, flat.PropertyName, flat.FlatName) &&
+          String(r.Status).trim().toLowerCase() !== "active" &&
+          (String(r.RenterName || "").toLowerCase().includes(q) || String(r.MobileNumber || "").toLowerCase().includes(q))
         );
 
         const summary = calculateCurrentNetBalanceForRenter(flat.PropertyName, flat.FlatName, renter);
@@ -3640,6 +3908,25 @@
         const dispPng = resolveExactRateValue(flat.PNGRate, renter?.PNGFixedRate);
         const dispWater = resolveExactRateValue(flat.WaterRate, renter?.WaterFixedRate);
 
+        let leftRenterQuickBar = "";
+        if (matchedLeftRenter) {
+          const leftIdx = DB.renters.indexOf(matchedLeftRenter);
+          const leftRId = String(matchedLeftRenter.RenterID || `IDX-${leftIdx}`).replace(/'/g, "\\'");
+          const safeProp = String(flat.PropertyName || "").replace(/'/g, "\\'");
+          const safeFlat = String(flat.FlatName || "").replace(/'/g, "\\'");
+          leftRenterQuickBar = `
+            <div style="margin-top:10px; padding:8px 10px; border-radius:10px; background:rgba(15,23,42,0.55); border:1px solid rgba(255,255,255,0.28); display:flex; align-items:center; justify-content:space-between; gap:8px;" onclick="event.stopPropagation();">
+              <div style="font-size:0.76rem;">
+                <span class="badge-unpaid" style="font-size:0.65rem; margin-right:4px;">Left Tenant</span>
+                <strong>${matchedLeftRenter.RenterName}</strong> (${matchedLeftRenter.MobileNumber || '--'})
+              </div>
+              <button type="button" class="btn-primary" style="width:auto; padding:5px 10px; font-size:0.72rem;" onclick="event.stopPropagation(); openTenantFullProfilePopup('${leftRId}', '${safeProp}', '${safeFlat}')">
+                <i class="fa-solid fa-id-card"></i> View Profile
+              </button>
+            </div>
+          `;
+        }
+
         const card = document.createElement("div");
         card.className = `flat-card-merged ${statusClass}`;
         card.onclick = () => openFlatDetailsModal(flat, renter);
@@ -3656,6 +3943,7 @@
               <div class="renter-name">${renter ? renter.RenterName : 'Vacant / Ready'}</div>
             </div>
             ${paymentBannerHTML}
+            ${leftRenterQuickBar}
           </div>
           <div class="flat-bottom-row">
             <span><i class="fa-solid fa-bolt"></i> Elec: ₹${dispElec !== "" ? dispElec : 0}/U</span>
@@ -5444,6 +5732,7 @@
     function populateIsolatedRenterHistoryDropdown(prop, flat) {
       const container = document.getElementById("rhAllTenantsListContainer");
       const countLabel = document.getElementById("rhFilteredCountLabel");
+      const quickBanner = document.getElementById("rhQuickSearchResultBanner");
       if (!container) return;
 
       const searchQuery = (document.getElementById("rhSearchInput")?.value || "").trim().toLowerCase();
@@ -5457,6 +5746,59 @@
       const filteredRenters = allFlatRenters.filter(item =>
         doesRenterMatchHistoryFilters(item.r, prop, flat, searchQuery, fromDateStr, toDateStr)
       );
+
+      // Requirement 3: When searching for a person who has left (or any person in Renter History),
+      // show their quick details & "View Profile" button right below the search bar
+      if (quickBanner) {
+        if (searchQuery && filteredRenters.length > 0) {
+          quickBanner.style.display = "block";
+          quickBanner.innerHTML = `
+            <div style="background:rgba(79,70,229,0.12); border:1.5px solid var(--primary); border-radius:12px; padding:10px 12px;">
+              <div style="font-size:0.74rem; font-weight:800; color:var(--primary); margin-bottom:8px; text-transform:uppercase;">
+                <i class="fa-solid fa-user-check"></i> Search Result Below Search Bar (${filteredRenters.length} Match)
+              </div>
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                ${filteredRenters.map(item => {
+                  const r = item.r;
+                  const isAct = String(r.Status || "").toLowerCase() === "active";
+                  const statusBadge = isAct ? "Active Tenant" : "Left / Past Tenant";
+                  const statusCls = isAct ? "badge-paid" : "badge-unpaid";
+                  const avatarSrc = (!isPlaceholderImageUrl(r.ProfileImageURL))
+                    ? r.ProfileImageURL
+                    : "https://via.placeholder.com/80?text=Tenant";
+                  const safeId = String(item.rId || "").replace(/'/g, "\\'");
+                  const safeProp = String(prop || "").replace(/'/g, "\\'");
+                  const safeFlat = String(flat || "").replace(/'/g, "\\'");
+                  return `
+                    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:10px; padding:8px 12px;">
+                      <div style="display:flex; align-items:center; gap:10px;">
+                        <div class="renter-avatar" style="width:40px; height:40px; flex-shrink:0;">
+                          <img src="${avatarSrc}" alt="${r.RenterName || 'Tenant'}">
+                        </div>
+                        <div>
+                          <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                            <strong style="font-size:0.88rem;">${r.RenterName || 'Unnamed Tenant'}</strong>
+                            <span class="${statusCls}" style="font-size:0.68rem;">${statusBadge}</span>
+                          </div>
+                          <div style="font-size:0.75rem; color:var(--text-muted);">
+                            <i class="fa-solid fa-phone"></i> ${r.MobileNumber || '--'} &nbsp;|&nbsp; Stay: ${r.JoinDate || '--'} to ${isAct ? 'Present' : (r.EndDate || 'Left')}
+                          </div>
+                        </div>
+                      </div>
+                      <button type="button" class="btn-primary" style="width:auto; padding:7px 14px; font-size:0.76rem;" onclick="openTenantFullProfilePopup('${safeId}', '${safeProp}', '${safeFlat}')">
+                        <i class="fa-solid fa-id-card"></i> View Profile
+                      </button>
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+            </div>
+          `;
+        } else {
+          quickBanner.style.display = "none";
+          quickBanner.innerHTML = "";
+        }
+      }
 
       if (countLabel) {
         const hasFilters = Boolean(searchQuery || fromDateStr || toDateStr);
@@ -5586,6 +5928,10 @@
               `;
             }).join("");
 
+        const safeId = String(item.rId || "").replace(/'/g, "\\'");
+        const safeProp = String(prop || "").replace(/'/g, "\\'");
+        const safeFlat = String(flat || "").replace(/'/g, "\\'");
+
         return `
           <div class="rh-tenant-card-box ${isAct ? 'active-tenant-box' : ''}">
             <!-- Top Identity Row inside Tenant Box -->
@@ -5605,10 +5951,15 @@
                   <i class="fa-regular fa-calendar" style="color:var(--primary);"></i> Stay: <strong>${targetRenter.JoinDate || '--'}</strong> to <strong>${isAct ? 'Present' : (targetRenter.EndDate || 'Left')}</strong>
                 </div>
               </div>
-              ${isAct ? `
-              <button type="button" class="btn-primary" style="width:auto; padding:8px 14px; font-size:0.78rem;" onclick="switchFlatTabToProfile()">
-                <i class="fa-solid fa-id-card"></i> Edit Active Profile
-              </button>` : ''}
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <button type="button" class="btn-primary" style="width:auto; padding:8px 14px; font-size:0.78rem;" onclick="openTenantFullProfilePopup('${safeId}', '${safeProp}', '${safeFlat}')">
+                  <i class="fa-solid fa-id-card"></i> View Profile
+                </button>
+                ${isAct ? `
+                <button type="button" class="btn-ledger-action edit-btn" style="padding:8px 12px; font-size:0.76rem;" onclick="switchFlatTabToProfile()">
+                  <i class="fa-solid fa-pen"></i> Edit Active Profile
+                </button>` : ''}
+              </div>
             </div>
 
             <!-- Complete Personal & Flat Rate Details Inside Single Dedicated Box -->
@@ -5648,6 +5999,335 @@
       if (selectedFlat) {
         populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName);
       }
+    }
+
+    // Requirement 3: Open New Pop-Up Window Showing Complete Tenant Details Directly From Search ("View Profile")
+    function openTenantFullProfilePopup(renterIdOrIdx, propName, flatName) {
+      let targetRenter = null;
+      if (renterIdOrIdx && String(renterIdOrIdx).startsWith("IDX-")) {
+        const idx = parseInt(String(renterIdOrIdx).replace("IDX-", ""), 10);
+        if (!isNaN(idx) && DB.renters[idx]) {
+          targetRenter = DB.renters[idx];
+        }
+      }
+      if (!targetRenter && renterIdOrIdx) {
+        targetRenter = (DB.renters || []).find(r => String(r.RenterID || "").trim() === String(renterIdOrIdx).trim());
+      }
+      if (!targetRenter) {
+        targetRenter = (DB.renters || []).find(r =>
+          isSamePropAndFlat(r.PropertyName, r.FlatName, propName, flatName)
+        );
+      }
+      if (!targetRenter) {
+        return triggerSideToast("Not Found", "Could not locate tenant profile details.", false);
+      }
+
+      const prop = targetRenter.PropertyName || propName || "";
+      const flat = targetRenter.FlatName || flatName || "";
+      const flatObj = findFlatObject(prop, flat);
+      const isAct = String(targetRenter.Status || "").trim().toLowerCase() === "active";
+      const statusBadgeText = isAct ? "Active Tenant" : "Left / Past Tenant";
+      const statusBadgeClass = isAct ? "badge-paid" : "badge-unpaid";
+
+      const profileImgSrc = (!isPlaceholderImageUrl(targetRenter.ProfileImageURL))
+        ? targetRenter.ProfileImageURL
+        : EMPTY_PROFILE_PLACEHOLDER;
+      const identityImgSrc = (!isPlaceholderImageUrl(targetRenter.IdentityImageURL))
+        ? targetRenter.IdentityImageURL
+        : EMPTY_IDENTITY_PLACEHOLDER;
+
+      const bills = getBillsForSpecificRenter(prop, flat, targetRenter);
+      let totalStandaloneBilled = 0, totalPaid = 0, totalRent = 0, totalUtility = 0;
+      bills.forEach(b => {
+        const billed = parseFloat(b.TotalBilled) || 0;
+        const carry = parseFloat(b.PrevCarryBalance) || 0;
+        const standalone = billed - carry;
+        const rent = parseFloat(b.BaseRent) || 0;
+        totalStandaloneBilled += standalone;
+        totalPaid += parseFloat(b.PaidAmount) || 0;
+        totalRent += rent;
+        totalUtility += Math.max(0, standalone - rent);
+      });
+
+      const netBal = totalStandaloneBilled - totalPaid;
+      let balText = "Settled (₹0)";
+      let balColor = "var(--accent-green)";
+      if (netBal > 0) {
+        balText = `Due: ₹${netBal.toLocaleString('en-IN')}`;
+        balColor = "var(--accent-red)";
+      } else if (netBal < 0) {
+        balText = `Advance: ₹${Math.abs(netBal).toLocaleString('en-IN')}`;
+        balColor = "var(--accent-green)";
+      }
+
+      const elecRateVal = resolveExactRateValue(targetRenter.ElecFixedRate, flatObj?.ElecRate);
+      const pngRateVal = resolveExactRateValue(targetRenter.PNGFixedRate, flatObj?.PNGRate);
+      const waterRateVal = resolveExactRateValue(targetRenter.WaterFixedRate, flatObj?.WaterRate);
+
+      const newestFirstBills = [...bills].reverse();
+      const billsHtml = newestFirstBills.length === 0
+        ? `<div style="padding:10px; color:var(--text-muted); font-size:0.8rem;">No bills recorded for this tenant.</div>`
+        : newestFirstBills.map(b => {
+            const cleanM = normalizeMonthYear(b.MonthYear);
+            const ePrev = parseFloat(b.ElecPrev) || 0;
+            const eCurr = parseFloat(b.ElecCurr) || 0;
+            const eUnits = b.ElecUnits !== undefined && b.ElecUnits !== "" ? (parseFloat(b.ElecUnits) || 0) : Math.max(0, eCurr - ePrev);
+            const eRate = parseFloat(b.ElecRate) || 0;
+            const eTotal = b.ElecTotal !== undefined && b.ElecTotal !== "" ? (parseFloat(b.ElecTotal) || 0) : (eUnits * eRate);
+
+            const pPrev = parseFloat(b.PNGPrev) || 0;
+            const pCurr = parseFloat(b.PNGCurr) || 0;
+            const pUnits = b.PNGUnits !== undefined && b.PNGUnits !== "" ? (parseFloat(b.PNGUnits) || 0) : Math.max(0, pCurr - pPrev);
+            const pRate = parseFloat(b.PNGRate) || 0;
+            const pTotal = b.PNGTotal !== undefined && b.PNGTotal !== "" ? (parseFloat(b.PNGTotal) || 0) : (pUnits * pRate);
+
+            const wPrev = parseFloat(b.WaterPrev) || 0;
+            const wCurr = parseFloat(b.WaterCurr) || 0;
+            const wUnits = b.WaterUnits !== undefined && b.WaterUnits !== "" ? (parseFloat(b.WaterUnits) || 0) : Math.max(0, wCurr - wPrev);
+            const wRate = parseFloat(b.WaterRate) || 0;
+            const wTotal = b.WaterTotal !== undefined && b.WaterTotal !== "" ? (parseFloat(b.WaterTotal) || 0) : (wUnits * wRate);
+
+            return `
+              <div style="padding:10px; border-bottom:1px solid var(--glass-border);">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                  <span><strong>${formatMonthLabel(cleanM)}</strong> — Rent: ₹${b.BaseRent || 0} | Total: <strong>₹${b.TotalBilled}</strong> | Paid: ₹${b.PaidAmount} (${b.PaymentMode || 'UPI'})</span>
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span class="badge-${String(b.Status).toLowerCase().includes('fully') ? 'paid' : (String(b.Status).toLowerCase().includes('partial') ? 'partial' : 'unpaid')}">${b.Status}</span>
+                    <button type="button" class="btn-ledger-action receipt-btn" onclick="openBillReceiptModal('${b.BillID}', '${cleanM}')">
+                      <i class="fa-solid fa-receipt"></i> Receipt
+                    </button>
+                  </div>
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:6px; margin-top:6px; font-size:0.73rem; color:var(--text-muted);">
+                  <div><strong>Elec:</strong> ${ePrev}→${eCurr} (${eUnits}U @ ₹${eRate}) = ₹${eTotal}</div>
+                  <div><strong>PNG:</strong> ${pPrev}→${pCurr} (${pUnits}U @ ₹${pRate}) = ₹${pTotal}</div>
+                  <div><strong>Water:</strong> ${wPrev}→${wCurr} (${wUnits}U @ ₹${wRate}) = ₹${wTotal}</div>
+                </div>
+              </div>
+            `;
+          }).join("");
+
+      const contentEl = document.getElementById("tenantFullProfileModalContent");
+      if (contentEl) {
+        contentEl.innerHTML = `
+          <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding-bottom:14px; border-bottom:1px solid var(--glass-border); margin-bottom:14px; padding-right:34px;">
+            <div class="renter-avatar" style="width:64px; height:64px; flex-shrink:0;">
+              <img src="${profileImgSrc}" alt="${targetRenter.RenterName || 'Tenant'}">
+            </div>
+            <div style="flex:1; min-width:200px;">
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <h3 style="font-size:1.2rem; font-weight:800;">${targetRenter.RenterName || 'Unnamed Tenant'}</h3>
+                <span class="${statusBadgeClass}" style="font-size:0.74rem;">${statusBadgeText}</span>
+              </div>
+              <div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">
+                <strong>${prop} — Flat ${flat}</strong> &nbsp;|&nbsp; Stay: <strong>${targetRenter.JoinDate || '--'}</strong> to <strong>${isAct ? 'Present' : (targetRenter.EndDate || 'Left')}</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Personal, KYC & Utility Details Grid -->
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:12px; padding:14px; font-size:0.82rem; margin-bottom:14px;">
+            <div><span style="color:var(--text-muted);">Full Name:</span> <strong>${targetRenter.RenterName || '--'}</strong></div>
+            <div><span style="color:var(--text-muted);">Status:</span> <strong>${statusBadgeText}</strong></div>
+            <div><span style="color:var(--text-muted);">Property &amp; Flat:</span> <strong>${prop} - Flat ${flat}</strong></div>
+            <div><span style="color:var(--text-muted);">Mobile Number:</span> <strong>${targetRenter.MobileNumber || '--'}</strong></div>
+            <div><span style="color:var(--text-muted);">Alt. Mobile Number:</span> <strong>${targetRenter.AltMobileNumber || '--'}</strong></div>
+            <div><span style="color:var(--text-muted);">Aadhaar / ID No:</span> <strong>${targetRenter.IdentityDocNumber || '--'}</strong></div>
+            <div><span style="color:var(--text-muted);">Permanent Address:</span> <strong>${targetRenter.Address || '--'}</strong></div>
+            <div><span style="color:var(--text-muted);">Total Family Members:</span> <strong>${targetRenter.TotalFamilyMembers || '1'}</strong></div>
+            <div><span style="color:var(--text-muted);">Join Date:</span> <strong>${targetRenter.JoinDate || '--'}</strong></div>
+            <div><span style="color:var(--text-muted);">End / Left Date:</span> <strong>${isAct ? 'Active (Present)' : (targetRenter.EndDate || '--')}</strong></div>
+            <div><span style="color:var(--text-muted);">Monthly Base Rent:</span> <strong>₹${targetRenter.RentAmount ?? flatObj?.RentAmount ?? 0}</strong></div>
+            <div><span style="color:var(--text-muted);">Fixed Rates (E / P / W):</span> <strong>₹${elecRateVal !== "" ? elecRateVal : 0} / ₹${pngRateVal !== "" ? pngRateVal : 0} / ₹${waterRateVal !== "" ? waterRateVal : 0}</strong></div>
+            <div><span style="color:var(--text-muted);">Elec Meter No:</span> <strong>${targetRenter.ElecMeterNumber || flatObj?.ElecMeterNumber || '--'}</strong></div>
+            <div><span style="color:var(--text-muted);">PNG No &amp; Meter:</span> <strong>${targetRenter.PNGNumber || '--'} (${targetRenter.PNGMeterNumber || '--'})</strong></div>
+            <div><span style="color:var(--text-muted);">Water No &amp; Meter:</span> <strong>${targetRenter.WaterNumber || '--'} (${targetRenter.WaterMeterNumber || '--'})</strong></div>
+          </div>
+
+          <!-- Uploaded Profile Render & Aadhaar Documents -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
+            <div style="background:var(--bg-input); border:1px solid var(--glass-border); border-radius:12px; padding:10px; text-align:center;">
+              <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Profile Render Photo</div>
+              <div class="image-frame-container" style="height:120px; margin-bottom:0;">
+                <img src="${profileImgSrc}" alt="Profile Photo">
+              </div>
+            </div>
+            <div style="background:var(--bg-input); border:1px solid var(--glass-border); border-radius:12px; padding:10px; text-align:center;">
+              <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Aadhaar / ID Card Document</div>
+              <div class="image-frame-container" style="height:120px; margin-bottom:0;">
+                <img src="${identityImgSrc}" alt="Aadhaar / ID Document">
+              </div>
+            </div>
+          </div>
+
+          <!-- Financial Summary Pills -->
+          <div class="renter-history-overview" style="margin:0 0 14px 0;">
+            <div class="stat-pill"><span>TOTAL BILLED</span><strong>₹ ${totalStandaloneBilled.toLocaleString('en-IN')}</strong></div>
+            <div class="stat-pill"><span>TOTAL PAID</span><strong>₹ ${totalPaid.toLocaleString('en-IN')}</strong></div>
+            <div class="stat-pill"><span>TOTAL RENT</span><strong>₹ ${totalRent.toLocaleString('en-IN')}</strong></div>
+            <div class="stat-pill"><span>TOTAL UTILITY</span><strong>₹ ${totalUtility.toLocaleString('en-IN')}</strong></div>
+            <div class="stat-pill"><span>FINAL BALANCE</span><strong style="color:${balColor};">${balText}</strong></div>
+          </div>
+
+          <!-- Monthly Bills History -->
+          <div style="background:var(--bg-input); border:1px solid var(--glass-border); border-radius:12px; padding:12px;">
+            <div style="font-size:0.84rem; font-weight:800; color:var(--primary); margin-bottom:8px;">
+              <i class="fa-solid fa-file-invoice"></i> Monthly Bills &amp; Invoices (${bills.length})
+            </div>
+            <div style="max-height:220px; overflow-y:auto;">
+              ${billsHtml}
+            </div>
+          </div>
+        `;
+      }
+
+      const globalDropdown = document.getElementById("globalSearchResultsBox");
+      if (globalDropdown) globalDropdown.classList.remove("active");
+
+      openModal("tenantFullProfileModal");
+    }
+
+    // Requirement 4: FD & Khet (Field) Header Buttons & Pop-Up Modals
+    function getStoredFdRecords() {
+      try {
+        return JSON.parse(localStorage.getItem("portal_fd_records_v1") || "[]");
+      } catch (e) {
+        return [];
+      }
+    }
+    function saveStoredFdRecords(list) {
+      localStorage.setItem("portal_fd_records_v1", JSON.stringify(list || []));
+    }
+    function openFdModal() {
+      renderFdRecordsList();
+      openModal("fdModal");
+    }
+    function addFdRecord() {
+      const bank = document.getElementById("fdBankName")?.value.trim();
+      const amount = parseFloat(document.getElementById("fdAmount")?.value) || 0;
+      const rate = document.getElementById("fdRate")?.value.trim() || "";
+      const maturity = document.getElementById("fdMaturityDate")?.value || "";
+      const notes = document.getElementById("fdNotes")?.value.trim() || "";
+      if (!bank || amount <= 0) {
+        return triggerSideToast("Required Fields", "Please enter Bank/FD Name and Principal Amount.", false);
+      }
+      const list = getStoredFdRecords();
+      list.unshift({
+        id: "FD-" + Date.now(),
+        bank,
+        amount,
+        rate,
+        maturity,
+        notes,
+        createdAt: new Date().toISOString().split("T")[0]
+      });
+      saveStoredFdRecords(list);
+      document.getElementById("fdBankName").value = "";
+      document.getElementById("fdAmount").value = "";
+      document.getElementById("fdRate").value = "";
+      document.getElementById("fdMaturityDate").value = "";
+      document.getElementById("fdNotes").value = "";
+      renderFdRecordsList();
+      triggerSideToast("FD Saved", `Added FD record for ${bank}`, true);
+    }
+    function deleteFdRecord(id) {
+      const list = getStoredFdRecords().filter(item => item.id !== id);
+      saveStoredFdRecords(list);
+      renderFdRecordsList();
+      triggerSideToast("FD Removed", "FD record deleted.", "warning");
+    }
+    function renderFdRecordsList() {
+      const container = document.getElementById("fdRecordsList");
+      if (!container) return;
+      const list = getStoredFdRecords();
+      if (list.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:18px; color:var(--text-muted); font-size:0.82rem;">No FD records added yet.</div>`;
+        return;
+      }
+      container.innerHTML = list.map(item => `
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:10px;">
+          <div>
+            <div style="font-weight:800; font-size:0.88rem;">${item.bank} — <span style="color:var(--accent-green);">₹${Number(item.amount || 0).toLocaleString('en-IN')}</span></div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+              Rate: ${item.rate ? item.rate + '%' : '--'} | Maturity: ${item.maturity || '--'} ${item.notes ? ' | ' + item.notes : ''}
+            </div>
+          </div>
+          <button type="button" class="btn-ledger-action admin-only" style="color:var(--accent-red);" onclick="deleteFdRecord('${item.id}')">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </div>
+      `).join("");
+    }
+
+    function getStoredKhetRecords() {
+      try {
+        return JSON.parse(localStorage.getItem("portal_khet_records_v1") || "[]");
+      } catch (e) {
+        return [];
+      }
+    }
+    function saveStoredKhetRecords(list) {
+      localStorage.setItem("portal_khet_records_v1", JSON.stringify(list || []));
+    }
+    function openKhetModal() {
+      renderKhetRecordsList();
+      openModal("khetModal");
+    }
+    function addKhetRecord() {
+      const name = document.getElementById("khetName")?.value.trim();
+      const crop = document.getElementById("khetCrop")?.value.trim() || "";
+      const income = parseFloat(document.getElementById("khetIncome")?.value) || 0;
+      const expense = parseFloat(document.getElementById("khetExpense")?.value) || 0;
+      const notes = document.getElementById("khetNotes")?.value.trim() || "";
+      if (!name) {
+        return triggerSideToast("Required Field", "Please enter the Khet / Field Name.", false);
+      }
+      const list = getStoredKhetRecords();
+      list.unshift({
+        id: "KHET-" + Date.now(),
+        name,
+        crop,
+        income,
+        expense,
+        notes,
+        createdAt: new Date().toISOString().split("T")[0]
+      });
+      saveStoredKhetRecords(list);
+      document.getElementById("khetName").value = "";
+      document.getElementById("khetCrop").value = "";
+      document.getElementById("khetIncome").value = "";
+      document.getElementById("khetExpense").value = "";
+      document.getElementById("khetNotes").value = "";
+      renderKhetRecordsList();
+      triggerSideToast("Khet Record Saved", `Saved record for ${name}`, true);
+    }
+    function deleteKhetRecord(id) {
+      const list = getStoredKhetRecords().filter(item => item.id !== id);
+      saveStoredKhetRecords(list);
+      renderKhetRecordsList();
+      triggerSideToast("Khet Record Removed", "Khet record deleted.", "warning");
+    }
+    function renderKhetRecordsList() {
+      const container = document.getElementById("khetRecordsList");
+      if (!container) return;
+      const list = getStoredKhetRecords();
+      if (list.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:18px; color:var(--text-muted); font-size:0.82rem;">No Khet (Field) records added yet.</div>`;
+        return;
+      }
+      container.innerHTML = list.map(item => `
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:10px;">
+          <div>
+            <div style="font-weight:800; font-size:0.88rem;">${item.name} ${item.crop ? `(${item.crop})` : ''}</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+              Income: <strong style="color:var(--accent-green);">₹${Number(item.income || 0).toLocaleString('en-IN')}</strong> | Expense: <strong style="color:var(--accent-red);">₹${Number(item.expense || 0).toLocaleString('en-IN')}</strong> ${item.notes ? ' | ' + item.notes : ''}
+            </div>
+          </div>
+          <button type="button" class="btn-ledger-action admin-only" style="color:var(--accent-red);" onclick="deleteKhetRecord('${item.id}')">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </div>
+      `).join("");
     }
 
     // Helper: Propagate UPI Name, UPI ID, and Contact Mobile across the parent Property and all associated Flats & Active Renters
@@ -6003,6 +6683,9 @@
     window.addEventListener("click", (e) => {
       if (!e.target.closest(".dropdown-anchor")) {
         document.getElementById("actionMenu")?.classList.remove("show");
+      }
+      if (!e.target.closest("#searchContainer")) {
+        document.getElementById("globalSearchResultsBox")?.classList.remove("active");
       }
     });
 
