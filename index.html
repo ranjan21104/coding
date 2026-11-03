@@ -168,7 +168,7 @@
       position: fixed;
       top: 22px;
       right: -450px;
-      z-index: 10000;
+      z-index: 99999;
       min-width: 290px;
       max-width: 90vw;
       background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 50%, #7928ca 100%);
@@ -1041,6 +1041,9 @@
       font-size: 0.72rem;
       white-space: nowrap;
     }
+    .flat-3param-dot.rent, .flat-3param-fill.rent { background: #818cf8 !important; }
+    .flat-3param-dot.util, .flat-3param-fill.util { background: #f59e0b !important; }
+    .flat-3param-dot.paid, .flat-3param-fill.paid { background: #10b981 !important; }
 
     /* Global Modal Window */
     .modal-overlay {
@@ -1099,7 +1102,7 @@
 
     /* Centered Visual Confirmation Modal */
     #customConfirmModal {
-      z-index: 2500;
+      z-index: 6000;
     }
     .confirm-modal-card {
       max-width: 430px;
@@ -1175,7 +1178,7 @@
        RECEIPT VIEW MODAL (OPENED FROM HISTORY "RECEIPT" ACTION BUTTON)
        ========================================================================== */
     #receiptViewModal {
-      z-index: 2600;
+      z-index: 4500;
     }
     .receipt-card {
       max-width: 480px;
@@ -1589,7 +1592,7 @@
       }
     }
   </style>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body class="theme-black">
 
   <!-- PERMANENT HOUSE BACKGROUND CANVAS FOR HOME PAGE & LOGIN -->
@@ -1654,7 +1657,7 @@
   <!-- ==========================================================================
        COMPLETE TENANT PROFILE POP-UP WINDOW (OPENED VIA "VIEW PROFILE" OR CLICKING ANY SEARCH PROFILE)
        ========================================================================== -->
-  <div id="tenantFullProfileModal" class="modal-overlay" style="z-index: 12000;">
+  <div id="tenantFullProfileModal" class="modal-overlay" style="z-index: 3500;">
     <div class="modal-window" style="max-width: 780px;">
       <button class="modal-close-btn" onclick="closeModal('tenantFullProfileModal')"><i class="fa-solid fa-xmark"></i></button>
       <div id="tenantFullProfileModalContent">
@@ -2023,16 +2026,7 @@
         <div id="nameChangeBottomMsg" class="bottom-status-msg"></div>
       </div>
 
-      <!-- Requirement 4: Quick Access to Fixed Deposit (FD) & Farmland (Khet) Details within Profile -->
-      <div class="admin-only" style="margin-top:14px; padding-top:12px; border-top:1px solid var(--glass-border); display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-        <button type="button" class="btn-ledger-action" style="justify-content:center; padding:10px; font-size:0.8rem;" onclick="openFdModal()">
-          <i class="fa-solid fa-building-columns" style="color:#818cf8;"></i> Fixed Deposit (FD) Details
-        </button>
-        <button type="button" class="btn-ledger-action" style="justify-content:center; padding:10px; font-size:0.8rem;" onclick="openKhetModal()">
-          <i class="fa-solid fa-seedling" style="color:#34d399;"></i> Farmland (Khet) Details
-        </button>
       </div>
-    </div>
   </div>
 
   <!-- 2. SETTINGS MODAL (Theme, Create User ID, Other) -->
@@ -2221,8 +2215,31 @@
         <input type="text" id="newPropUpiId" class="form-control" placeholder="e.g. name@okhdfcbank">
       </div>
       <div class="form-group">
-        <label>Contract Number</label>
-        <input type="text" id="newPropContract" class="form-control" placeholder="+91 ...">
+        <label>Contract Mobile Number <span class="req-star">*</span> (Max 10 Digits)</label>
+        <div style="display:flex; gap:8px;">
+          <select id="newPropCountryCode" class="form-control" style="width:115px; flex-shrink:0;">
+            <option value="+91" selected>🇮🇳 +91 (IN)</option>
+            <option value="+1">🇺🇸 +1 (US)</option>
+            <option value="+44">🇬🇧 +44 (UK)</option>
+            <option value="+971">🇦🇪 +971 (UAE)</option>
+            <option value="+61">🇦🇺 +61 (AU)</option>
+            <option value="+65">🇸🇬 +65 (SG)</option>
+            <option value="+966">🇸🇦 +966 (SA)</option>
+            <option value="+974">🇶🇦 +974 (QA)</option>
+            <option value="+1">🇨🇦 +1 (CA)</option>
+          </select>
+          <input
+            type="tel"
+            id="newPropContract"
+            class="form-control"
+            maxlength="10"
+            placeholder="10-digit mobile number"
+            oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10);"
+          >
+        </div>
+        <span style="font-size:0.72rem; color:var(--text-muted); margin-top:3px; display:block;">
+          Country code is automatically prefixed according to selection. Strictly max 10 digits.
+        </span>
       </div>
       <button class="btn-primary admin-only" onclick="submitAddProperty()">Save Property</button>
     </div>
@@ -2334,8 +2351,7 @@
         <span id="modalFlatTag" style="background:var(--primary); color:#ffffff; padding:4px 12px; border-radius:20px; font-size:0.82rem; font-weight:700;">--</span>
       </div>
 
-      <!-- Requirement 5: 3-Parameter Flat Analytics Graph inside Flat Details Modal -->
-      <div id="flatModalThreeParamGraph" style="margin-top: 12px;"></div>
+      <!-- Flat Header Tag -->
 
       <!-- Navigation Bar -->
       <nav class="flat-nav-bar">
@@ -2588,7 +2604,7 @@
           <table class="ledger-table">
             <thead>
               <tr>
-                <th>MONTH</th>
+                <th>MONTH &amp; YEAR</th>
                 <th>TENANT NAME</th>
                 <th>RENT</th>
                 <th>ELECTRICITY (PREV | CURR | CONSUMED | RATE | TOTAL)</th>
@@ -2718,6 +2734,9 @@
 
       <!-- TAB 4: RENTER HISTORY (Requirement 8 & 3: Top-Corner Search Bar + Quick Search Result Box Below Search Bar + View Profile Popup) -->
       <div id="tabRenterHistory" class="tab-content">
+        <!-- 3-Year Interactive Monthly Trend Chart for Active Renters (Jan - Dec) -->
+        <div id="rhThreeYearChartContainer" style="margin-bottom:16px;"></div>
+
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
           <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">
             Showing <span id="rhFilteredCountLabel" style="color:var(--primary); font-weight:800;">All</span> Tenant Record(s)
@@ -2812,6 +2831,7 @@
     let syncTimer = null;
     let sideToastTimeout = null;
     let pendingConfirmCallback = null;
+    let currentEditingBillId = null;
 
     // Receipt WhatsApp & Checkbox State
     let currentOpenedReceiptBill = null;
@@ -2958,6 +2978,64 @@
       const style = document.createElement("style");
       style.id = "waReceiptDynamicStyles";
       style.innerHTML = `
+        
+        /* Requirement 9: Anti-Overlap High-Legibility WhatsApp Receipt Styling */
+        #printableReceiptArea {
+          background: #0f172a !important;
+          color: #ffffff !important;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+          padding: 24px 20px !important;
+          border-radius: 16px !important;
+          box-sizing: border-box !important;
+        }
+        #printableReceiptArea .receipt-line {
+          display: flex !important;
+          justify-content: space-between !important;
+          align-items: flex-start !important;
+          gap: 16px !important;
+          padding: 7px 0 !important;
+          line-height: 1.5 !important;
+          font-size: 0.85rem !important;
+          border-bottom: 1px dashed rgba(255, 255, 255, 0.14) !important;
+          box-sizing: border-box !important;
+        }
+        #printableReceiptArea .receipt-line > span:first-child {
+          min-width: 135px !important;
+          max-width: 55% !important;
+          color: #cbd5e1 !important;
+          font-weight: 600 !important;
+          flex-shrink: 0 !important;
+          word-break: normal !important;
+        }
+        #printableReceiptArea .receipt-line > strong,
+        #printableReceiptArea .receipt-line > span:last-child {
+          text-align: right !important;
+          font-weight: 700 !important;
+          color: #ffffff !important;
+          flex: 1 !important;
+          word-break: break-word !important;
+        }
+        #printableReceiptArea .receipt-total-box {
+          display: flex !important;
+          justify-content: space-between !important;
+          align-items: center !important;
+          gap: 16px !important;
+          padding: 12px 14px !important;
+          background: #1e293b !important;
+          border: 1.5px solid #334155 !important;
+          border-radius: 10px !important;
+          margin: 12px 0 !important;
+          font-size: 0.95rem !important;
+          line-height: 1.4 !important;
+        }
+        #printableReceiptArea.capturing-receipt {
+          width: 440px !important;
+          max-width: 440px !important;
+          margin: 0 auto !important;
+          position: relative !important;
+          letter-spacing: 0.2px !important;
+        }
+
         /* Clean Receipt Layout (No Checkboxes on Receipt) */
         .receipt-line.unchecked-row,
         .receipt-total-box.unchecked-row,
@@ -3618,9 +3696,10 @@
       const cachedAuth = authMap[user.toLowerCase()];
       const matchedUserInDb = (DB.users || []).find(u => String(u.Username || "").trim().toLowerCase() === user.toLowerCase());
 
+      const cleanUserLower = user.toLowerCase();
       const isVerifiedMatch = (
-        (matchedUserInDb && matchedUserInDb.Password !== undefined && String(matchedUserInDb.Password) !== "" && String(matchedUserInDb.Username).trim() === user && String(matchedUserInDb.Password) === pass) ||
-        (cachedAuth && cachedAuth.username === user && cachedAuth.password === pass)
+        (matchedUserInDb && matchedUserInDb.Password !== undefined && String(matchedUserInDb.Password) !== "" && String(matchedUserInDb.Username).trim().toLowerCase() === cleanUserLower && String(matchedUserInDb.Password) === pass) ||
+        (cachedAuth && String(cachedAuth.username).trim().toLowerCase() === cleanUserLower && cachedAuth.password === pass)
       );
 
       if (isVerifiedMatch) {
@@ -3968,7 +4047,7 @@
       return `
         <div class="flat-3param-graph-box" ${isModalView ? 'style="margin-top:0; background:rgba(15,23,42,0.55);"' : ''}>
           <div class="flat-3param-graph-header">
-            <span><i class="fa-solid fa-chart-Simple"></i> 3-Parameter Flat Graph</span>
+            <span><i class="fa-solid fa-chart-simple"></i> 3-Parameter Flat Graph</span>
             <span>${periodLabel}</span>
           </div>
           <div class="flat-3param-bars-wrap">
@@ -4136,7 +4215,6 @@
               <div class="renter-name">${renter ? renter.RenterName : 'Vacant / Ready'}</div>
             </div>
             ${paymentBannerHTML}
-            ${buildFlatThreeParamGraphHTML(flat, renter, false)}
           </div>
           <div class="flat-bottom-row">
             <span><i class="fa-solid fa-bolt"></i> Elec: ₹${dispElec !== "" ? dispElec : 0}/U</span>
@@ -4334,7 +4412,6 @@
               <div class="renter-name">${renter ? renter.RenterName : 'Vacant / Ready'}</div>
             </div>
             ${paymentBannerHTML}
-            ${buildFlatThreeParamGraphHTML(flat, renter, false)}
             ${leftRenterQuickBar}
           </div>
           <div class="flat-bottom-row">
@@ -5198,6 +5275,7 @@
       );
 
       if (existingBill) {
+        currentEditingBillId = String(existingBill.BillID || "");
         statusTag.innerText = `Existing Bill Found - ${formatMonthLabel(chosenMonth)} - Locked Snapshot`;
         statusTag.className = "calc-month-status-tag existing";
         submitBtnText.innerText = `Update & Replace Bill for ${formatMonthLabel(chosenMonth)}`;
@@ -5232,6 +5310,7 @@
         document.getElementById("pngRolloverHint").innerText = "Loaded from saved bill snapshot";
         document.getElementById("waterRolloverHint").innerText = "Loaded from saved bill snapshot";
       } else {
+        currentEditingBillId = null;
         statusTag.innerText = `New Month Calculation - ${formatMonthLabel(chosenMonth)}`;
         statusTag.className = "calc-month-status-tag";
         submitBtnText.innerText = "Calculate Bill";
@@ -5283,10 +5362,7 @@
         document.getElementById("calcNotes").value = "";
       }
 
-      const modalGraphContainer = document.getElementById("flatModalThreeParamGraph");
-      if (modalGraphContainer && selectedFlat) {
-        modalGraphContainer.innerHTML = buildFlatThreeParamGraphHTML(selectedFlat, activeFlatRenterObj, true);
-      }
+      // Graph relocated to Renter History
 
       runBillMath();
     }
@@ -5324,7 +5400,152 @@
       }
     }
 
-    function openFlatDetailsModal(flat, renter) {
+        // State for 3-Year Monthly Graph in Renter History
+    let rhSelectedGraphYear = new Date().getFullYear();
+
+    function setRhGraphYear(year) {
+      rhSelectedGraphYear = parseInt(year, 10);
+      if (selectedFlat) {
+        renderRhThreeYearMonthlyChart(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj);
+      }
+    }
+
+    /**
+     * Requirement 6 & 7: 3-Year Monthly Graph for Active Renters (Jan - Dec)
+     * Displays current ongoing year and the 2 preceding years.
+     * Shows all 12 months with up/down trend lines and bars.
+     */
+    function renderRhThreeYearMonthlyChart(prop, flat, renter) {
+      const container = document.getElementById("rhThreeYearChartContainer");
+      if (!container) return;
+
+      const currentYear = new Date().getFullYear();
+      const yearsList = [currentYear, currentYear - 1, currentYear - 2];
+      if (!yearsList.includes(rhSelectedGraphYear)) {
+        rhSelectedGraphYear = currentYear;
+      }
+
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const activeRenterBills = renter ? getBillsForSpecificRenter(prop, flat, renter) : [];
+      const allFlatBills = (DB.bills || []).filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat));
+      const billsSource = activeRenterBills.length > 0 ? activeRenterBills : allFlatBills;
+
+      const monthlyValues = [];
+      let maxAmount = 1000;
+
+      for (let m = 1; m <= 12; m++) {
+        const monthKey = rhSelectedGraphYear + "-" + String(m).padStart(2, "0");
+        const matchedBill = billsSource.find(b => normalizeMonthYear(b.MonthYear) === monthKey);
+        const billedAmt = matchedBill ? (parseFloat(matchedBill.TotalBilled) || 0) : 0;
+        monthlyValues.push(billedAmt);
+        if (billedAmt > maxAmount) maxAmount = billedAmt;
+      }
+
+      const chartWidth = 680;
+      const chartHeight = 160;
+      const padLeft = 46;
+      const padRight = 24;
+      const padTop = 20;
+      const padBottom = 32;
+      const usableW = chartWidth - padLeft - padRight;
+      const usableH = chartHeight - padTop - padBottom;
+
+      const points = monthlyValues.map((val, idx) => {
+        const x = padLeft + (idx * (usableW / 11));
+        const y = padTop + usableH - ((val / maxAmount) * usableH);
+        return { x, y, val, month: months[idx] };
+      });
+
+      const polylinePoints = points.map(p => p.x.toFixed(1) + "," + p.y.toFixed(1)).join(" ");
+
+      const barsHtml = points.map(p => {
+        const barW = 16;
+        const barH = ((p.val / maxAmount) * usableH);
+        const barY = padTop + usableH - barH;
+        const barX = p.x - (barW / 2);
+        const valLabel = p.val > 0 ? (p.val >= 1000 ? Math.round(p.val / 1000) + "k" : p.val) : "";
+        return "<rect x=\"" + barX.toFixed(1) + "\" y=\"" + barY.toFixed(1) + "\" width=\"" + barW + "\" height=\"" + barH.toFixed(1) + "\" rx=\"3\" fill=\"rgba(99, 102, 241, 0.28)\" />" +
+               "<circle cx=\"" + p.x.toFixed(1) + "\" cy=\"" + p.y.toFixed(1) + "\" r=\"4\" fill=\"#818cf8\" stroke=\"#ffffff\" stroke-width=\"1.5\" />" +
+               "<text x=\"" + p.x.toFixed(1) + "\" y=\"" + (chartHeight - 10) + "\" font-size=\"10\" font-weight=\"700\" fill=\"#94a3b8\" text-anchor=\"middle\">" + p.month + "</text>" +
+               (valLabel ? "<text x=\"" + p.x.toFixed(1) + "\" y=\"" + (p.y - 7).toFixed(1) + "\" font-size=\"9\" font-weight=\"800\" fill=\"#ffffff\" text-anchor=\"middle\">₹" + valLabel + "</text>" : "");
+      }).join("");
+
+      const tenantNameDisp = renter ? renter.RenterName : "Active Rental Flat";
+      const yearButtons = yearsList.map(y => {
+        const isSel = y === rhSelectedGraphYear;
+        return "<button type=\"button\" class=\"btn-ledger-action " + (isSel ? "active" : "") + "\" style=\"padding:5px 12px; font-size:0.75rem; font-weight:800; " + (isSel ? "background:var(--primary); color:#ffffff; border-color:var(--primary);" : "") + "\" onclick=\"setRhGraphYear(" + y + ")\">" + y + (y === currentYear ? " (Current)" : "") + "</button>";
+      }).join("");
+
+      container.innerHTML = "<div style=\"background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:16px; padding:16px; box-shadow:0 10px 28px rgba(0,0,0,0.25);\">" +
+        "<div style=\"display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;\">" +
+          "<div>" +
+            "<div style=\"font-size:0.92rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px;\">" +
+              "<i class=\"fa-solid fa-chart-line\" style=\"color:var(--primary);\"></i> 3-Year Monthly Trend Graph (January to December)" +
+            "</div>" +
+            "<div style=\"font-size:0.75rem; color:var(--text-muted); margin-top:2px;\">" +
+              "Active Tenant: <strong style=\"color:var(--primary);\">" + tenantNameDisp + "</strong> • Illustrating monthly bill variations across 3 years" +
+            "</div>" +
+          "</div>" +
+          "<div style=\"display:flex; align-items:center; gap:6px;\">" + yearButtons + "</div>" +
+        "</div>" +
+        "<div style=\"overflow-x:auto; -webkit-overflow-scrolling:touch;\">" +
+          "<svg viewBox=\"0 0 " + chartWidth + " " + chartHeight + "\" style=\"width:100%; min-width:540px; height:auto; overflow:visible;\">" +
+            "<line x1=\"" + padLeft + "\" y1=\"" + padTop + "\" x2=\"" + (chartWidth - padRight) + "\" y2=\"" + padTop + "\" stroke=\"rgba(255,255,255,0.08)\" stroke-dasharray=\"3,3\" />" +
+            "<line x1=\"" + padLeft + "\" y1=\"" + (padTop + (usableH / 2)) + "\" x2=\"" + (chartWidth - padRight) + "\" y2=\"" + (padTop + (usableH / 2)) + "\" stroke=\"rgba(255,255,255,0.08)\" stroke-dasharray=\"3,3\" />" +
+            "<line x1=\"" + padLeft + "\" y1=\"" + (padTop + usableH) + "\" x2=\"" + (chartWidth - padRight) + "\" y2=\"" + (padTop + usableH) + "\" stroke=\"rgba(255,255,255,0.18)\" />" +
+            "<text x=\"" + (padLeft - 6) + "\" y=\"" + (padTop + 4) + "\" font-size=\"9\" fill=\"#94a3b8\" text-anchor=\"end\">₹" + Math.round(maxAmount) + "</text>" +
+            "<text x=\"" + (padLeft - 6) + "\" y=\"" + (padTop + (usableH / 2) + 3) + "\" font-size=\"9\" fill=\"#94a3b8\" text-anchor=\"end\">₹" + Math.round(maxAmount / 2) + "</text>" +
+            "<text x=\"" + (padLeft - 6) + "\" y=\"" + (padTop + usableH) + "\" font-size=\"9\" fill=\"#94a3b8\" text-anchor=\"end\">₹0</text>" +
+            barsHtml +
+            "<polyline fill=\"none\" stroke=\"#6366f1\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" points=\"" + polylinePoints + "\" />" +
+          "</svg>" +
+        "</div>" +
+      "</div>";
+    }
+
+    /**
+     * Requirement 8: Edit any renter (including lenders/renters who have already left)
+     * Loads their full profile into the profile editor with their saved RenterID.
+     */
+    function loadRenterIntoProfileForEditing(renterIdOrIdx) {
+      if (activeRole === "Viewer" || !selectedFlat) return;
+
+      let targetRenter = null;
+      if (String(renterIdOrIdx).startsWith("IDX-")) {
+        const idx = parseInt(String(renterIdOrIdx).replace("IDX-", ""), 10);
+        if (!isNaN(idx) && DB.renters[idx]) targetRenter = DB.renters[idx];
+      }
+      if (!targetRenter) {
+        targetRenter = (DB.renters || []).find(r => String(r.RenterID || "").trim() === String(renterIdOrIdx).trim());
+      }
+      if (!targetRenter) {
+        return triggerSideToast("Renter Not Found", "Could not locate this renter profile for editing.", false);
+      }
+
+      activeFlatRenterObj = targetRenter;
+
+      document.getElementById("renterName").value = targetRenter.RenterName || "";
+      document.getElementById("renterIdentityNum").value = targetRenter.IdentityDocNumber || "";
+      document.getElementById("renterMobile").value = targetRenter.MobileNumber || "";
+      document.getElementById("renterAltMobile").value = targetRenter.AltMobileNumber || "";
+      document.getElementById("renterAddress").value = targetRenter.Address || "";
+      document.getElementById("renterFamily").value = targetRenter.TotalFamilyMembers || 1;
+      document.getElementById("renterStatus").value = targetRenter.Status || "Active";
+      document.getElementById("renterJoinDate").value = targetRenter.JoinDate || "";
+      document.getElementById("renterEndDate").value = targetRenter.EndDate || "";
+      updateRenterImageSlotUI("profile", targetRenter.ProfileImageURL);
+      updateRenterImageSlotUI("identity", targetRenter.IdentityImageURL);
+
+      switchFlatTabToProfile();
+
+      const isAct = String(targetRenter.Status || "").toLowerCase() === "active";
+      triggerSideToast(
+        "Editing Renter Profile",
+        "Loaded " + targetRenter.RenterName + " (" + (isAct ? "Active" : "Left Tenant") + ") into Profile. You can now edit and save their details!",
+        true
+      );
+    }
+function openFlatDetailsModal(flat, renter) {
       const viewerScope = resolveViewerAssignedScope();
       if (activeRole === "Viewer" && viewerScope) {
         if (!isSamePropAndFlat(flat.PropertyName, flat.FlatName, viewerScope.prop, viewerScope.flat)) {
@@ -5390,6 +5611,7 @@
       handleBillingMonthChange();
       populateHistoryLedger(flat.PropertyName, flat.FlatName);
       populateIsolatedRenterHistoryDropdown(flat.PropertyName, flat.FlatName);
+      renderRhThreeYearMonthlyChart(flat.PropertyName, flat.FlatName, renter);
 
       const modal = document.getElementById("flatDetailsModal");
       modal.querySelectorAll(".flat-nav-item").forEach((el, idx) => el.classList.toggle("active", idx === 0));
@@ -5503,6 +5725,9 @@
       const currentTenantName = document.getElementById("renterName").value || activeFlatRenterObj?.RenterName || "Current Tenant";
 
       const existingBillIdx = DB.bills.findIndex(b => {
+        if (currentEditingBillId && String(b.BillID || "").trim() === currentEditingBillId) {
+          return true;
+        }
         if (!isSamePropAndFlat(b.PropertyName, b.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName)) return false;
         const sameMonth = normalizeMonthYear(b.MonthYear) === chosenMonth;
         const bRenterId = String(b.RenterID || "").trim();
@@ -5661,7 +5886,7 @@
 
       newestFirstBills.forEach(bill => {
         const cleanMonth = normalizeMonthYear(bill.MonthYear);
-        const displayMonth = formatMonthNameOnly(cleanMonth);
+        const displayMonth = formatMonthLabel(cleanMonth);
         const carryVal = parseFloat(bill.PrevCarryBalance) || 0;
         const carryText = carryVal > 0 ? `+₹${carryVal} (Due)` : (carryVal < 0 ? `-₹${Math.abs(carryVal)} (Adv)` : `₹0`);
 
@@ -6152,6 +6377,12 @@
       if (activeRole === "Viewer") return;
       const cleanM = normalizeMonthYear(monthYear);
 
+      const matchedBill = (DB.bills || []).find(b =>
+        isSamePropAndFlat(b.PropertyName, b.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName) &&
+        normalizeMonthYear(b.MonthYear) === cleanM
+      );
+      currentEditingBillId = matchedBill ? String(matchedBill.BillID || "") : null;
+
       const modal = document.getElementById("flatDetailsModal");
       const navItems = modal.querySelectorAll(".flat-nav-item");
       const tabs = modal.querySelectorAll(".tab-content");
@@ -6475,8 +6706,8 @@
                   <i class="fa-solid fa-id-card"></i> View Profile
                 </button>
                 ${isAct ? `
-                <button type="button" class="btn-ledger-action edit-btn" style="padding:8px 12px; font-size:0.76rem;" onclick="switchFlatTabToProfile()">
-                  <i class="fa-solid fa-pen"></i> Edit Active Profile
+                <button type="button" class="btn-ledger-action edit-btn admin-only" style="padding:8px 12px; font-size:0.76rem;" onclick="loadRenterIntoProfileForEditing('${safeId}')" title="Edit this renter's profile and details">
+                  <i class="fa-solid fa-user-pen"></i> ${isAct ? "Edit Active Profile" : "Edit Left Renter Profile"}
                 </button>` : ''}
               </div>
             </div>
@@ -6753,15 +6984,15 @@
 
     function editFdRecord(id) {
       const list = getStoredFdRecords();
-      const target = list.find(item => String(item.id) === String(id));
+      const target = list.find(item => String(item.id || item.FDID) === String(id));
       if (!target) return;
 
       editingFdRecordId = String(target.id);
-      document.getElementById("fdBankName").value = target.bank || "";
-      document.getElementById("fdAmount").value = target.amount !== undefined ? target.amount : "";
-      document.getElementById("fdRate").value = target.rate || "";
-      document.getElementById("fdMaturityDate").value = target.maturity || "";
-      document.getElementById("fdNotes").value = target.notes || "";
+      document.getElementById("fdBankName").value = target.bank || target.BankName || "";
+      document.getElementById("fdAmount").value = target.amount !== undefined ? target.amount : (target.PrincipalAmount !== undefined ? target.PrincipalAmount : "");
+      document.getElementById("fdRate").value = target.rate !== undefined ? target.rate : (target.InterestRate || "");
+      document.getElementById("fdMaturityDate").value = target.maturity || target.MaturityDate || "";
+      document.getElementById("fdNotes").value = target.notes || target.Notes || "";
 
       const titleEl = document.getElementById("fdFormTitle");
       const btnTextEl = document.getElementById("btnSubmitFdRecordText");
@@ -6862,7 +7093,7 @@
 
     async function deleteFdRecord(id) {
       if (activeRole === "Viewer") return;
-      const list = getStoredFdRecords().filter(item => String(item.id) !== String(id));
+      const list = getStoredFdRecords().filter(item => String(item.id || item.FDID) !== String(id));
       saveStoredFdRecords(list);
       if (editingFdRecordId && String(editingFdRecordId) === String(id)) {
         cancelFdEdit();
@@ -6885,13 +7116,19 @@
         return;
       }
       container.innerHTML = list.map(item => {
-        const safeId = String(item.id || "").replace(/'/g, "\\'");
+        const recId = item.id || item.FDID || "";
+        const safeId = String(recId).replace(/'/g, "\\'");
+        const bankName = item.bank || item.BankName || "Fixed Deposit";
+        const amt = Number(item.amount !== undefined ? item.amount : (item.PrincipalAmount || 0));
+        const rate = item.rate !== undefined ? item.rate : (item.InterestRate || "");
+        const maturity = item.maturity || item.MaturityDate || "--";
+        const notes = item.notes || item.Notes || "";
         return `
           <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:10px;">
             <div style="flex:1; min-width:0;">
-              <div style="font-weight:800; font-size:0.88rem;">${item.bank} — <span style="color:var(--accent-green);">₹${Number(item.amount || 0).toLocaleString('en-IN')}</span></div>
+              <div style="font-weight:800; font-size:0.88rem;">${bankName} — <span style="color:var(--accent-green);">₹${amt.toLocaleString('en-IN')}</span></div>
               <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
-                Rate: ${item.rate ? item.rate + '%' : '--'} | Maturity: ${item.maturity || '--'} ${item.notes ? ' | ' + item.notes : ''}
+                Rate: ${rate ? rate + '%' : '--'} | Maturity: ${maturity} ${notes ? ' | ' + notes : ''}
               </div>
             </div>
             <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
@@ -6938,15 +7175,15 @@
 
     function editKhetRecord(id) {
       const list = getStoredKhetRecords();
-      const target = list.find(item => String(item.id) === String(id));
+      const target = list.find(item => String(item.id || item.KhetID) === String(id));
       if (!target) return;
 
       editingKhetRecordId = String(target.id);
-      document.getElementById("khetName").value = target.name || "";
-      document.getElementById("khetCrop").value = target.crop || "";
-      document.getElementById("khetIncome").value = target.income !== undefined ? target.income : "";
-      document.getElementById("khetExpense").value = target.expense !== undefined ? target.expense : "";
-      document.getElementById("khetNotes").value = target.notes || "";
+      document.getElementById("khetName").value = target.name || target.KhetName || "";
+      document.getElementById("khetCrop").value = target.crop !== undefined ? target.crop : (target.CropOrPurpose || "");
+      document.getElementById("khetIncome").value = target.income !== undefined ? target.income : (target.IncomeAmount !== undefined ? target.IncomeAmount : "");
+      document.getElementById("khetExpense").value = target.expense !== undefined ? target.expense : (target.ExpenseAmount !== undefined ? target.ExpenseAmount : "");
+      document.getElementById("khetNotes").value = target.notes || target.Notes || "";
 
       const titleEl = document.getElementById("khetFormTitle");
       const btnTextEl = document.getElementById("btnSubmitKhetRecordText");
@@ -7047,7 +7284,7 @@
 
     async function deleteKhetRecord(id) {
       if (activeRole === "Viewer") return;
-      const list = getStoredKhetRecords().filter(item => String(item.id) !== String(id));
+      const list = getStoredKhetRecords().filter(item => String(item.id || item.KhetID) !== String(id));
       saveStoredKhetRecords(list);
       if (editingKhetRecordId && String(editingKhetRecordId) === String(id)) {
         cancelKhetEdit();
@@ -7070,13 +7307,19 @@
         return;
       }
       container.innerHTML = list.map(item => {
-        const safeId = String(item.id || "").replace(/'/g, "\\'");
+        const recId = item.id || item.KhetID || "";
+        const safeId = String(recId).replace(/'/g, "\\'");
+        const khetName = item.name || item.KhetName || "Farmland";
+        const crop = item.crop !== undefined ? item.crop : (item.CropOrPurpose || "");
+        const income = Number(item.income !== undefined ? item.income : (item.IncomeAmount || 0));
+        const expense = Number(item.expense !== undefined ? item.expense : (item.ExpenseAmount || 0));
+        const notes = item.notes || item.Notes || "";
         return `
           <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:10px;">
             <div style="flex:1; min-width:0;">
-              <div style="font-weight:800; font-size:0.88rem;">${item.name} ${item.crop ? `(${item.crop})` : ''}</div>
+              <div style="font-weight:800; font-size:0.88rem;">${khetName} ${crop ? `(${crop})` : ''}</div>
               <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
-                Income: <strong style="color:var(--accent-green);">₹${Number(item.income || 0).toLocaleString('en-IN')}</strong> | Expense: <strong style="color:var(--accent-red);">₹${Number(item.expense || 0).toLocaleString('en-IN')}</strong> ${item.notes ? ' | ' + item.notes : ''}
+                Income: <strong style="color:var(--accent-green);">₹${income.toLocaleString('en-IN')}</strong> | Expense: <strong style="color:var(--accent-red);">₹${expense.toLocaleString('en-IN')}</strong> ${notes ? ' | ' + notes : ''}
               </div>
             </div>
             <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
@@ -7694,11 +7937,15 @@
         return triggerSideToast("Duplicate Property", "This property name is already added. Please use a different name.", false);
       }
 
+      const cCode = document.getElementById("newPropCountryCode")?.value || "+91";
+      const rawContractDigits = (document.getElementById("newPropContract")?.value || "").replace(/\D/g, '').slice(0, 10);
+      const formattedContractMob = rawContractDigits ? (cCode + ' ' + rawContractDigits) : "";
+
       const newPropObj = {
         PropertyName: name,
         UPIName: document.getElementById("newPropUpiName").value,
         UPIID: document.getElementById("newPropUpiId").value,
-        ContractNumber: document.getElementById("newPropContract").value
+        ContractNumber: formattedContractMob
       };
 
       DB.properties.push(newPropObj);
