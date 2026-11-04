@@ -531,7 +531,7 @@
     /* Profile 4-Option Action Switch */
     .profile-action-switch {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 8px;
       margin: 16px 0 12px 0;
     }
@@ -1512,7 +1512,7 @@
     /* Profile Tab Matrix (Requirement 6: 1. Profile Photo, 2. Aadhaar Card Photo, 3. Renter Profile Details, 4. Rent & Utility Details) */
     .profile-matrix {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 14px;
     }
     .matrix-col {
@@ -2663,6 +2663,112 @@
   }
 
   /* Requirement 1, 8 & 9: Clean Standard Dashboard Theme (Colorful Theme Removed), Icon-Only Header Buttons & White Outline-Only FD Modal */
+  
+  /* REQUIREMENT 1: Unified 42px Outline-Box Buttons for FD, Khet, Kharch, Plus (+), Profile, Settings & Logout */
+  .fd-icon-only-btn,
+  .khet-icon-only-btn,
+  .kharch-icon-only-btn,
+  .plus-icon-box-btn,
+  .profile-icon-box-btn,
+  .settings-icon-box-btn,
+  .logout-icon-box-btn {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    padding: 0 !important;
+    border-radius: 12px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--bg-input) !important;
+    border: 1.5px solid var(--glass-border) !important;
+    cursor: pointer !important;
+    transition: all 0.22s ease !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12) !important;
+  }
+  .fd-icon-only-btn:hover,
+  .khet-icon-only-btn:hover,
+  .kharch-icon-only-btn:hover,
+  .plus-icon-box-btn:hover,
+  .profile-icon-box-btn:hover,
+  .settings-icon-box-btn:hover,
+  .logout-icon-box-btn:hover {
+    transform: translateY(-2px) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.25) !important;
+  }
+  .plus-icon-box-btn {
+    border-color: rgba(56, 189, 248, 0.45) !important;
+    background: rgba(56, 189, 248, 0.1) !important;
+  }
+  .profile-icon-box-btn {
+    border-color: rgba(236, 72, 153, 0.4) !important;
+  }
+  .settings-icon-box-btn {
+    border-color: rgba(168, 85, 247, 0.4) !important;
+  }
+  .logout-icon-box-btn {
+    border-color: rgba(239, 68, 68, 0.35) !important;
+  }
+  .logout-icon-box-btn:hover {
+    border-color: #ef4444 !important;
+    background: rgba(239, 68, 68, 0.15) !important;
+  }
+
+  
+  /* REQUIREMENT 1: Unified 42px Outline-Box Buttons for FD, Khet, Kharch, Plus (+), Profile, Settings & Logout */
+  .fd-icon-only-btn,
+  .khet-icon-only-btn,
+  .kharch-icon-only-btn,
+  .plus-icon-box-btn,
+  .profile-icon-box-btn,
+  .settings-icon-box-btn,
+  .logout-icon-box-btn {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    padding: 0 !important;
+    border-radius: 12px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--bg-input) !important;
+    border: 1.5px solid var(--glass-border) !important;
+    cursor: pointer !important;
+    transition: all 0.22s ease !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12) !important;
+  }
+  .fd-icon-only-btn:hover,
+  .khet-icon-only-btn:hover,
+  .kharch-icon-only-btn:hover,
+  .plus-icon-box-btn:hover,
+  .profile-icon-box-btn:hover,
+  .settings-icon-box-btn:hover,
+  .logout-icon-box-btn:hover {
+    transform: translateY(-2px) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.25) !important;
+  }
+  .plus-icon-box-btn {
+    border-color: rgba(56, 189, 248, 0.45) !important;
+    background: rgba(56, 189, 248, 0.1) !important;
+  }
+  .profile-icon-box-btn {
+    border-color: rgba(236, 72, 153, 0.4) !important;
+  }
+  .settings-icon-box-btn {
+    border-color: rgba(168, 85, 247, 0.4) !important;
+  }
+  .logout-icon-box-btn {
+    border-color: rgba(239, 68, 68, 0.35) !important;
+  }
+  .logout-icon-box-btn:hover {
+    border-color: #ef4444 !important;
+    background: rgba(239, 68, 68, 0.15) !important;
+  }
+
   .fd-icon-only-btn,
   .kharch-icon-only-btn,
   .khet-icon-only-btn {
@@ -2772,8 +2878,204 @@
     }
   }
 
+
+  /* REQUIREMENTS 4 & 5: Maximum Text Readability for Profile & Settings Modals */
+  #profileModal .modal-window,
+  #settingsModal .modal-window {
+    background: #090d16 !important;
+    color: #f8fafc !important;
+    border: 1.5px solid rgba(148, 163, 184, 0.3) !important;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.88), 0 0 35px rgba(99, 102, 241, 0.22) !important;
+  }
+  body.theme-white #profileModal .modal-window,
+  body.theme-white #settingsModal .modal-window {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1.5px solid #cbd5e1 !important;
+  }
+  
+  #profileModal h3, #profileModal h4,
+  #settingsModal h3, #settingsModal h4 {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+  }
+  body.theme-white #profileModal h3, body.theme-white #profileModal h4,
+  body.theme-white #settingsModal h3, body.theme-white #settingsModal h4 {
+    color: #0f172a !important;
+  }
+
+  #profileModal label,
+  #settingsModal label {
+    color: #f1f5f9 !important;
+    font-weight: 700 !important;
+    font-size: 0.74rem !important;
+    letter-spacing: 0.4px !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  }
+  body.theme-white #profileModal label,
+  body.theme-white #settingsModal label {
+    color: #1e293b !important;
+    text-shadow: none;
+  }
+
+  #profileModal p, #profileModal .text-muted,
+  #settingsModal p, #settingsModal .text-muted {
+    color: #cbd5e1 !important;
+    font-weight: 500 !important;
+  }
+  body.theme-white #profileModal p, body.theme-white #profileModal .text-muted,
+  body.theme-white #settingsModal p, body.theme-white #settingsModal .text-muted {
+    color: #475569 !important;
+  }
+
+  #profileModal input, #profileModal select, #profileModal textarea,
+  #settingsModal input, #settingsModal select, #settingsModal textarea {
+    background: #0f172a !important;
+    color: #ffffff !important;
+    border: 1.5px solid #334155 !important;
+    font-weight: 700 !important;
+    border-radius: 10px !important;
+  }
+  body.theme-white #profileModal input, body.theme-white #profileModal select,
+  body.theme-white #settingsModal input, body.theme-white #settingsModal select {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    border: 1.5px solid #cbd5e1 !important;
+  }
+
+  #profileModal input[readonly] {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    background: transparent !important;
+    border: none !important;
+  }
+  body.theme-white #profileModal input[readonly] {
+    color: #0f172a !important;
+    font-weight: 800 !important;
+    background: transparent !important;
+    border: none !important;
+  }
+
+  #settingsModal .settings-nav-card {
+    background: #0f172a !important;
+    border: 1.5px solid #334155 !important;
+  }
+  #settingsModal .s-nav-title {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+  }
+  #settingsModal .s-nav-sub {
+    color: #94a3b8 !important;
+    font-weight: 600 !important;
+  }
+  #settingsModal .settings-feature-banner {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.28) 0%, rgba(236, 72, 153, 0.24) 50%, rgba(16, 185, 129, 0.24) 100%) !important;
+    border: 1.5px solid rgba(129, 140, 248, 0.5) !important;
+  }
+  #settingsModal .settings-feature-banner h3 {
+    color: #ffffff !important;
+  }
+  #settingsModal .settings-feature-banner p {
+    color: #e2e8f0 !important;
+  }
+
+
+  /* REQUIREMENT 2: Kharch Top Tabs, Property Pills & Auto-Scrolling Ticker */
+  .kharch-top-tabs-nav {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    border-bottom: 1.5px solid var(--glass-border);
+    padding-bottom: 12px;
+  }
+  .kharch-nav-tab {
+    flex: 1;
+    padding: 11px 16px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 0.88rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    background: var(--bg-input);
+    color: var(--text-muted);
+    border: 1.5px solid var(--glass-border);
+    transition: all 0.22s ease;
+  }
+  .kharch-nav-tab:hover {
+    color: var(--text-main);
+    border-color: var(--primary);
+  }
+  .kharch-nav-tab.active {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(217, 119, 6, 0.22) 100%);
+    color: #fbbf24;
+    border-color: #f59e0b;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
+  }
+  .kharch-prop-pill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: var(--bg-input);
+    color: var(--text-muted);
+    border: 1.5px solid var(--glass-border);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .kharch-prop-pill:hover {
+    color: var(--text-main);
+    border-color: #f59e0b;
+  }
+  .kharch-prop-pill.active {
+    background: #f59e0b;
+    color: #ffffff;
+    border-color: #d97706;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35);
+  }
+  .kharch-scroller-track-wrapper {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+    padding: 6px 0;
+    mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  }
+  .kharch-auto-scroller-track {
+    display: flex;
+    gap: 12px;
+    width: max-content;
+    animation: kharchScrollLeft 28s linear infinite;
+  }
+  .kharch-auto-scroller-track:hover {
+    animation-play-state: paused;
+  }
+  @keyframes kharchScrollLeft {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .kharch-ticker-card {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1.5px solid rgba(245, 158, 11, 0.3);
+    border-radius: 14px;
+    padding: 10px 14px;
+    min-width: 210px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  }
+  body.theme-white .kharch-ticker-card {
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+
 </style>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body class="theme-black">
 
   <!-- PERMANENT HOUSE BACKGROUND CANVAS FOR HOME PAGE & LOGIN -->
@@ -3222,15 +3524,17 @@
 
   <!-- REQUIREMENT 8: KHARCH (EXPENSES) POP-UP MODAL -->
   <div id="kharchModal" class="modal-overlay" style="z-index: 2800;">
-    <div class="modal-window" style="max-width: 920px; width: 96%;">
-      <button class="modal-close-btn" onclick="closeModal('kharchModal')"><i class="fa-solid fa-xmark"></i></button>
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding-right:36px; margin-bottom: 14px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;">
+    <div class="modal-window" style="max-width: 960px; width: 96%;">
+      <button class="modal-close-btn" onclick="closeModal(kharchModal)"><i class="fa-solid fa-xmark"></i></button>
+      
+      <!-- Modal Header -->
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding-right:36px; margin-bottom: 12px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;">
         <div>
-          <h3 style="display:flex; align-items:center; gap:8px; margin:0; font-size:1.15rem;">
+          <h3 style="display:flex; align-items:center; gap:8px; margin:0; font-size:1.15rem; color:#ffffff;">
             <i class="fa-solid fa-wallet" style="color:#f59e0b;"></i> Kharch (Expenses) Ledger &amp; Tracker
           </h3>
-          <div style="font-size:0.74rem; color:var(--text-muted); margin-top:2px;">
-            Record and track all property, maintenance, utility, and personal expenses synced live with Google Sheets
+          <div style="font-size:0.74rem; color:#cbd5e1; margin-top:2px;">
+            Calculate property utility expenses (excluding rent) &amp; track complete expense history synced live with Google Sheets
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:10px;">
@@ -3243,24 +3547,145 @@
         </div>
       </div>
 
-      <div class="calc-grid-card admin-only" style="margin-bottom: 14px; border-left: 4px solid #f59e0b;">
-        <div class="calc-grid-title" style="margin-bottom:10px;">
-          <span id="kharchFormTitle" style="color:#fbbf24; font-weight:800;"><i class="fa-solid fa-plus-circle"></i> Add New Kharch (Expense) Entry</span>
-          <button type="button" id="btnCancelKharchEdit" class="btn-ledger-action" style="display:none; padding:4px 10px; font-size:0.72rem;" onclick="cancelKharchEdit()">
-            <i class="fa-solid fa-xmark"></i> Cancel Edit
+      <!-- REQUIREMENT 2: Two Tabs at the Very Top -->
+      <div class="kharch-top-tabs-nav">
+        <button type="button" id="btnKharchTabCalc" class="kharch-nav-tab active" onclick="switchKharchSectionTab(calc)">
+          <i class="fa-solid fa-calculator" style="color:#f59e0b;"></i> 1. Calculate &amp; Add Expense
+        </button>
+        <button type="button" id="btnKharchTabHistory" class="kharch-nav-tab" onclick="switchKharchSectionTab(history)">
+          <i class="fa-solid fa-clock-rotate-left" style="color:#38bdf8;"></i> 2. Expense History &amp; Records (<span id="kharchRecordsBadgeCount">0</span>)
+        </button>
+      </div>
+
+      <!-- TAB 1: ADD & CALCULATION EXPENSE -->
+      <div id="kharchTabCalcContent" style="display:block;">
+        <!-- Step 1: Display All Available Properties -->
+        <div style="margin-bottom:14px; background:rgba(15,23,42,0.6); padding:12px 14px; border-radius:14px; border:1px solid rgba(245,158,11,0.25);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+            <label style="font-size:0.74rem; font-weight:800; color:#fbbf24; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:6px; margin:0;">
+              <i class="fa-solid fa-building"></i> Select Property for Utility Calculation:
+            </label>
+            <span style="font-size:0.7rem; color:#94a3b8;"><i class="fa-solid fa-circle-info"></i> Click a property to filter utilities below</span>
+          </div>
+          <div id="kharchPropertyPills" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <!-- Populated dynamically via renderKharchPropertyPills() -->
+          </div>
+        </div>
+
+        <!-- Step 2: Auto-Scrolling Right-to-Left Ticker (Strictly Excluding Rent) -->
+        <div style="margin-bottom:14px; background:rgba(15,23,42,0.7); border:1.5px solid rgba(245,158,11,0.3); border-radius:14px; padding:12px 14px; overflow:hidden;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+            <div style="font-size:0.74rem; font-weight:800; color:#ffffff; display:flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-angles-left" style="color:#f59e0b;"></i> Auto-Scrolling Flat Utilities (Right &rarr; Left Ticker)
+            </div>
+            <div style="font-size:0.7rem; font-weight:800; color:#10b981; background:rgba(16,185,129,0.12); padding:3px 10px; border-radius:20px; border:1px solid rgba(16,185,129,0.3); display:flex; align-items:center; gap:5px;">
+              <i class="fa-solid fa-lock"></i> Rent Amount Strictly Excluded
+            </div>
+          </div>
+          <div class="kharch-scroller-track-wrapper">
+            <div id="kharchAutoScrollerTrack" class="kharch-auto-scroller-track">
+              <!-- Animated Flat utility cards auto-generated here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Calculation & Total Summary (Electricity + PNG + Water + Extra Charges Only) -->
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:12px;">
+          <div style="background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.35); border-radius:12px; padding:10px; text-align:center;">
+            <span style="font-size:0.7rem; font-weight:800; color:#fbbf24; display:block; margin-bottom:2px;">⚡ Electricity</span>
+            <strong id="kharchCalcTotalElec" style="font-size:1.05rem; color:#ffffff;">₹0</strong>
+          </div>
+          <div style="background:rgba(236,72,153,0.12); border:1px solid rgba(236,72,153,0.35); border-radius:12px; padding:10px; text-align:center;">
+            <span style="font-size:0.7rem; font-weight:800; color:#f472b6; display:block; margin-bottom:2px;">🔥 PNG Gas</span>
+            <strong id="kharchCalcTotalPng" style="font-size:1.05rem; color:#ffffff;">₹0</strong>
+          </div>
+          <div style="background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.35); border-radius:12px; padding:10px; text-align:center;">
+            <span style="font-size:0.7rem; font-weight:800; color:#38bdf8; display:block; margin-bottom:2px;">💧 Water Charge</span>
+            <strong id="kharchCalcTotalWater" style="font-size:1.05rem; color:#ffffff;">₹0</strong>
+          </div>
+          <div style="background:rgba(192,132,252,0.12); border:1px solid rgba(192,132,252,0.35); border-radius:12px; padding:10px; text-align:center;">
+            <span style="font-size:0.7rem; font-weight:800; color:#c084fc; display:block; margin-bottom:2px;">➕ Extra Charges</span>
+            <strong id="kharchCalcTotalExtra" style="font-size:1.05rem; color:#ffffff;">₹0</strong>
+          </div>
+          <div style="background:linear-gradient(135deg, rgba(245,158,11,0.3), rgba(217,119,6,0.3)); border:1.5px solid #f59e0b; border-radius:12px; padding:10px; text-align:center; box-shadow:0 4px 14px rgba(245,158,11,0.25);">
+            <span style="font-size:0.7rem; font-weight:900; color:#fbbf24; display:block; margin-bottom:2px; text-transform:uppercase;">Total Utility Expense</span>
+            <strong id="kharchCalcGrandTotal" style="font-size:1.25rem; color:#ffffff;">₹0</strong>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; margin-bottom:14px;">
+          <button type="button" class="btn-ledger-action" style="padding:8px 16px; font-size:0.78rem; background:linear-gradient(135deg, #f59e0b, #d97706); color:#fff; font-weight:800; border-radius:10px; border:none; cursor:pointer;" onclick="applyCalculatedKharchToForm()">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Copy Calculated Amount (₹<span id="kharchCopyBtnAmt">0</span>) into Form
           </button>
         </div>
 
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap:10px; margin-bottom:10px;">
-          <div class="form-group" style="margin-bottom:0;">
-            <label>Expense Title / Purpose <span class="req-star">*</span></label>
-            <input type="text" id="kharchTitle" class="form-control" placeholder="e.g. Plumber Repair, Paint, Wiring">
+        <!-- Step 4: Expense Entry Form Below -->
+        <div class="calc-grid-card admin-only" style="margin-bottom: 14px; border-left: 4px solid #f59e0b; background:rgba(15,23,42,0.85);">
+          <div class="calc-grid-title" style="margin-bottom:10px;">
+            <span id="kharchFormTitle" style="color:#fbbf24; font-weight:800;"><i class="fa-solid fa-plus-circle"></i> Add New Kharch (Expense) Entry</span>
+            <button type="button" id="btnCancelKharchEdit" class="btn-ledger-action" style="display:none; padding:4px 10px; font-size:0.72rem;" onclick="cancelKharchEdit()">
+              <i class="fa-solid fa-xmark"></i> Cancel Edit
+            </button>
           </div>
-          <div class="form-group" style="margin-bottom:0;">
-            <label>Category</label>
-            <select id="kharchCategory" class="form-control">
-              <option value="Maintenance & Repair">Maintenance &amp; Repair</option>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap:10px; margin-bottom:10px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Expense Title / Purpose <span class="req-star">*</span></label>
+              <input type="text" id="kharchTitle" class="form-control" placeholder="e.g. Utility Bills, Plumber, Paint, Wiring">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Category</label>
+              <select id="kharchCategory" class="form-control">
+                <option value="Electricity / Water / Bill">Electricity / Water / Bill</option>
+                <option value="Maintenance & Repair">Maintenance &amp; Repair</option>
+                <option value="Construction / Renovation">Construction / Renovation</option>
+                <option value="Khet / Farmland Expense">Khet / Farmland Expense</option>
+                <option value="Tax / Government Fee">Tax / Government Fee</option>
+                <option value="Household / Personal">Household / Personal</option>
+                <option value="Other Kharch">Other Kharch</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Expense Amount (₹) <span class="req-star">*</span></label>
+              <input type="number" step="0.01" id="kharchAmount" class="form-control" placeholder="e.g. 2500">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Place / Property</label>
+              <select id="kharchPropertyName" class="form-control">
+                <option value="General / All">General / All</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Payment Mode</label>
+              <select id="kharchPaymentMode" class="form-control">
+                <option value="Cash">Cash</option>
+                <option value="UPI">UPI</option>
+                <option value="Bank">Bank Transfer</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Expense Date</label>
+              <input type="date" id="kharchExpenseDate" class="form-control">
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:10px;">
+            <label>Notes / Remarks</label>
+            <input type="text" id="kharchNotes" class="form-control" placeholder="Optional bill reference, person paid, or details">
+          </div>
+          <button type="button" id="btnSubmitKharchRecord" class="btn-primary" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); font-weight:800;" onclick="addKharchRecord()">
+            <i class="fa-solid fa-check"></i> <span id="btnSubmitKharchRecordText">Save Kharch Entry to Google Sheet</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB 2: EXPENSE HISTORY & RECORDS -->
+      <div id="kharchTabHistoryContent" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px; background:var(--bg-input); padding:10px 14px; border-radius:12px; border:1px solid var(--glass-border);">
+          <div style="display:flex; align-items:center; gap:8px; flex:1; flex-wrap:wrap;">
+            <input type="text" id="kharchSearchInput" class="form-control" style="max-width:280px; padding:7px 12px; font-size:0.78rem;" placeholder="Search kharch title, category, place..." oninput="renderKharchRecordsList()">
+            <select id="kharchFilterCategory" class="form-control" style="width:auto; min-width:190px; padding:7px 12px; font-size:0.78rem;" onchange="renderKharchRecordsList()">
+              <option value="ALL">All Categories</option>
               <option value="Electricity / Water / Bill">Electricity / Water / Bill</option>
+              <option value="Maintenance & Repair">Maintenance &amp; Repair</option>
               <option value="Construction / Renovation">Construction / Renovation</option>
               <option value="Khet / Farmland Expense">Khet / Farmland Expense</option>
               <option value="Tax / Government Fee">Tax / Government Fee</option>
@@ -3268,55 +3693,9 @@
               <option value="Other Kharch">Other Kharch</option>
             </select>
           </div>
-          <div class="form-group" style="margin-bottom:0;">
-            <label>Expense Amount (₹) <span class="req-star">*</span></label>
-            <input type="number" step="0.01" id="kharchAmount" class="form-control" placeholder="e.g. 2500">
-          </div>
-          <div class="form-group" style="margin-bottom:0;">
-            <label>Place / Property</label>
-            <select id="kharchPropertyName" class="form-control">
-              <option value="General / All">General / All</option>
-            </select>
-          </div>
-          <div class="form-group" style="margin-bottom:0;">
-            <label>Payment Mode</label>
-            <select id="kharchPaymentMode" class="form-control">
-              <option value="Cash">Cash</option>
-              <option value="UPI">UPI</option>
-              <option value="Bank">Bank Transfer</option>
-            </select>
-          </div>
-          <div class="form-group" style="margin-bottom:0;">
-            <label>Expense Date</label>
-            <input type="date" id="kharchExpenseDate" class="form-control">
-          </div>
         </div>
-
-        <div class="form-group" style="margin-bottom:10px;">
-          <label>Notes / Remarks</label>
-          <input type="text" id="kharchNotes" class="form-control" placeholder="Optional bill reference, person paid, or details">
-        </div>
-
-        <button type="button" id="btnSubmitKharchRecord" class="btn-primary" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%);" onclick="addKharchRecord()">
-          <i class="fa-solid fa-check"></i> <span id="btnSubmitKharchRecordText">Save Kharch Entry to Google Sheet</span>
-        </button>
+        <div id="kharchRecordsList" style="max-height: 480px; overflow-y: auto; display:flex; flex-direction:column; gap:10px;"></div>
       </div>
-
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; background:var(--bg-input); padding:8px 12px; border-radius:12px; border:1px solid var(--glass-border);">
-        <input type="text" id="kharchSearchInput" class="form-control" style="max-width:260px; padding:6px 10px; font-size:0.78rem;" placeholder="Search kharch title, category, place..." oninput="renderKharchRecordsList()">
-        <select id="kharchFilterCategory" class="form-control" style="width:auto; min-width:180px; padding:6px 10px; font-size:0.78rem;" onchange="renderKharchRecordsList()">
-          <option value="ALL">All Categories</option>
-          <option value="Maintenance & Repair">Maintenance &amp; Repair</option>
-          <option value="Electricity / Water / Bill">Electricity / Water / Bill</option>
-          <option value="Construction / Renovation">Construction / Renovation</option>
-          <option value="Khet / Farmland Expense">Khet / Farmland Expense</option>
-          <option value="Tax / Government Fee">Tax / Government Fee</option>
-          <option value="Household / Personal">Household / Personal</option>
-          <option value="Other Kharch">Other Kharch</option>
-        </select>
-      </div>
-
-      <div id="kharchRecordsList" style="max-height: 360px; overflow-y: auto; display:flex; flex-direction:column; gap:10px;"></div>
     </div>
   </div>
 
@@ -3393,52 +3772,49 @@
 
         <!-- Action Icons Grouped Together (Order: FD, Khet, Kharch, Add (+), Profile, Settings, Logout) -->
         <div class="nav-actions-group">
-          <!-- Requirement 3: Show ONLY the logo for FD on dashboard (no text label) -->
+          <!-- 1. Fixed Deposit (FD) Box Button -->
           <button type="button" class="nav-btn fd-icon-only-btn" onclick="openFdModal()" title="Fixed Deposit (FD) &amp; Savings Portfolio" aria-label="Fixed Deposit (FD)">
             <i class="fa-solid fa-building-columns" style="color:#818cf8; font-size:1.05rem;"></i>
           </button>
-
-          <!-- 'Field' (Khet) Icon-Only Button -->
+          <!-- 2. Field (Khet) Box Button -->
           <button type="button" class="nav-btn khet-icon-only-btn" onclick="openKhetModal()" title="Khet (Field)" aria-label="Khet (Field)">
             <i class="fa-solid fa-seedling" style="color:#34d399; font-size:1.05rem;"></i>
           </button>
-
-          <!-- Requirement 7: 'Kharch' (Expenses) Button Placed Immediately to the Left of the Plus (+) Icon -->
+          <!-- 3. Kharch (Expenses) Box Button -->
           <button type="button" class="nav-btn kharch-icon-only-btn admin-only" onclick="openKharchModal()" title="Kharch (Expenses)" aria-label="Kharch (Expenses)">
             <i class="fa-solid fa-wallet" style="color:#f59e0b; font-size:1.05rem;"></i>
           </button>
-
-          <!-- Requirement 6: Dynamic Add Plus (+) Icon Placed Immediately to the Left of the Profile Icon -->
+          <!-- 4. Dynamic Plus (+) Add Box Button -->
           <div class="dropdown-anchor admin-only">
-            <button class="nav-btn plus-btn-highlight" onclick="toggleActionMenu()" title="Add / Edit">
-              <i class="fa-solid fa-plus"></i>
+            <button type="button" class="nav-btn plus-icon-box-btn" onclick="toggleActionMenu()" title="Add Property, Flat or Expense">
+              <i class="fa-solid fa-plus" style="color:#38bdf8; font-size:1.05rem; font-weight:900;"></i>
             </button>
             <div id="actionMenu" class="action-menu">
-              <div class="menu-item" onclick="openModal('addPropertyModal')">
+              <div class="menu-item" onclick="openModal(addPropertyModal)">
                 <i class="fa-solid fa-building"></i> Add Property
               </div>
-              <div class="menu-item" onclick="openModal('editPropertyModal')">
+              <div class="menu-item" onclick="openModal(editPropertyModal)">
                 <i class="fa-solid fa-pen-to-square"></i> Edit Property Name
               </div>
               <div class="menu-item" onclick="openAddFlatModal()">
                 <i class="fa-solid fa-door-open"></i> Add Flat
               </div>
+              <div class="menu-item" onclick="openKharchModal()">
+                <i class="fa-solid fa-wallet"></i> Add Kharch (Expense)
+              </div>
             </div>
           </div>
-
-          <!-- Dedicated Profile Icon -->
-          <button class="nav-btn" onclick="openProfileModal()" title="My Profile">
-            <i class="fa-solid fa-user"></i>
+          <!-- 5. Profile Box Button -->
+          <button type="button" class="nav-btn profile-icon-box-btn" onclick="openProfileModal()" title="My Profile" aria-label="My Profile">
+            <i class="fa-solid fa-user" style="color:#ec4899; font-size:1.05rem;"></i>
           </button>
-
-          <!-- Dedicated Settings Icon Next to Profile -->
-          <button class="nav-btn" onclick="openSettingsModal()" title="Settings">
-            <i class="fa-solid fa-gear"></i>
+          <!-- 6. Settings Box Button -->
+          <button type="button" class="nav-btn settings-icon-box-btn" onclick="openSettingsModal()" title="Settings" aria-label="Settings">
+            <i class="fa-solid fa-gear" style="color:#a855f7; font-size:1.05rem;"></i>
           </button>
-
-          <!-- Dedicated Logout Icon -->
-          <button class="nav-btn" onclick="handleLogout()" title="Logout">
-            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <!-- 7. Logout Box Button -->
+          <button type="button" class="nav-btn logout-icon-box-btn" onclick="handleLogout()" title="Logout" aria-label="Logout">
+            <i class="fa-solid fa-arrow-right-from-bracket" style="color:#ef4444; font-size:1.05rem;"></i>
           </button>
         </div>
       </div>
@@ -3986,7 +4362,7 @@
           <div style="font-size:0.72rem; font-weight:800; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.6px; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
             <i class="fa-solid fa-sliders" style="color:var(--primary);"></i> Account Security &amp; Quick Updates
           </div>
-          <div class="profile-action-switch" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px;">
+          <div class="profile-action-switch" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
             <button
               type="button"
               id="btnShowChangePass"
@@ -4017,16 +4393,7 @@
               <i class="fa-solid fa-user-pen" style="font-size:0.85rem; margin-bottom:3px; display:block;"></i>
               Name &amp; Mobile
             </button>
-            <button
-              type="button"
-              id="btnShowChangeTheme"
-              class="btn-switch-option"
-              style="border-radius:12px; padding:9px 6px; font-size:0.75rem; font-weight:700; border:1px solid rgba(56,189,248,0.3); background:rgba(56,189,248,0.08); color:#38bdf8;"
-              onclick="toggleProfileDrawer('drawerChangeTheme', 'btnShowChangeTheme')"
-            >
-              <i class="fa-solid fa-palette" style="font-size:0.85rem; margin-bottom:3px; display:block;"></i>
-              Theme
-            </button>
+            
           </div>
         </div>
 
@@ -4110,31 +4477,7 @@
           <div id="nameChangeBottomMsg" class="bottom-status-msg"></div>
         </div>
 
-        <!-- Option D: Dedicated Choose Theme Drawer -->
-        <div id="drawerChangeTheme" class="profile-sub-drawer" style="border:1.5px solid rgba(56,189,248,0.4); border-radius:16px; background:linear-gradient(145deg, rgba(56,189,248,0.08) 0%, rgba(15,23,42,0.7) 100%);">
-          <h4 style="margin-bottom: 12px; font-size: 0.92rem; color: #38bdf8; font-weight:800; display:flex; align-items:center; gap:7px;">
-            <i class="fa-solid fa-palette"></i> Choose Your Preferred Theme
-          </h4>
-          <div class="theme-grid">
-            <div class="theme-card" id="profThemeCardBlack" onclick="selectAndSaveTheme('black')">
-              <span><i class="fa-solid fa-moon" style="margin-right:8px; color:#818cf8;"></i> <strong>Black Theme</strong></span>
-              <i class="fa-solid fa-circle-check"></i>
-            </div>
-            <div class="theme-card" id="profThemeCardWhite" onclick="selectAndSaveTheme('white')">
-              <span><i class="fa-solid fa-sun" style="margin-right:8px; color:#f59e0b;"></i> <strong>White Theme</strong></span>
-              <i class="fa-solid fa-circle-check"></i>
-            </div>
-            <div class="theme-card" id="profThemeCardSystem" onclick="selectAndSaveTheme('system')">
-              <span><i class="fa-solid fa-laptop" style="margin-right:8px; color:#10b981;"></i> <strong>System Default</strong></span>
-              <i class="fa-solid fa-circle-check"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="settingsModal" class="modal-overlay">
+        </div></div></div><div id="settingsModal" class="modal-overlay">
     <div class="modal-window" style="max-width: 720px;">
       <button class="modal-close-btn" onclick="closeModal('settingsModal')"><i class="fa-solid fa-xmark"></i></button>
 
@@ -4347,7 +4690,7 @@
         <div style="font-size:0.76rem; font-weight:700; color:var(--text-muted); margin-bottom:8px;">
           <i class="fa-solid fa-compass" style="color:#c084fc;"></i> SELECT A FEATURE BELOW TO OPEN ITS WORKSPACE:
         </div>
-        <div id="otherOptionsBtnGrid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px;">
+        <div id="otherOptionsBtnGrid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px;">
           <button
             type="button"
             id="btnOtherOptUsers"
@@ -5226,6 +5569,22 @@
     </div>
   </div>
 
+
+  <!-- ACCOUNT BLOCKED ALERT MODAL -->
+  <div id="accountBlockedModal" class="modal-overlay" style="z-index:99999;">
+    <div class="modal-window" style="max-width:440px; text-align:center; border:2px solid #ef4444; box-shadow:0 25px 60px rgba(239,68,68,0.3);">
+      <div style="width:68px; height:68px; border-radius:50%; background:rgba(239,68,68,0.15); border:2px solid #ef4444; display:flex; align-items:center; justify-content:center; margin:0 auto 16px auto; color:#ef4444; font-size:2rem;">
+        <i class="fa-solid fa-ban"></i>
+      </div>
+      <h3 style="color:#ef4444; font-size:1.3rem; font-weight:900; margin-bottom:8px;">Account Blocked</h3>
+      <p id="accountBlockedMessage" style="font-size:0.86rem; color:var(--text-main); line-height:1.5; margin-bottom:20px;">
+        Your account has been blocked by an administrator. Please contact your administrator for access.
+      </p>
+      <button type="button" class="btn-primary" style="background:#ef4444; border-color:#dc2626; font-weight:800;" onclick="closeAccountBlockedModal()">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Understood &amp; Return to Login
+      </button>
+    </div>
+  </div>
 <script>
     /**
      * ============================================================================
@@ -5464,6 +5823,14 @@
     }
 
     // No-cache photo helpers: Photos are loaded directly from Google Sheets / Google Drive so manual deletions in Sheets reflect immediately
+    function savePermanentRenterPhoto(prop, flat, renterId, docType, url) {
+      try {
+        // Cache safe photo reference if needed
+        cachePermanentRenterPhoto(prop, flat, renterId, docType, url);
+      } catch (e) {
+        console.warn("savePermanentRenterPhoto error:", e);
+      }
+    }
     function cachePermanentRenterPhoto(prop, flat, renterId, docType, url) {
       try { localStorage.removeItem("portal_permanent_photos"); } catch (e) {}
     }
@@ -5537,15 +5904,18 @@
     }
 
     function showAccountBlockedModal(message) {
-      const msgEl = document.getElementById("accountBlockedMessage");
-      if (msgEl) {
-        msgEl.innerText = message || "Your account has been blocked by an administrator. Please contact your administrator for access.";
-      }
+      const msgText = message || "Your account has been blocked by an administrator. Please contact your administrator for access.";
+      const msgEl1 = document.getElementById("accountBlockedMessage");
+      if (msgEl1) msgEl1.innerText = msgText;
+      const msgEl2 = document.getElementById("blockedUserPopupMessage");
+      if (msgEl2) msgEl2.innerText = msgText;
       openModal("accountBlockedModal");
+      openModal("blockedUserPopupModal");
     }
-
     function closeAccountBlockedModal() {
       closeModal("accountBlockedModal");
+      closeModal("blockedUserPopupModal");
+      try { performConfirmedLogout(); } catch (e) {}
     }
 
     function populateReactivateFlatsDropdown() {
@@ -10327,7 +10697,7 @@ function formatMonthLabel(rawVal) {
     function selectFlatGraph2Mode(mode) {
       flatGraph2SelectedMode = String(mode);
       if (typeof selectedProperty !== "undefined" && typeof selectedFlat !== "undefined" && selectedProperty && selectedFlat) {
-        renderAllRentersGraphForFlat(selectedProperty, selectedFlat);
+        renderAllRentersGraphForFlat(selectedFlat.PropertyName || selectedProperty, selectedFlat.FlatName || selectedFlat);
       }
     }
 
@@ -10537,17 +10907,21 @@ function formatMonthLabel(rawVal) {
     function renderAllRentersGraphForFlat(prop, flat) {
       const container = document.getElementById("tabGraphContainer");
       if (!container) return;
+      const propStr = (typeof prop === "object" && prop !== null) ? (prop.PropertyName || "") : String(prop || "");
+      const flatStr = (typeof flat === "object" && flat !== null) ? (flat.FlatName || "") : String(flat || "");
+      const resolvedProp = propStr || (selectedProperty || "");
+      const resolvedFlat = flatStr || (selectedFlat ? selectedFlat.FlatName : "");
 
       // Second Graph Data: All bills in this flat (both active and inactive/left users)
-      const allFlatBills = (DB.bills || []).filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat));
+      const allFlatBills = (DB.bills || []).filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, resolvedProp, resolvedFlat));
 
       // First Graph Data: Strictly bills belonging ONLY to currently active user(s) in this flat
       const activeRentersInFlat = (DB.renters || []).filter(r =>
-        isSamePropAndFlat(r.PropertyName, r.FlatName, prop, flat) &&
+        isSamePropAndFlat(r.PropertyName, r.FlatName, resolvedProp, resolvedFlat) &&
         String(r.Status || "").trim().toLowerCase() === "active"
       );
       const inactiveRentersInFlat = (DB.renters || []).filter(r =>
-        isSamePropAndFlat(r.PropertyName, r.FlatName, prop, flat) &&
+        isSamePropAndFlat(r.PropertyName, r.FlatName, resolvedProp, resolvedFlat) &&
         String(r.Status || "").trim().toLowerCase() !== "active"
       );
       const inactiveIds = new Set(inactiveRentersInFlat.map(r => String(r.RenterID || "").trim()).filter(Boolean));
@@ -11004,7 +11378,7 @@ function formatMonthLabel(rawVal) {
         if (activeRole === "Renter") {
           return isBillLinkedToLoggedInRenterAadhaar(b);
         }
-        return isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat);
+        return isSamePropAndFlat(b.PropertyName, b.FlatName, resolvedProp, resolvedFlat);
       });
       const newestFirstBills = [...matchingBills].reverse();
 
@@ -11557,7 +11931,15 @@ function formatMonthLabel(rawVal) {
           scrollY: 0,
           scrollX: 0,
           windowWidth: 500,
-          height: receiptCardEl.scrollHeight,
+          ignoreElements: (el) => {
+            if (!el || !el.classList) return false;
+            return el.classList.contains("no-print") ||
+                   el.classList.contains("modal-close-btn") ||
+                   el.classList.contains("btn-whatsapp-share") ||
+                   el.classList.contains("wa-checklist-drawer") ||
+                   el.id === "btnOpenWaChecklist" ||
+                   el.id === "waShareChecklistDrawer";
+          },
           backgroundColor: document.body.classList.contains("theme-white") ? "#ffffff" : "#0f172a"
         });
 
@@ -12707,6 +13089,173 @@ function formatMonthLabel(rawVal) {
       return Array.isArray(DB.kharchRecords) ? DB.kharchRecords : [];
     }
 
+    
+    // =========================================================================
+    // REQUIREMENT 2: Kharch 2 Tabs, Property Utility Calculator (Rent Excluded) & Ticker
+    // =========================================================================
+    let activeKharchSectionTab = "calc";
+    let selectedKharchCalcProperty = "ALL";
+    let lastCalculatedKharchGrandTotal = 0;
+
+    function switchKharchSectionTab(tab) {
+      activeKharchSectionTab = tab;
+      const calcBtn = document.getElementById("btnKharchTabCalc");
+      const histBtn = document.getElementById("btnKharchTabHistory");
+      const calcContent = document.getElementById("kharchTabCalcContent");
+      const histContent = document.getElementById("kharchTabHistoryContent");
+      if (calcBtn) calcBtn.classList.toggle("active", tab === "calc");
+      if (histBtn) histBtn.classList.toggle("active", tab === "history");
+      if (calcContent) calcContent.style.display = tab === "calc" ? "block" : "none";
+      if (histContent) histContent.style.display = tab === "history" ? "block" : "none";
+      if (tab === "history") {
+        renderKharchRecordsList();
+      } else {
+        renderKharchUtilityCalculation();
+      }
+    }
+
+    function renderKharchPropertyPills() {
+      const container = document.getElementById("kharchPropertyPills");
+      if (!container) return;
+      const props = sortPropertiesAlphabetically(DB.properties || []);
+      const pills = [];
+      pills.push(
+        '<button type="button" class="kharch-prop-pill ' + (selectedKharchCalcProperty === "ALL" ? "active" : "") + '" onclick="selectKharchCalcProperty(\'ALL\')">' +
+        '<i class="fa-solid fa-layer-group"></i> All Properties' +
+        '</button>'
+      );
+      props.forEach(p => {
+        const pName = p.PropertyName;
+        pills.push(
+          '<button type="button" class="kharch-prop-pill ' + (selectedKharchCalcProperty === pName ? "active" : "") + '" onclick="selectKharchCalcProperty(\'' + pName.replace(/'/g, "\\'") + '\')">' +
+          '<i class="fa-solid fa-building"></i> ' + pName +
+          '</button>'
+        );
+      });
+      container.innerHTML = pills.join("");
+    }
+
+    function selectKharchCalcProperty(propName) {
+      selectedKharchCalcProperty = propName;
+      renderKharchPropertyPills();
+      renderKharchUtilityCalculation();
+      const propSel = document.getElementById("kharchPropertyName");
+      if (propSel && propName !== "ALL") {
+        propSel.value = propName;
+      }
+    }
+
+    function renderKharchUtilityCalculation() {
+      const track = document.getElementById("kharchAutoScrollerTrack");
+      let totalElec = 0;
+      let totalPng = 0;
+      let totalWater = 0;
+      let totalExtra = 0;
+
+      const allFlats = (DB.flats || []).filter(f => {
+        if (selectedKharchCalcProperty === "ALL") return true;
+        return String(f.PropertyName || "").trim().toLowerCase() === selectedKharchCalcProperty.toLowerCase();
+      });
+
+      const cards = [];
+
+      allFlats.forEach(flat => {
+        const pName = flat.PropertyName;
+        const fName = flat.FlatName;
+
+        const renter = (DB.renters || []).find(r =>
+          isSamePropAndFlat(r.PropertyName, r.FlatName, pName, fName) &&
+          String(r.Status || "").trim().toLowerCase() === "active"
+        ) || (DB.renters || []).find(r => isSamePropAndFlat(r.PropertyName, r.FlatName, pName, fName));
+
+        const flatBills = (DB.bills || []).filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, pName, fName));
+        const latestBill = flatBills.length > 0 ? flatBills[flatBills.length - 1] : null;
+
+        // Strictly calculate utility charges ONLY (electricity, PNG, water, extra charges) - RENT IS STRICTLY EXCLUDED!
+        const elec = latestBill ? (parseFloat(latestBill.ElecTotal) || 0) : 0;
+        const png = latestBill ? (parseFloat(latestBill.PNGTotal) || 0) : 0;
+        const water = latestBill ? (parseFloat(latestBill.WaterTotal) || 0) : 0;
+        const extra = latestBill ? (parseFloat(latestBill.AdditionalAmount) || 0) : 0;
+        const flatUtilitySubtotal = elec + png + water + extra;
+
+        totalElec += elec;
+        totalPng += png;
+        totalWater += water;
+        totalExtra += extra;
+
+        const tenantName = renter ? (renter.RenterName || "Tenant") : "Vacant Flat";
+
+        cards.push(
+          '<div class="kharch-ticker-card">' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:4px;">' +
+              '<div>' +
+                '<strong style="font-size:0.86rem; color:#ffffff;">' + fName + '</strong>' +
+                '<span style="font-size:0.7rem; color:#94a3b8; margin-left:4px;">(' + pName + ')</span>' +
+              '</div>' +
+              '<span style="font-size:0.68rem; font-weight:700; color:#38bdf8; background:rgba(56,189,248,0.12); padding:2px 8px; border-radius:12px;">' + tenantName + '</span>' +
+            '</div>' +
+            '<div style="display:grid; grid-template-columns: 1fr 1fr; gap:4px; font-size:0.72rem; color:#cbd5e1; margin-bottom:6px;">' +
+              '<span>⚡ Elec: <strong style="color:#fbbf24;">₹' + elec.toLocaleString("en-IN") + '</strong></span>' +
+              '<span>🔥 PNG: <strong style="color:#f472b6;">₹' + png.toLocaleString("en-IN") + '</strong></span>' +
+              '<span>💧 Water: <strong style="color:#38bdf8;">₹' + water.toLocaleString("en-IN") + '</strong></span>' +
+              '<span>➕ Extra: <strong style="color:#c084fc;">₹' + extra.toLocaleString("en-IN") + '</strong></span>' +
+            '</div>' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed rgba(245,158,11,0.25); padding-top:4px; font-size:0.75rem;">' +
+              '<span style="color:#94a3b8; font-weight:600;">Utility Total:</span>' +
+              '<strong style="color:#fbbf24; font-size:0.88rem;">₹' + flatUtilitySubtotal.toLocaleString("en-IN") + '</strong>' +
+            '</div>' +
+          '</div>'
+        );
+      });
+
+      const grandTotal = totalElec + totalPng + totalWater + totalExtra;
+      lastCalculatedKharchGrandTotal = grandTotal;
+
+      const elElec = document.getElementById("kharchCalcTotalElec");
+      const elPng = document.getElementById("kharchCalcTotalPng");
+      const elWater = document.getElementById("kharchCalcTotalWater");
+      const elExtra = document.getElementById("kharchCalcTotalExtra");
+      const elGrand = document.getElementById("kharchCalcGrandTotal");
+      const elCopyAmt = document.getElementById("kharchCopyBtnAmt");
+
+      if (elElec) elElec.innerText = "₹" + totalElec.toLocaleString("en-IN");
+      if (elPng) elPng.innerText = "₹" + totalPng.toLocaleString("en-IN");
+      if (elWater) elWater.innerText = "₹" + totalWater.toLocaleString("en-IN");
+      if (elExtra) elExtra.innerText = "₹" + totalExtra.toLocaleString("en-IN");
+      if (elGrand) elGrand.innerText = "₹" + grandTotal.toLocaleString("en-IN");
+      if (elCopyAmt) elCopyAmt.innerText = grandTotal.toLocaleString("en-IN");
+
+      if (track) {
+        if (cards.length === 0) {
+          track.innerHTML = '<div style="padding:14px; color:#94a3b8; font-size:0.8rem; text-align:center;">No flats recorded for this property.</div>';
+        } else {
+          // Duplicate items once to create continuous infinite loop
+          track.innerHTML = cards.join("") + cards.join("");
+        }
+      }
+    }
+
+    function applyCalculatedKharchToForm() {
+      const amtInput = document.getElementById("kharchAmount");
+      const titleInput = document.getElementById("kharchTitle");
+      const catSelect = document.getElementById("kharchCategory");
+      const propSelect = document.getElementById("kharchPropertyName");
+
+      if (amtInput) {
+        amtInput.value = lastCalculatedKharchGrandTotal;
+      }
+      if (titleInput && !titleInput.value.trim()) {
+        titleInput.value = "Utility Bills & Charges (" + (selectedKharchCalcProperty === "ALL" ? "All Properties" : selectedKharchCalcProperty) + ")";
+      }
+      if (catSelect) {
+        catSelect.value = "Electricity / Water / Bill";
+      }
+      if (propSelect && selectedKharchCalcProperty !== "ALL") {
+        propSelect.value = selectedKharchCalcProperty;
+      }
+      triggerSideToast("Amount Applied", "Calculated utility expense ₹" + lastCalculatedKharchGrandTotal.toLocaleString("en-IN") + " copied into form!", true);
+    }
+
     function openKharchModal() {
       cancelKharchEdit();
       const propSel = document.getElementById("kharchPropertyName");
@@ -12717,6 +13266,10 @@ function formatMonthLabel(rawVal) {
         });
         propSel.innerHTML = opts.join("");
       }
+      // Initialize tabs & calculation ticker
+      switchKharchSectionTab("calc");
+      renderKharchPropertyPills();
+      renderKharchUtilityCalculation();
       renderKharchRecordsList();
       openModal("kharchModal");
     }
@@ -12877,6 +13430,10 @@ function formatMonthLabel(rawVal) {
 
       if (totalBadge) {
         totalBadge.innerText = "₹" + grandTotal.toLocaleString("en-IN");
+      }
+      const countBadge = document.getElementById("kharchRecordsBadgeCount");
+      if (countBadge) {
+        countBadge.innerText = all.length;
       }
 
       if (filtered.length === 0) {
@@ -14980,21 +15537,7 @@ function formatMonthLabel(rawVal) {
     }
   </script>
 
-  <!-- ACCOUNT BLOCKED ALERT MODAL -->
-  <div id="accountBlockedModal" class="modal-overlay" style="z-index:9999;">
-    <div class="modal-window" style="max-width:440px; text-align:center; border:2px solid #ef4444; box-shadow:0 25px 60px rgba(239,68,68,0.3);">
-      <div style="width:68px; height:68px; border-radius:50%; background:rgba(239,68,68,0.15); border:2px solid #ef4444; display:flex; align-items:center; justify-content:center; margin:0 auto 16px auto; color:#ef4444; font-size:2rem;">
-        <i class="fa-solid fa-ban"></i>
-      </div>
-      <h3 style="color:#ef4444; font-size:1.3rem; font-weight:900; margin-bottom:8px;">Account Blocked</h3>
-      <p id="accountBlockedMessage" style="font-size:0.86rem; color:var(--text-main); line-height:1.5; margin-bottom:20px;">
-        Your account has been blocked by an administrator. Please contact your administrator for access.
-      </p>
-      <button type="button" class="btn-primary" style="background:#ef4444; border-color:#dc2626; font-weight:800;" onclick="closeAccountBlockedModal()">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i> Understood &amp; Return to Login
-      </button>
-    </div>
-  </div>
+  
 
 </body>
 </html>
