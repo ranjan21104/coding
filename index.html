@@ -2596,6 +2596,119 @@
     display: none !important;
   }
 
+  /* Requirement 6: Renter role strictly sees ONLY their own Profile & Historical Receipts (hide Calc, Renter History & Graph tabs) */
+  body.role-renter .non-renter-tab {
+    display: none !important;
+  }
+
+  /* Requirement 2, 3, 4 & 5: Stylish & Colorful Dashboard, FD & Khet Enhancements */
+  header.top-nav {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(30, 27, 75, 0.85) 50%, rgba(15, 23, 42, 0.9) 100%) !important;
+    border-bottom: 1.5px solid rgba(99, 102, 241, 0.45) !important;
+    box-shadow: 0 12px 34px rgba(2, 6, 23, 0.65), 0 0 24px rgba(99, 102, 241, 0.18) !important;
+  }
+
+  .nav-left h2 {
+    background: linear-gradient(135deg, #38bdf8 0%, #a855f7 55%, #ec4899 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 900 !important;
+    letter-spacing: 0.8px;
+  }
+
+  .pnl-tracker {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(15, 23, 42, 0.82) 50%, rgba(244, 63, 94, 0.16) 100%) !important;
+    border: 1.5px solid rgba(56, 189, 248, 0.38) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35) !important;
+  }
+
+  .fd-icon-only-btn {
+    width: 42px !important;
+    height: 42px !important;
+    padding: 0 !important;
+    border-radius: 12px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.28) 0%, rgba(236, 72, 153, 0.25) 100%) !important;
+    border: 1.5px solid rgba(129, 140, 248, 0.55) !important;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.28) !important;
+    transition: all 0.22s ease !important;
+  }
+  .fd-icon-only-btn:hover {
+    transform: translateY(-2px) scale(1.04) !important;
+    box-shadow: 0 8px 22px rgba(236, 72, 153, 0.42) !important;
+  }
+
+  .khet-icon-only-btn {
+    width: 42px !important;
+    height: 42px !important;
+    padding: 0 !important;
+    border-radius: 12px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.28) 0%, rgba(245, 158, 11, 0.24) 100%) !important;
+    border: 1.5px solid rgba(52, 211, 153, 0.55) !important;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.28) !important;
+  }
+
+  .property-block {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(49, 46, 129, 0.55) 100%) !important;
+    border: 1.5px solid rgba(99, 102, 241, 0.4) !important;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35) !important;
+  }
+  .property-block.active {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 52%, #db2777 100%) !important;
+    border-color: #f472b6 !important;
+    box-shadow: 0 10px 28px rgba(124, 58, 237, 0.5) !important;
+  }
+
+  .flat-card {
+    background: linear-gradient(145deg, rgba(15, 23, 42, 0.86) 0%, rgba(30, 27, 75, 0.65) 100%) !important;
+    border: 1.5px solid rgba(99, 102, 241, 0.32) !important;
+    box-shadow: 0 12px 28px rgba(2, 6, 23, 0.5) !important;
+  }
+  .flat-card:hover {
+    border-color: #38bdf8 !important;
+    box-shadow: 0 16px 36px rgba(56, 189, 248, 0.25) !important;
+  }
+
+  /* Requirement 4: Colorful & Stylish FD Modal & Cards */
+  #fdModal .modal-window {
+    background: linear-gradient(155deg, rgba(10, 15, 32, 0.97) 0%, rgba(30, 27, 75, 0.95) 50%, rgba(19, 34, 56, 0.97) 100%) !important;
+    border: 2px solid rgba(56, 189, 248, 0.5) !important;
+    box-shadow: 0 28px 70px rgba(14, 165, 233, 0.28) !important;
+  }
+
+  /* Requirement 5: Colorful & Stylish Khet Section & Modal */
+  #khetModal .modal-window {
+    background: linear-gradient(155deg, rgba(6, 24, 20, 0.97) 0%, rgba(15, 23, 42, 0.96) 50%, rgba(28, 25, 23, 0.97) 100%) !important;
+    border: 2px solid rgba(16, 185, 129, 0.55) !important;
+    box-shadow: 0 28px 70px rgba(16, 185, 129, 0.28) !important;
+  }
+
+  .home-khet-shell {
+    background: linear-gradient(140deg, rgba(6, 38, 30, 0.84) 0%, rgba(15, 23, 42, 0.9) 50%, rgba(45, 27, 68, 0.82) 100%) !important;
+    border: 2px solid rgba(52, 211, 153, 0.5) !important;
+    box-shadow: 0 20px 50px rgba(16, 185, 129, 0.22) !important;
+  }
+
+  .khet-stylish-card {
+    background: linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(6, 52, 40, 0.55) 55%, rgba(30, 27, 75, 0.65) 100%) !important;
+    border: 1.5px solid rgba(52, 211, 153, 0.45) !important;
+    border-top: 4px solid #10b981 !important;
+    border-radius: 18px !important;
+    padding: 15px !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.42) !important;
+    transition: transform 0.22s ease, box-shadow 0.22s ease !important;
+  }
+  .khet-stylish-card:hover {
+    transform: translateY(-3px) !important;
+    border-color: #fbbf24 !important;
+    box-shadow: 0 16px 36px rgba(16, 185, 129, 0.3) !important;
+  }
+
   @media (max-width: 960px) {
     .profile-matrix, .profile-matrix-3col {
       grid-template-columns: 1fr !important;
@@ -2782,41 +2895,41 @@
         </span>
       </div>
 
-      <!-- Place-Wise Collection Summary & Portfolio KPI Banner -->
-      <div id="fdTotalCollectionsBanner" style="margin-bottom:14px; background:linear-gradient(135deg, rgba(79,70,229,0.22) 0%, rgba(16,185,129,0.18) 100%); border:1.5px solid var(--primary); border-radius:16px; padding:14px;">
+      <!-- Place-Wise Collection Summary & Portfolio KPI Banner (Requirement 4: Colorful & Stylish FD Section) -->
+      <div id="fdTotalCollectionsBanner" style="margin-bottom:14px; background:linear-gradient(135deg, rgba(79,70,229,0.28) 0%, rgba(14,165,233,0.22) 50%, rgba(236,72,153,0.22) 100%); border:1.5px solid rgba(56,189,248,0.55); border-radius:18px; padding:15px; box-shadow: 0 12px 32px rgba(14,165,233,0.18);">
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap:10px; margin-bottom:12px;">
-          <div style="background:rgba(15,23,42,0.55); border:1px solid rgba(255,255,255,0.12); border-radius:12px; padding:10px 12px;">
-            <div style="font-size:0.68rem; font-weight:700; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.4px;">
+          <div style="background:linear-gradient(135deg, rgba(16,185,129,0.26) 0%, rgba(5,150,105,0.14) 100%); border:1.5px solid rgba(52,211,153,0.5); border-radius:14px; padding:11px 13px; box-shadow:0 6px 16px rgba(16,185,129,0.15);">
+            <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:#a7f3d0; letter-spacing:0.4px;">
               <i class="fa-solid fa-wallet" style="color:#34d399;"></i> Total Collected (All Places)
             </div>
-            <div id="fdTotalAmountDisplay" style="font-size:1.25rem; font-weight:800; color:#34d399; margin-top:3px;">₹0</div>
+            <div id="fdTotalAmountDisplay" style="font-size:1.3rem; font-weight:900; color:#34d399; margin-top:4px;">₹0</div>
           </div>
-          <div style="background:rgba(15,23,42,0.55); border:1px solid rgba(56,189,248,0.28); border-radius:12px; padding:10px 12px;">
-            <div style="font-size:0.68rem; font-weight:700; text-transform:uppercase; color:#7dd3fc; letter-spacing:0.4px;">
+          <div style="background:linear-gradient(135deg, rgba(14,165,233,0.26) 0%, rgba(37,99,235,0.16) 100%); border:1.5px solid rgba(56,189,248,0.5); border-radius:14px; padding:11px 13px; box-shadow:0 6px 16px rgba(14,165,233,0.15);">
+            <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:#bae6fd; letter-spacing:0.4px;">
               <i class="fa-solid fa-piggy-bank" style="color:#38bdf8;"></i> Total in Saving / Future FD
             </div>
-            <div id="fdTotalSavingFundedDisplay" style="font-size:1.2rem; font-weight:800; color:#38bdf8; margin-top:3px;">₹0</div>
-            <div id="fdTotalMaturityValueDisplay" style="font-size:0.68rem; color:#bae6fd; margin-top:2px;">Maturity Value: ₹0</div>
+            <div id="fdTotalSavingFundedDisplay" style="font-size:1.25rem; font-weight:900; color:#38bdf8; margin-top:4px;">₹0</div>
+            <div id="fdTotalMaturityValueDisplay" style="font-size:0.7rem; font-weight:700; color:#e0f2fe; margin-top:2px;">Maturity Value: ₹0</div>
           </div>
-          <div style="background:rgba(15,23,42,0.55); border:1px solid rgba(245,158,11,0.28); border-radius:12px; padding:10px 12px;">
-            <div style="font-size:0.68rem; font-weight:700; text-transform:uppercase; color:#fcd34d; letter-spacing:0.4px;">
+          <div style="background:linear-gradient(135deg, rgba(245,158,11,0.26) 0%, rgba(217,119,6,0.15) 100%); border:1.5px solid rgba(251,191,36,0.5); border-radius:14px; padding:11px 13px; box-shadow:0 6px 16px rgba(245,158,11,0.15);">
+            <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:#fde68a; letter-spacing:0.4px;">
               <i class="fa-solid fa-screwdriver-wrench" style="color:#fbbf24;"></i> Used for Other Purposes
             </div>
-            <div id="fdTotalOtherPurposeDisplay" style="font-size:1.2rem; font-weight:800; color:#fbbf24; margin-top:3px;">₹0</div>
-            <div id="fdTotalAllocatedCountDisplay" style="font-size:0.68rem; color:#fde68a; margin-top:2px;">0 Portfolio Entries</div>
+            <div id="fdTotalOtherPurposeDisplay" style="font-size:1.25rem; font-weight:900; color:#fbbf24; margin-top:4px;">₹0</div>
+            <div id="fdTotalAllocatedCountDisplay" style="font-size:0.7rem; font-weight:700; color:#fef3c7; margin-top:2px;">0 Portfolio Entries</div>
           </div>
-          <div style="background:rgba(15,23,42,0.55); border:1px solid rgba(167,139,250,0.3); border-radius:12px; padding:10px 12px;">
-            <div style="font-size:0.68rem; font-weight:700; text-transform:uppercase; color:#c4b5fd; letter-spacing:0.4px;">
-              <i class="fa-solid fa-scale-balanced" style="color:#a78bfa;"></i> Remaining Unallocated Pool
+          <div style="background:linear-gradient(135deg, rgba(168,85,247,0.28) 0%, rgba(236,72,153,0.16) 100%); border:1.5px solid rgba(192,132,252,0.5); border-radius:14px; padding:11px 13px; box-shadow:0 6px 16px rgba(168,85,247,0.15);">
+            <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:#e9d5ff; letter-spacing:0.4px;">
+              <i class="fa-solid fa-scale-balanced" style="color:#c084fc;"></i> Remaining Unallocated Pool
             </div>
-            <div id="fdRemainingPoolDisplay" style="font-size:1.2rem; font-weight:800; color:#a78bfa; margin-top:3px;">₹0</div>
-            <div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">Collected minus Total Used</div>
+            <div id="fdRemainingPoolDisplay" style="font-size:1.25rem; font-weight:900; color:#e879f9; margin-top:4px;">₹0</div>
+            <div style="font-size:0.7rem; font-weight:600; color:#f3e8ff; margin-top:2px;">Collected minus Total Used</div>
           </div>
         </div>
 
         <div style="font-size:0.72rem; font-weight:800; text-transform:uppercase; color:#e2e8f0; margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px;">
-          <span><i class="fa-solid fa-building-user" style="color:var(--primary);"></i> Place-Wise Collection, Used Purpose &amp; Remaining Balance (Click any Place to filter portfolio):</span>
-          <button type="button" class="btn-ledger-action" style="padding:2px 8px; font-size:0.68rem;" onclick="setFdPlaceFilter('ALL')">Show All Places</button>
+          <span><i class="fa-solid fa-building-user" style="color:#38bdf8;"></i> Place-Wise Collection, Used Purpose &amp; Remaining Balance (Click any Place to filter portfolio):</span>
+          <button type="button" class="btn-ledger-action" style="padding:3px 10px; font-size:0.68rem; background:linear-gradient(135deg, #6366f1, #ec4899); color:#fff; border:none;" onclick="setFdPlaceFilter('ALL')">Show All Places</button>
         </div>
         <div id="fdPropertyBreakdownBadges" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:8px; font-size:0.74rem;"></div>
       </div>
@@ -3161,10 +3274,9 @@
 
         <!-- Action Icons Grouped Together -->
         <div class="nav-actions-group">
-          <!-- Requirement 1: Keep Khet between the Plus (+) button and the FD option, and ONLY the logo is visible -->
-          <button type="button" class="nav-btn nav-pill-btn" onclick="openFdModal()" title="Fixed Deposit (FD)">
-            <i class="fa-solid fa-building-columns" style="color:#818cf8;"></i>
-            <span>FD</span>
+          <!-- Requirement 3: Show ONLY the logo for FD on dashboard (no text label) -->
+          <button type="button" class="nav-btn fd-icon-only-btn" onclick="openFdModal()" title="Fixed Deposit (FD) &amp; Savings Portfolio" aria-label="Fixed Deposit (FD)">
+            <i class="fa-solid fa-building-columns" style="color:#c084fc; font-size:1.05rem;"></i>
           </button>
 
           <button type="button" class="nav-btn khet-icon-only-btn" onclick="openKhetModal()" title="Khet (Field)" aria-label="Khet (Field)">
@@ -3233,31 +3345,31 @@
             </div>
           </div>
           <div class="home-khet-stats-bar">
-            <div class="home-khet-stat-pill">
+            <div class="home-khet-stat-pill" style="background:linear-gradient(135deg, rgba(16,185,129,0.28), rgba(5,150,105,0.14)); border:1px solid rgba(52,211,153,0.5);">
               <i class="fa-solid fa-layer-group" style="color:#34d399;"></i>
-              <span>Plots: <strong id="homeKhetTotalCount">0</strong></span>
+              <span>Plots: <strong id="homeKhetTotalCount" style="color:#6ee7b7;">0</strong></span>
             </div>
-            <div class="home-khet-stat-pill">
-              <i class="fa-solid fa-compass-drafting" style="color:#a78bfa;"></i>
-              <span>Decimal (Orig / Survey): <strong id="homeKhetTotalDecimal">0 / 0</strong></span>
+            <div class="home-khet-stat-pill" style="background:linear-gradient(135deg, rgba(168,85,247,0.28), rgba(124,58,237,0.14)); border:1px solid rgba(192,132,252,0.5);">
+              <i class="fa-solid fa-compass-drafting" style="color:#c084fc;"></i>
+              <span>Decimal (Orig / Survey): <strong id="homeKhetTotalDecimal" style="color:#e9d5ff;">0 / 0</strong></span>
             </div>
-            <div class="home-khet-stat-pill">
+            <div class="home-khet-stat-pill" style="background:linear-gradient(135deg, rgba(14,165,233,0.28), rgba(37,99,235,0.14)); border:1px solid rgba(56,189,248,0.5);">
               <i class="fa-solid fa-ruler-combined" style="color:#38bdf8;"></i>
-              <span>Total Katha: <strong id="homeKhetTotalBigha">0 Katha</strong></span>
+              <span>Total Katha: <strong id="homeKhetTotalBigha" style="color:#bae6fd;">0 Katha</strong></span>
             </div>
-            <div class="home-khet-stat-pill">
+            <div class="home-khet-stat-pill" style="background:linear-gradient(135deg, rgba(245,158,11,0.28), rgba(217,119,6,0.14)); border:1px solid rgba(251,191,36,0.5);">
               <i class="fa-solid fa-sack-dollar" style="color:#fbbf24;"></i>
-              <span>Land Value: <strong id="homeKhetTotalValuation" style="color:#fbbf24;">₹0</strong></span>
+              <span>Land Value: <strong id="homeKhetTotalValuation" style="color:#fde68a;">₹0</strong></span>
             </div>
-            <div class="home-khet-stat-pill">
-              <i class="fa-solid fa-indian-rupee-sign" style="color:#10b981;"></i>
-              <span>Paid: <strong id="homeKhetTotalPaid" style="color:var(--accent-green);">₹0</strong></span>
+            <div class="home-khet-stat-pill" style="background:linear-gradient(135deg, rgba(34,197,94,0.28), rgba(16,185,129,0.14)); border:1px solid rgba(74,222,128,0.5);">
+              <i class="fa-solid fa-indian-rupee-sign" style="color:#4ade80;"></i>
+              <span>Paid: <strong id="homeKhetTotalPaid" style="color:#86efac;">₹0</strong></span>
             </div>
-            <div class="home-khet-stat-pill">
-              <i class="fa-solid fa-sliders" style="color:#38bdf8;"></i>
-              <span>Adjusted: <strong id="homeKhetTotalAdjusted" style="color:#38bdf8;">₹0</strong></span>
+            <div class="home-khet-stat-pill" style="background:linear-gradient(135deg, rgba(236,72,153,0.28), rgba(219,39,119,0.14)); border:1px solid rgba(244,114,182,0.5);">
+              <i class="fa-solid fa-sliders" style="color:#f472b6;"></i>
+              <span>Adjusted: <strong id="homeKhetTotalAdjusted" style="color:#fbcfe8;">₹0</strong></span>
             </div>
-            <button type="button" class="btn-primary admin-only" style="width:auto; padding:8px 14px; font-size:0.78rem; background:linear-gradient(135deg, #10b981 0%, #059669 100%);" onclick="openKhetModal()">
+            <button type="button" class="btn-primary admin-only" style="width:auto; padding:8px 15px; font-size:0.78rem; background:linear-gradient(135deg, #10b981 0%, #0ea5e9 55%, #8b5cf6 100%); box-shadow:0 6px 18px rgba(16,185,129,0.35);" onclick="openKhetModal()">
               <i class="fa-solid fa-plus-circle"></i> Add / Manage Khet &amp; Partners
             </button>
           </div>
@@ -3446,7 +3558,27 @@
 
       <!-- Scope fields when Viewer or Renter is selected -->
       <div id="editAssignScopeBox" style="background:var(--bg-input); border:1px solid var(--glass-border); border-radius:12px; padding:12px; margin-bottom:14px;">
-        <div class="form-group" style="margin-bottom:10px;">
+        <!-- Requirement 6: Renter Aadhaar Card Binding inside Edit User Modal -->
+        <div id="editAssignRenterAadhaarBox" style="display:none; background:rgba(168, 85, 247, 0.14); border:1.5px solid rgba(192, 132, 252, 0.5); border-radius:10px; padding:10px; margin-bottom:10px;">
+          <div style="font-size:0.76rem; font-weight:800; color:#e9d5ff; margin-bottom:6px;">
+            <i class="fa-solid fa-id-card" style="color:#c084fc;"></i> Bind Renter Account to Aadhaar Card (Strict Isolation)
+          </div>
+          <div class="form-group" style="margin-bottom:8px;">
+            <label style="font-size:0.73rem;">Quick-Select Existing Renter Profile (Auto-Fills Aadhaar &amp; Flat)</label>
+            <select id="editAssignRenterQuickSelect" class="form-control" onchange="handleEditAssignRenterQuickSelect(this.value)">
+              <option value="">-- Select Renter by Name &amp; Aadhaar --</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:4px;">
+            <label style="font-size:0.73rem;">Linked 12-Digit Aadhaar Card Number <span class="req-star">*</span></label>
+            <input type="text" id="editAssignAadhaar" class="form-control" maxlength="12" placeholder="Enter 12-digit Aadhaar Number" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 12)">
+          </div>
+          <div style="font-size:0.68rem; color:#d8b4fe; line-height:1.35;">
+            This Renter will strictly only see their own profile and historical receipts matching this Aadhaar card.
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:10px;" id="editAssignScopeLevelGroup">
           <label id="editAssignScopeTitle">Viewer Scope Level</label>
           <select id="editAssignScopeLevel" class="form-control" onchange="handleEditAssignScopeLevelChange()">
             <option value="FLAT">Single Specific Flat (e.g. Flat 101)</option>
@@ -3958,13 +4090,33 @@
           </select>
         </div>
 
-        <!-- Requirement 3: Prompt to select Property & Specific Flat when creating a Viewer account -->
+        <!-- Requirement 3 & 6: Prompt to select Property, Flat & Aadhaar Card when creating a Viewer or Renter account -->
         <div id="viewerScopeSelectionBox" style="display:none; background:rgba(79, 70, 229, 0.1); border:1.5px solid var(--primary); border-radius:12px; padding:14px; margin-bottom:14px;">
-          <div style="font-size:0.82rem; font-weight:800; color:var(--primary); margin-bottom:10px;">
+          <div id="viewerScopeBoxHeaderTitle" style="font-size:0.82rem; font-weight:800; color:var(--primary); margin-bottom:10px;">
             <i class="fa-solid fa-shield-halved"></i> Viewer / Renter Access Scope Configuration
           </div>
 
-          <div class="form-group" style="margin-bottom:12px;">
+          <!-- Requirement 6: Strict Aadhaar Card Binding for Renter Role -->
+          <div id="createRenterAadhaarBox" style="display:none; background:linear-gradient(135deg, rgba(168, 85, 247, 0.18), rgba(236, 72, 153, 0.12)); border:1.5px solid rgba(192, 132, 252, 0.55); border-radius:12px; padding:12px; margin-bottom:12px;">
+            <div style="font-size:0.78rem; font-weight:800; color:#f3e8ff; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-id-card-clip" style="color:#c084fc;"></i> Renter Aadhaar Card Binding (Strict Receipt &amp; Profile Isolation)
+            </div>
+            <div class="form-group" style="margin-bottom:8px;">
+              <label style="font-size:0.74rem; color:#e9d5ff;">Select Renter Profile (Auto-Fills Aadhaar, Name, Mobile &amp; Flat)</label>
+              <select id="createUserRenterQuickSelect" class="form-control" onchange="handleCreateUserRenterQuickSelect(this.value)">
+                <option value="">-- Choose Existing Renter Profile (by Name &amp; Aadhaar) --</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:4px;">
+              <label style="font-size:0.74rem; color:#e9d5ff;">Renter's 12-Digit Aadhaar Card Number <span class="req-star">*</span></label>
+              <input type="text" id="createUserAssignedAadhaar" class="form-control" maxlength="12" placeholder="Enter 12-digit Aadhaar Number (e.g. 987654321012)" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 12)">
+            </div>
+            <div style="font-size:0.7rem; color:#e9d5ff; opacity:0.9; line-height:1.35; margin-top:4px;">
+              <i class="fa-solid fa-lock"></i> Based on this Aadhaar card, this Renter will strictly only have access to their own profile and their own historical receipts linked to this Aadhaar card, and nothing else.
+            </div>
+          </div>
+
+          <div class="form-group" id="createViewerScopeTypeGroup" style="margin-bottom:12px;">
             <label>Select Access Level <span class="req-star">*</span></label>
             <select id="createViewerScopeType" class="form-control" onchange="handleViewerScopeTypeChange()">
               <option value="ALL">1. All Properties (Can view all properties &amp; flats, current &amp; future)</option>
@@ -4063,12 +4215,12 @@
           <button
             type="button"
             id="btnOtherOptChangeBg"
-            class="btn-ledger-action other-tool-card"
+            class="btn-ledger-action admin-only other-tool-card"
             style="border-color: rgba(236, 72, 153, 0.5) !important; background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(219, 39, 119, 0.08));"
             onclick="switchOtherSubOption('changeBg')"
           >
             <div class="tool-top" style="color:#f472b6;"><i class="fa-solid fa-image"></i> 3. Background Photo</div>
-            <div class="tool-desc">Upload or link custom Login &amp; Dashboard wallpapers</div>
+            <div class="tool-desc">Admin Only: Upload global background wallpaper for all devices</div>
           </button>
           <button
             type="button"
@@ -4094,15 +4246,15 @@
         </div>
 
         
-        <!-- Option: Change Background Photo -->
-        <div id="otherPanelChangeBg" class="stat-pill" style="text-align: left; display: none;">
+        <!-- Option: Change Background Photo (Requirement 7: Strictly Admin-Only Global Background Authority) -->
+        <div id="otherPanelChangeBg" class="stat-pill admin-only" style="text-align: left; display: none;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--glass-border);">
             <div>
               <span style="font-weight:800; font-size:0.88rem; color:#ec4899;">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Customize Portal Background Photos
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Admin Global Portal Background Wallpaper
               </span>
               <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">
-                Paste any high-resolution image link. Images render with 100% clarity and save across your logins.
+                Upload a photo or paste an image link. Once set by the Admin, this exact background displays globally on all devices and for all roles.
               </div>
             </div>
             <span style="font-size:0.7rem; color:#10b981; font-weight:700; background:rgba(16,185,129,0.15); padding:3px 8px; border-radius:12px;">
@@ -4413,11 +4565,11 @@
 
       <!-- Navigation Bar -->
       <nav class="flat-nav-bar" id="flatModalNavBar" style="grid-template-columns: repeat(5, 1fr);">
-        <div class="flat-nav-item active" onclick="switchFlatTab(event, 'tabCalc')">1. Calculation</div>
-        <div class="flat-nav-item" onclick="switchFlatTab(event, 'tabHistory')">2. History</div>
-        <div class="flat-nav-item" onclick="switchFlatTab(event, 'tabProfile')">3. Profile</div>
-        <div class="flat-nav-item" onclick="switchFlatTab(event, 'tabRenterHistory')">4. Renter History</div>
-        <div class="flat-nav-item" onclick="switchFlatTab(event, 'tabGraph')">5. Graph</div>
+        <div class="flat-nav-item non-renter-tab active" onclick="switchFlatTab(event, 'tabCalc')">1. Calculation</div>
+        <div class="flat-nav-item" id="flatNavTabHistory" onclick="switchFlatTab(event, 'tabHistory')">2. History</div>
+        <div class="flat-nav-item" id="flatNavTabProfile" onclick="switchFlatTab(event, 'tabProfile')">3. Profile</div>
+        <div class="flat-nav-item non-renter-tab" onclick="switchFlatTab(event, 'tabRenterHistory')">4. Renter History</div>
+        <div class="flat-nav-item non-renter-tab" onclick="switchFlatTab(event, 'tabGraph')">5. Graph</div>
       </nav>
 
       <!-- TAB 1: CALCULATION WORKFLOW (Requirement 2 & 3: Colorful Calculation Boxes + Payment Date Next to Total Amount Paid) -->
@@ -6119,9 +6271,20 @@ function formatMonthLabel(rawVal) {
       const savedMobile = sessionStorage.getItem("active_session_mobile") || "";
       const savedAssignedProp = sessionStorage.getItem("active_session_assigned_prop") || "";
       const savedAssignedFlat = sessionStorage.getItem("active_session_assigned_flat") || "";
+      const savedAssignedAadhaar = sessionStorage.getItem("active_session_assigned_aadhaar") || "";
+      const savedSessionToken = sessionStorage.getItem("active_session_token") || "";
       const savedSelectedProp = sessionStorage.getItem("active_selected_property");
 
       if (savedSelectedProp) selectedProperty = savedSelectedProp;
+
+      // Requirement 1: Listen for concurrent login in another tab/window on the same browser immediately
+      window.addEventListener("storage", (ev) => {
+        if (!activeUser || !activeSessionToken) return;
+        const expectedKey = "portal_device_session_" + String(activeUser).trim().toLowerCase();
+        if (ev.key === expectedKey && ev.newValue && ev.newValue !== activeSessionToken) {
+          triggerSingleDeviceSessionConflict();
+        }
+      });
 
       if (savedSessionUser) {
         // Verify active session user and load fresh data directly from Google Apps Script / Google Sheets
@@ -6131,6 +6294,8 @@ function formatMonthLabel(rawVal) {
         activeUserMobile = savedMobile;
         activeAssignedProperty = savedAssignedProp;
         activeAssignedFlat = savedAssignedFlat;
+        activeAssignedAadhaar = savedAssignedAadhaar;
+        activeSessionToken = savedSessionToken;
         applyRolePermissions(activeRole);
         unlockDashboardInstant(false);
         return;
@@ -6203,17 +6368,77 @@ function formatMonthLabel(rawVal) {
     }
 
     let hasAutoOpenedViewerFlatOnce = false;
+
+    // Requirement 6: Helper functions for strict Aadhaar-linked Renter isolation
+    function getNormalizedActiveRenterAadhaar() {
+      let aadh = String(activeAssignedAadhaar || "").replace(/\D/g, "").slice(0, 12);
+      if (!aadh && activeUser) {
+        const matchedU = (DB.users || []).find(u => String(u.Username || "").trim().toLowerCase() === String(activeUser).trim().toLowerCase());
+        if (matchedU && matchedU.AssignedAadhaar) {
+          aadh = String(matchedU.AssignedAadhaar).replace(/\D/g, "").slice(0, 12);
+          activeAssignedAadhaar = aadh;
+        }
+      }
+      return aadh;
+    }
+
+    function getRenterProfilesForLoggedInAadhaar() {
+      const aadh = getNormalizedActiveRenterAadhaar();
+      if (!aadh) return [];
+      return (DB.renters || []).filter(r => {
+        const rAadh = String(r.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
+        return rAadh && rAadh === aadh;
+      });
+    }
+
+    function isBillLinkedToLoggedInRenterAadhaar(bill) {
+      if (activeRole !== "Renter") return true;
+      const aadh = getNormalizedActiveRenterAadhaar();
+      const matchedProfiles = getRenterProfilesForLoggedInAadhaar();
+      if (!aadh || matchedProfiles.length === 0) return false;
+
+      const allowedIds = new Set(matchedProfiles.map(r => String(r.RenterID || "").trim()).filter(Boolean));
+      const billRenterId = String(bill.RenterID || "").trim();
+      if (billRenterId) {
+        return allowedIds.has(billRenterId);
+      }
+
+      // Fallback when older bill has no RenterID: match by TenantName + Property + Flat of that Aadhaar holder
+      const bTenant = String(bill.TenantName || "").trim().toLowerCase();
+      return matchedProfiles.some(r =>
+        String(r.RenterName || "").trim().toLowerCase() === bTenant &&
+        isSamePropAndFlat(r.PropertyName, r.FlatName, bill.PropertyName, bill.FlatName)
+      );
+    }
+
     function resolveViewerAssignedScope() {
       if (!isRestrictedRole(activeRole)) return null;
       let prop = String(activeAssignedProperty || "").trim();
       let flat = String(activeAssignedFlat || "").trim();
-      if (!prop && activeUser) {
+      if (activeUser) {
         const matchedU = (DB.users || []).find(u => String(u.Username || "").trim().toLowerCase() === String(activeUser).trim().toLowerCase());
         if (matchedU) {
-          prop = String(matchedU.AssignedProperty || prop || "").trim();
-          flat = String(matchedU.AssignedFlat || flat || "").trim();
+          if (!prop) prop = String(matchedU.AssignedProperty || "").trim();
+          if (!flat) flat = String(matchedU.AssignedFlat || "").trim();
+          if (!activeAssignedAadhaar && matchedU.AssignedAadhaar) {
+            activeAssignedAadhaar = String(matchedU.AssignedAadhaar).replace(/\D/g, "").slice(0, 12);
+          }
           activeAssignedProperty = prop;
           activeAssignedFlat = flat;
+        }
+      }
+      // Requirement 6: For Renter role, automatically resolve flat/property from their Aadhaar-linked Renter profile if needed
+      if (activeRole === "Renter") {
+        const matchedRenters = getRenterProfilesForLoggedInAadhaar();
+        const activeMatch = matchedRenters.find(r => String(r.Status || "").toLowerCase() === "active") || matchedRenters[0];
+        if (activeMatch) {
+          prop = activeMatch.PropertyName || prop;
+          flat = activeMatch.FlatName || flat;
+          activeAssignedProperty = prop;
+          activeAssignedFlat = flat;
+        }
+        if (prop && flat) {
+          return { mode: "FLAT", prop, flat, aadhaar: getNormalizedActiveRenterAadhaar() };
         }
       }
       if (!prop) return null;
@@ -6237,6 +6462,81 @@ function formatMonthLabel(rawVal) {
 
     function renderAllDashboardUI() {
       const viewerScope = resolveViewerAssignedScope();
+      if (activeRole === "Renter") {
+        const flatsContainer = document.getElementById("flatsList");
+        const propsBar = document.querySelector(".properties-bar");
+        const khetSec = document.getElementById("homeKhetSection");
+        if (propsBar) propsBar.style.display = "none";
+        if (khetSec) khetSec.style.display = "none";
+
+        const renterAadhaar = getNormalizedActiveRenterAadhaar();
+        const matchedProfiles = getRenterProfilesForLoggedInAadhaar();
+        const primaryRenter = matchedProfiles.find(r => String(r.Status || "").toLowerCase() === "active") || matchedProfiles[0] || null;
+
+        if (!renterAadhaar || !primaryRenter) {
+          if (flatsContainer) {
+            flatsContainer.innerHTML = `
+              <div class="empty-flats-prompt" style="border:1.5px solid rgba(192,132,252,0.5); background:linear-gradient(135deg, rgba(15,23,42,0.9), rgba(49,46,129,0.65));">
+                <i class="fa-solid fa-id-card-clip" style="color:#c084fc;"></i>
+                <h3>No Renter Profile Linked to Your Aadhaar Card</h3>
+                <p>Your Renter account ${renterAadhaar ? `(Aadhaar: ${renterAadhaar})` : ""} does not match any tenant Aadhaar record yet. Please ask the Admin to link your 12-digit Aadhaar number in Settings.</p>
+              </div>
+            `;
+          }
+          return;
+        }
+
+        const targetProp = primaryRenter.PropertyName || (viewerScope && viewerScope.prop) || "";
+        const targetFlat = primaryRenter.FlatName || (viewerScope && viewerScope.flat) || "";
+        selectedProperty = targetProp;
+        const assignedFlatObj = findFlatObject(targetProp, targetFlat) || {
+          PropertyName: targetProp,
+          FlatName: targetFlat,
+          RentAmount: primaryRenter.RentAmount || 0,
+          ElecRate: primaryRenter.ElecFixedRate || 0,
+          PNGRate: primaryRenter.PNGFixedRate || 0,
+          WaterRate: primaryRenter.WaterFixedRate || 0
+        };
+
+        // Render a dedicated Aadhaar-scoped Renter Portal Card on the dashboard
+        const myBills = (DB.bills || []).filter(b => isBillLinkedToLoggedInRenterAadhaar(b));
+        if (flatsContainer) {
+          flatsContainer.innerHTML = `
+            <div class="flat-card" style="grid-column: 1 / -1; max-width: 760px; margin: 0 auto; width: 100%; cursor: pointer; border: 2px solid rgba(192, 132, 252, 0.55) !important;" onclick="openFlatDetailsModal(findFlatObject('${String(targetProp).replace(/'/g, "\\'")}', '${String(targetFlat).replace(/'/g, "\\'")}') || {PropertyName:'${String(targetProp).replace(/'/g, "\\'")}', FlatName:'${String(targetFlat).replace(/'/g, "\\'")}'})">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div style="width:48px; height:48px; border-radius:14px; background:linear-gradient(135deg, #8b5cf6, #ec4899); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.3rem;">
+                    <i class="fa-solid fa-id-card-clip"></i>
+                  </div>
+                  <div>
+                    <div style="font-size:0.72rem; font-weight:800; color:#c084fc; text-transform:uppercase; letter-spacing:0.5px;">Aadhaar-Verified Renter Portal</div>
+                    <h3 style="margin:2px 0 0 0; font-size:1.18rem; color:#fff;">${primaryRenter.RenterName || activeUserFullName} — ${targetProp} (Flat ${targetFlat})</h3>
+                  </div>
+                </div>
+                <span class="badge-paid" style="font-size:0.75rem;"><i class="fa-solid fa-shield-halved"></i> Aadhaar: ${renterAadhaar}</span>
+              </div>
+              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap:10px; background:rgba(15,23,42,0.65); padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); font-size:0.8rem; margin-bottom:12px;">
+                <div><span style="color:var(--text-muted);">Renter Name:</span> <strong style="color:#fff;">${primaryRenter.RenterName || '--'}</strong></div>
+                <div><span style="color:var(--text-muted);">Aadhaar Card:</span> <strong style="color:#38bdf8;">${renterAadhaar}</strong></div>
+                <div><span style="color:var(--text-muted);">Mobile No.:</span> <strong style="color:#34d399;">${primaryRenter.MobileNumber || '--'}</strong></div>
+                <div><span style="color:var(--text-muted);">My Historical Receipts:</span> <strong style="color:#fbbf24;">${myBills.length} Receipt${myBills.length === 1 ? '' : 's'}</strong></div>
+              </div>
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button type="button" class="btn-primary" style="flex:1; background:linear-gradient(135deg, #6366f1, #8b5cf6);">
+                  <i class="fa-solid fa-receipt"></i> View My Receipts &amp; My Profile
+                </button>
+              </div>
+            </div>
+          `;
+        }
+
+        if (!hasAutoOpenedViewerFlatOnce) {
+          hasAutoOpenedViewerFlatOnce = true;
+          openFlatDetailsModal(assignedFlatObj, primaryRenter);
+        }
+        return;
+      }
+
       if (isRestrictedRole(activeRole)) {
         const flatsContainer = document.getElementById("flatsList");
         const propsBar = document.querySelector(".properties-bar");
@@ -6319,6 +6619,52 @@ function formatMonthLabel(rawVal) {
       }
     }
 
+    // Requirement 1: Single-Device Session Conflict Handler & Redirect Modal
+    function triggerSingleDeviceSessionConflict() {
+      if (isSessionConflictModalOpen) return;
+      isSessionConflictModalOpen = true;
+      if (syncTimer) {
+        clearInterval(syncTimer);
+        syncTimer = null;
+      }
+      // Immediately clear active session state on this first device
+      activeUser = null;
+      activeSessionToken = "";
+      selectedProperty = null;
+      selectedFlat = null;
+      activeFlatRenterObj = null;
+      sessionStorage.removeItem("active_session_user");
+      sessionStorage.removeItem("active_session_fullname");
+      sessionStorage.removeItem("active_session_mobile");
+      sessionStorage.removeItem("active_session_role");
+      sessionStorage.removeItem("active_session_assigned_prop");
+      sessionStorage.removeItem("active_session_assigned_flat");
+      sessionStorage.removeItem("active_session_assigned_aadhaar");
+      sessionStorage.removeItem("active_session_token");
+      sessionStorage.removeItem("active_selected_property");
+
+      // Close all other modals and show the Single-Device Session Conflict Alert Modal
+      document.querySelectorAll(".modal-overlay").forEach(m => {
+        if (m.id !== "sessionConflictModal") m.classList.remove("active");
+      });
+      const conflictModal = document.getElementById("sessionConflictModal");
+      if (conflictModal) {
+        conflictModal.classList.add("active");
+      }
+    }
+
+    function confirmSessionConflictRedirect() {
+      isSessionConflictModalOpen = false;
+      const conflictModal = document.getElementById("sessionConflictModal");
+      if (conflictModal) conflictModal.classList.remove("active");
+      document.getElementById("dashboardScreen")?.classList.remove("active");
+      document.getElementById("loginScreen")?.classList.add("active");
+      const uIn = document.getElementById("loginUsername");
+      const pIn = document.getElementById("loginPassword");
+      if (pIn) pIn.value = "";
+      if (uIn) uIn.focus();
+    }
+
     function unlockDashboardInstant(skipImmediateSync = false) {
       document.getElementById("loginScreen").classList.remove("active");
       document.getElementById("dashboardScreen").classList.add("active");
@@ -6329,9 +6675,10 @@ function formatMonthLabel(rawVal) {
       }
 
       if (syncTimer) clearInterval(syncTimer);
+      // Poll every 6 seconds so second-device logins & sheet changes are detected rapidly
       syncTimer = setInterval(() => {
         if (!document.hidden) syncDataLive(false);
-      }, 15000);
+      }, 6000);
     }
 
     // Zero Auth Cache Policy: Never store or validate usernames/passwords in localStorage so deleted IDs in Google Sheets fail login immediately
@@ -6365,9 +6712,7 @@ function formatMonthLabel(rawVal) {
         });
         const res = await resp.json();
         if (res && res.status === "success" && !activeUser) {
-          if (res.globalConfig) {
-            syncServerBackgroundsToLocal(res.globalConfig, "", "");
-          }
+          syncServerBackgroundsToLocal(res.globalConfig || res, res.bgLoginUrl || "", res.bgDashboardUrl || "", Boolean(res.globalConfig));
         }
       } catch (e) {} finally {
         isPrewarmingServer = false;
@@ -6393,32 +6738,39 @@ function formatMonthLabel(rawVal) {
       const badge = document.getElementById("headerRoleBadge");
       if (badge) {
         const scope = resolveViewerAssignedScope();
-        if ((activeRole === "Viewer" || activeRole === "Renter") && scope) {
-          const rolePrefix = activeRole === "Renter" ? "Renter" : "Viewer";
-          if (scope.mode === "ALL") badge.innerText = `${rolePrefix} • All Properties`;
-          else if (scope.mode === "SELECTED") badge.innerText = `${rolePrefix} • ${scope.prop}`;
-          else badge.innerText = `${rolePrefix} • ${scope.prop} (Flat ${scope.flat})`;
+        if (activeRole === "Renter") {
+          const aadh = getNormalizedActiveRenterAadhaar();
+          badge.innerText = aadh ? `Renter • Aadhaar ****${aadh.slice(-4)}` : `Renter`;
+        } else if (activeRole === "Viewer" && scope) {
+          if (scope.mode === "ALL") badge.innerText = `Viewer • All Properties`;
+          else if (scope.mode === "SELECTED") badge.innerText = `Viewer • ${scope.prop}`;
+          else badge.innerText = `Viewer • ${scope.prop} (Flat ${scope.flat})`;
         } else {
           badge.innerText = activeRole;
         }
         badge.style.background = activeRole === "Admin" 
-          ? "rgba(16, 185, 129, 0.2)" 
-          : (activeRole === "Renter" ? "rgba(168, 85, 247, 0.2)" : "rgba(245, 158, 11, 0.2)");
+          ? "linear-gradient(135deg, rgba(16, 185, 129, 0.32), rgba(5, 150, 105, 0.2))" 
+          : (activeRole === "Renter" ? "linear-gradient(135deg, rgba(168, 85, 247, 0.32), rgba(236, 72, 153, 0.2))" : "linear-gradient(135deg, rgba(245, 158, 11, 0.32), rgba(217, 119, 6, 0.2))");
       }
       const btnLoginHist = document.getElementById("btnOtherOptLoginHistory");
       const panelLoginHist = document.getElementById("otherPanelLoginHistory");
       const btnEditEvery = document.getElementById("btnOtherOptEditEverything");
       const panelEditEvery = document.getElementById("otherPanelEditEverything");
+      const btnChangeBg = document.getElementById("btnOtherOptChangeBg");
+      const panelChangeBg = document.getElementById("otherPanelChangeBg");
       const btnGrid = document.getElementById("otherOptionsBtnGrid");
       if (activeRole !== "Admin") {
         if (btnLoginHist) btnLoginHist.style.display = "none";
         if (panelLoginHist) panelLoginHist.style.display = "none";
         if (btnEditEvery) btnEditEvery.style.display = "none";
         if (panelEditEvery) panelEditEvery.style.display = "none";
-        if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr 1fr";
+        if (btnChangeBg) btnChangeBg.style.display = "none";
+        if (panelChangeBg) panelChangeBg.style.display = "none";
+        if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr";
       } else {
         if (btnLoginHist) btnLoginHist.style.display = "flex";
         if (btnEditEvery) btnEditEvery.style.display = "flex";
+        if (btnChangeBg) btnChangeBg.style.display = "flex";
         if (btnGrid) btnGrid.style.gridTemplateColumns = "repeat(2, 1fr)";
       }
     }
@@ -6446,6 +6798,10 @@ function formatMonthLabel(rawVal) {
       const matchedU = (DB.users || []).find(u => String(u.Username || "").trim().toLowerCase() === String(activeUser).trim().toLowerCase());
       activeAssignedProperty = res.assignedProperty || matchedU?.AssignedProperty || "";
       activeAssignedFlat = res.assignedFlat || matchedU?.AssignedFlat || "";
+      activeAssignedAadhaar = String(res.assignedAadhaar || matchedU?.AssignedAadhaar || "").replace(/\D/g, "").slice(0, 12);
+      if (res.sessionToken || matchedU?.ActiveSessionToken) {
+        activeSessionToken = String(res.sessionToken || matchedU?.ActiveSessionToken || activeSessionToken).trim();
+      }
 
       sessionStorage.setItem("active_session_user", activeUser);
       sessionStorage.setItem("active_session_fullname", activeUserFullName);
@@ -6453,6 +6809,11 @@ function formatMonthLabel(rawVal) {
       sessionStorage.setItem("active_session_role", activeRole);
       sessionStorage.setItem("active_session_assigned_prop", activeAssignedProperty);
       sessionStorage.setItem("active_session_assigned_flat", activeAssignedFlat);
+      sessionStorage.setItem("active_session_assigned_aadhaar", activeAssignedAadhaar);
+      sessionStorage.setItem("active_session_token", activeSessionToken);
+      try {
+        localStorage.setItem("portal_device_session_" + String(activeUser).trim().toLowerCase(), activeSessionToken);
+      } catch (e) {}
 
       applyVisualTheme(sheetTheme);
       applyRolePermissions(activeRole);
@@ -6465,7 +6826,7 @@ function formatMonthLabel(rawVal) {
       renderAllDashboardUI();
     }
 
-    // 1. Live Server-Verified Login Every Time (Never uses cached credentials so deleted User IDs are rejected immediately)
+    // 1. Live Server-Verified Login Every Time + Single-Device Session Token Generation
     let isSubmittingLogin = false;
     async function handleLoginSubmit(e) {
       e.preventDefault();
@@ -6485,8 +6846,9 @@ function formatMonthLabel(rawVal) {
       btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Verifying with Google Sheet...`;
 
       try {
+        const newSessionToken = "SESS-" + Date.now() + "-" + Math.random().toString(36).substring(2, 10);
         const gasUrl = getGasUrl();
-        const response = await fetch(`${gasUrl}?action=login&username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}&t=${Date.now()}`, {
+        const response = await fetch(`${gasUrl}?action=login&username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}&sessionToken=${encodeURIComponent(newSessionToken)}&t=${Date.now()}`, {
           method: "GET",
           cache: "no-store"
         });
@@ -6495,11 +6857,12 @@ function formatMonthLabel(rawVal) {
         if (res && res.status === "blocked") {
           showAccountBlockedModal(res.message || "Your account has been blocked by an administrator.");
         } else if (res && res.status === "success") {
+          activeSessionToken = String(res.sessionToken || newSessionToken).trim();
           hasAutoOpenedViewerFlatOnce = false;
           selectedProperty = null;
           sessionStorage.removeItem("active_selected_property");
           document.getElementById("loginPassword").value = "";
-          syncServerBackgroundsToLocal(res.globalConfig, res.bgLogin, res.bgDashboard);
+          syncServerBackgroundsToLocal(res.globalConfig || res, res.bgLoginUrl || res.bgLogin, res.bgDashboardUrl || res.bgDashboard, Boolean(res.globalConfig));
           applyServerLoginPayload(res);
           unlockDashboardInstant(true);
           triggerSideToast("Welcome Back", `Logged in as ${activeUserFullName}`, true);
@@ -6516,16 +6879,16 @@ function formatMonthLabel(rawVal) {
       }
     }
 
-    // 2. Continuous Live Background Sync Directly from Google Sheets (Detects manual row deletions & deleted User IDs immediately)
+    // 2. Continuous Live Background Sync Directly from Google Sheets (Detects 2nd-device login conflict, manual row deletions & Admin global background)
     async function syncDataLive(forceRender = false) {
-      if (!activeUser || isSyncingLive) return;
+      if (!activeUser || isSyncingLive || isSessionConflictModalOpen) return;
       if (!forceRender && (pendingWriteCount > 0 || (Date.now() - lastWriteCompletedAt < 4000))) {
         return;
       }
       isSyncingLive = true;
       try {
         const gasUrl = getGasUrl();
-        const response = await fetch(`${gasUrl}?action=getInitialData&username=${encodeURIComponent(activeUser)}&t=${Date.now()}`, {
+        const response = await fetch(`${gasUrl}?action=getInitialData&username=${encodeURIComponent(activeUser)}&sessionToken=${encodeURIComponent(activeSessionToken || "")}&t=${Date.now()}`, {
           method: "GET",
           cache: "no-store"
         });
@@ -6537,9 +6900,20 @@ function formatMonthLabel(rawVal) {
           }
 
           const incomingUsers = Array.isArray(res.users) ? res.users : [];
-          const activeUserStillInSheet = incomingUsers.some(
+          const matchedServerUser = incomingUsers.find(
             u => String(u.Username || "").trim().toLowerCase() === String(activeUser || "").trim().toLowerCase()
           );
+          const activeUserStillInSheet = Boolean(matchedServerUser);
+
+          // Requirement 1: Check if this User ID has logged in from a second device!
+          const serverToken = String(res.activeSessionToken || matchedServerUser?.ActiveSessionToken || "").trim();
+          if (
+            res.sessionConflict === true ||
+            (activeSessionToken && serverToken && serverToken !== activeSessionToken)
+          ) {
+            triggerSingleDeviceSessionConflict();
+            return;
+          }
 
           // If the currently logged-in user's row was manually deleted in Google Sheets, log out & wipe dashboard immediately!
           if (res.userDeleted === true || res.userExists === false || !activeUserStillInSheet) {
@@ -6603,9 +6977,7 @@ function formatMonthLabel(rawVal) {
           rebindSelectedFlatAndRenterReferences();
           saveDbSnapshotToCache();
 
-          if (res.globalConfig) {
-            syncServerBackgroundsToLocal(res.globalConfig, res.userBgLogin || "", res.userBgDashboard || "");
-          }
+          syncServerBackgroundsToLocal(res.globalConfig || res, res.bgLoginUrl || res.userBgLogin || "", res.bgDashboardUrl || res.userBgDashboard || "", Boolean(res.globalConfig));
           if (res.userAssignedProperty !== undefined) {
             activeAssignedProperty = res.userAssignedProperty || "";
             sessionStorage.setItem("active_session_assigned_prop", activeAssignedProperty);
@@ -6613,6 +6985,10 @@ function formatMonthLabel(rawVal) {
           if (res.userAssignedFlat !== undefined) {
             activeAssignedFlat = res.userAssignedFlat || "";
             sessionStorage.setItem("active_session_assigned_flat", activeAssignedFlat);
+          }
+          if (res.userAssignedAadhaar !== undefined || matchedServerUser?.AssignedAadhaar !== undefined) {
+            activeAssignedAadhaar = String(res.userAssignedAadhaar || matchedServerUser?.AssignedAadhaar || "").replace(/\D/g, "").slice(0, 12);
+            sessionStorage.setItem("active_session_assigned_aadhaar", activeAssignedAadhaar);
           }
           if (res.userTheme && res.userTheme !== activeThemePref) {
             applyVisualTheme(res.userTheme);
@@ -7564,16 +7940,102 @@ function formatMonthLabel(rawVal) {
       }).join("");
     }
 
-    // Requirement 2 & 3: Registered User Management (Delete, Change Role Admin <-> Regular User/Viewer) & Flat-Scoped Viewer Creation
+    // Requirement 2, 3 & 6: Registered User Management & Aadhaar-Bound Renter Creation
+    function populateRenterQuickSelectDropdowns() {
+      const renters = (DB.renters || []).filter(r => r.RenterName || r.IdentityDocNumber);
+      const opts = ['<option value="">-- Choose Existing Renter Profile (by Name & Aadhaar) --</option>'];
+      renters.forEach((r, idx) => {
+        const cleanAadh = String(r.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
+        const statusTag = String(r.Status || "Active").toLowerCase() === "active" ? "Active" : "Past";
+        const label = `${r.RenterName || "Tenant"} — ${r.PropertyName || ""} Flat ${r.FlatName || ""} (${cleanAadh ? "Aadhaar: " + cleanAadh : "No Aadhaar"} • ${statusTag})`;
+        const val = `${r.RenterID || ("IDX-" + idx)}`;
+        opts.push(`<option value="${String(val).replace(/"/g, '&quot;')}">${label}</option>`);
+      });
+      const createSel = document.getElementById("createUserRenterQuickSelect");
+      const editSel = document.getElementById("editAssignRenterQuickSelect");
+      if (createSel) createSel.innerHTML = opts.join("");
+      if (editSel) editSel.innerHTML = opts.join("");
+    }
+
+    function handleCreateUserRenterQuickSelect(renterIdOrIdx) {
+      if (!renterIdOrIdx) return;
+      let target = null;
+      if (String(renterIdOrIdx).startsWith("IDX-")) {
+        const idx = parseInt(String(renterIdOrIdx).replace("IDX-", ""), 10);
+        target = (DB.renters || [])[idx];
+      } else {
+        target = (DB.renters || []).find(r => String(r.RenterID || "") === String(renterIdOrIdx));
+      }
+      if (!target) return;
+
+      const cleanAadh = String(target.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
+      const aadhInput = document.getElementById("createUserAssignedAadhaar");
+      if (aadhInput && cleanAadh) aadhInput.value = cleanAadh;
+
+      const nameInput = document.getElementById("createUserName");
+      if (nameInput && !nameInput.value.trim() && target.RenterName) {
+        nameInput.value = target.RenterName;
+      }
+      const mobInput = document.getElementById("createUserMobile");
+      if (mobInput && (!mobInput.value.trim() || mobInput.value.trim() === "+91") && target.MobileNumber) {
+        mobInput.value = target.MobileNumber;
+      }
+      const propSel = document.getElementById("createUserAssignedProp");
+      if (propSel && target.PropertyName) {
+        propSel.value = target.PropertyName;
+        populateCreateUserFlatsDropdown();
+        const flatSel = document.getElementById("createUserAssignedFlat");
+        if (flatSel && target.FlatName) flatSel.value = target.FlatName;
+      }
+    }
+
+    function handleEditAssignRenterQuickSelect(renterIdOrIdx) {
+      if (!renterIdOrIdx) return;
+      let target = null;
+      if (String(renterIdOrIdx).startsWith("IDX-")) {
+        const idx = parseInt(String(renterIdOrIdx).replace("IDX-", ""), 10);
+        target = (DB.renters || [])[idx];
+      } else {
+        target = (DB.renters || []).find(r => String(r.RenterID || "") === String(renterIdOrIdx));
+      }
+      if (!target) return;
+
+      const cleanAadh = String(target.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
+      const aadhInput = document.getElementById("editAssignAadhaar");
+      if (aadhInput && cleanAadh) aadhInput.value = cleanAadh;
+
+      const propSel = document.getElementById("editAssignPropDropdown");
+      if (propSel && target.PropertyName) {
+        propSel.value = target.PropertyName;
+        populateEditAssignFlatsDropdown();
+        const flatSel = document.getElementById("editAssignFlatDropdown");
+        if (flatSel && target.FlatName) flatSel.value = target.FlatName;
+      }
+    }
+
     function handleCreateUserRoleChange() {
       const roleSelect = document.getElementById("createUserRole");
       const scopeBox = document.getElementById("viewerScopeSelectionBox");
+      const renterAadhaarBox = document.getElementById("createRenterAadhaarBox");
+      const scopeTypeGroup = document.getElementById("createViewerScopeTypeGroup");
+      const scopeTypeSelect = document.getElementById("createViewerScopeType");
       if (!roleSelect || !scopeBox) return;
       if (roleSelect.value === "Viewer" || roleSelect.value === "Renter") {
         scopeBox.style.display = "block";
         populateCreateUserFlatsDropdown();
+        populateRenterQuickSelectDropdowns();
+        if (roleSelect.value === "Renter") {
+          if (renterAadhaarBox) renterAadhaarBox.style.display = "block";
+          if (scopeTypeSelect) scopeTypeSelect.value = "FLAT";
+          if (scopeTypeGroup) scopeTypeGroup.style.display = "none";
+          handleViewerScopeTypeChange();
+        } else {
+          if (renterAadhaarBox) renterAadhaarBox.style.display = "none";
+          if (scopeTypeGroup) scopeTypeGroup.style.display = "block";
+        }
       } else {
         scopeBox.style.display = "none";
+        if (renterAadhaarBox) renterAadhaarBox.style.display = "none";
       }
     }
 
@@ -7638,7 +8100,7 @@ function formatMonthLabel(rawVal) {
       }).join("");
     }
 
-    // Requirement 4: Switch Other Sub-Options (Users, History, ChangeBg, Edit Everything)
+    // Requirement 4 & 7: Switch Other Sub-Options (Users, History, ChangeBg, Edit Everything — ChangeBg is strictly Admin-Only)
     function switchOtherSubOption(opt) {
       const usersPanel = document.getElementById("otherPanelUsers");
       const historyPanel = document.getElementById("otherPanelLoginHistory");
@@ -7650,14 +8112,14 @@ function formatMonthLabel(rawVal) {
       const btnEe = document.getElementById("btnOtherOptEditEverything");
       const isAdmin = String(activeRole || "").trim().toLowerCase() === "admin";
 
-      if ((opt === "history" || opt === "editEverything") && !isAdmin) {
-        triggerSideToast("Admin Permission Required", "Only Admin users have permission to access this section.", false);
+      if ((opt === "history" || opt === "editEverything" || opt === "changeBg") && !isAdmin) {
+        triggerSideToast("Admin Permission Required", "Only the Admin has authority to access this section.", false);
         opt = "users";
       }
 
       [usersPanel, historyPanel, changeBgPanel, eePanel].forEach(p => { if (p) p.style.display = "none"; });
       if (btnUsers) btnUsers.className = "btn-ledger-action other-tool-card";
-      if (btnChangeBg) btnChangeBg.className = "btn-ledger-action other-tool-card";
+      if (btnChangeBg) btnChangeBg.className = "btn-ledger-action admin-only other-tool-card";
       [btnHistory, btnEe].forEach(b => { if (b) b.className = "btn-ledger-action admin-only other-tool-card"; });
 
       if (opt === "history") {
@@ -7667,7 +8129,7 @@ function formatMonthLabel(rawVal) {
         renderLoginHistoryPage();
       } else if (opt === "changeBg") {
         if (changeBgPanel) changeBgPanel.style.display = "block";
-        if (btnChangeBg) btnChangeBg.className = "btn-primary other-tool-card";
+        if (btnChangeBg) btnChangeBg.className = "btn-primary admin-only other-tool-card";
         initCustomBgInputs();
       } else if (opt === "editEverything") {
         if (eePanel) eePanel.style.display = "block";
@@ -7877,21 +8339,28 @@ function formatMonthLabel(rawVal) {
       deleteBillFromEditEverything(billId);
     }
 
-    // Requirement 5: Open Edit User Assignment Modal to change role, property, or flat
+    // Requirement 5 & 6: Open Edit User Assignment Modal to change role, property, flat, or linked Renter Aadhaar
     function openEditUserAssignmentModal(targetUsername) {
       const u = (DB.users || []).find(item => String(item.Username || "").trim().toLowerCase() === String(targetUsername).trim().toLowerCase());
       if (!u) return triggerSideToast("Error", "User record not found.", false);
+
+      populateRenterQuickSelectDropdowns();
 
       document.getElementById("editAssignTargetUsername").value = u.Username || "";
       document.getElementById("editAssignUsernameDisplay").value = "@" + (u.Username || "");
       document.getElementById("editAssignFullName").value = u.FullName || u.Username || "";
       document.getElementById("editAssignRole").value = (u.Role === "Renter") ? "Renter" : ((u.Role === "Viewer") ? "Viewer" : "Admin");
 
+      const aadhEl = document.getElementById("editAssignAadhaar");
+      if (aadhEl) aadhEl.value = String(u.AssignedAadhaar || "").replace(/\D/g, "").slice(0, 12);
+
       const rawAssignedProp = String(u.AssignedProperty || "").trim();
       const rawAssignedFlat = String(u.AssignedFlat || "").trim();
       const scopeLevelEl = document.getElementById("editAssignScopeLevel");
       if (scopeLevelEl) {
-        if (rawAssignedProp.toUpperCase() === "ALL") {
+        if (u.Role === "Renter") {
+          scopeLevelEl.value = "FLAT";
+        } else if (rawAssignedProp.toUpperCase() === "ALL") {
           scopeLevelEl.value = "ALL";
         } else if (rawAssignedProp && (rawAssignedProp.includes(",") || !rawAssignedFlat)) {
           scopeLevelEl.value = "SELECTED";
@@ -7934,8 +8403,19 @@ function formatMonthLabel(rawVal) {
       const role = document.getElementById("editAssignRole")?.value;
       const scopeBox = document.getElementById("editAssignScopeBox");
       const scopeTitle = document.getElementById("editAssignScopeTitle");
+      const renterAadhaarBox = document.getElementById("editAssignRenterAadhaarBox");
+      const scopeLevelGroup = document.getElementById("editAssignScopeLevelGroup");
+      const scopeLevelEl = document.getElementById("editAssignScopeLevel");
       const restricted = (role === "Viewer" || role === "Renter");
       if (scopeBox) scopeBox.style.display = restricted ? "block" : "none";
+      if (renterAadhaarBox) renterAadhaarBox.style.display = (role === "Renter") ? "block" : "none";
+      if (role === "Renter") {
+        if (scopeLevelEl) scopeLevelEl.value = "FLAT";
+        if (scopeLevelGroup) scopeLevelGroup.style.display = "none";
+        handleEditAssignScopeLevelChange();
+      } else {
+        if (scopeLevelGroup) scopeLevelGroup.style.display = "block";
+      }
       if (scopeTitle) {
         scopeTitle.innerText = role === "Renter" ? "Renter Viewing Scope Assignment" : "Viewer Scope Level";
       }
@@ -7968,8 +8448,16 @@ function formatMonthLabel(rawVal) {
       const scopeLevel = document.getElementById("editAssignScopeLevel")?.value || "FLAT";
       let assignedProp = "";
       let assignedFlat = "";
+      let assignedAadhaar = "";
 
-      if (newRole === "Viewer" || newRole === "Renter") {
+      if (newRole === "Renter") {
+        assignedAadhaar = String(document.getElementById("editAssignAadhaar")?.value || "").replace(/\D/g, "").slice(0, 12);
+        if (assignedAadhaar.length !== 12) {
+          return triggerSideToast("12-Digit Aadhaar Required", "Please enter or select the Renter's valid 12-digit Aadhaar card number.", false);
+        }
+        assignedProp = document.getElementById("editAssignPropDropdown")?.value || "";
+        assignedFlat = document.getElementById("editAssignFlatDropdown")?.value || "";
+      } else if (newRole === "Viewer") {
         if (scopeLevel === "ALL") {
           assignedProp = "ALL";
           assignedFlat = "";
@@ -7989,14 +8477,17 @@ function formatMonthLabel(rawVal) {
       u.Role = newRole;
       u.AssignedProperty = assignedProp;
       u.AssignedFlat = assignedFlat;
+      u.AssignedAadhaar = assignedAadhaar;
 
       if (String(activeUser || "").trim().toLowerCase() === targetUser.toLowerCase()) {
         activeRole = newRole;
         activeAssignedProperty = assignedProp;
         activeAssignedFlat = assignedFlat;
+        activeAssignedAadhaar = assignedAadhaar;
         sessionStorage.setItem("active_session_role", newRole);
         sessionStorage.setItem("active_session_assigned_prop", assignedProp);
         sessionStorage.setItem("active_session_assigned_flat", assignedFlat);
+        sessionStorage.setItem("active_session_assigned_aadhaar", assignedAadhaar);
         applyRolePermissions(newRole);
       }
 
@@ -8006,7 +8497,7 @@ function formatMonthLabel(rawVal) {
       renderAllDashboardUI();
       triggerSideToast(
         "User Updated",
-        "@" + targetUser + " assignment updated to " + (assignedFlat ? "Flat " + assignedFlat + " in " + assignedProp : (assignedProp === "ALL" ? "All Properties" : (assignedProp || newRole))),
+        "@" + targetUser + " assignment updated" + (assignedAadhaar ? " (Aadhaar: " + assignedAadhaar + ")" : ""),
         true
       );
 
@@ -8016,7 +8507,8 @@ function formatMonthLabel(rawVal) {
         targetUsername: targetUser,
         newRole: newRole,
         assignedProperty: assignedProp,
-        assignedFlat: assignedFlat
+        assignedFlat: assignedFlat,
+        assignedAadhaar: assignedAadhaar
       });
     }
 
@@ -8036,10 +8528,13 @@ function formatMonthLabel(rawVal) {
         const safeUName = uName.replace(/'/g, "\\'");
         const roleStr = String(u.Role || "Admin").trim();
         const isTargetAdmin = roleStr.toLowerCase() === "admin";
-        const displayRoleLabel = isTargetAdmin ? "Admin" : (roleStr === "Renter" ? "Renter" : "Regular User (Viewer)");
+        const displayRoleLabel = isTargetAdmin ? "Admin" : (roleStr === "Renter" ? "Renter (Aadhaar-Isolated)" : "Regular User (Viewer)");
         const isCurrentLoggedUser = String(activeUser || "").trim().toLowerCase() === uName.toLowerCase();
-        const assignedInfo = (!isTargetAdmin && u.AssignedProperty)
-          ? `<div style="font-size:0.72rem; color:var(--primary); margin-top:2px;"><i class="fa-solid fa-door-open"></i> Assigned Scope: <strong>${u.AssignedFlat ? `${u.AssignedProperty} - Flat ${u.AssignedFlat}` : u.AssignedProperty}</strong></div>`
+        const assignedInfo = (!isTargetAdmin && (u.AssignedProperty || u.AssignedAadhaar))
+          ? `<div style="font-size:0.72rem; color:var(--primary); margin-top:2px;">
+               ${u.AssignedProperty ? `<i class="fa-solid fa-door-open"></i> Assigned Scope: <strong>${u.AssignedFlat ? `${u.AssignedProperty} - Flat ${u.AssignedFlat}` : u.AssignedProperty}</strong>` : ""}
+               ${u.AssignedAadhaar ? `<span style="margin-left:8px; color:#c084fc;"><i class="fa-solid fa-id-card"></i> Aadhaar: <strong>${u.AssignedAadhaar}</strong></span>` : ""}
+             </div>`
           : "";
 
         let adminControlsHtml = "";
@@ -8069,8 +8564,8 @@ function formatMonthLabel(rawVal) {
 
           adminControlsHtml = `
             <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:6px;">
-              <button type="button" class="btn-ledger-action edit-btn" style="padding:5px 9px; font-size:0.72rem; font-weight:700;" onclick="openEditUserAssignmentModal('${safeUName}')" title="Edit user role and flat assignment">
-                <i class="fa-solid fa-pen-to-square"></i> Edit Flat / Role
+              <button type="button" class="btn-ledger-action edit-btn" style="padding:5px 9px; font-size:0.72rem; font-weight:700;" onclick="openEditUserAssignmentModal('${safeUName}')" title="Edit user role, Aadhaar & flat assignment">
+                <i class="fa-solid fa-pen-to-square"></i> Edit Flat / Role / Aadhaar
               </button>
               ${roleToggleBtn}
               ${blockBtn}
@@ -8093,7 +8588,7 @@ function formatMonthLabel(rawVal) {
                 </div>
                 ${assignedInfo}
               </div>
-              <span class="role-badge" style="background:${isTargetAdmin ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)'};">${displayRoleLabel}</span>
+              <span class="role-badge" style="background:${isTargetAdmin ? 'rgba(16, 185, 129, 0.2)' : (roleStr === 'Renter' ? 'rgba(168, 85, 247, 0.25)' : 'rgba(245, 158, 11, 0.2)')};">${displayRoleLabel}</span>
             </div>
             ${adminControlsHtml}
           </div>
@@ -8126,14 +8621,6 @@ function formatMonthLabel(rawVal) {
       matchedUser.AssignedProperty = newRole === "Viewer" ? assignedProp : "";
       matchedUser.AssignedFlat = newRole === "Viewer" ? assignedFlat : "";
 
-      const authMap = getVerifiedAuthMap();
-      if (authMap[targetClean]) {
-        authMap[targetClean].role = newRole;
-        authMap[targetClean].assignedProperty = matchedUser.AssignedProperty;
-        authMap[targetClean].assignedFlat = matchedUser.AssignedFlat;
-        localStorage.setItem("portal_verified_auth_map", JSON.stringify(authMap));
-      }
-
       if (String(activeUser || "").trim().toLowerCase() === targetClean) {
         activeAssignedProperty = matchedUser.AssignedProperty;
         activeAssignedFlat = matchedUser.AssignedFlat;
@@ -8158,7 +8645,8 @@ function formatMonthLabel(rawVal) {
         targetUsername: targetUsername,
         newRole: newRole,
         assignedProperty: matchedUser.AssignedProperty,
-        assignedFlat: matchedUser.AssignedFlat
+        assignedFlat: matchedUser.AssignedFlat,
+        assignedAadhaar: matchedUser.AssignedAadhaar || ""
       });
     }
 
@@ -8194,9 +8682,12 @@ function formatMonthLabel(rawVal) {
       const panelLoginHist = document.getElementById("otherPanelLoginHistory");
       const btnEditEvery = document.getElementById("btnOtherOptEditEverything");
       const panelEditEvery = document.getElementById("otherPanelEditEverything");
+      const btnChangeBg = document.getElementById("btnOtherOptChangeBg");
+      const panelChangeBg = document.getElementById("otherPanelChangeBg");
       const btnGrid = document.getElementById("otherOptionsBtnGrid");
 
       populateCreateUserFlatsDropdown();
+      populateRenterQuickSelectDropdowns();
       handleCreateUserRoleChange();
 
       if (!isAdmin) {
@@ -8204,11 +8695,14 @@ function formatMonthLabel(rawVal) {
         if (panelLoginHist) panelLoginHist.style.display = "none";
         if (btnEditEvery) btnEditEvery.style.display = "none";
         if (panelEditEvery) panelEditEvery.style.display = "none";
-        if (btnGrid) btnGrid.style.gridTemplateColumns = "repeat(2, 1fr)";
+        if (btnChangeBg) btnChangeBg.style.display = "none";
+        if (panelChangeBg) panelChangeBg.style.display = "none";
+        if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr";
         switchOtherSubOption("users");
       } else {
         if (btnLoginHist) btnLoginHist.style.display = "flex";
         if (btnEditEvery) btnEditEvery.style.display = "flex";
+        if (btnChangeBg) btnChangeBg.style.display = "flex";
         if (btnGrid) btnGrid.style.gridTemplateColumns = "repeat(2, 1fr)";
         renderLoginHistoryPage();
       }
@@ -8225,6 +8719,7 @@ function formatMonthLabel(rawVal) {
       document.getElementById(subTabId).classList.add("active");
       if (subTabId === "setSubCreateUser") {
         populateCreateUserFlatsDropdown();
+        populateRenterQuickSelectDropdowns();
         handleCreateUserRoleChange();
       } else if (subTabId === "setSubOther") {
         renderRegisteredUsersList();
@@ -8277,7 +8772,16 @@ function formatMonthLabel(rawVal) {
       const scopeMode = document.getElementById("createViewerScopeType")?.value || "FLAT";
       let assignedProperty = "";
       let assignedFlat = "";
-      if (role === "Viewer" || role === "Renter") {
+      let assignedAadhaar = "";
+
+      if (role === "Renter") {
+        assignedAadhaar = String(document.getElementById("createUserAssignedAadhaar")?.value || "").replace(/\D/g, "").slice(0, 12);
+        if (assignedAadhaar.length !== 12) {
+          return triggerSideToast("Aadhaar Card Required", "Please select a Renter or enter their 12-digit Aadhaar Card number so their receipts and profile are strictly isolated.", false);
+        }
+        assignedProperty = (document.getElementById("createUserAssignedProp")?.value || "").trim();
+        assignedFlat = (document.getElementById("createUserAssignedFlat")?.value || "").trim();
+      } else if (role === "Viewer") {
         if (scopeMode === "ALL") {
           assignedProperty = "ALL";
           assignedFlat = "";
@@ -8297,10 +8801,10 @@ function formatMonthLabel(rawVal) {
 
       if (role === "Viewer" || role === "Renter") {
         const roleLabel = role === "Renter" ? "Renter" : "Viewer";
-        if (scopeMode === "SELECTED" && !assignedProperty) {
+        if (role === "Viewer" && scopeMode === "SELECTED" && !assignedProperty) {
           return triggerSideToast("Select Properties", `Please select at least one Property for this ${roleLabel} account.`, false);
         }
-        if (scopeMode === "FLAT" && (!assignedProperty || !assignedFlat)) {
+        if ((role === "Renter" || scopeMode === "FLAT") && (!assignedProperty || !assignedFlat)) {
           return triggerSideToast(`Select Flat for ${roleLabel}`, `Please select which Property and specific Flat this ${roleLabel} account is allowed to view.`, false);
         }
       }
@@ -8318,7 +8822,8 @@ function formatMonthLabel(rawVal) {
         newPassword: newP,
         role: role,
         assignedProperty: assignedProperty,
-        assignedFlat: assignedFlat
+        assignedFlat: assignedFlat,
+        assignedAadhaar: assignedAadhaar
       });
 
       if (res.status === "success") {
@@ -8330,21 +8835,16 @@ function formatMonthLabel(rawVal) {
           Theme: "black",
           MobileNumber: mobile,
           AssignedProperty: assignedProperty,
-          AssignedFlat: assignedFlat
-        });
-        saveVerifiedUserAuth(newU, newP, {
-          fullName: fullName,
-          role: role,
-          theme: "black",
-          mobile: mobile,
-          assignedProperty: assignedProperty,
-          assignedFlat: assignedFlat
+          AssignedFlat: assignedFlat,
+          AssignedAadhaar: assignedAadhaar
         });
         saveDbSnapshotToCache();
         document.getElementById("createUserName").value = "";
         document.getElementById("createUserMobile").value = "";
         document.getElementById("createUserLoginId").value = "";
         document.getElementById("createUserPass").value = "";
+        const aadhEl = document.getElementById("createUserAssignedAadhaar");
+        if (aadhEl) aadhEl.value = "";
         triggerSideToast("Account Created", res.message, true);
         openSettingsModal();
       } else {
@@ -9973,7 +10473,14 @@ function formatMonthLabel(rawVal) {
 
     function openFlatDetailsModal(flat, renter) {
       const viewerScope = resolveViewerAssignedScope();
-      if (activeRole === "Viewer" && viewerScope) {
+      if (activeRole === "Renter") {
+        const matchedProfiles = getRenterProfilesForLoggedInAadhaar();
+        const myProfileInFlat = matchedProfiles.find(r => isSamePropAndFlat(r.PropertyName, r.FlatName, flat.PropertyName, flat.FlatName)) || matchedProfiles[0];
+        if (!myProfileInFlat) {
+          return triggerSideToast("Access Restricted", "You only have permission to view your own Aadhaar-linked profile and historical receipts.", false);
+        }
+        renter = myProfileInFlat;
+      } else if (activeRole === "Viewer" && viewerScope) {
         if (viewerScope.mode === "FLAT" && !isSamePropAndFlat(flat.PropertyName, flat.FlatName, viewerScope.prop, viewerScope.flat)) {
           return triggerSideToast("Access Restricted", "Your Viewer account is only permitted to view your assigned flat.", false);
         }
@@ -10049,8 +10556,17 @@ function formatMonthLabel(rawVal) {
       renderAllRentersGraphForFlat(flat.PropertyName, flat.FlatName);
 
       const modal = document.getElementById("flatDetailsModal");
-      modal.querySelectorAll(".flat-nav-item").forEach((el, idx) => el.classList.toggle("active", idx === 0));
-      modal.querySelectorAll(".tab-content").forEach((el, idx) => el.classList.toggle("active", idx === 0));
+      const navBar = document.getElementById("flatModalNavBar");
+      if (activeRole === "Renter") {
+        // Requirement 6: Renter role only has access to their own Historical Receipts (Tab 2) and their own Profile (Tab 3)
+        if (navBar) navBar.style.gridTemplateColumns = "repeat(2, 1fr)";
+        modal.querySelectorAll(".flat-nav-item").forEach((el, idx) => el.classList.toggle("active", idx === 1));
+        modal.querySelectorAll(".tab-content").forEach((el, idx) => el.classList.toggle("active", idx === 1));
+      } else {
+        if (navBar) navBar.style.gridTemplateColumns = "repeat(5, 1fr)";
+        modal.querySelectorAll(".flat-nav-item").forEach((el, idx) => el.classList.toggle("active", idx === 0));
+        modal.querySelectorAll(".tab-content").forEach((el, idx) => el.classList.toggle("active", idx === 0));
+      }
 
       openModal('flatDetailsModal');
     }
@@ -10324,7 +10840,13 @@ function formatMonthLabel(rawVal) {
     function populateHistoryLedger(prop, flat) {
       const tbody = document.getElementById("ledgerTableBody");
       tbody.innerHTML = "";
-      const matchingBills = DB.bills.filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat));
+      // Requirement 6: When logged in as Renter, strictly filter bills to ONLY receipts linked to their Aadhaar card
+      const matchingBills = DB.bills.filter(b => {
+        if (activeRole === "Renter") {
+          return isBillLinkedToLoggedInRenterAadhaar(b);
+        }
+        return isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat);
+      });
       const newestFirstBills = [...matchingBills].reverse();
 
       const totalBills = newestFirstBills.length;
@@ -10550,6 +11072,11 @@ function formatMonthLabel(rawVal) {
 
       if (!bill) {
         return triggerSideToast("Not Found", "Receipt details could not be found.", false);
+      }
+
+      // Requirement 6: Prevent a Renter role from ever opening a receipt belonging to another Aadhaar holder
+      if (activeRole === "Renter" && !isBillLinkedToLoggedInRenterAadhaar(bill)) {
+        return triggerSideToast("Access Denied", "You are only permitted to view receipts linked to your own Aadhaar card.", false);
       }
 
       currentOpenedReceiptBill = bill;
@@ -11406,6 +11933,15 @@ function formatMonthLabel(rawVal) {
         return triggerSideToast("Not Found", "Could not locate tenant profile details.", false);
       }
 
+      // Requirement 6: Renter role can strictly only open their own Aadhaar-linked profile
+      if (activeRole === "Renter") {
+        const myAadhaar = getNormalizedActiveRenterAadhaar();
+        const targetAadhaar = String(targetRenter.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
+        if (!myAadhaar || targetAadhaar !== myAadhaar) {
+          return triggerSideToast("Access Denied", "You only have permission to view your own Aadhaar-linked profile.", false);
+        }
+      }
+
       const prop = targetRenter.PropertyName || propName || "";
       const flat = targetRenter.FlatName || flatName || "";
       const flatObj = findFlatObject(prop, flat);
@@ -11944,26 +12480,26 @@ function formatMonthLabel(rawVal) {
         const estGain = matAmt > amt ? (matAmt - amt) : 0;
 
         return `
-          <div style="padding:13px 15px; background:rgba(15,23,42,0.68); border:1px solid ${isSaving ? 'rgba(56,189,248,0.38)' : 'rgba(251,191,36,0.38)'}; border-left:5px solid ${isSaving ? '#0ea5e9' : '#f59e0b'}; border-radius:14px;">
+          <div style="padding:14px 16px; background:${isSaving ? 'linear-gradient(135deg, rgba(15,23,42,0.88) 0%, rgba(14,165,233,0.2) 55%, rgba(99,102,241,0.22) 100%)' : 'linear-gradient(135deg, rgba(15,23,42,0.88) 0%, rgba(245,158,11,0.2) 55%, rgba(236,72,153,0.2) 100%)'}; border:1.5px solid ${isSaving ? 'rgba(56,189,248,0.5)' : 'rgba(251,191,36,0.5)'}; border-left:6px solid ${isSaving ? '#0ea5e9' : '#f59e0b'}; border-radius:16px; box-shadow:0 10px 26px rgba(0,0,0,0.35);">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap; margin-bottom:8px;">
               <div>
                 <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                  <span style="font-size:0.68rem; font-weight:800; text-transform:uppercase; padding:2px 8px; border-radius:12px; background:${isSaving ? 'rgba(14,165,233,0.2)' : 'rgba(245,158,11,0.2)'}; color:${isSaving ? '#38bdf8' : '#fbbf24'};">
+                  <span style="font-size:0.68rem; font-weight:800; text-transform:uppercase; padding:3px 10px; border-radius:12px; background:${isSaving ? 'linear-gradient(135deg, rgba(14,165,233,0.35), rgba(59,130,246,0.25))' : 'linear-gradient(135deg, rgba(245,158,11,0.35), rgba(236,72,153,0.25))'}; color:${isSaving ? '#bae6fd' : '#fef3c7'}; border:1px solid ${isSaving ? 'rgba(56,189,248,0.45)' : 'rgba(251,191,36,0.45)'};">
                     <i class="fa-solid ${isSaving ? 'fa-piggy-bank' : 'fa-screwdriver-wrench'}"></i> ${purposeType}
                   </span>
-                  <span style="font-size:0.72rem; font-weight:700; color:#a5b4fc; background:rgba(99,102,241,0.18); padding:2px 8px; border-radius:12px;">
+                  <span style="font-size:0.72rem; font-weight:800; color:#e0e7ff; background:linear-gradient(135deg, rgba(99,102,241,0.32), rgba(168,85,247,0.25)); padding:3px 10px; border-radius:12px; border:1px solid rgba(165,180,252,0.4);">
                     <i class="fa-solid fa-location-dot"></i> Place: ${srcProp}
                   </span>
-                  <span style="font-size:0.7rem; color:var(--text-muted);"><i class="fa-regular fa-calendar"></i> Date: ${usageDate}</span>
+                  <span style="font-size:0.7rem; color:#cbd5e1; font-weight:600;"><i class="fa-regular fa-calendar"></i> Date: ${usageDate}</span>
                 </div>
-                <div style="font-weight:800; font-size:0.96rem; color:#f8fafc; margin-top:5px;">
+                <div style="font-weight:900; font-size:0.98rem; color:#f8fafc; margin-top:6px;">
                   Purpose: <span style="color:${isSaving ? '#38bdf8' : '#fbbf24'};">${usedPurpose}</span>
                 </div>
               </div>
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <div style="text-align:right;">
-                  <div style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Initial Funding / Used</div>
-                  <div style="font-size:1.05rem; font-weight:800; color:#34d399;">₹${amt.toLocaleString('en-IN')}</div>
+                <div style="text-align:right; background:rgba(16,185,129,0.16); padding:4px 10px; border-radius:10px; border:1px solid rgba(52,211,153,0.35);">
+                  <div style="font-size:0.65rem; color:#a7f3d0; text-transform:uppercase; font-weight:800;">Initial Funding / Used</div>
+                  <div style="font-size:1.06rem; font-weight:900; color:#34d399;">₹${amt.toLocaleString('en-IN')}</div>
                 </div>
                 <div style="display:flex; align-items:center; gap:5px;">
                   <button type="button" class="btn-ledger-action edit-btn admin-only" onclick="editFdRecord('${safeId}')" title="Edit Portfolio Entry">
@@ -11977,19 +12513,19 @@ function formatMonthLabel(rawVal) {
             </div>
 
             ${isSaving ? `
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap:8px; padding:9px 11px; background:rgba(2,132,199,0.11); border:1px solid rgba(56,189,248,0.24); border-radius:10px; font-size:0.75rem; margin-top:6px;">
-              <div><span style="color:var(--text-muted);">Bank Name:</span> <strong style="color:#f8fafc;">${bankName}</strong></div>
-              <div><span style="color:var(--text-muted);">Account / FD No.:</span> <strong style="color:#38bdf8;">${accountNo}</strong></div>
-              <div><span style="color:var(--text-muted);">Initial Funding:</span> <strong style="color:#34d399;">₹${amt.toLocaleString('en-IN')}</strong></div>
-              <div><span style="color:var(--text-muted);">Interest Rate:</span> <strong style="color:#fbbf24;">${rate ? rate + '% p.a.' : '--'}</strong></div>
-              <div><span style="color:var(--text-muted);">Maturity Amount:</span> <strong style="color:#a78bfa;">${matAmt > 0 ? '₹' + matAmt.toLocaleString('en-IN') : '--'}</strong> ${estGain > 0 ? `<span style="font-size:0.66rem; color:#34d399;">(+₹${estGain.toLocaleString('en-IN')})</span>` : ''}</div>
-              <div><span style="color:var(--text-muted);">Maturity Date:</span> <strong style="color:#f8fafc;">${maturity}</strong></div>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap:8px; padding:10px 12px; background:linear-gradient(135deg, rgba(2,132,199,0.2), rgba(79,70,229,0.18)); border:1px solid rgba(56,189,248,0.35); border-radius:12px; font-size:0.75rem; margin-top:6px;">
+              <div><span style="color:#bae6fd;">Bank Name:</span> <strong style="color:#f8fafc;">${bankName}</strong></div>
+              <div><span style="color:#bae6fd;">Account / FD No.:</span> <strong style="color:#38bdf8;">${accountNo}</strong></div>
+              <div><span style="color:#bae6fd;">Initial Funding:</span> <strong style="color:#34d399;">₹${amt.toLocaleString('en-IN')}</strong></div>
+              <div><span style="color:#bae6fd;">Interest Rate:</span> <strong style="color:#fbbf24;">${rate ? rate + '% p.a.' : '--'}</strong></div>
+              <div><span style="color:#bae6fd;">Maturity Amount:</span> <strong style="color:#e879f9;">${matAmt > 0 ? '₹' + matAmt.toLocaleString('en-IN') : '--'}</strong> ${estGain > 0 ? `<span style="font-size:0.66rem; color:#34d399; font-weight:800;">(+₹${estGain.toLocaleString('en-IN')})</span>` : ''}</div>
+              <div><span style="color:#bae6fd;">Maturity Date:</span> <strong style="color:#f8fafc;">${maturity}</strong></div>
             </div>
             ` : ''}
 
             ${notes ? `
-            <div style="font-size:0.74rem; color:#cbd5e1; margin-top:7px; padding-top:6px; border-top:1px dashed rgba(255,255,255,0.1);">
-              <i class="fa-solid fa-note-sticky" style="color:#94a3b8;"></i> <strong>Notes:</strong> ${notes}
+            <div style="font-size:0.74rem; color:#e2e8f0; margin-top:7px; padding-top:6px; border-top:1px dashed rgba(255,255,255,0.15);">
+              <i class="fa-solid fa-note-sticky" style="color:#f472b6;"></i> <strong>Notes:</strong> ${notes}
             </div>` : ''}
           </div>
         `;
@@ -12797,35 +13333,35 @@ function formatMonthLabel(rawVal) {
         const safeId = String(f.recId).replace(/'/g, "\\'");
         const safePartner = String(f.partnerName).replace(/'/g, "\\'");
         return `
-          <div style="padding:12px 14px; background:rgba(15,23,42,0.72); border:1px solid rgba(52,211,153,0.35); border-left:5px solid #10b981; border-radius:12px;">
+          <div style="padding:14px 16px; background:linear-gradient(135deg, rgba(15,23,42,0.88) 0%, rgba(6,78,59,0.42) 52%, rgba(49,46,129,0.45) 100%); border:1.5px solid rgba(52,211,153,0.5); border-left:6px solid #10b981; border-radius:16px; box-shadow:0 10px 26px rgba(0,0,0,0.35);">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
               <div style="flex:1; min-width:240px;">
                 <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                  <strong style="font-size:0.95rem; color:#f8fafc;">${f.place}</strong>
-                  <span style="font-size:0.7rem; background:rgba(16,185,129,0.18); color:#34d399; padding:2px 8px; border-radius:10px; font-weight:700;">Reg: ${f.registeredName}</span>
-                  <span style="font-size:0.7rem; background:rgba(251,191,36,0.18); color:#fbbf24; padding:2px 8px; border-radius:10px; font-weight:700;">Khata: ${f.khataNo} | Keshra: ${f.keshraNo}</span>
-                  <span style="font-size:0.7rem; background:rgba(56,189,248,0.18); color:#38bdf8; padding:2px 8px; border-radius:10px; font-weight:700;">${f.bighaLabel} ${f.ratePerKatha ? '@ ₹' + f.ratePerKatha.toLocaleString('en-IN') + '/Katha' : ''}</span>
+                  <strong style="font-size:0.98rem; color:#f8fafc;"><i class="fa-solid fa-seedling" style="color:#34d399;"></i> ${f.place}</strong>
+                  <span style="font-size:0.7rem; background:linear-gradient(135deg, rgba(16,185,129,0.28), rgba(5,150,105,0.2)); color:#6ee7b7; border:1px solid rgba(52,211,153,0.45); padding:2px 9px; border-radius:10px; font-weight:800;">Reg: ${f.registeredName}</span>
+                  <span style="font-size:0.7rem; background:linear-gradient(135deg, rgba(245,158,11,0.28), rgba(217,119,6,0.2)); color:#fde68a; border:1px solid rgba(251,191,36,0.45); padding:2px 9px; border-radius:10px; font-weight:800;">Khata: ${f.khataNo} | Keshra: ${f.keshraNo}</span>
+                  <span style="font-size:0.7rem; background:linear-gradient(135deg, rgba(14,165,233,0.28), rgba(37,99,235,0.2)); color:#bae6fd; border:1px solid rgba(56,189,248,0.45); padding:2px 9px; border-radius:10px; font-weight:800;">${f.bighaLabel} ${f.ratePerKatha ? '@ ₹' + f.ratePerKatha.toLocaleString('en-IN') + '/Katha' : ''}</span>
                 </div>
 
-                <div style="font-size:0.74rem; color:#cbd5e1; margin-top:5px; display:flex; flex-wrap:wrap; gap:10px;">
-                  <span>Orig Decimal: <strong>${f.decimalArea || '--'}</strong></span>
-                  <span>New Survey Decimal: <strong style="color:#a78bfa;">${f.newDecimalSurvey || '--'}</strong></span>
+                <div style="font-size:0.74rem; color:#e2e8f0; margin-top:6px; display:flex; flex-wrap:wrap; gap:12px;">
+                  <span>Orig Decimal: <strong style="color:#38bdf8;">${f.decimalArea || '--'}</strong></span>
+                  <span>New Survey Decimal: <strong style="color:#c084fc;">${f.newDecimalSurvey || '--'}</strong></span>
                   <span>Total Land Value: <strong style="color:#fbbf24;">${f.totalLandValue ? '₹' + f.totalLandValue.toLocaleString('en-IN') : '--'}</strong></span>
                 </div>
 
-                <div style="font-size:0.74rem; color:#fde68a; margin-top:5px; background:rgba(245,158,11,0.1); padding:5px 9px; border-radius:8px; border:1px solid rgba(251,191,36,0.22);">
-                  <i class="fa-solid fa-user-check"></i> <strong>Partner: ${f.partnerName}</strong>
-                  &nbsp;|&nbsp; Aadhaar: <strong>${f.partnerAadhaar}</strong>
+                <div style="font-size:0.74rem; color:#fef3c7; margin-top:6px; background:linear-gradient(135deg, rgba(245,158,11,0.18), rgba(236,72,153,0.12)); padding:7px 11px; border-radius:10px; border:1px solid rgba(251,191,36,0.38);">
+                  <i class="fa-solid fa-user-check" style="color:#fbbf24;"></i> <strong>Partner: ${f.partnerName}</strong>
+                  &nbsp;|&nbsp; Aadhaar: <strong style="color:#38bdf8;">${f.partnerAadhaar}</strong>
                   &nbsp;|&nbsp; Mob: <strong style="color:#34d399;">${f.partnerMobile}</strong>
                   &nbsp;|&nbsp; Addr: <span>${f.partnerAddress}</span>
-                  ${f.partnerName !== '--' ? `<button type="button" onclick="setKhetPartnerFilter('${safePartner}')" style="margin-left:6px; background:rgba(251,191,36,0.22); color:#fcd34d; border:none; border-radius:6px; padding:1px 6px; font-size:0.65rem; cursor:pointer;">Filter Partner</button>` : ''}
+                  ${f.partnerName !== '--' ? `<button type="button" onclick="setKhetPartnerFilter('${safePartner}')" style="margin-left:6px; background:linear-gradient(135deg, #f59e0b, #ec4899); color:#fff; border:none; border-radius:6px; padding:2px 8px; font-size:0.65rem; font-weight:800; cursor:pointer;">Filter Partner</button>` : ''}
                 </div>
 
-                <div style="font-size:0.74rem; color:var(--text-muted); margin-top:5px; display:flex; flex-wrap:wrap; gap:12px;">
+                <div style="font-size:0.74rem; color:#cbd5e1; margin-top:6px; display:flex; flex-wrap:wrap; gap:12px;">
                   <span>Paid: <strong style="color:#34d399;">₹${f.amountPaid.toLocaleString('en-IN')}</strong></span>
                   <span>Adjusted: <strong style="color:#38bdf8;">₹${f.adjustedAmount.toLocaleString('en-IN')}</strong></span>
                   <span>Net Settled: <strong style="color:#10b981;">₹${f.netSettled.toLocaleString('en-IN')}</strong></span>
-                  <span>Balance: <strong style="color:${f.remainingBalance > 0 ? '#f87171' : '#a78bfa'};">₹${f.remainingBalance.toLocaleString('en-IN')}</strong></span>
+                  <span>Balance: <strong style="color:${f.remainingBalance > 0 ? '#f87171' : '#e879f9'};">₹${f.remainingBalance.toLocaleString('en-IN')}</strong></span>
                   <span>Date: <strong>${f.paymentDate}</strong></span>
                   ${f.notes ? `<span>Notes: <em>${f.notes}</em></span>` : ''}
                 </div>
