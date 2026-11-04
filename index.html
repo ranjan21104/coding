@@ -14,6 +14,8 @@
   <!-- Include html2canvas for receipt image rendering & QRious for 100% reliable client-side UPI QR code generation -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
     // Requirement 4: Custom Backgrounds (Login & Dashboard) with 100% Clarity
+    const DEFAULT_PORTAL_BACKGROUND_IMAGE = "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=90";
+
     function getCustomBackgrounds() {
       const loginBg = localStorage.getItem("portal_custom_bg_login") || "";
       const dashBg = localStorage.getItem("portal_custom_bg_dashboard") || "";
@@ -25,63 +27,29 @@
       const loginScreenEl = document.getElementById("loginScreen");
       const dashScreenEl = document.getElementById("dashboardScreen");
 
+      const effectiveLoginBg = (loginBg && loginBg.trim()) ? loginBg.trim() : DEFAULT_PORTAL_BACKGROUND_IMAGE;
+      const effectiveDashBg = (dashBg && dashBg.trim()) ? dashBg.trim() : DEFAULT_PORTAL_BACKGROUND_IMAGE;
+
       if (loginScreenEl) {
-        if (loginBg && loginBg.trim()) {
-          loginScreenEl.style.backgroundImage = 'url("' + loginBg.trim() + '")';
-          loginScreenEl.style.backgroundSize = "cover";
-          loginScreenEl.style.backgroundPosition = "center";
-          loginScreenEl.style.backgroundRepeat = "no-repeat";
-          loginScreenEl.style.backgroundAttachment = "fixed";
-          loginScreenEl.style.imageRendering = "-webkit-optimize-contrast";
-        } else {
-          loginScreenEl.style.backgroundImage = "";
-          loginScreenEl.style.backgroundSize = "";
-          loginScreenEl.style.backgroundPosition = "";
-          loginScreenEl.style.backgroundRepeat = "";
-          loginScreenEl.style.backgroundAttachment = "";
-        }
+        loginScreenEl.style.backgroundImage = 'url("' + effectiveLoginBg + '")';
+        loginScreenEl.style.backgroundSize = "cover";
+        loginScreenEl.style.backgroundPosition = "center";
+        loginScreenEl.style.backgroundRepeat = "no-repeat";
+        loginScreenEl.style.backgroundAttachment = "fixed";
+        loginScreenEl.style.imageRendering = "-webkit-optimize-contrast";
       }
 
       if (dashScreenEl) {
-        if (dashBg && dashBg.trim()) {
-          dashScreenEl.style.backgroundImage = 'url("' + dashBg.trim() + '")';
-          dashScreenEl.style.backgroundSize = "cover";
-          dashScreenEl.style.backgroundPosition = "center";
-          dashScreenEl.style.backgroundRepeat = "no-repeat";
-          dashScreenEl.style.backgroundAttachment = "fixed";
-          dashScreenEl.style.imageRendering = "-webkit-optimize-contrast";
-        } else {
-          dashScreenEl.style.backgroundImage = "";
-          dashScreenEl.style.backgroundSize = "";
-          dashScreenEl.style.backgroundPosition = "";
-          dashScreenEl.style.backgroundRepeat = "";
-          dashScreenEl.style.backgroundAttachment = "";
-        }
+        dashScreenEl.style.backgroundImage = 'url("' + effectiveDashBg + '")';
+        dashScreenEl.style.backgroundSize = "cover";
+        dashScreenEl.style.backgroundPosition = "center";
+        dashScreenEl.style.backgroundRepeat = "no-repeat";
+        dashScreenEl.style.backgroundAttachment = "fixed";
+        dashScreenEl.style.imageRendering = "-webkit-optimize-contrast";
       }
     }
 
-    function initCustomBgInputs() {
-      const { loginBg, dashBg } = getCustomBackgrounds();
-      const inputLogin = document.getElementById("bgUrlLoginScreen");
-      const inputDash = document.getElementById("bgUrlDashboardScreen");
-      if (inputLogin) inputLogin.value = loginBg;
-      if (inputDash) inputDash.value = dashBg;
-
-      const hintLogin = document.getElementById("bgLoginStatusHint");
-      const hintDash = document.getElementById("bgDashboardStatusHint");
-      if (hintLogin) {
-        hintLogin.innerHTML = loginBg
-          ? '<span style="color:#10b981;"><i class="fa-solid fa-circle-check"></i> Custom background active (100% clarity)</span>'
-          : 'Using default login background.';
-      }
-      if (hintDash) {
-        hintDash.innerHTML = dashBg
-          ? '<span style="color:#10b981;"><i class="fa-solid fa-circle-check"></i> Custom background active (100% clarity)</span>'
-          : 'Using default dashboard background.';
-      }
-    }
-
-    async function saveCustomBackgrounds() {
+    function saveCustomBackgrounds() {
       const inputLogin = document.getElementById("bgUrlLoginScreen");
       const inputDash = document.getElementById("bgUrlDashboardScreen");
       const loginVal = inputLogin ? inputLogin.value.trim() : "";
@@ -163,7 +131,14 @@
               targetUsername: targetUsername,
               newStatus: newStatus
             });
-            if (res && res.status === "success") {
+            if (res && (res.status === "blocked" || res.error === "blocked")) {
+          showAccountBlockedModal(res.message || "Your account has been blocked. Please contact support to unblock it.");
+          isSubmittingLogin = false;
+          btn.disabled = false;
+          btn.innerHTML = '<span>Log In</span><i class="fa-solid fa-arrow-right-to-bracket"></i>';
+          return;
+        }
+        if (res && res.status === "success") {
               const targetU = (DB.users || []).find(u => String(u.Username || "").toLowerCase() === targetUsername.toLowerCase());
               if (targetU) targetU.Status = newStatus;
               saveDbSnapshotToCache();
@@ -2515,7 +2490,68 @@
       border-color: #34d399 !important;
       box-shadow: 0 6px 16px rgba(16, 185, 129, 0.38);
     }
-  </style>
+  
+  /* ==========================================================================
+     MOBILE RESPONSIVENESS AND MULTI-COLUMN ADAPTIVE LAYOUTS
+     ========================================================================== */
+  .profile-matrix, .profile-matrix-3col {
+    display: grid !important;
+    grid-template-columns: 1fr 1.15fr 1fr !important;
+    gap: 16px !important;
+    align-items: start !important;
+  }
+
+  .role-restricted .admin-only,
+  .role-renter .admin-only,
+  .role-viewer .admin-only {
+    display: none !important;
+  }
+
+  @media (max-width: 960px) {
+    .profile-matrix, .profile-matrix-3col {
+      grid-template-columns: 1fr !important;
+      gap: 14px !important;
+    }
+    .details-card-renter { order: 1; }
+    .photos-combined-col { order: 2; }
+    .details-card-utility { order: 3; }
+  }
+
+  @media (max-width: 768px) {
+    header.top-nav {
+      padding: 8px 10px !important;
+      gap: 8px 6px !important;
+      flex-wrap: wrap !important;
+    }
+    .nav-actions-group {
+      gap: 4px !important;
+    }
+    .modal-window {
+      width: 95% !important;
+      max-width: 95vw !important;
+      margin: auto !important;
+      padding: 16px !important;
+      max-height: 90vh !important;
+      overflow-y: auto !important;
+    }
+    .table-responsive-wrapper, .history-ledger-table-wrapper {
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      width: 100% !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .login-container {
+      padding: 20px 14px !important;
+      max-width: 100% !important;
+    }
+    .col-title {
+      font-size: 0.84rem !important;
+    }
+  }
+
+</style>
 <script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body class="theme-black">
 
@@ -4236,12 +4272,131 @@
 
       <!-- TAB 3: PROFILE MATRIX (Requirement 3, 5 & 6: 1. Renter Profile Photo, 2. Aadhaar Card Document Photo, 3. Renter Profile Details, 4. Rent & Utility Details) -->
       <div id="tabProfile" class="tab-content">
-        <!-- Requirement 4: Reordered Matrix (Number 3 Left, Number 2 Center, Number 1 Right) -->
-        <div class="profile-matrix" style="display:grid; grid-template-columns: 1fr 1.15fr 1fr; gap:16px; align-items:start;">
+        <!-- Reordered Matrix: Number 1 Left (Renter Profile Details & Upload Options), Number 2 Center (Photos Only - No Drive Folder Link), Number 3 Right (Rent & Utility Details) -->
+        <div class="profile-matrix profile-matrix-3col">
 
-          <!-- LEFT SIDE: NUMBER 3 (was item 4: Rent & Utility Details) -->
+          <!-- LEFT SIDE: NUMBER 1 (Renter Profile Details + Photo Upload Inputs) -->
+          <div class="matrix-col details-card-renter">
+            <div class="col-title"><i class="fa-solid fa-address-card" style="color:#34d399;"></i> 1. Renter Profile Details</div>
+            
+            <div class="form-group"><label>Renter Name <span class="req-star">*</span></label><input type="text" id="renterName" class="form-control"></div>
+            <div class="form-group">
+              <label>Aadhaar Card Number (Strictly 12 Digits)</label>
+              <input type="text" id="renterIdentityNum" class="form-control" maxlength="12" inputmode="numeric" pattern="\d{12}" placeholder="Enter 12-digit Aadhaar Number" oninput="this.value = sanitizeAadhaar12Digits(this.value); handleAadhaarLookupInput(this.value)" onchange="this.value = sanitizeAadhaar12Digits(this.value); handleAadhaarLookupInput(this.value)">
+              <div id="aadhaarPreviousRenterPrompt" style="display:none; margin-top:8px;"></div>
+            </div>
+            <div class="form-group"><label>Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
+            <div class="form-group"><label>Alternative Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterAltMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
+            <div class="form-group"><label>Address</label><input type="text" id="renterAddress" class="form-control"></div>
+            <div class="form-group"><label>Total Family Members</label><input type="number" id="renterFamily" class="form-control" value="1"></div>
+            <div class="form-group">
+              <label>Renter Status</label>
+              <select id="renterStatus" class="form-control" onchange="syncProfileReactivateButtonVisibility()">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive (Archive &amp; Clear for Next Renter)</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Join Date</label><input type="date" id="renterJoinDate" class="form-control"></div>
+            <div class="form-group"><label>End Date</label><input type="date" id="renterEndDate" class="form-control"></div>
+
+            <!-- Direct Upload Options (Moved here from Center photo boxes as requested) -->
+            <div class="form-group admin-only" style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--glass-border);">
+              <label style="font-size:0.75rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:6px;">
+                <i class="fa-solid fa-camera" style="color:#38bdf8;"></i> Upload Renter Photo (Auto-Saves to Drive):
+              </label>
+              <input type="file" id="fileProfilePic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'profile')" style="font-size:0.75rem;">
+            </div>
+
+            <div class="form-group admin-only" style="margin-bottom:14px;">
+              <label style="font-size:0.75rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:6px;">
+                <i class="fa-solid fa-id-card" style="color:#34d399;"></i> Upload Aadhaar Card Photo (Auto-Saves to Drive):
+              </label>
+              <input type="file" id="fileIdentityPic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'identity')" style="font-size:0.75rem;">
+            </div>
+
+            <button type="button" id="btnReactivateProfileTab" class="btn-ledger-action admin-only" style="display:none; width:100%; justify-content:center; margin-bottom:10px; padding:10px 14px; font-weight:800; color:var(--accent-green); border-color:rgba(16,185,129,0.55); background:rgba(16,185,129,0.1);" onclick="triggerReactivateFromProfileTab()">
+              <i class="fa-solid fa-user-check"></i> Re-active Renter / Returning Renter (Choose Property &amp; Flat)
+            </button>
+            <button class="btn-primary admin-only" onclick="submitRenterProfileRight()">Save Renter Record</button>
+          </div>
+
+          <!-- CENTER: NUMBER 2 (Photos Only — Click to Zoom, Download & Delete. NO upload inputs. NO Drive Folder text/section) -->
+          <div class="matrix-col photos-combined-col" style="display:flex; flex-direction:column; gap:16px;">
+            <div class="col-title"><i class="fa-solid fa-images" style="color:#38bdf8;"></i> 2. Renter &amp; Aadhaar Documents</div>
+            
+            <!-- 2A. Renter Photo Box -->
+            <div class="photo-card-renter" style="text-align:center; background:var(--bg-input); border-radius:16px; padding:14px; border:1px solid var(--glass-border); box-shadow:0 4px 16px rgba(0,0,0,0.2);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-weight:800; font-size:0.84rem; color:var(--text-main); display:flex; align-items:center; gap:6px;">
+                  <i class="fa-solid fa-user" style="color:#38bdf8;"></i> Renter Photo
+                </span>
+                <span id="profileCloudStatusBadge" style="font-size:0.7rem; font-weight:700; color:var(--text-muted);">No Photo</span>
+              </div>
+              <div class="image-frame-container zoomable-photo-frame" style="height: 165px; margin-bottom: 10px;" onclick="openPhotoZoomModal(document.getElementById('profilePicturePreview')?.src, (document.getElementById('renterName')?.value || 'Renter') + ' — Profile Photo')">
+                <img id="profilePicturePreview" src="https://via.placeholder.com/150?text=No+Photo" alt="Renter Profile Photo">
+                <span class="zoomable-photo-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Click Photo to Zoom</span>
+              </div>
+              <div style="display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap;">
+                <button
+                  type="button"
+                  id="btnDownloadProfilePic"
+                  class="btn-ledger-action"
+                  style="background: rgba(56, 189, 248, 0.16); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.45); padding: 7px 14px; font-size: 0.74rem; font-weight: 700;"
+                  onclick="downloadRenterDocumentPhoto('profile')"
+                >
+                  <i class="fa-solid fa-download"></i> Download Photo
+                </button>
+                <button
+                  type="button"
+                  id="btnDeleteProfilePic"
+                  class="btn-ledger-action admin-only"
+                  style="background: rgba(239, 68, 68, 0.16); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.35); padding: 7px 14px; font-size: 0.74rem; font-weight: 700;"
+                  onclick="deleteRenterDocumentFromCloud('profile')"
+                >
+                  <i class="fa-solid fa-trash-can"></i> Delete
+                </button>
+              </div>
+            </div>
+
+            <!-- 2B. Aadhaar Card Photo Box -->
+            <div class="photo-card-aadhaar" style="text-align:center; background:var(--bg-input); border-radius:16px; padding:14px; border:1px solid var(--glass-border); box-shadow:0 4px 16px rgba(0,0,0,0.2);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-weight:800; font-size:0.84rem; color:var(--text-main); display:flex; align-items:center; gap:6px;">
+                  <i class="fa-solid fa-id-card" style="color:#34d399;"></i> Aadhaar Card Photo
+                </span>
+                <span id="identityCloudStatusBadge" style="font-size:0.7rem; font-weight:700; color:var(--text-muted);">No Aadhaar</span>
+              </div>
+              <div class="image-frame-container zoomable-photo-frame" style="height: 165px; margin-bottom: 10px;" onclick="openPhotoZoomModal(document.getElementById('identityPicturePreview')?.src, (document.getElementById('renterName')?.value || 'Renter') + ' — Aadhaar Card Document')">
+                <img id="identityPicturePreview" src="https://via.placeholder.com/300x150?text=No+Aadhaar+Uploaded" alt="Aadhaar / ID Document">
+                <span class="zoomable-photo-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Click Photo to Zoom</span>
+              </div>
+              <div style="display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap;">
+                <button
+                  type="button"
+                  id="btnDownloadIdentityPic"
+                  class="btn-ledger-action"
+                  style="background: rgba(16, 185, 129, 0.16); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.45); padding: 7px 14px; font-size: 0.74rem; font-weight: 700;"
+                  onclick="downloadRenterDocumentPhoto('identity')"
+                >
+                  <i class="fa-solid fa-download"></i> Download Aadhaar
+                </button>
+                <button
+                  type="button"
+                  id="btnDeleteIdentityPic"
+                  class="btn-ledger-action admin-only"
+                  style="background: rgba(239, 68, 68, 0.16); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.35); padding: 7px 14px; font-size: 0.74rem; font-weight: 700;"
+                  onclick="deleteRenterDocumentFromCloud('identity')"
+                >
+                  <i class="fa-solid fa-trash-can"></i> Delete
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT SIDE: NUMBER 3 (Rent & Utility Details) -->
           <div class="matrix-col details-card-utility">
             <div class="col-title"><i class="fa-solid fa-bolt" style="color:#fbbf24;"></i> 3. Rent &amp; Utility Details</div>
+            
             <div class="form-group">
               <label>Rent Amount (₹)</label>
               <input type="number" id="profRent" class="form-control" oninput="syncProfileRatesToLiveCalculator()" onchange="saveUtilitiesLeft(true)">
@@ -4273,142 +4428,9 @@
             <button class="btn-primary admin-only" onclick="saveUtilitiesLeft(false)">Save Utility &amp; Rates</button>
           </div>
 
-          <!-- CENTER: NUMBER 2 (Merged: Renter Profile Photo + Aadhaar Card Photo with Direct Upload to Google Drive) -->
-          <div class="matrix-col photos-combined-col" style="display:flex; flex-direction:column; gap:16px;">
-            <div class="col-title" style="text-align:center; font-size:0.95rem; font-weight:800; color:#38bdf8; display:flex; align-items:center; justify-content:center; gap:8px;">
-              <i class="fa-solid fa-images" style="color:#38bdf8;"></i> 2. Renter &amp; Aadhaar Documents (Google Drive)
-            </div>
-
-            <!-- 2A. Renter's Profile Photo Box -->
-            <div class="photo-card-profile" style="text-align:center; background:var(--bg-input); border-radius:16px; padding:14px; border:1px solid var(--glass-border); box-shadow:0 4px 16px rgba(0,0,0,0.2);">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <span style="font-weight:800; font-size:0.84rem; color:var(--text-main); display:flex; align-items:center; gap:6px;">
-                  <i class="fa-solid fa-user-astronaut" style="color:#818cf8;"></i> Renter Profile Photo
-                </span>
-                <span id="profileCloudStatusBadge" style="font-size:0.7rem; font-weight:700; color:var(--text-muted);">No photo</span>
-              </div>
-              <div class="image-frame-container zoomable-photo-frame" style="height: 165px; margin-bottom: 10px;" onclick="openPhotoZoomModal(document.getElementById('profilePicturePreview')?.src, (document.getElementById('renterName')?.value || 'Renter') + ' — Profile Photo')">
-                <img id="profilePicturePreview" src="https://via.placeholder.com/150?text=No+Profile+Photo" alt="Renter Profile Photo">
-                <span class="zoomable-photo-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Click Photo to Zoom</span>
-              </div>
-              <!-- Requirement 5: Direct upload option right here on renter profile -->
-              <div class="form-group admin-only" style="text-align:left; margin-bottom:10px;">
-                <label style="font-size:0.74rem; font-weight:700; color:var(--text-main);"><i class="fa-solid fa-cloud-arrow-up" style="color:#818cf8;"></i> Upload Profile Photo Directly (Auto-Saves to Drive):</label>
-                <input type="file" id="fileProfilePic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'profile')" style="font-size:0.75rem;">
-              </div>
-              <div style="display:flex; justify-content:center; align-items:center; gap:6px; flex-wrap:wrap;">
-                <a
-                  href="https://drive.google.com/drive/folders/1Yz4O6NyLJFGMjXYEQiG2THyLLsm82zRW?usp=drive_link"
-                  target="_blank"
-                  rel="noreferrer"
-                  class="btn-ledger-action"
-                  style="background: rgba(59, 130, 246, 0.16); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.45); padding: 6px 12px; font-size: 0.74rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"
-                  title="Open 'Home' folder in Google Drive"
-                >
-                  <i class="fa-brands fa-google-drive"></i> Drive Folder ("Home")
-                </a>
-                <button
-                  type="button"
-                  id="btnDownloadProfilePic"
-                  class="btn-ledger-action"
-                  style="background: rgba(56, 189, 248, 0.16); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.45); padding: 6px 12px; font-size: 0.74rem; font-weight: 700;"
-                  onclick="downloadRenterDocumentPhoto('profile')"
-                >
-                  <i class="fa-solid fa-download"></i> Download
-                </button>
-                <button
-                  type="button"
-                  id="btnDeleteProfilePic"
-                  class="btn-ledger-action admin-only"
-                  style="background: rgba(239, 68, 68, 0.16); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.35); padding: 6px 12px; font-size: 0.74rem; font-weight: 700;"
-                  onclick="deleteRenterDocumentFromCloud('profile')"
-                >
-                  <i class="fa-solid fa-trash-can"></i> Delete
-                </button>
-              </div>
-            </div>
-
-            <!-- 2B. Aadhaar Card Photo Box -->
-            <div class="photo-card-aadhaar" style="text-align:center; background:var(--bg-input); border-radius:16px; padding:14px; border:1px solid var(--glass-border); box-shadow:0 4px 16px rgba(0,0,0,0.2);">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <span style="font-weight:800; font-size:0.84rem; color:var(--text-main); display:flex; align-items:center; gap:6px;">
-                  <i class="fa-solid fa-id-card" style="color:#34d399;"></i> Aadhaar Card Photo
-                </span>
-                <span id="identityCloudStatusBadge" style="font-size:0.7rem; font-weight:700; color:var(--text-muted);">No Aadhaar</span>
-              </div>
-              <div class="image-frame-container zoomable-photo-frame" style="height: 165px; margin-bottom: 10px;" onclick="openPhotoZoomModal(document.getElementById('identityPicturePreview')?.src, (document.getElementById('renterName')?.value || 'Renter') + ' — Aadhaar Card Document')">
-                <img id="identityPicturePreview" src="https://via.placeholder.com/300x150?text=No+Aadhaar+Uploaded" alt="Aadhaar / ID Document">
-                <span class="zoomable-photo-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Click Photo to Zoom</span>
-              </div>
-              <!-- Requirement 5: Direct upload option right here on renter profile -->
-              <div class="form-group admin-only" style="text-align:left; margin-bottom:10px;">
-                <label style="font-size:0.74rem; font-weight:700; color:var(--text-main);"><i class="fa-solid fa-cloud-arrow-up" style="color:#34d399;"></i> Upload Aadhaar Directly (Auto-Saves to Drive):</label>
-                <input type="file" id="fileIdentityPic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'identity')" style="font-size:0.75rem;">
-              </div>
-              <div style="display:flex; justify-content:center; align-items:center; gap:6px; flex-wrap:wrap;">
-                <a
-                  href="https://drive.google.com/drive/folders/1Yz4O6NyLJFGMjXYEQiG2THyLLsm82zRW?usp=drive_link"
-                  target="_blank"
-                  rel="noreferrer"
-                  class="btn-ledger-action"
-                  style="background: rgba(59, 130, 246, 0.16); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.45); padding: 6px 12px; font-size: 0.74rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"
-                  title="Open 'Home' folder in Google Drive"
-                >
-                  <i class="fa-brands fa-google-drive"></i> Drive Folder ("Home")
-                </a>
-                <button
-                  type="button"
-                  id="btnDownloadIdentityPic"
-                  class="btn-ledger-action"
-                  style="background: rgba(16, 185, 129, 0.16); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.45); padding: 6px 12px; font-size: 0.74rem; font-weight: 700;"
-                  onclick="downloadRenterDocumentPhoto('identity')"
-                >
-                  <i class="fa-solid fa-download"></i> Download
-                </button>
-                <button
-                  type="button"
-                  id="btnDeleteIdentityPic"
-                  class="btn-ledger-action admin-only"
-                  style="background: rgba(239, 68, 68, 0.16); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.35); padding: 6px 12px; font-size: 0.74rem; font-weight: 700;"
-                  onclick="deleteRenterDocumentFromCloud('identity')"
-                >
-                  <i class="fa-solid fa-trash-can"></i> Delete
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- RIGHT SIDE: NUMBER 1 (was item 3: Renter Profile Details) -->
-          <div class="matrix-col details-card-renter">
-            <div class="col-title"><i class="fa-solid fa-address-card" style="color:#34d399;"></i> 1. Renter Profile Details</div>
-            <div class="form-group"><label>Renter Name <span class="req-star">*</span></label><input type="text" id="renterName" class="form-control"></div>
-            <div class="form-group">
-              <label>Aadhaar Card Number (Strictly 12 Digits)</label>
-              <input type="text" id="renterIdentityNum" class="form-control" maxlength="12" inputmode="numeric" pattern="\d{12}" placeholder="Enter 12-digit Aadhaar Number" oninput="this.value = sanitizeAadhaar12Digits(this.value); handleAadhaarLookupInput(this.value)" onchange="this.value = sanitizeAadhaar12Digits(this.value); handleAadhaarLookupInput(this.value)">
-              <div id="aadhaarPreviousRenterPrompt" style="display:none; margin-top:8px;"></div>
-            </div>
-            <div class="form-group"><label>Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
-            <div class="form-group"><label>Alternative Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterAltMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
-            <div class="form-group"><label>Address</label><input type="text" id="renterAddress" class="form-control"></div>
-            <div class="form-group"><label>Total Family Members</label><input type="number" id="renterFamily" class="form-control" value="1"></div>
-            <div class="form-group">
-              <label>Renter Status</label>
-              <select id="renterStatus" class="form-control" onchange="syncProfileReactivateButtonVisibility()">
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive (Archive &amp; Clear for Next Renter)</option>
-              </select>
-            </div>
-            <div class="form-group"><label>Join Date</label><input type="date" id="renterJoinDate" class="form-control"></div>
-            <div class="form-group"><label>End Date</label><input type="date" id="renterEndDate" class="form-control"></div>
-            <button type="button" id="btnReactivateProfileTab" class="btn-ledger-action admin-only" style="display:none; width:100%; justify-content:center; margin-bottom:10px; padding:10px 14px; font-weight:800; color:var(--accent-green); border-color:rgba(16,185,129,0.55); background:rgba(16,185,129,0.1);" onclick="triggerReactivateFromProfileTab()">
-              <i class="fa-solid fa-user-check"></i> Re-active Renter / Returning Renter (Choose Property &amp; Flat)
-            </button>
-            <button class="btn-primary admin-only" onclick="submitRenterProfileRight()">Save Renter Record</button>
-          </div>
-
         </div>
       </div>
-      <div id="tabRenterHistory" class="tab-content">
+      <div  class="tab-content">
         
 
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
@@ -5640,20 +5662,35 @@ function formatMonthLabel(rawVal) {
     }
 
     function applyRolePermissions(role) {
-      activeRole = (role === "Viewer") ? "Viewer" : "Admin";
+      const cleanRole = String(role || "Admin").trim();
+      if (cleanRole === "Viewer") {
+        activeRole = "Viewer";
+      } else if (cleanRole === "Renter") {
+        activeRole = "Renter";
+      } else {
+        activeRole = "Admin";
+      }
       sessionStorage.setItem("active_session_role", activeRole);
+
+      const isRestricted = (activeRole === "Viewer" || activeRole === "Renter");
+      document.body.classList.toggle("role-restricted", isRestricted);
       document.body.classList.toggle("role-viewer", activeRole === "Viewer");
+      document.body.classList.toggle("role-renter", activeRole === "Renter");
+
       const badge = document.getElementById("headerRoleBadge");
       if (badge) {
         const scope = resolveViewerAssignedScope();
-        if (activeRole === "Viewer" && scope) {
-          if (scope.mode === "ALL") badge.innerText = "Viewer • All Properties";
-          else if (scope.mode === "SELECTED") badge.innerText = `Viewer • ${scope.prop}`;
-          else badge.innerText = `Viewer • ${scope.prop} (Flat ${scope.flat})`;
+        if ((activeRole === "Viewer" || activeRole === "Renter") && scope) {
+          const rolePrefix = activeRole === "Renter" ? "Renter" : "Viewer";
+          if (scope.mode === "ALL") badge.innerText = `${rolePrefix} • All Properties`;
+          else if (scope.mode === "SELECTED") badge.innerText = `${rolePrefix} • ${scope.prop}`;
+          else badge.innerText = `${rolePrefix} • ${scope.prop} (Flat ${scope.flat})`;
         } else {
           badge.innerText = activeRole;
         }
-        badge.style.background = activeRole === "Admin" ? "rgba(16, 185, 129, 0.2)" : "rgba(245, 158, 11, 0.2)";
+        badge.style.background = activeRole === "Admin" 
+          ? "rgba(16, 185, 129, 0.2)" 
+          : (activeRole === "Renter" ? "rgba(168, 85, 247, 0.2)" : "rgba(245, 158, 11, 0.2)");
       }
       const btnLoginHist = document.getElementById("btnOtherOptLoginHistory");
       const panelLoginHist = document.getElementById("otherPanelLoginHistory");
@@ -5821,6 +5858,14 @@ function formatMonthLabel(rawVal) {
       );
 
       if (isVerifiedMatch) {
+        const targetStatus = (matchedUserInDb && matchedUserInDb.Status) || (cachedAuth && cachedAuth.status) || "Active";
+        if (String(targetStatus).toLowerCase() === "blocked") {
+          showAccountBlockedModal("Your account has been blocked. Please contact support to unblock it.");
+          isSubmittingLogin = false;
+          btn.disabled = false;
+          btn.innerHTML = '<span>Log In</span><i class="fa-solid fa-arrow-right-to-bracket"></i>';
+          return;
+        }
         activeUser = (matchedUserInDb && matchedUserInDb.Username) || cachedAuth.username;
         activeUserFullName = (matchedUserInDb && matchedUserInDb.FullName) || (cachedAuth && cachedAuth.fullName) || activeUser;
         activeUserMobile = (matchedUserInDb && matchedUserInDb.MobileNumber) || (cachedAuth && cachedAuth.mobile) || "";
@@ -6555,6 +6600,26 @@ function formatMonthLabel(rawVal) {
 
     // 5. Profile Modal
     async function openProfileModal() {
+      const heroDispName = activeUserFullName || activeUser || "User Profile";
+      const heroDispUser = activeUser ? `@${activeUser}` : "@username";
+      const heroDispRole = (activeRole || "Admin").toUpperCase();
+
+      if (document.getElementById("profDisplayHeroName")) {
+        document.getElementById("profDisplayHeroName").innerText = heroDispName;
+      }
+      if (document.getElementById("profRoleBadgePill")) {
+        document.getElementById("profRoleBadgePill").innerText = heroDispRole;
+        document.getElementById("profRoleBadgePill").style.background = heroDispRole === "ADMIN" 
+          ? "rgba(16, 185, 129, 0.35)" 
+          : (heroDispRole === "RENTER" ? "rgba(168, 85, 247, 0.35)" : "rgba(245, 158, 11, 0.35)");
+      }
+      if (document.getElementById("profDisplayHeroUser")) {
+        document.getElementById("profDisplayHeroUser").innerText = heroDispUser;
+      }
+      if (document.getElementById("profAvatarInitials")) {
+        document.getElementById("profAvatarInitials").innerText = (heroDispName[0] || "U").toUpperCase();
+      }
+
       document.getElementById("profViewFullName").value = activeUserFullName || activeUser || "";
       document.getElementById("profViewMobile").value = activeUserMobile || "";
       document.getElementById("profViewUsername").value = activeUser || "";
@@ -6578,6 +6643,7 @@ function formatMonthLabel(rawVal) {
 
       document.querySelectorAll(".profile-sub-drawer").forEach(d => d.classList.remove("active"));
       document.querySelectorAll(".btn-switch-option").forEach(b => b.classList.remove("active"));
+
       openModal("profileModal");
 
       try {
@@ -6590,8 +6656,24 @@ function formatMonthLabel(rawVal) {
         if (res.status === "success") {
           activeUserFullName = res.fullName || activeUser;
           activeUserMobile = res.mobile || "";
+          if (res.role) activeRole = res.role;
+
           sessionStorage.setItem("active_session_fullname", activeUserFullName);
           sessionStorage.setItem("active_session_mobile", activeUserMobile);
+          sessionStorage.setItem("active_session_role", activeRole);
+
+          if (document.getElementById("profDisplayHeroName")) {
+            document.getElementById("profDisplayHeroName").innerText = activeUserFullName;
+          }
+          if (document.getElementById("profRoleBadgePill")) {
+            document.getElementById("profRoleBadgePill").innerText = (activeRole || "ADMIN").toUpperCase();
+          }
+          if (document.getElementById("profDisplayHeroUser")) {
+            document.getElementById("profDisplayHeroUser").innerText = `@${res.username || activeUser}`;
+          }
+          if (document.getElementById("profAvatarInitials")) {
+            document.getElementById("profAvatarInitials").innerText = (activeUserFullName[0] || "U").toUpperCase();
+          }
 
           document.getElementById("profViewFullName").value = activeUserFullName;
           document.getElementById("profViewMobile").value = activeUserMobile;
@@ -6604,7 +6686,6 @@ function formatMonthLabel(rawVal) {
         passInput.placeholder = "Unable to load password offline";
       }
     }
-
     function toggleProfileDrawer(drawerId, btnId) {
       const drawer = document.getElementById(drawerId);
       const btn = document.getElementById(btnId);
@@ -6726,6 +6807,12 @@ function formatMonthLabel(rawVal) {
       document.getElementById("changeMobileOnlyInput").value = newMobile;
 
       activeUserFullName = newFullName;
+      if (document.getElementById("profDisplayHeroName")) {
+        document.getElementById("profDisplayHeroName").innerText = newFullName;
+      }
+      if (document.getElementById("profAvatarInitials")) {
+        document.getElementById("profAvatarInitials").innerText = (newFullName[0] || "U").toUpperCase();
+      }
       activeUserMobile = newMobile;
       sessionStorage.setItem("active_session_fullname", activeUserFullName);
       sessionStorage.setItem("active_session_mobile", activeUserMobile);
@@ -6903,7 +6990,7 @@ function formatMonthLabel(rawVal) {
       const roleSelect = document.getElementById("createUserRole");
       const scopeBox = document.getElementById("viewerScopeSelectionBox");
       if (!roleSelect || !scopeBox) return;
-      if (roleSelect.value === "Viewer") {
+      if (roleSelect.value === "Viewer" || roleSelect.value === "Renter") {
         scopeBox.style.display = "block";
         populateCreateUserFlatsDropdown();
       } else {
@@ -7264,7 +7351,7 @@ function formatMonthLabel(rawVal) {
       let assignedProp = "";
       let assignedFlat = "";
 
-      if (newRole === "Viewer") {
+      if (newRole === "Viewer" || newRole === "Renter") {
         if (scopeLevel === "ALL") {
           assignedProp = "ALL";
           assignedFlat = "";
@@ -7343,17 +7430,26 @@ function renderRegisteredUsersList() {
               <i class="fa-solid fa-trash-can"></i> Delete
             </button>`;
 
+          const isBlocked = String(u.Status || "").toLowerCase() === "blocked";
+          const blockBtn = isBlocked
+            ? `<button type="button" class="btn-ledger-action" style="padding:5px 9px; font-size:0.72rem; font-weight:700; color:#34d399; border-color:rgba(16,185,129,0.4);" onclick="toggleUserBlockStatus('${safeUName}', 'Active')" title="Unblock user login">
+                 <i class="fa-solid fa-lock-open"></i> Unblock
+               </button>`
+            : `<button type="button" class="btn-ledger-action" style="padding:5px 9px; font-size:0.72rem; font-weight:700; color:#ef4444; border-color:rgba(239,68,68,0.4);" onclick="toggleUserBlockStatus('${safeUName}', 'Blocked')" title="Block user from logging in">
+                 <i class="fa-solid fa-ban"></i> Block
+               </button>`;
+
           adminControlsHtml = `
             <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:6px;">
               <button type="button" class="btn-ledger-action edit-btn" style="padding:5px 9px; font-size:0.72rem; font-weight:700;" onclick="openEditUserAssignmentModal('${safeUName}')" title="Edit user role and flat assignment">
                 <i class="fa-solid fa-pen-to-square"></i> Edit Flat / Role
               </button>
               ${roleToggleBtn}
+              ${blockBtn}
               ${deleteBtn}
             </div>
           `;
         }
-
         return `
           <div style="padding:10px 6px; border-bottom:1px solid var(--glass-border);">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; flex-wrap:wrap;">
@@ -7361,6 +7457,7 @@ function renderRegisteredUsersList() {
                 <div>
                   <strong>${u.FullName || uName}</strong>
                   <span style="color:var(--text-muted); font-size:0.76rem;">(@${uName})</span>
+                  ${String(u.Status || '').toLowerCase() === 'blocked' ? '<span style="font-size:0.68rem; font-weight:800; padding:2px 7px; border-radius:10px; background:rgba(239,68,68,0.22); color:#ef4444; border:1px solid rgba(239,68,68,0.45); margin-left:6px;"><i class="fa-solid fa-ban"></i> BLOCKED</span>' : ''}
                   ${isCurrentLoggedUser ? `<span style="font-size:0.66rem; color:var(--accent-green); font-weight:800; margin-left:4px;">(You)</span>` : ''}
                 </div>
                 <div style="font-size:0.73rem; color:var(--text-muted); margin-top:2px;">
@@ -7552,7 +7649,7 @@ function renderRegisteredUsersList() {
       const scopeMode = document.getElementById("createViewerScopeType")?.value || "FLAT";
       let assignedProperty = "";
       let assignedFlat = "";
-      if (role === "Viewer") {
+      if (role === "Viewer" || role === "Renter") {
         if (scopeMode === "ALL") {
           assignedProperty = "ALL";
           assignedFlat = "";
@@ -7570,12 +7667,13 @@ function renderRegisteredUsersList() {
         return triggerSideToast("Missing Fields", "Please fill in Name, Username, and Password.", false);
       }
 
-      if (role === "Viewer") {
+      if (role === "Viewer" || role === "Renter") {
+        const roleLabel = role === "Renter" ? "Renter" : "Viewer";
         if (scopeMode === "SELECTED" && !assignedProperty) {
-          return triggerSideToast("Select Properties", "Please select at least one Property for this Viewer account.", false);
+          return triggerSideToast("Select Properties", `Please select at least one Property for this ${roleLabel} account.`, false);
         }
         if (scopeMode === "FLAT" && (!assignedProperty || !assignedFlat)) {
-          return triggerSideToast("Select Flat for Viewer", "Please select which Property and specific Flat this Viewer account is allowed to view.", false);
+          return triggerSideToast(`Select Flat for ${roleLabel}`, `Please select which Property and specific Flat this ${roleLabel} account is allowed to view.`, false);
         }
       }
 
@@ -8809,24 +8907,75 @@ function renderRegisteredUsersList() {
     }
 
     // SECOND GRAPH (BELOW THE FIRST ONE): Single Consolidated Graph for 3 Years with Year Filter/Selection (All Users: Active + Inactive)
+    let flatGraph2SelectedMode = "LAST_3_YEARS"; // "LAST_3_YEARS" or specific year e.g. 2026, 2025, 2024
+
+    function selectFlatGraph2Mode(mode) {
+      flatGraph2SelectedMode = String(mode);
+      if (typeof selectedProperty !== "undefined" && typeof selectedFlat !== "undefined" && selectedProperty && selectedFlat) {
+        renderAllRentersGraphForFlat(selectedProperty, selectedFlat);
+      }
+    }
+
+    // Requirement 7: Second Graph (Consolidated Graph) with Dynamic Year Scrolling & Filter
+    // Automatically adds upcoming years as time passes while older years scroll backward.
+    // Default: Last 3 Years. If a specific year is checked/selected, filters to display ONLY that 1 year.
     function buildSecondThreeYearConsolidatedGraphHtml(allFlatBills, prop, flat) {
-      ensureThreeYearFiltersInitialized();
       const currentYear = new Date().getFullYear();
-      const threeYearsConfig = [
-        { year: currentYear,     label: `${currentYear} (Current Year)`, color: "#6366f1", bg: "rgba(99, 102, 241, 0.16)" },
-        { year: currentYear - 1, label: `${currentYear - 1} (Previous Year)`, color: "#10b981", bg: "rgba(16, 185, 129, 0.16)" },
-        { year: currentYear - 2, label: `${currentYear - 2} (2 Years Ago)`, color: "#f59e0b", bg: "rgba(245, 158, 11, 0.16)" }
+
+      // Dynamically extract all available years from records + currentYear & past 2 years
+      const yearsSet = new Set([currentYear, currentYear - 1, currentYear - 2]);
+      (allFlatBills || []).forEach(b => {
+        const norm = normalizeMonthYear(b.MonthYear);
+        if (norm) {
+          const yr = parseInt(norm.substring(0, 4), 10);
+          if (!isNaN(yr) && yr >= 2000 && yr <= 2100) {
+            yearsSet.add(yr);
+          }
+        }
+      });
+      const allAvailableYears = Array.from(yearsSet).sort((a, b) => b - a); // descending: [2026, 2025, 2024, 2023, ...]
+
+      const paletteColors = [
+        { color: "#6366f1", bg: "rgba(99, 102, 241, 0.16)" },
+        { color: "#10b981", bg: "rgba(16, 185, 129, 0.16)" },
+        { color: "#f59e0b", bg: "rgba(245, 158, 11, 0.16)" },
+        { color: "#ec4899", bg: "rgba(236, 72, 153, 0.16)" },
+        { color: "#06b6d4", bg: "rgba(6, 182, 212, 0.16)" },
+        { color: "#8b5cf6", bg: "rgba(139, 92, 246, 0.16)" },
+        { color: "#14b8a6", bg: "rgba(20, 184, 166, 0.16)" }
       ];
+
+      // Build active years configuration based on selected mode
+      let activeYearsConfig = [];
+      const isSpecificYear = flatGraph2SelectedMode !== "LAST_3_YEARS" && allAvailableYears.includes(Number(flatGraph2SelectedMode));
+
+      if (isSpecificYear) {
+        const chosenYr = Number(flatGraph2SelectedMode);
+        activeYearsConfig = [{
+          year: chosenYr,
+          label: `${chosenYr} Full Year`,
+          color: "#6366f1",
+          bg: "rgba(99, 102, 241, 0.18)"
+        }];
+      } else {
+        // Default: Top 3 most recent years
+        const top3Years = allAvailableYears.slice(0, 3);
+        activeYearsConfig = top3Years.map((yr, idx) => ({
+          year: yr,
+          label: yr === currentYear ? `${yr} (Current Year)` : `${yr}`,
+          color: paletteColors[idx % paletteColors.length].color,
+          bg: paletteColors[idx % paletteColors.length].bg
+        }));
+      }
 
       const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       const yearMonthlyTotals = {};
       const yearAnnualTotals = {};
       let maxVal = 1000;
 
-      threeYearsConfig.forEach(yc => {
+      activeYearsConfig.forEach(yc => {
         yearMonthlyTotals[yc.year] = [];
         yearAnnualTotals[yc.year] = 0;
-
         for (let m = 1; m <= 12; m++) {
           const monthKey = yc.year + "-" + String(m).padStart(2, "0");
           const monthBills = (allFlatBills || []).filter(b => normalizeMonthYear(b.MonthYear) === monthKey);
@@ -8837,18 +8986,14 @@ function renderRegisteredUsersList() {
           });
           yearMonthlyTotals[yc.year].push(mSum);
           yearAnnualTotals[yc.year] += mSum;
-
-          if (flatGraph2YearFilters[yc.year] && mSum > maxVal) {
+          if (mSum > maxVal) {
             maxVal = mSum;
           }
         }
       });
 
-      const activeYearsList = threeYearsConfig.filter(yc => Boolean(flatGraph2YearFilters[yc.year]));
-      const allThreeActive = activeYearsList.length === 3;
-
       const chartWidth = 720;
-      const chartHeight = 225;
+      const chartHeight = 230;
       const padLeft = 58;
       const padRight = 24;
       const padTop = 26;
@@ -8864,134 +9009,116 @@ function renderRegisteredUsersList() {
         const centerX = padLeft + (mIdx * (usableW / 11));
         labelsSvg += `<text x="${centerX.toFixed(1)}" y="${chartHeight - 10}" font-size="10.5" font-weight="700" fill="#94a3b8" text-anchor="middle">${mLabel}</text>`;
 
-        const count = activeYearsList.length;
-        const barW = Math.max(5, Math.min(12, Math.floor(34 / Math.max(1, count))));
-        const totalGroupW = count * barW + Math.max(0, count - 1) * 2;
+        const count = activeYearsConfig.length;
+        const barW = Math.max(6, Math.min(18, Math.floor(36 / Math.max(1, count))));
+        const totalGroupW = count * barW + Math.max(0, count - 1) * 3;
         const startX = centerX - (totalGroupW / 2);
 
-        activeYearsList.forEach((yc, yIdx) => {
+        activeYearsConfig.forEach((yc, yIdx) => {
           const val = yearMonthlyTotals[yc.year][mIdx] || 0;
           const barH = (val / maxVal) * usableH;
           const barY = padTop + usableH - barH;
-          const barX = startX + yIdx * (barW + 2);
-          barsSvg += `<rect x="${barX.toFixed(1)}" y="${barY.toFixed(1)}" width="${barW}" height="${Math.max(0, barH).toFixed(1)}" rx="2.5" fill="${yc.color}" fill-opacity="0.35"><title>${mLabel} ${yc.year}: ₹${val.toLocaleString('en-IN')}</title></rect>`;
+          const barX = startX + yIdx * (barW + 3);
+          barsSvg += `<rect x="${barX.toFixed(1)}" y="${barY.toFixed(1)}" width="${barW}" height="${Math.max(0, barH).toFixed(1)}" rx="3" fill="${yc.color}" fill-opacity="0.38"><title>${mLabel} ${yc.year}: ₹${val.toLocaleString('en-IN')}</title></rect>`;
         });
       });
 
-      activeYearsList.forEach(yc => {
+      activeYearsConfig.forEach(yc => {
         const pts = months.map((mLabel, mIdx) => {
-          const x = padLeft + (mIdx * (usableW / 11));
           const val = yearMonthlyTotals[yc.year][mIdx] || 0;
+          const x = padLeft + (mIdx * (usableW / 11));
           const y = padTop + usableH - ((val / maxVal) * usableH);
-          return { x, y, val, month: mLabel };
+          return { x, y, val, mLabel };
         });
-        const poly = pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
-        linesSvg += `<polyline fill="none" stroke="${yc.color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="${poly}" />`;
-        pts.forEach(p => {
-          linesSvg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.8" fill="${yc.color}" stroke="#ffffff" stroke-width="1.2"><title>${p.month} ${yc.year}: ₹${p.val.toLocaleString('en-IN')}</title></circle>`;
-          if (p.val > 0) {
-            const shortVal = p.val >= 1000 ? (p.val / 1000).toFixed(p.val % 1000 === 0 ? 0 : 1) + "k" : Math.round(p.val);
-            linesSvg += `<text x="${p.x.toFixed(1)}" y="${Math.max(12, p.y - 7).toFixed(1)}" font-size="8.5" font-weight="800" fill="${yc.color}" text-anchor="middle">₹${shortVal}</text>`;
-          }
+
+        const pathD = pts.reduce((acc, pt, idx) => {
+          return idx === 0 ? `M ${pt.x.toFixed(1)} ${pt.y.toFixed(1)}` : `${acc} L ${pt.x.toFixed(1)} ${pt.y.toFixed(1)}`;
+        }, "");
+
+        linesSvg += `<path d="${pathD}" fill="none" stroke="${yc.color}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />`;
+        pts.forEach(pt => {
+          linesSvg += `<circle cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="4.2" fill="${yc.color}" stroke="#0f172a" stroke-width="1.8"><title>${pt.mLabel} ${yc.year}: ₹${pt.val.toLocaleString('en-IN')}</title></circle>`;
         });
       });
 
-      // Year Filter / Selection Controls
-      const yearQuickButtonsHtml = [
-        `<button type="button" class="btn-ledger-action ${allThreeActive ? 'active' : ''}" style="padding:5px 12px; font-size:0.73rem; font-weight:800; ${allThreeActive ? 'background:var(--primary); color:#ffffff; border-color:var(--primary);' : ''}" onclick="selectOnlyFlatGraph2Year('ALL_3_YEARS')">All 3 Years</button>`,
-        ...threeYearsConfig.map(yc => {
-          const isOnlyThis = activeYearsList.length === 1 && activeYearsList[0].year === yc.year;
-          return `<button type="button" class="btn-ledger-action ${isOnlyThis ? 'active' : ''}" style="padding:5px 11px; font-size:0.73rem; font-weight:800; ${isOnlyThis ? 'background:' + yc.color + '; color:#ffffff; border-color:' + yc.color + ';' : ''}" onclick="selectOnlyFlatGraph2Year(${yc.year})">Only ${yc.year}</button>`;
-        })
-      ].join("");
+      // Grid lines
+      let gridSvg = "";
+      for (let s = 0; s <= 4; s++) {
+        const yVal = padTop + (usableH * (s / 4));
+        const numVal = Math.round(maxVal * (1 - (s / 4)));
+        gridSvg += `<line x1="${padLeft}" y1="${yVal}" x2="${chartWidth - padRight}" y2="${yVal}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3 3"/>`;
+        gridSvg += `<text x="${padLeft - 8}" y="${yVal + 3.5}" font-size="9.5" fill="#94a3b8" text-anchor="end">₹${numVal.toLocaleString('en-IN')}</text>`;
+      }
 
-      const yearTogglePillsHtml = threeYearsConfig.map(yc => {
-        const isOn = Boolean(flatGraph2YearFilters[yc.year]);
-        return `
-          <button
-            type="button"
-            onclick="toggleFlatGraph2Year(${yc.year})"
-            style="display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:999px; font-size:0.73rem; font-weight:800; cursor:pointer; transition:all 0.18s ease; border:1.5px solid ${isOn ? yc.color : 'var(--glass-border)'}; background:${isOn ? yc.bg : 'rgba(255,255,255,0.03)'}; color:${isOn ? '#ffffff' : 'var(--text-muted)'}; opacity:${isOn ? '1' : '0.55'};"
-          >
-            <span style="width:9px; height:9px; border-radius:50%; background:${yc.color}; display:inline-block; box-shadow:0 0 6px ${yc.color};"></span>
-            <span>Year ${yc.year}</span>
-            <i class="fa-solid ${isOn ? 'fa-check' : 'fa-plus'}" style="font-size:0.65rem;"></i>
+      // Dynamic year buttons bar with horizontal scroll
+      const isAll3 = flatGraph2SelectedMode === "LAST_3_YEARS";
+      let yearFilterButtons = `
+        <button type="button" class="btn-ledger-action" style="padding:4px 11px; font-size:0.72rem; font-weight:800; border-radius:20px; white-space:nowrap; ${isAll3 ? 'background:#6366f1; color:#fff; border-color:#6366f1;' : 'background:rgba(255,255,255,0.06); color:var(--text-main);'}" onclick="selectFlatGraph2Mode('LAST_3_YEARS')" title="Compare last 3 years together">
+          <i class="fa-solid fa-layer-group"></i> Last 3 Years (Default)
+        </button>
+      `;
+
+      allAvailableYears.forEach(yr => {
+        const isSel = String(flatGraph2SelectedMode) === String(yr);
+        yearFilterButtons += `
+          <button type="button" class="btn-ledger-action" style="padding:4px 11px; font-size:0.72rem; font-weight:800; border-radius:20px; white-space:nowrap; ${isSel ? 'background:#10b981; color:#fff; border-color:#10b981;' : 'background:rgba(255,255,255,0.06); color:var(--text-main);'}" onclick="selectFlatGraph2Mode(${yr})" title="Show only year ${yr}">
+            ${yr}
           </button>
         `;
-      }).join("");
+      });
 
-      const yearLegendBelowHtml = threeYearsConfig.map(yc => {
-        const isOn = Boolean(flatGraph2YearFilters[yc.year]);
-        const yrTotal = yearAnnualTotals[yc.year] || 0;
+      // Year summary cards
+      const summaryCards = activeYearsConfig.map(yc => {
+        const total = yearAnnualTotals[yc.year] || 0;
+        const avg = Math.round(total / 12);
         return `
-          <div
-            onclick="toggleFlatGraph2Year(${yc.year})"
-            style="display:flex; align-items:center; gap:9px; padding:7px 13px; border-radius:10px; background:rgba(255,255,255,0.03); border:1.5px solid ${isOn ? yc.color : 'var(--glass-border)'}; cursor:pointer; opacity:${isOn ? '1' : '0.5'};"
-            title="Click to toggle Year ${yc.year}"
-          >
-            <span style="width:14px; height:14px; border-radius:4px; background:${yc.color}; display:inline-block; flex-shrink:0; box-shadow:0 0 8px ${yc.color};"></span>
-            <div style="font-size:0.75rem; line-height:1.25;">
-              <div style="font-weight:800; color:var(--text-main);">${yc.label}</div>
-              <div style="color:${yc.color}; font-weight:800;">₹${yrTotal.toLocaleString('en-IN')}</div>
+          <div style="background:${yc.bg}; border:1px solid ${yc.color}; border-radius:12px; padding:8px 12px; flex:1; min-width:140px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+              <span style="font-size:0.74rem; font-weight:800; color:${yc.color};">${yc.label}</span>
+              <span style="width:8px; height:8px; border-radius:50%; background:${yc.color};"></span>
             </div>
+            <div style="font-size:1.05rem; font-weight:900; color:var(--text-main);">₹${total.toLocaleString('en-IN')}</div>
+            <div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">Avg: ₹${avg.toLocaleString('en-IN')}/mo</div>
           </div>
         `;
       }).join("");
 
       return `
-        <div style="background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:16px; padding:16px; box-shadow:0 10px 28px rgba(0,0,0,0.22);">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;">
+        <div class="stat-pill" style="margin-top:16px; padding:16px; border-radius:18px; background:var(--bg-card); border:1px solid var(--glass-border); box-shadow:0 8px 24px rgba(0,0,0,0.25);">
+          <!-- Header and Year Selector Controls -->
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
             <div>
-              <h4 style="font-size:0.98rem; font-weight:800; color:var(--text-main); margin:0; display:flex; align-items:center; gap:8px;">
-                <i class="fa-solid fa-chart-line" style="color:#6366f1;"></i> 2. Consolidated 3-Year Graph (${currentYear - 2} – ${currentYear}) (Active &amp; Inactive Users)
+              <h4 style="margin:0; font-size:0.95rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-chart-line" style="color:#6366f1;"></i> 2. Consolidated Annual &amp; Monthly Graph (${isSpecificYear ? flatGraph2SelectedMode : 'Last 3 Years'})
               </h4>
-              <p style="font-size:0.74rem; color:var(--text-muted); margin:3px 0 0 0;">
-                ${prop} — Flat ${flat} • <span style="color:#818cf8; font-weight:800;">All Users (Active + Inactive / Left)</span> • Consolidated 3-year monthly comparison
+              <p style="font-size:0.72rem; color:var(--text-muted); margin:3px 0 0 0;">
+                ${prop} — Flat ${flat} • Shows all renters (active + departed) • Auto-scrolls upcoming years as time passes
               </p>
             </div>
-            <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
-              ${yearQuickButtonsHtml}
+            <!-- Horizontal scrolling year filter pills -->
+            <div style="display:flex; align-items:center; gap:6px; overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%; padding-bottom:4px;">
+              ${yearFilterButtons}
             </div>
           </div>
 
-          <!-- Year Filter / Selection Option -->
-          <div style="display:flex; align-items:center; flex-wrap:wrap; gap:7px; margin-bottom:12px;">
-            <span style="font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-right:4px;">
-              <i class="fa-solid fa-calendar-check"></i> Choose Years:
-            </span>
-            ${yearTogglePillsHtml}
-            <button type="button" class="btn-ledger-action" style="padding:4px 9px; font-size:0.68rem;" onclick="toggleFlatGraph2Year('ALL_3_YEARS')">Compare All 3 Years</button>
+          <!-- Summary Metric Cards -->
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
+            ${summaryCards}
           </div>
 
-          <!-- Consolidated 3-Year SVG Graph -->
-          <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
-            <svg viewBox="0 0 ${chartWidth} ${chartHeight}" style="width:100%; min-width:560px; height:auto; overflow:visible;">
-              <line x1="${padLeft}" y1="${padTop}" x2="${chartWidth - padRight}" y2="${padTop}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,3" />
-              <line x1="${padLeft}" y1="${padTop + (usableH / 2)}" x2="${chartWidth - padRight}" y2="${padTop + (usableH / 2)}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,3" />
-              <line x1="${padLeft}" y1="${padTop + usableH}" x2="${chartWidth - padRight}" y2="${padTop + usableH}" stroke="rgba(255,255,255,0.2)" />
-              <text x="${padLeft - 8}" y="${padTop + 4}" font-size="9.5" fill="#94a3b8" text-anchor="end">₹${Math.round(maxVal).toLocaleString('en-IN')}</text>
-              <text x="${padLeft - 8}" y="${padTop + (usableH / 2) + 3}" font-size="9.5" fill="#94a3b8" text-anchor="end">₹${Math.round(maxVal / 2).toLocaleString('en-IN')}</text>
-              <text x="${padLeft - 8}" y="${padTop + usableH}" font-size="9.5" fill="#94a3b8" text-anchor="end">₹0</text>
+          <!-- SVG Chart Area -->
+          <div style="overflow-x:auto; -webkit-overflow-scrolling:touch; width:100%;">
+            <svg viewBox="0 0 ${chartWidth} ${chartHeight}" style="width:100%; min-width:580px; height:auto; overflow:visible;">
+              ${gridSvg}
               ${barsSvg}
               ${linesSvg}
               ${labelsSvg}
             </svg>
           </div>
-
-          <!-- Clear Bottom Legend for the 3 Years -->
-          <div style="margin-top:12px; padding-top:12px; border-top:1px dashed var(--glass-border);">
-            <div style="font-size:0.71rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">
-              <i class="fa-solid fa-layer-group"></i> 3-Year Color Legend (Click any year to toggle):
-            </div>
-            <div style="display:flex; align-items:center; flex-wrap:wrap; gap:10px;">
-              ${yearLegendBelowHtml}
-            </div>
-          </div>
         </div>
       `;
     }
 
-    // Requirement 5: First graph displays data ONLY for active users; Second graph displays data for everyone (both active and inactive users)
     function renderAllRentersGraphForFlat(prop, flat) {
       const container = document.getElementById("tabGraphContainer");
       if (!container) return;
