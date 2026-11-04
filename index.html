@@ -1459,10 +1459,10 @@
       white-space: nowrap;
     }
 
-    /* Profile Tab Matrix */
+    /* Profile Tab Matrix (Requirement 6: 1. Profile Photo, 2. Aadhaar Card Photo, 3. Renter Profile Details, 4. Rent & Utility Details) */
     .profile-matrix {
       display: grid;
-      grid-template-columns: 1.1fr 1.1fr 1.1fr;
+      grid-template-columns: repeat(2, 1fr);
       gap: 14px;
     }
     .matrix-col {
@@ -2057,12 +2057,238 @@
         padding: 16px 14px;
       }
     }
+
+    /* ==========================================================================
+       STYLISH & COLORFUL BOXES DESIGN ACROSS THE ENTIRE SITE (Requirement 2)
+       ========================================================================== */
+    .prop-card {
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.22) 0%, rgba(15, 23, 42, 0.86) 100%);
+      border: 1.5px solid rgba(129, 140, 248, 0.42);
+      border-top: 3.5px solid #6366f1;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.38);
+    }
+    .prop-card:nth-child(4n+2) {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(15, 23, 42, 0.86) 100%);
+      border-color: rgba(52, 211, 153, 0.42);
+      border-top-color: #10b981;
+    }
+    .prop-card:nth-child(4n+2) .prop-icon {
+      background: rgba(16, 185, 129, 0.24);
+      color: #34d399;
+    }
+    .prop-card:nth-child(4n+3) {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(15, 23, 42, 0.86) 100%);
+      border-color: rgba(251, 191, 36, 0.42);
+      border-top-color: #f59e0b;
+    }
+    .prop-card:nth-child(4n+3) .prop-icon {
+      background: rgba(245, 158, 11, 0.24);
+      color: #fbbf24;
+    }
+    .prop-card:nth-child(4n+4) {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.22) 0%, rgba(15, 23, 42, 0.86) 100%);
+      border-color: rgba(244, 114, 182, 0.42);
+      border-top-color: #ec4899;
+    }
+    .prop-card:nth-child(4n+4) .prop-icon {
+      background: rgba(236, 72, 153, 0.24);
+      color: #f472b6;
+    }
+    body.theme-white .prop-card {
+      background: linear-gradient(135deg, #ffffff 0%, #eef2ff 100%);
+      border-color: #a5b4fc;
+      border-top: 3.5px solid #4f46e5;
+      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.12);
+    }
+    body.theme-white .prop-card:nth-child(4n+2) {
+      background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
+      border-color: #6ee7b7;
+      border-top-color: #059669;
+    }
+    body.theme-white .prop-card:nth-child(4n+3) {
+      background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
+      border-color: #fcd34d;
+      border-top-color: #d97706;
+    }
+    body.theme-white .prop-card:nth-child(4n+4) {
+      background: linear-gradient(135deg, #ffffff 0%, #fdf2f8 100%);
+      border-color: #f9a8d4;
+      border-top-color: #db2777;
+    }
+    .prop-card.active {
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.55) 0%, rgba(30, 27, 75, 0.92) 100%) !important;
+      border-color: #a5b4fc !important;
+      border-top: 3.5px solid #818cf8 !important;
+      box-shadow: 0 10px 26px rgba(79, 70, 229, 0.45) !important;
+    }
+    body.theme-white .prop-card.active {
+      background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%) !important;
+      border-color: #4f46e5 !important;
+      border-top: 3.5px solid #4338ca !important;
+    }
+
+    /* Colorful Matrix & Profile Cards */
+    .matrix-col {
+      border-radius: 16px !important;
+      padding: 18px !important;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .matrix-col.photo-card-profile {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.18) 0%, rgba(15, 23, 42, 0.82) 100%) !important;
+      border: 1.5px solid rgba(34, 211, 238, 0.45) !important;
+      border-top: 4px solid #06b6d4 !important;
+    }
+    .matrix-col.photo-card-aadhaar {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.18) 0%, rgba(15, 23, 42, 0.82) 100%) !important;
+      border: 1.5px solid rgba(251, 191, 36, 0.45) !important;
+      border-top: 4px solid #f59e0b !important;
+    }
+    .matrix-col.details-card-renter {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.18) 0%, rgba(15, 23, 42, 0.82) 100%) !important;
+      border: 1.5px solid rgba(167, 139, 250, 0.45) !important;
+      border-top: 4px solid #8b5cf6 !important;
+    }
+    .matrix-col.details-card-utility {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(15, 23, 42, 0.82) 100%) !important;
+      border: 1.5px solid rgba(52, 211, 153, 0.45) !important;
+      border-top: 4px solid #10b981 !important;
+    }
+    body.theme-white .matrix-col.photo-card-profile {
+      background: linear-gradient(135deg, #ffffff 0%, #ecfeff 100%) !important;
+      border-color: #67e8f9 !important;
+      border-top: 4px solid #0891b2 !important;
+    }
+    body.theme-white .matrix-col.photo-card-aadhaar {
+      background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%) !important;
+      border-color: #fcd34d !important;
+      border-top: 4px solid #d97706 !important;
+    }
+    body.theme-white .matrix-col.details-card-renter {
+      background: linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%) !important;
+      border-color: #c4b5fd !important;
+      border-top: 4px solid #7c3aed !important;
+    }
+    body.theme-white .matrix-col.details-card-utility {
+      background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%) !important;
+      border-color: #6ee7b7 !important;
+      border-top: 4px solid #059669 !important;
+    }
+
+    /* Colorful Renter History Cards & Stat Pills */
+    .rh-tenant-card-box {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(15, 23, 42, 0.82) 100%) !important;
+      border: 1.5px solid rgba(129, 140, 248, 0.4) !important;
+      border-left: 5px solid #6366f1 !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+    }
+    .rh-tenant-card-box.active-tenant-box {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(15, 23, 42, 0.82) 100%) !important;
+      border-color: rgba(52, 211, 153, 0.5) !important;
+      border-left: 5px solid #10b981 !important;
+    }
+    body.theme-white .rh-tenant-card-box {
+      background: linear-gradient(135deg, #ffffff 0%, #eef2ff 100%) !important;
+      border-color: #a5b4fc !important;
+      border-left: 5px solid #4f46e5 !important;
+    }
+    body.theme-white .rh-tenant-card-box.active-tenant-box {
+      background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%) !important;
+      border-color: #6ee7b7 !important;
+      border-left: 5px solid #059669 !important;
+    }
+    .stat-pill {
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.14) 0%, rgba(30, 41, 59, 0.88) 100%);
+      border: 1.5px solid rgba(129, 140, 248, 0.35);
+      border-top: 3px solid #6366f1;
+    }
+    .stat-pill:nth-child(2) {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.14) 0%, rgba(30, 41, 59, 0.88) 100%);
+      border-color: rgba(52, 211, 153, 0.35);
+      border-top-color: #10b981;
+    }
+    .stat-pill:nth-child(3) {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.14) 0%, rgba(30, 41, 59, 0.88) 100%);
+      border-color: rgba(251, 191, 36, 0.35);
+      border-top-color: #f59e0b;
+    }
+    .stat-pill:nth-child(4) {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.14) 0%, rgba(30, 41, 59, 0.88) 100%);
+      border-color: rgba(34, 211, 238, 0.35);
+      border-top-color: #06b6d4;
+    }
+    .stat-pill:nth-child(5) {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.14) 0%, rgba(30, 41, 59, 0.88) 100%);
+      border-color: rgba(244, 114, 182, 0.35);
+      border-top-color: #ec4899;
+    }
+    body.theme-white .stat-pill {
+      background: linear-gradient(135deg, #ffffff 0%, #eef2ff 100%);
+      border-color: #c7d2fe;
+    }
+    body.theme-white .stat-pill:nth-child(2) {
+      background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
+      border-color: #a7f3d0;
+    }
+    body.theme-white .stat-pill:nth-child(3) {
+      background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
+      border-color: #fde68a;
+    }
+    body.theme-white .stat-pill:nth-child(4) {
+      background: linear-gradient(135deg, #ffffff 0%, #ecfeff 100%);
+      border-color: #a5f3fc;
+    }
+    body.theme-white .stat-pill:nth-child(5) {
+      background: linear-gradient(135deg, #ffffff 0%, #fdf2f8 100%);
+      border-color: #fbcfe8;
+    }
+
+    /* Click-to-Zoom Image Frame Enhancement */
+    .zoomable-photo-frame {
+      position: relative;
+      cursor: zoom-in;
+      overflow: hidden;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .zoomable-photo-frame:hover {
+      border-color: #38bdf8 !important;
+      box-shadow: 0 8px 22px rgba(56, 189, 248, 0.28);
+      transform: translateY(-2px);
+    }
+    .zoomable-photo-badge {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(15, 23, 42, 0.78);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      pointer-events: none;
+      backdrop-filter: blur(6px);
+    }
+
+    /* Khet Icon-Only Header Button Between FD and Plus (+) */
+    .khet-icon-only-btn {
+      border-color: rgba(52, 211, 153, 0.48) !important;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, var(--bg-input) 100%) !important;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.22);
+    }
+    .khet-icon-only-btn:hover {
+      border-color: #34d399 !important;
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.38);
+    }
   </style>
 <script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body class="theme-black">
 
   <!-- PERMANENT HOUSE BACKGROUND CANVAS FOR HOME PAGE & LOGIN -->
-  <div class="bg-canvas"></div>
+  <div class="bg-canvas" id="mainBgCanvas"></div>
 
   <!-- UNIVERSAL COLORFUL SIDE SLIDE-IN NOTIFICATION TOAST (Requirement 9: Glitch-Free Desktop & Mobile) -->
   <div id="sideToast" class="side-toast" role="status" aria-live="polite">
@@ -2095,6 +2321,52 @@
           <i class="fa-solid fa-check"></i> <span id="confirmModalYesText">Yes, Delete All</span>
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- UNIVERSAL PHOTO ZOOM LIGHTBOX MODAL (Requirement 3: Click Any Photo to Open Zoomed-In View + Download) -->
+  <div id="photoZoomModal" class="modal-overlay" style="z-index: 95000;" onclick="if(event.target===this) closeModal('photoZoomModal')">
+    <div class="modal-window" style="max-width: 820px; width: 94vw; text-align: center; background: rgba(15, 23, 42, 0.96); border: 1.5px solid rgba(56, 189, 248, 0.55); box-shadow: 0 28px 65px rgba(0, 0, 0, 0.85);">
+      <button class="modal-close-btn" onclick="closeModal('photoZoomModal')"><i class="fa-solid fa-xmark"></i></button>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding-right:38px; margin-bottom:12px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;">
+        <h3 id="photoZoomModalTitle" style="margin:0; font-size:1.08rem; color:#ffffff; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-magnifying-glass-plus" style="color:#38bdf8;"></i> Document / Photo Zoom View
+        </h3>
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="btn-ledger-action" style="padding:6px 11px; font-size:0.76rem; color:#ffffff;" onclick="adjustPhotoZoomLevel(-0.25)" title="Zoom Out">
+            <i class="fa-solid fa-magnifying-glass-minus"></i> -
+          </button>
+          <span id="photoZoomScaleLabel" style="font-size:0.78rem; font-weight:800; color:#38bdf8; min-width:46px;">100%</span>
+          <button type="button" class="btn-ledger-action" style="padding:6px 11px; font-size:0.76rem; color:#ffffff;" onclick="adjustPhotoZoomLevel(0.25)" title="Zoom In">
+            <i class="fa-solid fa-magnifying-glass-plus"></i> +
+          </button>
+          <button type="button" class="btn-ledger-action" style="padding:6px 11px; font-size:0.76rem; color:#ffffff;" onclick="resetPhotoZoomLevel()" title="Reset Zoom">
+            <i class="fa-solid fa-rotate-left"></i> Reset
+          </button>
+          <button type="button" class="btn-primary" style="width:auto; padding:6px 14px; font-size:0.78rem; background:linear-gradient(135deg, #10b981 0%, #059669 100%);" onclick="downloadCurrentZoomedPhoto()">
+            <i class="fa-solid fa-download"></i> Download Photo
+          </button>
+        </div>
+      </div>
+      <div style="max-height: 72vh; overflow: auto; border-radius: 14px; background: rgba(2, 6, 23, 0.85); border: 1px solid rgba(255,255,255,0.14); padding: 16px; display:flex; align-items:center; justify-content:center;">
+        <img id="photoZoomModalImg" src="" alt="Zoomed Photo" style="max-width:100%; max-height:66vh; object-fit:contain; border-radius:10px; transition: transform 0.2s ease; transform-origin: center center; cursor: grab;">
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCKED ACCOUNT POP-UP MODAL ON LOGOUT / LOGIN PAGE (Requirement 9) -->
+  <div id="blockedUserPopupModal" class="modal-overlay" style="z-index: 99990;">
+    <div class="modal-window confirm-modal-card" style="max-width: 440px; border: 2px solid #ef4444; box-shadow: 0 24px 60px rgba(239, 68, 68, 0.45);">
+      <div class="confirm-icon-ring" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: #ef4444;">
+        <i class="fa-solid fa-user-lock"></i>
+      </div>
+      <h3 style="color: #ef4444; font-size: 1.22rem; margin-bottom: 8px;">Account Blocked</h3>
+      <p id="blockedUserPopupMessage" style="font-size: 0.88rem; line-height: 1.5; color: var(--text-main); margin-bottom: 18px;">
+        Your User ID has been blocked by the Administrator. You are no longer able to log in with this account. Please contact your Admin to unblock your ID.
+      </p>
+      <button type="button" class="btn-confirm-danger" style="width: 100%; justify-content: center; padding: 12px 18px;" onclick="closeModal('blockedUserPopupModal')">
+        <i class="fa-solid fa-circle-check"></i> Understood
+      </button>
     </div>
   </div>
 
@@ -2327,15 +2599,14 @@
 
         <!-- Action Icons Grouped Together -->
         <div class="nav-actions-group">
-          <!-- Requirement 4: Two Buttons to the Left Side of the Plus (+) Button: FD and Khet -->
+          <!-- Requirement 1: Keep Khet between the Plus (+) button and the FD option, and ONLY the logo is visible -->
           <button type="button" class="nav-btn nav-pill-btn" onclick="openFdModal()" title="Fixed Deposit (FD)">
             <i class="fa-solid fa-building-columns" style="color:#818cf8;"></i>
             <span>FD</span>
           </button>
 
-          <button type="button" class="nav-btn nav-pill-btn" onclick="openKhetModal()" title="Khet (Field)">
-            <i class="fa-solid fa-seedling" style="color:#34d399;"></i>
-            <span>Khet</span>
+          <button type="button" class="nav-btn khet-icon-only-btn" onclick="openKhetModal()" title="Khet (Field)" aria-label="Khet (Field)">
+            <i class="fa-solid fa-seedling" style="color:#34d399; font-size:1.05rem;"></i>
           </button>
 
           <!-- Dynamic Add Plus (+) Icon (Delete Property & Delete Flat Moved to Internal Home Settings) -->
@@ -2385,50 +2656,6 @@
     <main class="flats-container" id="flatsList">
       <!-- Rendered Only When Property Is Clicked -->
     </main>
-
-    <!-- Requirement 7: Stylish Home Page "Khet" (Field) Section -->
-    <section id="homeKhetSection" class="home-khet-section">
-      <div class="home-khet-shell">
-        <div class="home-khet-header">
-          <div class="home-khet-brand">
-            <div class="home-khet-icon-badge">
-              <i class="fa-solid fa-seedling"></i>
-            </div>
-            <div>
-              <h3 style="margin:0; font-size:1.18rem; font-weight:800; display:flex; align-items:center; gap:8px;">
-                Khet (Field) Portfolio
-                <span style="font-size:0.68rem; font-weight:700; color:#34d399; background:rgba(16,185,129,0.16); padding:3px 9px; border-radius:20px; border:1px solid rgba(52,211,153,0.35);">
-                  <i class="fa-solid fa-wheat-awn"></i> Agricultural Holdings
-                </span>
-              </h3>
-              <p style="margin:3px 0 0 0; font-size:0.76rem; color:var(--text-muted);">
-                Track field name, field size in Bighas, holder name, amount paid, and payment date
-              </p>
-            </div>
-          </div>
-          <div class="home-khet-stats-bar">
-            <div class="home-khet-stat-pill">
-              <i class="fa-solid fa-layer-group" style="color:#34d399;"></i>
-              <span>Fields: <strong id="homeKhetTotalCount">0</strong></span>
-            </div>
-            <div class="home-khet-stat-pill">
-              <i class="fa-solid fa-ruler-combined" style="color:#38bdf8;"></i>
-              <span>Total Size: <strong id="homeKhetTotalBigha">0 Bigha</strong></span>
-            </div>
-            <div class="home-khet-stat-pill">
-              <i class="fa-solid fa-indian-rupee-sign" style="color:#fbbf24;"></i>
-              <span>Total Paid: <strong id="homeKhetTotalPaid" style="color:#34d399;">₹0</strong></span>
-            </div>
-            <button type="button" class="btn-primary admin-only" style="width:auto; padding:9px 16px; font-size:0.8rem; background:linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow:0 6px 16px rgba(16,185,129,0.35);" onclick="openKhetModal()">
-              <i class="fa-solid fa-plus"></i> Add / Manage Khet
-            </button>
-          </div>
-        </div>
-        <div id="homeKhetCardsGrid" class="home-khet-grid">
-          <!-- Populated dynamically with stylish Khet cards -->
-        </div>
-      </div>
-    </section>
   </section>
 
   <!-- ==================== POPUP MODALS ==================== -->
@@ -2665,9 +2892,9 @@
     </div>
   </div>
 
-  <!-- EDIT RENTER PROFILE FROM HISTORY POPUP MODAL (Requirement 5: Status Remains Unchanged When Editing Profile) -->
+  <!-- EDIT RENTER PROFILE FROM HISTORY POPUP MODAL (Requirement 4 & 5: Status Remains Unchanged + Past Renter Aadhaar & Profile Photo Upload) -->
   <div id="editLeftRenterModal" class="modal-overlay" style="z-index: 5000;">
-    <div class="modal-window" style="max-width: 620px;">
+    <div class="modal-window" style="max-width: 680px;">
       <button class="modal-close-btn" onclick="closeModal('editLeftRenterModal')"><i class="fa-solid fa-xmark"></i></button>
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding-right:34px; margin-bottom: 14px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;">
         <h3 style="margin:0; display:flex; align-items:center; gap:8px;">
@@ -2677,6 +2904,57 @@
       </div>
 
       <input type="hidden" id="editLeftRenterId">
+
+      <!-- Requirement 4: Upload, View, Zoom, Download & Delete Aadhaar Card Photo & Profile Photo for Past Renters -->
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:12px; margin-bottom:14px;">
+        <!-- Past Renter Profile Photo Box -->
+        <div class="matrix-col photo-card-profile" style="padding:12px; text-align:center;">
+          <div class="col-title" style="margin-bottom:8px; font-size:0.82rem; justify-content:center; display:flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-camera-retro"></i> 1. Past Renter Profile Photo
+          </div>
+          <div class="image-frame-container zoomable-photo-frame" style="height:125px; margin-bottom:6px;" onclick="openPhotoZoomModal(document.getElementById('editLeftProfilePreview')?.src, (document.getElementById('editLeftName')?.value || 'Past Renter') + ' — Profile Photo')">
+            <img id="editLeftProfilePreview" src="https://via.placeholder.com/150?text=No+Profile+Photo" alt="Past Renter Profile Photo">
+            <span class="zoomable-photo-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Click to Zoom</span>
+          </div>
+          <div id="editLeftProfileStatusBadge" style="font-size:0.7rem; color:var(--text-muted); margin-bottom:6px;">No profile photo uploaded</div>
+          <div class="form-group admin-only" style="margin-bottom:8px; text-align:left;">
+            <label style="font-size:0.7rem;">Upload Profile Photo (Saves to this Renter)</label>
+            <input type="file" id="fileEditLeftProfilePic" class="form-control" style="padding:6px; font-size:0.74rem;" accept="image/*" onchange="handleLeftRenterDocumentUpload(this, 'profile')">
+          </div>
+          <div style="display:flex; justify-content:center; gap:6px; flex-wrap:wrap;">
+            <button type="button" id="btnDownloadLeftProfilePic" class="btn-ledger-action" style="background:rgba(56,189,248,0.16); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:5px 10px; font-size:0.72rem; font-weight:700;" onclick="downloadLeftRenterDocument('profile')">
+              <i class="fa-solid fa-download"></i> Download
+            </button>
+            <button type="button" id="btnDeleteLeftProfilePic" class="btn-ledger-action admin-only" style="background:rgba(239,68,68,0.16); color:var(--accent-red); border:1px solid rgba(239,68,68,0.35); padding:5px 10px; font-size:0.72rem; font-weight:700;" onclick="deleteLeftRenterDocument('profile')">
+              <i class="fa-solid fa-trash-can"></i> Delete
+            </button>
+          </div>
+        </div>
+
+        <!-- Past Renter Aadhaar Card Photo Box -->
+        <div class="matrix-col photo-card-aadhaar" style="padding:12px; text-align:center;">
+          <div class="col-title" style="margin-bottom:8px; font-size:0.82rem; justify-content:center; display:flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-id-card"></i> 2. Past Renter Aadhaar Card Photo
+          </div>
+          <div class="image-frame-container zoomable-photo-frame" style="height:125px; margin-bottom:6px;" onclick="openPhotoZoomModal(document.getElementById('editLeftIdentityPreview')?.src, (document.getElementById('editLeftName')?.value || 'Past Renter') + ' — Aadhaar Card Photo')">
+            <img id="editLeftIdentityPreview" src="https://via.placeholder.com/300x150?text=No+Aadhaar+Uploaded" alt="Past Renter Aadhaar Card Photo">
+            <span class="zoomable-photo-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Click to Zoom</span>
+          </div>
+          <div id="editLeftIdentityStatusBadge" style="font-size:0.7rem; color:var(--text-muted); margin-bottom:6px;">No Aadhaar photo uploaded</div>
+          <div class="form-group admin-only" style="margin-bottom:8px; text-align:left;">
+            <label style="font-size:0.7rem;">Upload Aadhaar Card Photo (Saves to this Past Renter)</label>
+            <input type="file" id="fileEditLeftIdentityPic" class="form-control" style="padding:6px; font-size:0.74rem;" accept="image/*" onchange="handleLeftRenterDocumentUpload(this, 'identity')">
+          </div>
+          <div style="display:flex; justify-content:center; gap:6px; flex-wrap:wrap;">
+            <button type="button" id="btnDownloadLeftIdentityPic" class="btn-ledger-action" style="background:rgba(16,185,129,0.16); color:#34d399; border:1px solid rgba(16,185,129,0.4); padding:5px 10px; font-size:0.72rem; font-weight:700;" onclick="downloadLeftRenterDocument('identity')">
+              <i class="fa-solid fa-download"></i> Download
+            </button>
+            <button type="button" id="btnDeleteLeftIdentityPic" class="btn-ledger-action admin-only" style="background:rgba(239,68,68,0.16); color:var(--accent-red); border:1px solid rgba(239,68,68,0.35); padding:5px 10px; font-size:0.72rem; font-weight:700;" onclick="deleteLeftRenterDocument('identity')">
+              <i class="fa-solid fa-trash-can"></i> Delete
+            </button>
+          </div>
+        </div>
+      </div>
 
       <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
         <div class="form-group">
@@ -3552,12 +3830,110 @@
         </div>
       </div>
 
-      <!-- TAB 3: PROFILE MATRIX -->
+      <!-- TAB 3: PROFILE MATRIX (Requirement 3, 5 & 6: 1. Renter Profile Photo, 2. Aadhaar Card Document Photo, 3. Renter Profile Details, 4. Rent & Utility Details) -->
       <div id="tabProfile" class="tab-content">
         <div class="profile-matrix">
-          <!-- Left Column: Utilities (Auto-Saves & Applies Across Respective Flat; Past Bills Remain Locked) -->
-          <div class="matrix-col">
-            <div class="col-title">Rent &amp; Utility Details</div>
+          <!-- 1st Box: Renter's Profile Photo (Upload, Google Drive Auto-Save, Click-to-Zoom, Download & Delete) -->
+          <div class="matrix-col photo-card-profile" style="text-align: center;">
+            <div class="col-title"><i class="fa-solid fa-user-astronaut"></i> 1. Renter Profile Photo (Google Drive)</div>
+            <div class="image-frame-container zoomable-photo-frame" style="height: 175px; margin-bottom: 8px;" onclick="openPhotoZoomModal(document.getElementById('profilePicturePreview')?.src, (document.getElementById('renterName')?.value || 'Renter') + ' — Profile Photo')">
+              <img id="profilePicturePreview" src="https://via.placeholder.com/150?text=No+Profile+Photo" alt="Renter Profile Photo">
+              <span class="zoomable-photo-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Click Photo to Zoom</span>
+            </div>
+            <div id="profileCloudStatusBadge" style="font-size:0.74rem; font-weight:700; color:var(--text-muted); margin-bottom:8px;">No profile photo uploaded</div>
+            <div class="form-group admin-only" style="text-align:left; margin-bottom:10px;">
+              <label>Upload Profile Photo (Auto-Saves to Google Drive)</label>
+              <input type="file" id="fileProfilePic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'profile')">
+            </div>
+            <div style="display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap;">
+              <button
+                type="button"
+                id="btnDownloadProfilePic"
+                class="btn-ledger-action"
+                style="background: rgba(56, 189, 248, 0.16); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.45); padding: 7px 14px; font-size: 0.76rem; font-weight: 700;"
+                onclick="downloadRenterDocumentPhoto('profile')"
+              >
+                <i class="fa-solid fa-download"></i> Download Photo
+              </button>
+              <button
+                type="button"
+                id="btnDeleteProfilePic"
+                class="btn-ledger-action admin-only"
+                style="background: rgba(239, 68, 68, 0.16); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.35); padding: 7px 14px; font-size: 0.76rem; font-weight: 700;"
+                onclick="deleteRenterDocumentFromCloud('profile')"
+              >
+                <i class="fa-solid fa-trash-can"></i> Delete Profile Photo
+              </button>
+            </div>
+          </div>
+
+          <!-- 2nd Box: Renter's Aadhaar Card Document Photo (Upload, Google Drive Auto-Save, Click-to-Zoom, Download & Delete) -->
+          <div class="matrix-col photo-card-aadhaar" style="text-align: center;">
+            <div class="col-title"><i class="fa-solid fa-id-card"></i> 2. Aadhaar Card Document Photo (Google Drive)</div>
+            <div class="image-frame-container zoomable-photo-frame" style="height: 175px; margin-bottom: 8px;" onclick="openPhotoZoomModal(document.getElementById('identityPicturePreview')?.src, (document.getElementById('renterName')?.value || 'Renter') + ' — Aadhaar Card Document')">
+              <img id="identityPicturePreview" src="https://via.placeholder.com/300x150?text=No+Aadhaar+Uploaded" alt="Aadhaar / ID Document">
+              <span class="zoomable-photo-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Click Photo to Zoom</span>
+            </div>
+            <div id="identityCloudStatusBadge" style="font-size:0.74rem; font-weight:700; color:var(--text-muted); margin-bottom:8px;">No Aadhaar / ID uploaded</div>
+            <div class="form-group admin-only" style="text-align:left; margin-bottom:10px;">
+              <label>Upload Aadhaar Card Photo (Auto-Saves to Google Drive)</label>
+              <input type="file" id="fileIdentityPic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'identity')">
+            </div>
+            <div style="display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap;">
+              <button
+                type="button"
+                id="btnDownloadIdentityPic"
+                class="btn-ledger-action"
+                style="background: rgba(16, 185, 129, 0.16); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.45); padding: 7px 14px; font-size: 0.76rem; font-weight: 700;"
+                onclick="downloadRenterDocumentPhoto('identity')"
+              >
+                <i class="fa-solid fa-download"></i> Download Aadhaar
+              </button>
+              <button
+                type="button"
+                id="btnDeleteIdentityPic"
+                class="btn-ledger-action admin-only"
+                style="background: rgba(239, 68, 68, 0.16); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.35); padding: 7px 14px; font-size: 0.76rem; font-weight: 700;"
+                onclick="deleteRenterDocumentFromCloud('identity')"
+              >
+                <i class="fa-solid fa-trash-can"></i> Delete Aadhaar Photo
+              </button>
+            </div>
+          </div>
+
+          <!-- 3rd Box: Renter Profile Details (Requirement 5: Reactivate Options Hidden for Active Renters; Only Shown When Renter Has Left) -->
+          <div class="matrix-col details-card-renter">
+            <div class="col-title"><i class="fa-solid fa-address-card"></i> 3. Renter Profile Details</div>
+            <div class="form-group"><label>Renter Name <span class="req-star">*</span></label><input type="text" id="renterName" class="form-control"></div>
+            <div class="form-group">
+              <label>Aadhaar Card Number (Strictly 12 Digits)</label>
+              <input type="text" id="renterIdentityNum" class="form-control" maxlength="12" inputmode="numeric" pattern="\d{12}" placeholder="Enter 12-digit Aadhaar Number" oninput="this.value = sanitizeAadhaar12Digits(this.value); handleAadhaarLookupInput(this.value)" onchange="this.value = sanitizeAadhaar12Digits(this.value); handleAadhaarLookupInput(this.value)">
+              <!-- Returning Renter Aadhaar Match & Reactivate Same Profile Banner (Only for Left Renters) -->
+              <div id="aadhaarPreviousRenterPrompt" style="display:none; margin-top:8px;"></div>
+            </div>
+            <div class="form-group"><label>Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
+            <div class="form-group"><label>Alternative Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterAltMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
+            <div class="form-group"><label>Address</label><input type="text" id="renterAddress" class="form-control"></div>
+            <div class="form-group"><label>Total Family Members</label><input type="number" id="renterFamily" class="form-control" value="1"></div>
+            <div class="form-group">
+              <label>Renter Status</label>
+              <select id="renterStatus" class="form-control" onchange="syncProfileReactivateButtonVisibility()">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive (Archive &amp; Clear for Next Renter)</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Join Date</label><input type="date" id="renterJoinDate" class="form-control"></div>
+            <div class="form-group"><label>End Date</label><input type="date" id="renterEndDate" class="form-control"></div>
+            <!-- Requirement 5: Strictly hidden for active renters; only visible when viewing a renter who has already left -->
+            <button type="button" id="btnReactivateProfileTab" class="btn-ledger-action admin-only" style="display:none; width:100%; justify-content:center; margin-bottom:10px; padding:10px 14px; font-weight:800; color:var(--accent-green); border-color:rgba(16,185,129,0.55); background:rgba(16,185,129,0.1);" onclick="triggerReactivateFromProfileTab()">
+              <i class="fa-solid fa-user-check"></i> Re-active Renter / Returning Renter (Choose Property &amp; Flat)
+            </button>
+            <button class="btn-primary admin-only" onclick="submitRenterProfileRight()">Save Renter Record</button>
+          </div>
+
+          <!-- 4th Box: Rent & Utility Details -->
+          <div class="matrix-col details-card-utility">
+            <div class="col-title"><i class="fa-solid fa-bolt"></i> 4. Rent &amp; Utility Details</div>
             <div class="form-group">
               <label>Rent Amount (₹)</label>
               <input type="number" id="profRent" class="form-control" oninput="syncProfileRatesToLiveCalculator()" onchange="saveUtilitiesLeft(true)">
@@ -3587,78 +3963,6 @@
             <div class="form-group"><label>UPI ID</label><input type="text" id="profUpiId" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
             <div class="form-group"><label>Contract Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="profContractMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)" onchange="saveUtilitiesLeft(true)"></div>
             <button class="btn-primary admin-only" onclick="saveUtilitiesLeft(false)">Update Utilities</button>
-          </div>
-
-          <!-- Center Column: Cloud Drive Renter Profile & Aadhaar Card Display + Delete Controls -->
-          <div class="matrix-col" style="text-align: center;">
-            <div class="col-title">Renter & Aadhaar Documents (Cloud Drive)</div>
-
-            <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Renter Profile Render</label>
-            <div class="image-frame-container" style="margin-bottom: 6px;">
-              <img id="profilePicturePreview" src="https://via.placeholder.com/150?text=No+Profile+Photo" alt="Profile">
-            </div>
-            <div id="profileCloudStatusBadge" style="font-size:0.72rem; color:var(--text-muted); margin-bottom:6px;">No profile photo uploaded</div>
-            <button
-              type="button"
-              id="btnDeleteProfilePic"
-              class="btn-ledger-action admin-only"
-              style="background: rgba(239, 68, 68, 0.16); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.35); padding: 6px 12px; font-size: 0.76rem; font-weight: 700; margin-bottom: 14px;"
-              onclick="deleteRenterDocumentFromCloud('profile')"
-            >
-              <i class="fa-solid fa-trash-can"></i> Delete Profile Photo
-            </button>
-
-            <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700; display:block; margin-top:6px;">Aadhaar / ID Card Document</label>
-            <div class="image-frame-container" style="margin-bottom: 6px;">
-              <img id="identityPicturePreview" src="https://via.placeholder.com/300x150?text=No+Aadhaar+Uploaded" alt="Aadhaar / ID Document">
-            </div>
-            <div id="identityCloudStatusBadge" style="font-size:0.72rem; color:var(--text-muted); margin-bottom:6px;">No Aadhaar / ID uploaded</div>
-            <button
-              type="button"
-              id="btnDeleteIdentityPic"
-              class="btn-ledger-action admin-only"
-              style="background: rgba(239, 68, 68, 0.16); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.35); padding: 6px 12px; font-size: 0.76rem; font-weight: 700;"
-              onclick="deleteRenterDocumentFromCloud('identity')"
-            >
-              <i class="fa-solid fa-trash-can"></i> Delete Aadhaar / ID Photo
-            </button>
-          </div>
-
-          <!-- Right Column: Renter Profile Info -->
-          <div class="matrix-col">
-            <div class="col-title">Renter Profile (Isolated Record)</div>
-            <div class="form-group admin-only">
-              <label>Profile Image Upload (Auto-Saves to Cloud Drive)</label>
-              <input type="file" id="fileProfilePic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'profile')">
-            </div>
-            <div class="form-group"><label>Renter Name <span class="req-star">*</span></label><input type="text" id="renterName" class="form-control"></div>
-            <div class="form-group">
-              <label>Aadhaar Card Number (Strictly 12 Digits)</label>
-              <input type="text" id="renterIdentityNum" class="form-control" maxlength="12" inputmode="numeric" pattern="\d{12}" placeholder="Enter 12-digit Aadhaar Number" oninput="this.value = sanitizeAadhaar12Digits(this.value); handleAadhaarLookupInput(this.value)" onchange="this.value = sanitizeAadhaar12Digits(this.value); handleAadhaarLookupInput(this.value)">
-              <!-- Requirement 5: Returning Renter Aadhaar Match & Reactivate Same Profile Banner -->
-              <div id="aadhaarPreviousRenterPrompt" style="display:none; margin-top:8px;"></div>
-            </div>
-            <div class="form-group admin-only">
-              <label>Aadhaar / ID Card Upload (Auto-Saves to Cloud Drive)</label>
-              <input type="file" id="fileIdentityPic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'identity')">
-            </div>
-            <div class="form-group"><label>Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
-            <div class="form-group"><label>Alternative Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterAltMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
-            <div class="form-group"><label>Address</label><input type="text" id="renterAddress" class="form-control"></div>
-            <div class="form-group"><label>Total Family Members</label><input type="number" id="renterFamily" class="form-control" value="1"></div>
-            <div class="form-group">
-              <label>Renter Status</label>
-              <select id="renterStatus" class="form-control">
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive (Archive & Clear for Next Renter)</option>
-              </select>
-            </div>
-            <div class="form-group"><label>Join Date</label><input type="date" id="renterJoinDate" class="form-control"></div>
-            <div class="form-group"><label>End Date</label><input type="date" id="renterEndDate" class="form-control"></div>
-            <button type="button" id="btnReactivateProfileTab" class="btn-ledger-action admin-only" style="width:100%; justify-content:center; margin-bottom:10px; padding:10px 14px; font-weight:800; color:var(--accent-green); border-color:rgba(16,185,129,0.55); background:rgba(16,185,129,0.1);" onclick="triggerReactivateFromProfileTab()">
-              <i class="fa-solid fa-user-check"></i> Re-active Renter / Returning Renter (Choose Property &amp; Flat)
-            </button>
-            <button class="btn-primary admin-only" onclick="submitRenterProfileRight()">Save Renter Record</button>
           </div>
         </div>
       </div>
@@ -4046,12 +4350,35 @@ function formatMonthLabel(rawVal) {
       return (DB.flats || []).find(f => isSamePropAndFlat(f.PropertyName, f.FlatName, propertyName, flatName)) || null;
     }
 
+    function sanitizeContactPhoneDisplay(rawVal) {
+      if (rawVal === undefined || rawVal === null) return "";
+      const cleaned = String(rawVal).replace(/^'+/, "").trim();
+      if (!cleaned || cleaned === "--" || cleaned === "+91" || cleaned === "undefined" || cleaned === "null") return "";
+      const digits = cleaned.replace(/\D/g, "");
+      if (!digits || digits === "91") return "";
+      if (digits.length === 10) return "+91 " + digits;
+      if (digits.length === 12 && digits.startsWith("91")) return "+91 " + digits.slice(2);
+      return cleaned;
+    }
+
     function resolveFlatUpiAndContact(propertyName, flatObj, renterObj) {
       const propObj = findPropertyObject(propertyName || flatObj?.PropertyName || renterObj?.PropertyName);
+      const domProfContract = sanitizeContactPhoneDisplay(document.getElementById("profContractMobile")?.value);
+      const flatContract = sanitizeContactPhoneDisplay(flatObj?.ContractMobile || flatObj?.ContractNumber);
+      const propContract = sanitizeContactPhoneDisplay(propObj?.ContractNumber || propObj?.ContractMobile);
+      const renterContract = sanitizeContactPhoneDisplay(renterObj?.ContractMobile);
+      const anyFlatWithContract = (DB.flats || []).find(f =>
+        String(f.PropertyName || "").trim().toLowerCase() === String(propertyName || flatObj?.PropertyName || "").trim().toLowerCase() &&
+        sanitizeContactPhoneDisplay(f.ContractMobile || f.ContractNumber)
+      );
+      const fallbackFlatContract = sanitizeContactPhoneDisplay(anyFlatWithContract?.ContractMobile || anyFlatWithContract?.ContractNumber);
+      const adminUserObj = (DB.users || []).find(u => String(u.Role || "").toLowerCase() === "admin" && sanitizeContactPhoneDisplay(u.MobileNumber));
+      const adminMobileFallback = sanitizeContactPhoneDisplay(activeUserMobile) || sanitizeContactPhoneDisplay(adminUserObj?.MobileNumber);
+
       return {
         upiName: flatObj?.UPIName || renterObj?.UPIName || propObj?.UPIName || "",
         upiId: flatObj?.UPIID || renterObj?.UPIID || propObj?.UPIID || "",
-        contractMobile: flatObj?.ContractMobile || renterObj?.ContractMobile || propObj?.ContractNumber || ""
+        contractMobile: flatContract || propContract || renterContract || fallbackFlatContract || domProfContract || adminMobileFallback || ""
       };
     }
 
@@ -7171,6 +7498,7 @@ function renderRegisteredUsersList() {
       const imgEl = document.getElementById(isIdentity ? "identityPicturePreview" : "profilePicturePreview");
       const badgeEl = document.getElementById(isIdentity ? "identityCloudStatusBadge" : "profileCloudStatusBadge");
       const delBtn = document.getElementById(isIdentity ? "btnDeleteIdentityPic" : "btnDeleteProfilePic");
+      const dlBtn = document.getElementById(isIdentity ? "btnDownloadIdentityPic" : "btnDownloadProfilePic");
       const fileInput = document.getElementById(isIdentity ? "fileIdentityPic" : "fileProfilePic");
 
       const hasRealImage = !isPlaceholderImageUrl(imageUrl);
@@ -7181,16 +7509,139 @@ function renderRegisteredUsersList() {
       }
       if (badgeEl) {
         badgeEl.innerText = hasRealImage
-          ? (isIdentity ? "Aadhaar / ID saved in Cloud Drive" : "Profile photo saved in Cloud Drive")
+          ? (isIdentity ? "Aadhaar Card saved in Google Drive (Click photo to Zoom)" : "Profile photo saved in Google Drive (Click photo to Zoom)")
           : (isIdentity ? "No Aadhaar / ID uploaded" : "No profile photo uploaded");
         badgeEl.style.color = hasRealImage ? "var(--accent-green)" : "var(--text-muted)";
       }
       if (delBtn) {
         delBtn.style.display = hasRealImage ? "inline-flex" : "none";
       }
+      if (dlBtn) {
+        dlBtn.style.display = hasRealImage ? "inline-flex" : "none";
+      }
       if (!hasRealImage && fileInput) {
         fileInput.value = "";
       }
+    }
+
+    // Requirement 5: Hide "Re-active Renter / Returning Renter (Choose Property & Flat)" for Active Renters; Only Display When Renter Has Left
+    function syncProfileReactivateButtonVisibility() {
+      const btnEl = document.getElementById("btnReactivateProfileTab");
+      if (!btnEl) return;
+      const isLoadedRenterLeft = Boolean(
+        activeFlatRenterObj &&
+        String(activeFlatRenterObj.Status || "").trim().toLowerCase() === "inactive"
+      );
+      btnEl.style.display = isLoadedRenterLeft ? "inline-flex" : "none";
+    }
+
+    // Requirement 3 & 4: Universal Photo Zoom Lightbox Modal & Local Image Download Helpers
+    let currentZoomLevel = 1;
+    let currentZoomedImageSrc = "";
+    let currentZoomedImageTitle = "Document_Photo";
+
+    function openPhotoZoomModal(imgSrc, titleText = "Document Photo Preview") {
+      if (!imgSrc || isPlaceholderImageUrl(imgSrc)) {
+        return triggerSideToast("No Photo Uploaded", "Please upload a photo first before zooming in.", false);
+      }
+      currentZoomLevel = 1;
+      currentZoomedImageSrc = imgSrc;
+      currentZoomedImageTitle = titleText || "Document Photo Preview";
+
+      const imgEl = document.getElementById("photoZoomModalImg");
+      const titleEl = document.getElementById("photoZoomModalTitle");
+      if (titleEl) {
+        titleEl.innerHTML = `<i class="fa-solid fa-magnifying-glass-plus" style="color:#38bdf8;"></i> ${currentZoomedImageTitle}`;
+      }
+      if (imgEl) {
+        imgEl.src = imgSrc;
+        imgEl.style.transform = "scale(1)";
+        imgEl.style.cursor = "zoom-in";
+        imgEl.onclick = function() {
+          adjustPhotoZoomLevel(currentZoomLevel >= 2 ? -1 : 0.5);
+        };
+      }
+      openModal("photoZoomModal");
+    }
+
+    function adjustPhotoZoomLevel(delta) {
+      currentZoomLevel = Math.min(3.5, Math.max(0.5, +(currentZoomLevel + delta).toFixed(2)));
+      const imgEl = document.getElementById("photoZoomModalImg");
+      if (imgEl) {
+        imgEl.style.transform = `scale(${currentZoomLevel})`;
+        imgEl.style.cursor = currentZoomLevel > 1.5 ? "zoom-out" : "zoom-in";
+      }
+    }
+
+    function resetPhotoZoomLevel() {
+      currentZoomLevel = 1;
+      const imgEl = document.getElementById("photoZoomModalImg");
+      if (imgEl) {
+        imgEl.style.transform = "scale(1)";
+      }
+    }
+
+    async function triggerImageFileDownload(imageUrl, suggestedFileName) {
+      if (!imageUrl || isPlaceholderImageUrl(imageUrl)) {
+        return triggerSideToast("No Photo Available", "No uploaded photo found to download.", false);
+      }
+      const cleanFileName = String(suggestedFileName || "Renter_Document").replace(/[^a-zA-Z0-9._-]/g, "_") + ".jpg";
+
+      try {
+        if (String(imageUrl).startsWith("data:image/")) {
+          const a = document.createElement("a");
+          a.href = imageUrl;
+          a.download = cleanFileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          triggerSideToast("Photo Downloaded", `Saved ${cleanFileName} to your device!`, true);
+          return;
+        }
+
+        const response = await fetch(imageUrl, { mode: "cors" });
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = cleanFileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+        triggerSideToast("Photo Downloaded", `Saved ${cleanFileName} to your device!`, true);
+      } catch (e) {
+        // Fallback: draw onto canvas or trigger direct download anchor
+        const a = document.createElement("a");
+        a.href = imageUrl;
+        a.download = cleanFileName;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        triggerSideToast("Download Started", `Downloading ${cleanFileName}...`, true);
+      }
+    }
+
+    function downloadCurrentZoomedPhoto() {
+      if (!currentZoomedImageSrc || isPlaceholderImageUrl(currentZoomedImageSrc)) {
+        return triggerSideToast("No Photo", "No photo available to download.", false);
+      }
+      triggerImageFileDownload(currentZoomedImageSrc, currentZoomedImageTitle);
+    }
+
+    function downloadRenterDocumentPhoto(docType, customSrc = "", customName = "") {
+      const isIdentity = docType === "identity";
+      const imgEl = document.getElementById(isIdentity ? "identityPicturePreview" : "profilePicturePreview");
+      const src = customSrc || (imgEl ? imgEl.src : "");
+      if (isPlaceholderImageUrl(src)) {
+        return triggerSideToast("No Photo Uploaded", `No ${isIdentity ? "Aadhaar card" : "profile"} photo is uploaded yet.`, false);
+      }
+      const renterName = customName || document.getElementById("renterName")?.value?.trim() || activeFlatRenterObj?.RenterName || "Renter";
+      const flatLabel = selectedFlat ? `${selectedFlat.PropertyName}_Flat_${selectedFlat.FlatName}` : "Flat";
+      const fileLabel = `${flatLabel}_${renterName}_${isIdentity ? "Aadhaar_Card" : "Profile_Photo"}`;
+      triggerImageFileDownload(src, fileLabel);
     }
 
         
@@ -7278,7 +7729,147 @@ function renderRegisteredUsersList() {
       tabs.forEach((tab, i) => tab.classList.toggle("active", i === 3));
     }
 
-    // Requirement 5: Open Dedicated Modal to Edit Departed Renter while keeping their status unchanged
+    function updateLeftRenterImageSlotUI(docType, imageUrl) {
+      const isIdentity = docType === "identity";
+      const imgEl = document.getElementById(isIdentity ? "editLeftIdentityPreview" : "editLeftProfilePreview");
+      const badgeEl = document.getElementById(isIdentity ? "editLeftIdentityStatusBadge" : "editLeftProfileStatusBadge");
+      const delBtn = document.getElementById(isIdentity ? "btnDeleteLeftIdentityPic" : "btnDeleteLeftProfilePic");
+      const dlBtn = document.getElementById(isIdentity ? "btnDownloadLeftIdentityPic" : "btnDownloadLeftProfilePic");
+      const fileInput = document.getElementById(isIdentity ? "fileEditLeftIdentityPic" : "fileEditLeftProfilePic");
+
+      const hasRealImage = !isPlaceholderImageUrl(imageUrl);
+      if (imgEl) {
+        imgEl.src = hasRealImage
+          ? imageUrl
+          : (isIdentity ? EMPTY_IDENTITY_PLACEHOLDER : EMPTY_PROFILE_PLACEHOLDER);
+      }
+      if (badgeEl) {
+        badgeEl.innerText = hasRealImage
+          ? (isIdentity ? "Aadhaar photo saved to this Past Renter" : "Profile photo saved to this Past Renter")
+          : (isIdentity ? "No Aadhaar photo uploaded" : "No profile photo uploaded");
+        badgeEl.style.color = hasRealImage ? "var(--accent-green)" : "var(--text-muted)";
+      }
+      if (delBtn) delBtn.style.display = hasRealImage ? "inline-flex" : "none";
+      if (dlBtn) dlBtn.style.display = hasRealImage ? "inline-flex" : "none";
+      if (!hasRealImage && fileInput) fileInput.value = "";
+    }
+
+    async function handleLeftRenterDocumentUpload(input, docType) {
+      if (activeRole === "Viewer" || !selectedFlat) return;
+      if (!input.files || !input.files[0]) return;
+
+      const targetRenterId = document.getElementById("editLeftRenterId")?.value;
+      const targetRenter = (DB.renters || []).find(r => String(r.RenterID || "").trim() === String(targetRenterId || "").trim());
+      if (!targetRenter) {
+        return triggerSideToast("Renter Not Found", "Could not locate past renter record to attach photo.", false);
+      }
+
+      const file = input.files[0];
+      const isIdentity = docType === "identity";
+      const badgeEl = document.getElementById(isIdentity ? "editLeftIdentityStatusBadge" : "editLeftProfileStatusBadge");
+
+      try {
+        if (badgeEl) {
+          badgeEl.innerText = "Uploading to Google Drive...";
+          badgeEl.style.color = "var(--primary)";
+        }
+
+        const compressedDataUrl = await compressImageFileToDataUrl(file, isIdentity ? 1000 : 600, 0.82);
+        updateLeftRenterImageSlotUI(docType, compressedDataUrl);
+
+        if (isIdentity) {
+          targetRenter.IdentityImageURL = compressedDataUrl;
+        } else {
+          targetRenter.ProfileImageURL = compressedDataUrl;
+        }
+
+        saveDbSnapshotToCache();
+        renderAllDashboardUI();
+        populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
+
+        triggerSideToast(
+          "Uploading Past Renter Photo",
+          `Saving ${isIdentity ? "Aadhaar Card photo" : "Profile photo"} specifically to ${targetRenter.RenterName || "past renter"}'s profile in Google Drive...`,
+          "warning"
+        );
+
+        const res = await sendGasPost({
+          action: "uploadRenterDocument",
+          propertyName: targetRenter.PropertyName || selectedFlat.PropertyName,
+          flatName: targetRenter.FlatName || selectedFlat.FlatName,
+          renterId: targetRenter.RenterID,
+          renterName: targetRenter.RenterName || "Past Tenant",
+          rentAmount: targetRenter.RentAmount || selectedFlat.RentAmount || 0,
+          docType: docType,
+          fileName: file.name,
+          mimeType: "image/jpeg",
+          base64Data: compressedDataUrl
+        });
+
+        if (res && res.status === "success" && res.imageUrl) {
+          updateLeftRenterImageSlotUI(docType, res.imageUrl);
+          if (isIdentity) {
+            targetRenter.IdentityImageURL = res.imageUrl;
+          } else {
+            targetRenter.ProfileImageURL = res.imageUrl;
+          }
+          saveDbSnapshotToCache();
+          renderAllDashboardUI();
+          populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
+        }
+
+        triggerSideToast(
+          "Saved to Past Renter Profile",
+          `${isIdentity ? "Aadhaar Card photo" : "Profile photo"} saved specifically to ${targetRenter.RenterName}'s profile & Google Drive!`,
+          true
+        );
+      } catch (err) {
+        triggerSideToast("Saved Locally", "Photo attached to past renter profile and cached.", "warning");
+      }
+    }
+
+    async function deleteLeftRenterDocument(docType) {
+      if (activeRole === "Viewer" || !selectedFlat) return;
+      const targetRenterId = document.getElementById("editLeftRenterId")?.value;
+      const targetRenter = (DB.renters || []).find(r => String(r.RenterID || "").trim() === String(targetRenterId || "").trim());
+      if (!targetRenter) return;
+
+      const isIdentity = docType === "identity";
+      const imgEl = document.getElementById(isIdentity ? "editLeftIdentityPreview" : "editLeftProfilePreview");
+      const currentUrl = imgEl ? imgEl.src : "";
+      if (isPlaceholderImageUrl(currentUrl)) {
+        return triggerSideToast("Already Empty", "No photo is currently uploaded in this slot.", false);
+      }
+
+      updateLeftRenterImageSlotUI(docType, "");
+      if (isIdentity) targetRenter.IdentityImageURL = "";
+      else targetRenter.ProfileImageURL = "";
+
+      saveDbSnapshotToCache();
+      renderAllDashboardUI();
+      populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
+
+      triggerSideToast("Photo Deleted", `Removed ${isIdentity ? "Aadhaar Card" : "Profile"} photo from ${targetRenter.RenterName}'s profile.`, true);
+
+      await sendGasPost({
+        action: "deleteRenterDocument",
+        propertyName: targetRenter.PropertyName || selectedFlat.PropertyName,
+        flatName: targetRenter.FlatName || selectedFlat.FlatName,
+        renterId: targetRenter.RenterID,
+        docType: docType,
+        currentImageUrl: currentUrl
+      });
+    }
+
+    function downloadLeftRenterDocument(docType) {
+      const isIdentity = docType === "identity";
+      const imgEl = document.getElementById(isIdentity ? "editLeftIdentityPreview" : "editLeftProfilePreview");
+      const src = imgEl ? imgEl.src : "";
+      const rName = document.getElementById("editLeftName")?.value?.trim() || "Past_Renter";
+      downloadRenterDocumentPhoto(docType, src, rName);
+    }
+
+    // Requirement 4 & 5: Open Dedicated Modal to Edit Departed Renter (including Aadhaar Photo Upload) while keeping status unchanged
     function openEditLeftRenterModal(renterIdOrIdx) {
       if (activeRole === "Viewer" || !selectedFlat) return;
 
@@ -7292,6 +7883,10 @@ function renderRegisteredUsersList() {
       }
       if (!targetRenter) {
         return triggerSideToast("Renter Not Found", "Could not locate departed renter details.", false);
+      }
+
+      if (!targetRenter.RenterID) {
+        targetRenter.RenterID = "R-" + Date.now();
       }
 
       const existingStatus = String(targetRenter.Status || "Inactive").trim().toLowerCase() === "active" ? "Active" : "Inactive";
@@ -7309,6 +7904,16 @@ function renderRegisteredUsersList() {
       }
       document.getElementById("editLeftJoinDate").value = toInputDateValue(targetRenter.JoinDate);
       document.getElementById("editLeftEndDate").value = toInputDateValue(targetRenter.EndDate);
+
+      // Populate Past Renter Profile & Aadhaar Card Photo Slots
+      updateLeftRenterImageSlotUI("profile", targetRenter.ProfileImageURL || "");
+      updateLeftRenterImageSlotUI("identity", targetRenter.IdentityImageURL || "");
+
+      // Requirement 5: Only show Reactivate button when the renter has left (Inactive), never for an Active renter
+      const reactivateBtn = document.getElementById("btnReactivateFromEditModal");
+      if (reactivateBtn) {
+        reactivateBtn.style.display = existingStatus === "Inactive" ? "inline-flex" : "none";
+      }
 
       openModal("editLeftRenterModal");
     }
@@ -7352,6 +7957,9 @@ function renderRegisteredUsersList() {
       // Requirement 5: Status must remain unchanged (if left, stays Inactive; if active, stays Active)
       const preservedStatus = String(targetRenter.Status || "Inactive").trim().toLowerCase() === "active" ? "Active" : "Inactive";
 
+      const leftProfSrc = document.getElementById("editLeftProfilePreview")?.src || "";
+      const leftIdSrc = document.getElementById("editLeftIdentityPreview")?.src || "";
+
       targetRenter.RenterName = newName;
       targetRenter.IdentityDocNumber = cleanAadhaar;
       targetRenter.MobileNumber = cleanMob;
@@ -7361,6 +7969,8 @@ function renderRegisteredUsersList() {
       targetRenter.Status = preservedStatus;
       targetRenter.JoinDate = document.getElementById("editLeftJoinDate").value || targetRenter.JoinDate;
       targetRenter.EndDate = document.getElementById("editLeftEndDate").value;
+      targetRenter.ProfileImageURL = isPlaceholderImageUrl(leftProfSrc) ? (targetRenter.ProfileImageURL || "") : leftProfSrc;
+      targetRenter.IdentityImageURL = isPlaceholderImageUrl(leftIdSrc) ? (targetRenter.IdentityImageURL || "") : leftIdSrc;
 
       saveLocalFlatUtilityAndDateMeta(selectedFlat.PropertyName, selectedFlat.FlatName, targetRenter.RenterID, {
         JoinDate: targetRenter.JoinDate,
@@ -7376,7 +7986,7 @@ function renderRegisteredUsersList() {
       populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
       renderAllRentersGraphForFlat(selectedFlat.PropertyName, selectedFlat.FlatName);
 
-      triggerSideToast("Profile Updated", "Renter details saved while keeping their '" + (preservedStatus === "Active" ? "Active" : "Left") + "' status unchanged!", true);
+      triggerSideToast("Profile Updated", "Renter details & photos saved while keeping their '" + (preservedStatus === "Active" ? "Active" : "Left") + "' status unchanged!", true);
 
       await sendGasPost({
         action: "updateRenterProfile",
@@ -7391,7 +8001,9 @@ function renderRegisteredUsersList() {
         familyMembers: targetRenter.TotalFamilyMembers,
         renterStatus: preservedStatus,
         joinDate: targetRenter.JoinDate,
-        endDate: targetRenter.EndDate
+        endDate: targetRenter.EndDate,
+        profileImageUrl: targetRenter.ProfileImageURL || "",
+        identityImageUrl: targetRenter.IdentityImageURL || ""
       });
 
       closeModal("editLeftRenterModal");
@@ -8006,6 +8618,7 @@ function renderRegisteredUsersList() {
       document.getElementById("renterEndDate").value = resolvedMeta.endDate;
       updateRenterImageSlotUI("profile", targetRenter.ProfileImageURL);
       updateRenterImageSlotUI("identity", targetRenter.IdentityImageURL);
+      syncProfileReactivateButtonVisibility();
 
       switchFlatTabToProfile();
 
@@ -8073,6 +8686,7 @@ function renderRegisteredUsersList() {
         document.getElementById("renterEndDate").value = resolvedMeta.endDate;
         updateRenterImageSlotUI("profile", renter.ProfileImageURL);
         updateRenterImageSlotUI("identity", renter.IdentityImageURL);
+        syncProfileReactivateButtonVisibility();
       } else {
         clearRenterRightForm();
       }
@@ -8604,9 +9218,12 @@ function renderRegisteredUsersList() {
       const resolvedContact = resolveFlatUpiAndContact(bill.PropertyName, currentOpenedReceiptFlat, currentOpenedReceiptRenter);
       const upiId = (bill.UPIID && String(bill.UPIID).trim()) ? String(bill.UPIID).trim() : resolvedContact.upiId;
       const upiName = (bill.UPIName && String(bill.UPIName).trim()) ? String(bill.UPIName).trim() : resolvedContact.upiName;
-      const contactPhone = (bill.ContractMobile && String(bill.ContractMobile).trim())
-        ? String(bill.ContractMobile).trim()
-        : (resolvedContact.contractMobile || activeUserMobile || currentOpenedReceiptRenter?.MobileNumber || "--");
+      const contactPhone =
+        resolvedContact.contractMobile ||
+        sanitizeContactPhoneDisplay(bill.ContractMobile) ||
+        sanitizeContactPhoneDisplay(activeUserMobile) ||
+        sanitizeContactPhoneDisplay(currentOpenedReceiptRenter?.MobileNumber) ||
+        "--";
 
       document.getElementById("receiptBodyDetails").innerHTML = `
         <!-- Clean Receipt Content (Requirement 4 & 5: WhatsApp Target Number & Total Amount Paid Removed) -->
@@ -9565,19 +10182,23 @@ function renderRegisteredUsersList() {
             <div><span style="color:var(--text-muted);">Water No &amp; Meter:</span> <strong>${targetRenter.WaterNumber || '--'} (${targetRenter.WaterMeterNumber || '--'})</strong></div>
           </div>
 
-          <!-- Uploaded Profile Render & Aadhaar Documents -->
+          <!-- Uploaded Profile Render & Aadhaar Documents (Click to Zoom + Download) -->
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
-            <div style="background:var(--bg-input); border:1px solid var(--glass-border); border-radius:12px; padding:10px; text-align:center;">
-              <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Profile Render Photo</div>
-              <div class="image-frame-container" style="height:120px; margin-bottom:0;">
+            <div class="matrix-col photo-card-profile" style="padding:10px; text-align:center;">
+              <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">1. Renter Profile Photo</div>
+              <div class="image-frame-container zoomable-photo-frame" style="height:130px; margin-bottom:6px;" onclick="openPhotoZoomModal('${profileImgSrc}', '${(targetRenter.RenterName || 'Tenant').replace(/'/g, "\\'")} — Profile Photo')">
                 <img src="${profileImgSrc}" alt="Profile Photo">
+                <span class="zoomable-photo-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Click to Zoom</span>
               </div>
+              ${!isPlaceholderImageUrl(profileImgSrc) ? `<button type="button" class="btn-ledger-action" style="background:rgba(56,189,248,0.16); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:4px 10px; font-size:0.72rem; font-weight:700;" onclick="downloadRenterDocumentPhoto('profile', '${profileImgSrc}', '${(targetRenter.RenterName || 'Tenant').replace(/'/g, "\\'")}')"><i class="fa-solid fa-download"></i> Download Photo</button>` : ''}
             </div>
-            <div style="background:var(--bg-input); border:1px solid var(--glass-border); border-radius:12px; padding:10px; text-align:center;">
-              <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Aadhaar / ID Card Document</div>
-              <div class="image-frame-container" style="height:120px; margin-bottom:0;">
+            <div class="matrix-col photo-card-aadhaar" style="padding:10px; text-align:center;">
+              <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">2. Aadhaar Card Document Photo</div>
+              <div class="image-frame-container zoomable-photo-frame" style="height:130px; margin-bottom:6px;" onclick="openPhotoZoomModal('${identityImgSrc}', '${(targetRenter.RenterName || 'Tenant').replace(/'/g, "\\'")} — Aadhaar Card Document')">
                 <img src="${identityImgSrc}" alt="Aadhaar / ID Document">
+                <span class="zoomable-photo-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Click to Zoom</span>
               </div>
+              ${!isPlaceholderImageUrl(identityImgSrc) ? `<button type="button" class="btn-ledger-action" style="background:rgba(16,185,129,0.16); color:#34d399; border:1px solid rgba(16,185,129,0.4); padding:4px 10px; font-size:0.72rem; font-weight:700;" onclick="downloadRenterDocumentPhoto('identity', '${identityImgSrc}', '${(targetRenter.RenterName || 'Tenant').replace(/'/g, "\\'")}')"><i class="fa-solid fa-download"></i> Download Aadhaar</button>` : ''}
             </div>
           </div>
 
@@ -10229,6 +10850,15 @@ function renderRegisteredUsersList() {
           r.ContractMobile = contractMobile;
         }
       });
+
+      // Also keep ContractMobile & UPI details synced on bills of this property if updated
+      DB.bills.forEach(b => {
+        if (String(b.PropertyName || "").trim().toLowerCase() === targetPropKey) {
+          if (upiName) b.UPIName = upiName;
+          if (upiId) b.UPIID = upiId;
+          if (contractMobile) b.ContractMobile = contractMobile;
+        }
+      });
     }
 
     // 9. Profile Form Logic & Strict Flat-Isolated Rent, Rates & Flat Name Updates (Requirement 7: Never resets PNG/Water to 45 or 15)
@@ -10769,6 +11399,7 @@ function renderRegisteredUsersList() {
       }
       updateRenterImageSlotUI("profile", "");
       updateRenterImageSlotUI("identity", "");
+      syncProfileReactivateButtonVisibility();
     }
 
     // 10. Modals, Strict Property-Targeted Flat Creation & Complete Cascade Deletion
