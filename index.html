@@ -93,6 +93,39 @@
       if (activeUser) saveCustomBackgrounds();
     }
 
+    
+    async function handleDirectBgUpload(inputEl, type) {
+      if (String(activeRole || "").trim().toLowerCase() !== "admin") {
+        return triggerSideToast("Admin Only", "Only Administrators can change portal backgrounds.", false);
+      }
+      const file = inputEl.files && inputEl.files[0];
+      if (!file) return;
+      triggerSideToast("Uploading Background", `Uploading ${type === 'login' ? 'Lock Screen' : 'Home Page'} background to Google Drive ("Home" folder)...`, "warning");
+      try {
+        const compressedDataUrl = await compressImageFileToDataUrl(file, 1920, 0.88);
+        const res = await sendGasPost({
+          action: "uploadBackgroundPhoto",
+          type: type,
+          fileName: file.name,
+          mimeType: file.type || "image/jpeg",
+          base64Data: compressedDataUrl
+        });
+        const finalUrl = (res && res.status === "success" && res.imageUrl) ? res.imageUrl : compressedDataUrl;
+        if (type === "login") {
+          document.getElementById("bgUrlLoginScreen").value = finalUrl;
+          localStorage.setItem("portal_custom_bg_login", finalUrl);
+        } else {
+          document.getElementById("bgUrlDashboardScreen").value = finalUrl;
+          localStorage.setItem("portal_custom_bg_dashboard", finalUrl);
+        }
+        applyCustomBackgrounds();
+        initCustomBgInputs();
+        triggerSideToast("Background Uploaded", `${type === 'login' ? 'Lock Screen' : 'Home Page'} background uploaded to Drive and applied globally!`, true);
+      } catch (err) {
+        triggerSideToast("Upload Failed", "Could not upload background to Drive. Please verify connection.", false);
+      }
+    }
+
     function resetDefaultBackgrounds() {
       localStorage.removeItem("portal_custom_bg_login");
       localStorage.removeItem("portal_custom_bg_dashboard");
@@ -106,53 +139,107 @@
       if (activeUser) saveCustomBackgrounds();
     }
 
+    
+    // Requirement 5: Permanent Photo Storage & Cache so photos NEVER disappear across login/logout
+    function cachePermanentRenterPhoto(prop, flat, renterId, docType, url) {
+      if (!url || isPlaceholderImageUrl(url)) return;
+      try {
+        const map = JSON.parse(localStorage.getItem("portal_permanent_photos") || "{}");
+        const pClean = String(prop || "").trim().toLowerCase();
+        const fClean = String(flat || "").trim().toLowerCase();
+        const rIdClean = String(renterId || "").trim().toLowerCase();
+        const dClean = String(docType || "profile").trim().toLowerCase();
+        if (rIdClean) map[`${pClean}::${fClean}::${rIdClean}::${dClean}`] = url;
+        map[`${pClean}::${fClean}::active::${dClean}`] = url;
+        localStorage.setItem("portal_permanent_photos", JSON.stringify(map));
+      } catch (e) {}
+    }
+
+    function getPermanentRenterPhoto(prop, flat, renterId, docType) {
+      try {
+        const map = JSON.parse(localStorage.getItem("portal_permanent_photos") || "{}");
+        const pClean = String(prop || "").trim().toLowerCase();
+        const fClean = String(flat || "").trim().toLowerCase();
+        const rIdClean = String(renterId || "").trim().toLowerCase();
+        const dClean = String(docType || "profile").trim().toLowerCase();
+        if (rIdClean && map[`${pClean}::${fClean}::${rIdClean}::${dClean}`]) {
+          return map[`${pClean}::${fClean}::${rIdClean}::${dClean}`];
+        }
+        return map[`${pClean}::${fClean}::active::${dClean}`] || "";
+      } catch (e) {
+        return "";
+      }
+    }
+
+    function removePermanentRenterPhoto(prop, flat, renterId, docType) {
+      try {
+        const map = JSON.parse(localStorage.getItem("portal_permanent_photos") || "{}");
+        const pClean = String(prop || "").trim().toLowerCase();
+        const fClean = String(flat || "").trim().toLowerCase();
+        const rIdClean = String(renterId || "").trim().toLowerCase();
+        const dClean = String(docType || "profile").trim().toLowerCase();
+        if (rIdClean) delete map[`${pClean}::${fClean}::${rIdClean}::${dClean}`];
+        delete map[`${pClean}::${fClean}::active::${dClean}`];
+        localStorage.setItem("portal_permanent_photos", JSON.stringify(map));
+      } catch (e) {}
+    }
+
     // User Block Management & Blocked Login Modal
     async function toggleUserBlockStatus(targetUsername, newStatus) {
-      if (String(activeRole || "").trim().toLowerCase() !== "admin") return;
+      if (String(activeRole || "").trim().toLowerCase() !== "admin") {
+        return triggerSideToast("Admin Only", "Only an Administrator has authority to block or unblock users.", false);
+      }
+      const targetClean = String(targetUsername || "").trim().toLowerCase();
+      if (targetClean === String(activeUser || "").trim().toLowerCase()) {
+        return triggerSideToast("Action Blocked", "You cannot block your own active Admin account.", false);
+      }
       const isBlocking = newStatus === "Blocked";
-      showCustomConfirmModal(
-        `${isBlocking ? 'Block' : 'Unblock'} Account ${targetUsername}?`,
+      openCenteredConfirmModal(
+        isBlocking ? `Block User Account @${targetUsername}?` : `Unblock User Account @${targetUsername}?`,
         isBlocking
-          ? `Are you sure you want to BLOCK @${targetUsername}? They will immediately be prohibited from logging in, and any login attempts will show an Account Blocked notification.`
-          : `Unblock @${targetUsername} to restore their login access?`,
-        isBlocking ? "Yes, Block Account" : "Yes, Unblock",
-        "Cancel",
-        isBlocking ? "fa-ban" : "fa-lock-open",
+          ? `Are you sure you want to BLOCK @${targetUsername}? They will be immediately barred from logging in and a popup will notify them that their account has been blocked.`
+          : `Restore login access for @${targetUsername}?`,
         async () => {
-          triggerSideToast(
-            isBlocking ? "Blocking User..." : "Unblocking User...",
-            `Updating account status for @${targetUsername}...`,
-            "warning"
-          );
+          // Immediately update memory and local storage
+          const targetU = (DB.users || []).find(u => String(u.Username || "").toLowerCase() === targetClean);
+          if (targetU) targetU.Status = newStatus;
+          
+          let blockedList = [];
           try {
-            const res = await sendGasPost({
+            blockedList = JSON.parse(localStorage.getItem("portal_blocked_users") || "[]");
+          } catch (e) {}
+          if (isBlocking) {
+            if (!blockedList.includes(targetClean)) blockedList.push(targetClean);
+          } else {
+            blockedList = blockedList.filter(u => u !== targetClean);
+          }
+          localStorage.setItem("portal_blocked_users", JSON.stringify(blockedList));
+
+          const authMap = getVerifiedAuthMap();
+          if (authMap[targetClean]) {
+            authMap[targetClean].status = newStatus;
+            localStorage.setItem("portal_verified_auth_map", JSON.stringify(authMap));
+          }
+
+          saveDbSnapshotToCache();
+          renderRegisteredUsersList();
+          renderAllDashboardUI();
+
+          triggerSideToast(
+            isBlocking ? "Account Blocked" : "Account Unblocked",
+            `User @${targetUsername} is now ${isBlocking ? 'Blocked from logging in' : 'Active and unblocked'}!`,
+            true
+          );
+
+          try {
+            await sendGasPost({
               action: "toggleUserBlock",
               requesterUsername: activeUser,
               targetUsername: targetUsername,
               newStatus: newStatus
             });
-            if (res && (res.status === "blocked" || res.error === "blocked")) {
-          showAccountBlockedModal(res.message || "Your account has been blocked. Please contact support to unblock it.");
-          isSubmittingLogin = false;
-          btn.disabled = false;
-          btn.innerHTML = '<span>Log In</span><i class="fa-solid fa-arrow-right-to-bracket"></i>';
-          return;
-        }
-        if (res && res.status === "success") {
-              const targetU = (DB.users || []).find(u => String(u.Username || "").toLowerCase() === targetUsername.toLowerCase());
-              if (targetU) targetU.Status = newStatus;
-              saveDbSnapshotToCache();
-              renderRegisteredUsersList();
-              triggerSideToast(
-                isBlocking ? "Account Blocked" : "Account Unblocked",
-                `@${targetUsername} is now ${newStatus.toLowerCase()}.`,
-                true
-              );
-            } else {
-              triggerSideToast("Action Failed", res?.message || "Could not update block status.", false);
-            }
-          } catch (e) {
-            triggerSideToast("Network Error", "Failed to update block status in cloud.", false);
+          } catch (err) {
+            console.warn("Cloud block sync warning:", err);
           }
         }
       );
@@ -4299,21 +4386,6 @@
             <div class="form-group"><label>Join Date</label><input type="date" id="renterJoinDate" class="form-control"></div>
             <div class="form-group"><label>End Date</label><input type="date" id="renterEndDate" class="form-control"></div>
 
-            <!-- Direct Upload Options (Moved here from Center photo boxes as requested) -->
-            <div class="form-group admin-only" style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--glass-border);">
-              <label style="font-size:0.75rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:6px;">
-                <i class="fa-solid fa-camera" style="color:#38bdf8;"></i> Upload Renter Photo (Auto-Saves to Drive):
-              </label>
-              <input type="file" id="fileProfilePic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'profile')" style="font-size:0.75rem;">
-            </div>
-
-            <div class="form-group admin-only" style="margin-bottom:14px;">
-              <label style="font-size:0.75rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:6px;">
-                <i class="fa-solid fa-id-card" style="color:#34d399;"></i> Upload Aadhaar Card Photo (Auto-Saves to Drive):
-              </label>
-              <input type="file" id="fileIdentityPic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'identity')" style="font-size:0.75rem;">
-            </div>
-
             <button type="button" id="btnReactivateProfileTab" class="btn-ledger-action admin-only" style="display:none; width:100%; justify-content:center; margin-bottom:10px; padding:10px 14px; font-weight:800; color:var(--accent-green); border-color:rgba(16,185,129,0.55); background:rgba(16,185,129,0.1);" onclick="triggerReactivateFromProfileTab()">
               <i class="fa-solid fa-user-check"></i> Re-active Renter / Returning Renter (Choose Property &amp; Flat)
             </button>
@@ -7299,7 +7371,7 @@ function formatMonthLabel(rawVal) {
       document.getElementById("editAssignTargetUsername").value = u.Username || "";
       document.getElementById("editAssignUsernameDisplay").value = "@" + (u.Username || "");
       document.getElementById("editAssignFullName").value = u.FullName || u.Username || "";
-      document.getElementById("editAssignRole").value = (u.Role === "Viewer") ? "Viewer" : "Admin";
+      document.getElementById("editAssignRole").value = (u.Role === "Renter") ? "Renter" : ((u.Role === "Viewer") ? "Viewer" : "Admin");
 
       // Scope fields
       const propSelect = document.getElementById("editAssignPropDropdown");
@@ -7322,7 +7394,12 @@ function formatMonthLabel(rawVal) {
     function handleEditAssignRoleChange() {
       const role = document.getElementById("editAssignRole")?.value;
       const scopeBox = document.getElementById("editAssignScopeBox");
-      if (scopeBox) scopeBox.style.display = (role === "Viewer") ? "block" : "none";
+      const scopeTitle = document.getElementById("editAssignScopeTitle");
+      const isRestrictedRole = (role === "Viewer" || role === "Renter");
+      if (scopeBox) scopeBox.style.display = isRestrictedRole ? "block" : "none";
+      if (scopeTitle) {
+        scopeTitle.innerText = role === "Renter" ? "Renter Viewing Scope Assignment" : "Viewer Scope Level";
+      }
     }
 
     function handleEditAssignScopeLevelChange() {
@@ -7430,7 +7507,9 @@ function renderRegisteredUsersList() {
               <i class="fa-solid fa-trash-can"></i> Delete
             </button>`;
 
-          const isBlocked = String(u.Status || "").toLowerCase() === "blocked";
+          let blockedList = [];
+          try { blockedList = JSON.parse(localStorage.getItem("portal_blocked_users") || "[]"); } catch (e) {}
+          const isBlocked = String(u.Status || "").toLowerCase() === "blocked" || blockedList.includes(uName.toLowerCase());
           const blockBtn = isBlocked
             ? `<button type="button" class="btn-ledger-action" style="padding:5px 9px; font-size:0.72rem; font-weight:700; color:#34d399; border-color:rgba(16,185,129,0.4);" onclick="toggleUserBlockStatus('${safeUName}', 'Active')" title="Unblock user login">
                  <i class="fa-solid fa-lock-open"></i> Unblock
@@ -9268,8 +9347,12 @@ function renderRegisteredUsersList() {
         document.getElementById("renterStatus").value = String(renter.Status || "Active").trim().toLowerCase() === "active" ? "Active" : "Inactive";
         document.getElementById("renterJoinDate").value = resolvedMeta.joinDate;
         document.getElementById("renterEndDate").value = resolvedMeta.endDate;
-        updateRenterImageSlotUI("profile", renter.ProfileImageURL);
-        updateRenterImageSlotUI("identity", renter.IdentityImageURL);
+        const resolvedProfilePic = renter.ProfileImageURL || getPermanentRenterPhoto(flat.PropertyName, flat.FlatName, renter.RenterID, "profile");
+        const resolvedIdentityPic = renter.IdentityImageURL || getPermanentRenterPhoto(flat.PropertyName, flat.FlatName, renter.RenterID, "identity");
+        if (!renter.ProfileImageURL && resolvedProfilePic) renter.ProfileImageURL = resolvedProfilePic;
+        if (!renter.IdentityImageURL && resolvedIdentityPic) renter.IdentityImageURL = resolvedIdentityPic;
+        updateRenterImageSlotUI("profile", resolvedProfilePic);
+        updateRenterImageSlotUI("identity", resolvedIdentityPic);
         syncProfileReactivateButtonVisibility();
       } else {
         clearRenterRightForm();
@@ -9300,6 +9383,10 @@ function renderRegisteredUsersList() {
       modal.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
       evt.currentTarget.classList.add("active");
       document.getElementById(tabId).classList.add("active");
+      if (tabId === "tabRenterHistory" && selectedFlat) {
+        populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName);
+        renderAllRentersGraphForFlat(selectedFlat.PropertyName, selectedFlat.FlatName);
+      }
     }
 
     function switchFlatTabToProfile() {
@@ -12364,15 +12451,24 @@ function renderRegisteredUsersList() {
           base64Data: compressedDataUrl
         });
 
-        if (res && res.status === "success" && res.imageUrl) {
-          updateRenterImageSlotUI(docType, res.imageUrl);
-          if (activeFlatRenterObj) {
-            if (isIdentity) activeFlatRenterObj.IdentityImageURL = res.imageUrl;
-            else activeFlatRenterObj.ProfileImageURL = res.imageUrl;
-          }
-          saveDbSnapshotToCache();
-          renderAllDashboardUI();
+        const finalImageUrl = (res && res.status === "success" && res.imageUrl) ? res.imageUrl : compressedDataUrl;
+        updateRenterImageSlotUI(docType, finalImageUrl);
+        if (activeFlatRenterObj) {
+          if (isIdentity) activeFlatRenterObj.IdentityImageURL = finalImageUrl;
+          else activeFlatRenterObj.ProfileImageURL = finalImageUrl;
         }
+        // Update DB.renters matching flat so the photo persists permanently across sessions
+        let matchedRenters = (DB.renters || []).filter(r => isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName));
+        let targetR = matchedRenters.find(r => activeFlatRenterObj?.RenterID && String(r.RenterID) === String(activeFlatRenterObj.RenterID)) ||
+                      matchedRenters.find(r => String(r.Status || "").toLowerCase() === "active");
+        if (targetR) {
+          if (isIdentity) targetR.IdentityImageURL = finalImageUrl;
+          else targetR.ProfileImageURL = finalImageUrl;
+        }
+        cachePermanentRenterPhoto(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj?.RenterID, docType, finalImageUrl);
+        saveDbSnapshotToCache();
+        renderAllDashboardUI();
+        populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
 
         triggerSideToast(
           "Saved to Cloud Drive",
@@ -12401,6 +12497,7 @@ function renderRegisteredUsersList() {
         if (isIdentity) activeFlatRenterObj.IdentityImageURL = "";
         else activeFlatRenterObj.ProfileImageURL = "";
       }
+      removePermanentRenterPhoto(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj?.RenterID, docType);
 
       saveDbSnapshotToCache();
       renderAllDashboardUI();
