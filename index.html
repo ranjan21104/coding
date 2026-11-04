@@ -5,7 +5,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Real Estate & Tenant Financial Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1649,111 +1649,358 @@
       display: none !important;
     }
 
-    /* Mobile Auto-Fit Perfection */
+    /* ==========================================================================
+       STYLISH, COLOURFUL DASHBOARD SETTINGS DESIGN & CARDS
+       ========================================================================== */
+    .settings-feature-banner {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.22) 0%, rgba(236, 72, 153, 0.18) 50%, rgba(16, 185, 129, 0.18) 100%);
+      border: 1.5px solid rgba(129, 140, 248, 0.4);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    }
+    .settings-nav-grid {
+      display: grid !important;
+      grid-template-columns: repeat(4, 1fr) !important;
+      gap: 10px !important;
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+      margin-bottom: 18px !important;
+    }
+    .settings-nav-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 12px 12px !important;
+      border-radius: 14px !important;
+      cursor: pointer;
+      text-align: left !important;
+      transition: all 0.22s ease;
+      border: 1.5px solid var(--glass-border);
+      background: var(--bg-input);
+      overflow: hidden;
+    }
+    .settings-nav-card .s-nav-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      margin-bottom: 2px;
+      flex-shrink: 0;
+    }
+    .settings-nav-card .s-nav-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.25;
+    }
+    .settings-nav-card .s-nav-sub {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      line-height: 1.25;
+    }
+    .settings-nav-card.nav-theme {
+      background: linear-gradient(145deg, rgba(56, 189, 248, 0.14), rgba(59, 130, 246, 0.05));
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+    .settings-nav-card.nav-theme .s-nav-icon {
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+    }
+    .settings-nav-card.nav-create {
+      background: linear-gradient(145deg, rgba(16, 185, 129, 0.14), rgba(5, 150, 105, 0.05));
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    .settings-nav-card.nav-create .s-nav-icon {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+    }
+    .settings-nav-card.nav-delete {
+      background: linear-gradient(145deg, rgba(239, 68, 68, 0.14), rgba(220, 38, 38, 0.05));
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+    .settings-nav-card.nav-delete .s-nav-icon {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+    }
+    .settings-nav-card.nav-other {
+      background: linear-gradient(145deg, rgba(168, 85, 247, 0.16), rgba(236, 72, 153, 0.06));
+      border-color: rgba(168, 85, 247, 0.45);
+    }
+    .settings-nav-card.nav-other .s-nav-icon {
+      background: rgba(168, 85, 247, 0.22);
+      color: #c084fc;
+    }
+    .settings-nav-card.active {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+    }
+    .settings-nav-card.nav-theme.active {
+      background: linear-gradient(135deg, #0284c7, #2563eb) !important;
+      border-color: #38bdf8 !important;
+    }
+    .settings-nav-card.nav-create.active {
+      background: linear-gradient(135deg, #059669, #10b981) !important;
+      border-color: #34d399 !important;
+    }
+    .settings-nav-card.nav-delete.active {
+      background: linear-gradient(135deg, #dc2626, #ef4444) !important;
+      border-color: #f87171 !important;
+    }
+    .settings-nav-card.nav-other.active {
+      background: linear-gradient(135deg, #7c3aed, #db2777) !important;
+      border-color: #f472b6 !important;
+    }
+    .settings-nav-card.active .s-nav-title,
+    .settings-nav-card.active .s-nav-sub,
+    .settings-nav-card.active .s-nav-icon {
+      color: #ffffff !important;
+    }
+    .settings-nav-card.active .s-nav-icon {
+      background: rgba(255, 255, 255, 0.22) !important;
+    }
+
+    .other-tool-card {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      justify-content: space-between !important;
+      gap: 4px !important;
+      padding: 11px 12px !important;
+      border-radius: 12px !important;
+      text-align: left !important;
+      transition: all 0.2s ease !important;
+      border: 1.5px solid var(--glass-border) !important;
+      cursor: pointer;
+    }
+    .other-tool-card .tool-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      width: 100%;
+    }
+    .other-tool-card .tool-desc {
+      font-size: 0.68rem;
+      opacity: 0.85;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    /* Mobile Auto-Fit Perfection — Zero Text Cut-Off Across All Screens */
     @media (max-width: 768px) {
+      html, body {
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+      }
       header.top-nav {
-        padding: 10px 12px;
-        gap: 10px 8px;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
+        padding: 10px 10px !important;
+        gap: 8px 6px !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        align-items: center !important;
+        height: auto !important;
       }
       .nav-left {
         order: 1;
-        flex: 0 0 auto;
+        flex: 1 1 auto;
+        min-width: 0;
       }
       .nav-left h2 {
-        font-size: 1.08rem;
+        font-size: 0.96rem !important;
+        white-space: normal !important;
+        word-break: break-word !important;
+        line-height: 1.25 !important;
       }
       .nav-right {
         order: 2;
-        flex: 1 1 auto;
+        flex: 0 0 auto;
         justify-content: flex-end;
-        gap: 6px;
+        gap: 5px;
       }
       .nav-actions-group {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 5px;
         flex-shrink: 0;
+        flex-wrap: wrap;
       }
       .dropdown-anchor {
         position: relative;
         flex-shrink: 0;
       }
       .plus-btn-highlight {
-        min-width: 38px !important;
-        width: 38px !important;
-        height: 38px !important;
+        min-width: 36px !important;
+        width: 36px !important;
+        height: 36px !important;
         flex-shrink: 0 !important;
       }
       .nav-btn {
-        min-width: 38px;
-        width: 38px;
-        height: 38px;
-        font-size: 0.92rem;
+        min-width: 36px !important;
+        width: auto !important;
+        height: 36px !important;
+        padding: 0 9px !important;
+        font-size: 0.8rem !important;
         flex-shrink: 0;
       }
       .pnl-tracker {
         order: 4;
-        width: 100%;
-        justify-content: space-around;
-        padding: 7px 10px;
-        font-size: 0.74rem;
+        width: 100% !important;
+        justify-content: space-between !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+        padding: 8px 10px !important;
+        font-size: 0.72rem !important;
         margin-top: 2px;
       }
       .nav-center {
         order: 3;
-        width: 100%;
-        min-width: 100%;
-        max-width: 100%;
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
         margin-top: 2px;
       }
       .action-menu {
         position: fixed !important;
         top: 56px !important;
-        right: 14px !important;
+        right: 12px !important;
         left: auto !important;
         width: 230px !important;
-        max-width: calc(100vw - 28px) !important;
+        max-width: calc(100vw - 24px) !important;
         z-index: 10000 !important;
       }
       .properties-bar {
-        padding: 12px 12px 6px 12px;
+        padding: 10px 10px 6px 10px !important;
       }
       .prop-card {
-        min-width: 170px;
-        padding: 10px 12px;
+        min-width: 155px !important;
+        max-width: 82vw !important;
+        padding: 10px 12px !important;
+      }
+      .prop-info h4, .prop-info span {
+        white-space: normal !important;
+        word-break: break-word !important;
       }
       .flats-container {
-        padding: 8px 12px 28px 12px;
-        grid-template-columns: 1fr;
-        gap: 12px;
+        padding: 8px 10px 28px 10px !important;
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
       }
-      .flat-nav-bar {
-        grid-template-columns: repeat(2, 1fr);
+      .flat-card-merged {
+        padding: 14px 12px !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
       }
-      .calc-utility-row {
-        grid-template-columns: 1fr 1fr !important;
+      .flat-top-row, .flat-bottom-row, .payment-banner {
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+        word-break: break-word !important;
       }
-      .profile-matrix {
-        grid-template-columns: 1fr;
+      .renter-name {
+        white-space: normal !important;
+        word-break: break-word !important;
+        font-size: 0.95rem !important;
+      }
+      .flat-nav-bar,
+      #flatModalNavBar,
+      .settings-nav-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+      }
+      .flat-nav-item {
+        white-space: normal !important;
+        word-break: break-word !important;
+        padding: 9px 6px !important;
+        font-size: 0.75rem !important;
+        line-height: 1.25 !important;
+      }
+      #otherOptionsBtnGrid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+      }
+      .calc-utility-row,
+      .calc-half-split-row {
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+      }
+      .profile-matrix,
+      .profile-matrix-3col {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
       }
       .profile-action-switch {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
+      }
+      .modal-overlay {
+        padding: 8px !important;
       }
       .modal-window {
-        padding: 18px 14px;
-        max-height: 94dvh;
+        padding: 16px 12px !important;
+        width: 100% !important;
+        max-width: calc(100vw - 16px) !important;
+        max-height: 94dvh !important;
+        overflow-x: hidden !important;
+      }
+      .modal-window h3, .modal-window h4, .modal-window p, .modal-window label, .modal-window span, .modal-window div {
+        overflow-wrap: break-word;
       }
       .login-container {
-        padding: 28px 20px;
+        padding: 24px 16px !important;
+        width: calc(100vw - 24px) !important;
+        max-width: 420px !important;
       }
       .side-toast {
-        top: 14px;
-        right: 12px;
-        min-width: 260px;
-        max-width: calc(100vw - 24px);
+        top: 12px !important;
+        right: 10px !important;
+        left: 10px !important;
+        min-width: 0 !important;
+        width: auto !important;
+        max-width: calc(100vw - 20px) !important;
+      }
+      #printableReceiptArea:not(.capturing-receipt) {
+        padding: 16px 12px 22px 12px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      #printableReceiptArea:not(.capturing-receipt) .receipt-line {
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+      }
+      #printableReceiptArea:not(.capturing-receipt) .receipt-line > span:first-child {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        flex: 1 1 120px !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .settings-nav-grid,
+      #otherOptionsBtnGrid,
+      #flatModalNavBar {
+        grid-template-columns: 1fr 1fr !important;
+      }
+      .pnl-tracker {
+        flex-direction: column !important;
+        align-items: stretch !important;
+      }
+      .pnl-item {
+        justify-content: space-between !important;
+        width: 100% !important;
       }
     }
 
@@ -3360,51 +3607,87 @@
   </div>
 
   <div id="settingsModal" class="modal-overlay">
-    <div class="modal-window">
+    <div class="modal-window" style="max-width: 720px;">
       <button class="modal-close-btn" onclick="closeModal('settingsModal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 12px;"><i class="fa-solid fa-sliders" style="color:var(--primary); margin-right:8px;"></i>Home Settings</h3>
 
-      <div class="flat-nav-bar" style="grid-template-columns: repeat(4, 1fr); margin-top: 8px;">
-        <div class="flat-nav-item active" onclick="switchSettingsSubTab(event, 'setSubTheme')">Theme</div>
-        <div class="flat-nav-item admin-only" onclick="switchSettingsSubTab(event, 'setSubCreateUser')">Create User ID</div>
-        <div class="flat-nav-item admin-only" onclick="switchSettingsSubTab(event, 'setSubDeleteManage')">Delete Property / Flat</div>
-        <div class="flat-nav-item" onclick="switchSettingsSubTab(event, 'setSubOther')">Other</div>
+      <!-- Vibrant Settings Header Banner -->
+      <div class="settings-feature-banner">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg, #6366f1, #ec4899); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.25rem; flex-shrink:0; box-shadow:0 6px 16px rgba(99,102,241,0.35);">
+            <i class="fa-solid fa-sliders"></i>
+          </div>
+          <div>
+            <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:var(--text-main);">Dashboard Settings &amp; Control Hub</h3>
+            <p style="margin:2px 0 0 0; font-size:0.75rem; color:var(--text-muted);">
+              Click any colourful card below to customize appearance, manage User IDs, delete records, or edit portal features.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colour-Coded 4-Card Navigation Grid -->
+      <div class="flat-nav-bar settings-nav-grid">
+        <div class="flat-nav-item settings-nav-card nav-theme active" onclick="switchSettingsSubTab(event, 'setSubTheme')">
+          <div class="s-nav-icon"><i class="fa-solid fa-palette"></i></div>
+          <div class="s-nav-title">1. Theme Mode</div>
+          <div class="s-nav-sub">Black, White &amp; OS Auto</div>
+        </div>
+        <div class="flat-nav-item settings-nav-card nav-create admin-only" onclick="switchSettingsSubTab(event, 'setSubCreateUser')">
+          <div class="s-nav-icon"><i class="fa-solid fa-user-plus"></i></div>
+          <div class="s-nav-title">2. Create User ID</div>
+          <div class="s-nav-sub">Admin, Viewer or Renter</div>
+        </div>
+        <div class="flat-nav-item settings-nav-card nav-delete admin-only" onclick="switchSettingsSubTab(event, 'setSubDeleteManage')">
+          <div class="s-nav-icon"><i class="fa-solid fa-trash-can"></i></div>
+          <div class="s-nav-title">3. Delete Center</div>
+          <div class="s-nav-sub">Delete Property or Flat</div>
+        </div>
+        <div class="flat-nav-item settings-nav-card nav-other" onclick="switchSettingsSubTab(event, 'setSubOther')">
+          <div class="s-nav-icon"><i class="fa-solid fa-compass"></i></div>
+          <div class="s-nav-title">4. Control Hub</div>
+          <div class="s-nav-sub">Users, Logins, Wallpaper, Edit</div>
+        </div>
       </div>
 
       <!-- Settings Tab 1: Change Theme -->
       <div id="setSubTheme" class="tab-content active">
-        <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 10px;">
-          Select a theme. Your preference is saved directly to Google Sheets and automatically opens on every login:
-        </p>
+        <div style="background:rgba(56,189,248,0.1); border:1.5px solid rgba(56,189,248,0.35); border-radius:12px; padding:10px 14px; margin-bottom:12px; font-size:0.8rem; color:var(--text-main);">
+          <i class="fa-solid fa-sparkles" style="color:#38bdf8; margin-right:6px;"></i>
+          <strong>Visual Theme Selector:</strong> Choose how your dashboard looks. Syncs automatically to your Google Sheets profile!
+        </div>
         <div class="theme-grid">
-          <div class="theme-card" id="themeCardBlack" onclick="selectAndSaveTheme('black')">
+          <div class="theme-card" id="themeCardBlack" style="border-left: 4px solid #38bdf8;" onclick="selectAndSaveTheme('black')">
             <div>
-              <strong>Black Theme</strong>
-              <div style="font-size: 0.75rem; color: var(--text-muted);">Black glass theme with crisp White text</div>
+              <strong style="color:#38bdf8;"><i class="fa-solid fa-moon" style="margin-right:6px;"></i>Black Glass Theme</strong>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top:2px;">Deep obsidian glass panels with crisp white typography</div>
             </div>
-            <i class="fa-solid fa-moon" style="font-size: 1.2rem;"></i>
+            <i class="fa-solid fa-moon" style="font-size: 1.35rem; color:#38bdf8;"></i>
           </div>
 
-          <div class="theme-card" id="themeCardWhite" onclick="selectAndSaveTheme('white')">
+          <div class="theme-card" id="themeCardWhite" style="border-left: 4px solid #f59e0b;" onclick="selectAndSaveTheme('white')">
             <div>
-              <strong>White Theme</strong>
-              <div style="font-size: 0.75rem; color: var(--text-muted);">White frosted theme with crisp Black text</div>
+              <strong style="color:#f59e0b;"><i class="fa-solid fa-sun" style="margin-right:6px;"></i>White Daylight Theme</strong>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top:2px;">Bright frosted ivory cards with high-contrast dark text</div>
             </div>
-            <i class="fa-solid fa-sun" style="color: #f59e0b; font-size: 1.2rem;"></i>
+            <i class="fa-solid fa-sun" style="color: #f59e0b; font-size: 1.35rem;"></i>
           </div>
 
-          <div class="theme-card" id="themeCardSystem" onclick="selectAndSaveTheme('system')">
+          <div class="theme-card" id="themeCardSystem" style="border-left: 4px solid #a855f7;" onclick="selectAndSaveTheme('system')">
             <div>
-              <strong>System Theme</strong>
-              <div style="font-size: 0.75rem; color: var(--text-muted);">Automatically matches your device OS setting</div>
+              <strong style="color:#a855f7;"><i class="fa-solid fa-desktop" style="margin-right:6px;"></i>System Auto Theme</strong>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top:2px;">Automatically adapts to your phone or laptop dark/light mode</div>
             </div>
-            <i class="fa-solid fa-desktop" style="color: #6366f1; font-size: 1.2rem;"></i>
+            <i class="fa-solid fa-desktop" style="color: #a855f7; font-size: 1.35rem;"></i>
           </div>
         </div>
       </div>
 
       <!-- Settings Tab 2: Create a New User ID -->
       <div id="setSubCreateUser" class="tab-content">
+        <div style="background:rgba(16,185,129,0.1); border:1.5px solid rgba(16,185,129,0.35); border-radius:12px; padding:10px 14px; margin-bottom:14px; font-size:0.8rem;">
+          <i class="fa-solid fa-id-badge" style="color:#10b981; margin-right:6px;"></i>
+          <strong>Create New Login ID:</strong> Add an <strong>Admin</strong> (full control), <strong>Viewer</strong> (read-only), or <strong>Renter</strong> (restricted to their flat/property).
+        </div>
         <div class="form-group">
           <label>Full Name <span class="req-star">*</span></label>
           <input type="text" id="createUserName" class="form-control" placeholder="Enter full name">
@@ -3438,13 +3721,13 @@
         <!-- Requirement 3: Prompt to select Property & Specific Flat when creating a Viewer account -->
         <div id="viewerScopeSelectionBox" style="display:none; background:rgba(79, 70, 229, 0.1); border:1.5px solid var(--primary); border-radius:12px; padding:14px; margin-bottom:14px;">
           <div style="font-size:0.82rem; font-weight:800; color:var(--primary); margin-bottom:10px;">
-            <i class="fa-solid fa-shield-halved"></i> Viewer Access Scope Configuration
+            <i class="fa-solid fa-shield-halved"></i> Viewer / Renter Access Scope Configuration
           </div>
 
           <div class="form-group" style="margin-bottom:12px;">
-            <label>Select Viewer Access Level <span class="req-star">*</span></label>
+            <label>Select Access Level <span class="req-star">*</span></label>
             <select id="createViewerScopeType" class="form-control" onchange="handleViewerScopeTypeChange()">
-              <option value="ALL">1. All Properties (Can view all properties & flats, current & future)</option>
+              <option value="ALL">1. All Properties (Can view all properties &amp; flats, current &amp; future)</option>
               <option value="SELECTED">2. Selected Properties (Restrict to specific properties)</option>
               <option value="FLAT" selected>3. Single Specific Flat (Restrict to 1 specific flat only)</option>
             </select>
@@ -3464,92 +3747,106 @@
 
           <!-- Selected Properties Mode -->
           <div id="viewerSelectedPropsFields" style="display:none; margin-bottom:10px;">
-            <label style="font-size:0.78rem; font-weight:700; margin-bottom:6px; display:block;">Select Properties Allowed for This Viewer:</label>
+            <label style="font-size:0.78rem; font-weight:700; margin-bottom:6px; display:block;">Select Properties Allowed for This User:</label>
             <div id="viewerPropsCheckboxesContainer" style="display:flex; flex-direction:column; gap:6px; max-height:150px; overflow-y:auto; background:var(--bg-input); padding:8px; border-radius:8px; border:1px solid var(--glass-border);"></div>
           </div>
 
           <div style="font-size:0.72rem; color:var(--text-muted); line-height:1.35; margin-top:8px;">
-            Configures exactly which properties or flats this Viewer account is authorized to view.
+            Configures exactly which properties or flats this account is authorized to view.
           </div>
         </div>
 
-        <button class="btn-primary" onclick="submitCreateNewUser()">Create New User ID</button>
+        <button class="btn-primary" style="background:linear-gradient(135deg, #059669, #10b981);" onclick="submitCreateNewUser()">
+          <i class="fa-solid fa-user-check"></i> Create New User ID in Google Sheet
+        </button>
       </div>
 
       <!-- Settings Tab 3 (Requirement 4): Internal Home Settings Path for Delete Property & Delete Flat -->
       <div id="setSubDeleteManage" class="tab-content">
-        <div style="background:rgba(239, 68, 68, 0.08); border:1.5px solid rgba(239, 68, 68, 0.35); border-radius:14px; padding:16px; margin-bottom:14px;">
-          <h4 style="font-size:0.95rem; font-weight:800; color:var(--accent-red); display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-            <i class="fa-solid fa-building-circle-xmark"></i> Delete Property
-          </h4>
-          <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:12px;">
-            Permanently delete a property along with all flats, renter records, and bills inside it.
+        <div style="background:linear-gradient(135deg, rgba(239, 68, 68, 0.16), rgba(185, 28, 28, 0.06)); border:1.5px solid rgba(239, 68, 68, 0.45); border-radius:16px; padding:16px; margin-bottom:14px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:6px;">
+            <h4 style="font-size:0.98rem; font-weight:800; color:#f87171; display:flex; align-items:center; gap:8px; margin:0;">
+              <i class="fa-solid fa-building-circle-xmark"></i> Option A: Delete Entire Property
+            </h4>
+            <span class="badge-unpaid" style="font-size:0.68rem;">Cascade Delete</span>
+          </div>
+          <p style="font-size:0.79rem; color:var(--text-muted); margin-bottom:12px; line-height:1.4;">
+            Permanently delete a building/property along with all flats, tenant profiles, and billing history inside it from Google Sheets.
           </p>
-          <button type="button" class="btn-primary admin-only" style="background:var(--accent-red);" onclick="closeModal('settingsModal'); syncPropertyDropdowns(); openModal('deletePropertyModal');">
-            <i class="fa-solid fa-trash-can"></i> Open Delete Property
+          <button type="button" class="btn-primary admin-only" style="background:linear-gradient(135deg, #dc2626, #ef4444);" onclick="closeModal('settingsModal'); syncPropertyDropdowns(); openModal('deletePropertyModal');">
+            <i class="fa-solid fa-trash-can"></i> Open Delete Property Tool
           </button>
         </div>
 
-        <div style="background:rgba(239, 68, 68, 0.08); border:1.5px solid rgba(239, 68, 68, 0.35); border-radius:14px; padding:16px;">
-          <h4 style="font-size:0.95rem; font-weight:800; color:var(--accent-red); display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-            <i class="fa-solid fa-rectangle-xmark"></i> Delete Flat
-          </h4>
-          <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:12px;">
-            Permanently delete a specific flat and all associated tenant and billing records for that flat.
+        <div style="background:linear-gradient(135deg, rgba(249, 115, 22, 0.16), rgba(239, 68, 68, 0.06)); border:1.5px solid rgba(249, 115, 22, 0.45); border-radius:16px; padding:16px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:6px;">
+            <h4 style="font-size:0.98rem; font-weight:800; color:#fb923c; display:flex; align-items:center; gap:8px; margin:0;">
+              <i class="fa-solid fa-door-closed"></i> Option B: Delete Single Flat
+            </h4>
+            <span class="badge-partial" style="font-size:0.68rem;">Single Unit Wipe</span>
+          </div>
+          <p style="font-size:0.79rem; color:var(--text-muted); margin-bottom:12px; line-height:1.4;">
+            Permanently delete one specific flat and its associated tenant and billing records while keeping the rest of the property intact.
           </p>
-          <button type="button" class="btn-primary admin-only" style="background:var(--accent-red);" onclick="closeModal('settingsModal'); syncPropertyDropdowns(); openModal('deleteFlatModal');">
-            <i class="fa-solid fa-rectangle-xmark"></i> Open Delete Flat
+          <button type="button" class="btn-primary admin-only" style="background:linear-gradient(135deg, #ea580c, #ef4444);" onclick="closeModal('settingsModal'); syncPropertyDropdowns(); openModal('deleteFlatModal');">
+            <i class="fa-solid fa-rectangle-xmark"></i> Open Delete Flat Tool
           </button>
         </div>
       </div>
 
-      <!-- Settings Tab 4: Other (Registered User Management & Admin-Only Last Login History; Google Sheet Auto-Create Removed) -->
+      <!-- Settings Tab 4: Control Hub (Registered Users, Last Logins, Wallpaper & Edit Everything) -->
       <div id="setSubOther" class="tab-content">
-        <!-- Two Dedicated Options: Registered User & Admin-Only Last Login History -->
-        <div id="otherOptionsBtnGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 12px;">
+        <div style="font-size:0.76rem; font-weight:700; color:var(--text-muted); margin-bottom:8px;">
+          <i class="fa-solid fa-compass" style="color:#c084fc;"></i> SELECT A FEATURE BELOW TO OPEN ITS WORKSPACE:
+        </div>
+        <div id="otherOptionsBtnGrid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px;">
           <button
             type="button"
             id="btnOtherOptUsers"
-            class="btn-primary"
-            style="padding: 9px 8px; font-size: 0.76rem; font-weight:700;"
+            class="btn-primary other-tool-card"
+            style="border-color: rgba(56, 189, 248, 0.5) !important; background: linear-gradient(135deg, rgba(14, 165, 233, 0.25), rgba(37, 99, 235, 0.15));"
             onclick="switchOtherSubOption('users')"
           >
-            <i class="fa-solid fa-users-gear"></i> Registered User
+            <div class="tool-top" style="color:#38bdf8;"><i class="fa-solid fa-users-gear"></i> 1. Registered Users</div>
+            <div class="tool-desc">Change roles, assign flats, block/unblock or delete User IDs</div>
           </button>
           <button
             type="button"
             id="btnOtherOptLoginHistory"
-            class="btn-ledger-action admin-only"
-            style="padding: 9px 8px; font-size: 0.76rem; font-weight:700; justify-content: center; display: flex; align-items: center; gap: 5px;"
+            class="btn-ledger-action admin-only other-tool-card"
+            style="border-color: rgba(16, 185, 129, 0.5) !important; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.08));"
             onclick="switchOtherSubOption('history')"
           >
-            <i class="fa-solid fa-clock-rotate-left"></i> Last Logins
+            <div class="tool-top" style="color:#34d399;"><i class="fa-solid fa-clock-rotate-left"></i> 2. Last Logins</div>
+            <div class="tool-desc">Audit timestamps &amp; roles of everyone who signed in</div>
           </button>
           <button
             type="button"
             id="btnOtherOptChangeBg"
-            class="btn-ledger-action"
-            style="padding: 9px 8px; font-size: 0.74rem; font-weight:700; justify-content: center; display: flex; align-items: center; gap: 5px; color:#ec4899; border-color:rgba(236,72,153,0.5);"
+            class="btn-ledger-action other-tool-card"
+            style="border-color: rgba(236, 72, 153, 0.5) !important; background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(219, 39, 119, 0.08));"
             onclick="switchOtherSubOption('changeBg')"
           >
-            <i class="fa-solid fa-image"></i> Change Background Photo
+            <div class="tool-top" style="color:#f472b6;"><i class="fa-solid fa-image"></i> 3. Background Photo</div>
+            <div class="tool-desc">Upload or link custom Login &amp; Dashboard wallpapers</div>
           </button>
           <button
             type="button"
             id="btnOtherOptEditEverything"
-            class="btn-ledger-action admin-only"
-            style="padding: 9px 8px; font-size: 0.76rem; font-weight:700; justify-content: center; display: flex; align-items: center; gap: 5px; color:#818cf8; border-color:rgba(129,140,248,0.5);"
+            class="btn-ledger-action admin-only other-tool-card"
+            style="border-color: rgba(168, 85, 247, 0.5) !important; background: linear-gradient(135deg, rgba(168, 85, 247, 0.22), rgba(99, 102, 241, 0.08));"
             onclick="switchOtherSubOption('editEverything')"
           >
-            <i class="fa-solid fa-pen-ruler"></i> Edit Everything
+            <div class="tool-top" style="color:#c084fc;"><i class="fa-solid fa-pen-ruler"></i> 4. Edit Everything</div>
+            <div class="tool-desc">Search, modify or delete any historical bill across all flats</div>
           </button>
         </div>
 
         <!-- Option 1 Panel: Registered User (Admin can Delete Users, Demote Admin to Regular User, or Promote Regular User to Admin) -->
-        <div id="otherPanelUsers" class="stat-pill" style="text-align: left;">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-            <span>REGISTERED USER MANAGEMENT</span>
-            <span style="font-size:0.7rem; color:var(--text-muted); font-weight:600;">Delete • Change Role (Admin ↔ Regular User)</span>
+        <div id="otherPanelUsers" class="stat-pill" style="text-align: left; border: 1.5px solid rgba(56, 189, 248, 0.35);">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; padding-bottom:6px; border-bottom:1px solid var(--glass-border);">
+            <span style="color:#38bdf8; font-weight:800;"><i class="fa-solid fa-users-gear"></i> REGISTERED USER MANAGEMENT</span>
+            <span style="font-size:0.7rem; color:var(--text-muted); font-weight:600;">Delete • Block • Change Role (Admin ↔ Viewer ↔ Renter)</span>
           </div>
           <div id="otherUsersList" style="margin-top: 8px; font-size: 0.82rem; max-height: 290px; overflow-y: auto;">
             <!-- Populated dynamically -->
@@ -4189,14 +4486,26 @@
             <div class="form-group"><label>Join Date</label><input type="date" id="renterJoinDate" class="form-control"></div>
             <div class="form-group"><label>End Date</label><input type="date" id="renterEndDate" class="form-control"></div>
 
-            <!-- Upload Renter Photo & Aadhaar Card Photo Inputs (Saves to Google Drive "Home" Folder) -->
+            <!-- Upload Renter Photo & Aadhaar Card Photo Inputs + Google Drive Link Support (Syncs Across All Devices) -->
             <div class="form-group admin-only" style="background:rgba(56, 189, 248, 0.08); border:1px dashed rgba(56, 189, 248, 0.45); border-radius:10px; padding:10px;">
-              <label style="font-size:0.76rem; color:#38bdf8; margin-bottom:4px;"><i class="fa-solid fa-camera-retro"></i> Upload Renter Profile Photo</label>
-              <input type="file" id="fileProfilePic" class="form-control" style="padding:6px; font-size:0.76rem;" accept="image/*" onchange="handleRenterDocumentUpload(this, 'profile')">
+              <label style="font-size:0.76rem; color:#38bdf8; margin-bottom:4px;"><i class="fa-solid fa-camera-retro"></i> Upload Renter Profile Photo (or Paste Drive Link)</label>
+              <input type="file" id="fileProfilePic" class="form-control" style="padding:6px; font-size:0.76rem; margin-bottom:6px;" accept="image/*" onchange="handleRenterDocumentUpload(this, 'profile')">
+              <div style="display:flex; gap:6px; align-items:center;">
+                <input type="url" id="inputProfilePicUrl" class="form-control" style="padding:6px 8px; font-size:0.74rem; flex:1;" placeholder="Or paste Google Drive / Image URL here...">
+                <button type="button" class="btn-ledger-action" style="padding:6px 10px; font-size:0.72rem; color:#38bdf8; border-color:rgba(56,189,248,0.45); white-space:nowrap;" onclick="applyRenterDocumentLink('profile')">
+                  <i class="fa-solid fa-link"></i> Apply Link
+                </button>
+              </div>
             </div>
             <div class="form-group admin-only" style="background:rgba(16, 185, 129, 0.08); border:1px dashed rgba(16, 185, 129, 0.45); border-radius:10px; padding:10px;">
-              <label style="font-size:0.76rem; color:#34d399; margin-bottom:4px;"><i class="fa-solid fa-id-card"></i> Upload Aadhaar Card Document Photo</label>
-              <input type="file" id="fileIdentityPic" class="form-control" style="padding:6px; font-size:0.76rem;" accept="image/*" onchange="handleRenterDocumentUpload(this, 'identity')">
+              <label style="font-size:0.76rem; color:#34d399; margin-bottom:4px;"><i class="fa-solid fa-id-card"></i> Upload Aadhaar Card Photo (or Paste Drive Link)</label>
+              <input type="file" id="fileIdentityPic" class="form-control" style="padding:6px; font-size:0.76rem; margin-bottom:6px;" accept="image/*" onchange="handleRenterDocumentUpload(this, 'identity')">
+              <div style="display:flex; gap:6px; align-items:center;">
+                <input type="url" id="inputIdentityPicUrl" class="form-control" style="padding:6px 8px; font-size:0.74rem; flex:1;" placeholder="Or paste Google Drive / Image URL here...">
+                <button type="button" class="btn-ledger-action" style="padding:6px 10px; font-size:0.72rem; color:#34d399; border-color:rgba(16,185,129,0.45); white-space:nowrap;" onclick="applyRenterDocumentLink('identity')">
+                  <i class="fa-solid fa-link"></i> Apply Link
+                </button>
+              </div>
             </div>
 
             <button type="button" id="btnReactivateProfileTab" class="btn-ledger-action admin-only" style="display:none; width:100%; justify-content:center; margin-bottom:10px; padding:10px 14px; font-weight:800; color:var(--accent-green); border-color:rgba(16,185,129,0.55); background:rgba(16,185,129,0.1);" onclick="triggerReactivateFromProfileTab()">
@@ -4426,10 +4735,39 @@
       return r === "Viewer" || r === "Renter";
     }
 
-    // Requirement 4: Custom Backgrounds (Login & Dashboard) with 100% Clarity
+    // Universal Google Drive Shared Link -> Direct Image Display URL Converter (Works Across All Devices)
+    function extractGoogleDriveFileId(rawUrl) {
+      if (!rawUrl) return "";
+      const str = String(rawUrl).trim();
+      if (!str || str.startsWith("data:image/")) return "";
+      const fileDMatch = str.match(/\/file\/d\/([a-zA-Z0-9_-]{10,})/);
+      const lh3Match = str.match(/googleusercontent\.com\/d\/([a-zA-Z0-9_-]{10,})/);
+      const idParamMatch = str.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
+      const dMatch = str.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
+      if (fileDMatch && fileDMatch[1]) return fileDMatch[1];
+      if (lh3Match && lh3Match[1]) return lh3Match[1];
+      if (idParamMatch && idParamMatch[1]) return idParamMatch[1];
+      if (dMatch && dMatch[1]) return dMatch[1];
+      return "";
+    }
+
+    function normalizeGoogleDriveImageUrl(rawUrl) {
+      if (!rawUrl) return "";
+      const str = String(rawUrl).trim();
+      if (!str || str.startsWith("data:image/")) return str;
+      // Avoid converting Google Drive folder links into image links
+      if (str.includes("/folders/")) return str;
+      const driveId = extractGoogleDriveFileId(str);
+      if (driveId) {
+        return "https://lh3.googleusercontent.com/d/" + driveId + "=w1200";
+      }
+      return str;
+    }
+
+    // Requirement 4: Custom Backgrounds (Login & Dashboard) with 100% Clarity & Cross-Device Sync
     function getCustomBackgrounds() {
-      const loginBg = localStorage.getItem("portal_custom_bg_login") || "";
-      const dashBg = localStorage.getItem("portal_custom_bg_dashboard") || "";
+      const loginBg = normalizeGoogleDriveImageUrl(localStorage.getItem("portal_custom_bg_login") || "");
+      const dashBg = normalizeGoogleDriveImageUrl(localStorage.getItem("portal_custom_bg_dashboard") || "");
       return { loginBg, dashBg };
     }
 
@@ -4445,13 +4783,13 @@
 
       if (hintLogin) {
         hintLogin.innerText = loginBg
-          ? "Custom Logout/Login background active (100% clarity)."
+          ? "Custom Logout/Login background active across all devices (100% clarity)."
           : "Using default Logout/Login background image.";
         hintLogin.style.color = loginBg ? "var(--accent-green)" : "var(--text-muted)";
       }
       if (hintDash) {
         hintDash.innerText = dashBg
-          ? "Custom Dashboard background active (100% clarity)."
+          ? "Custom Dashboard background active across all devices (100% clarity)."
           : "Using default Dashboard background image.";
         hintDash.style.color = dashBg ? "var(--accent-green)" : "var(--text-muted)";
       }
@@ -4463,8 +4801,8 @@
       const dashScreenEl = document.getElementById("dashboardScreen");
       const bgCanvasEl = document.querySelector(".bg-canvas");
 
-      const effectiveLoginBg = (loginBg && loginBg.trim()) ? loginBg.trim() : DEFAULT_PORTAL_BACKGROUND_IMAGE;
-      const effectiveDashBg = (dashBg && dashBg.trim()) ? dashBg.trim() : DEFAULT_PORTAL_BACKGROUND_IMAGE;
+      const effectiveLoginBg = (loginBg && loginBg.trim()) ? normalizeGoogleDriveImageUrl(loginBg.trim()) : DEFAULT_PORTAL_BACKGROUND_IMAGE;
+      const effectiveDashBg = (dashBg && dashBg.trim()) ? normalizeGoogleDriveImageUrl(dashBg.trim()) : DEFAULT_PORTAL_BACKGROUND_IMAGE;
 
       if (loginScreenEl) {
         loginScreenEl.style.setProperty("background-image", 'url("' + effectiveLoginBg + '")', "important");
@@ -4493,13 +4831,23 @@
 
     function syncServerBackgroundsToLocal(globalConfig, userBgLogin, userBgDash) {
       let updated = false;
-      const serverLoginBg = (userBgLogin && String(userBgLogin).trim()) || (globalConfig && globalConfig.bgLogin && String(globalConfig.bgLogin).trim()) || "";
-      const serverDashBg = (userBgDash && String(userBgDash).trim()) || (globalConfig && globalConfig.bgDashboard && String(globalConfig.bgDashboard).trim()) || "";
-      if (serverLoginBg && !localStorage.getItem("portal_custom_bg_login")) {
+      const rawLoginBg =
+        (userBgLogin && String(userBgLogin).trim()) ||
+        (globalConfig && (globalConfig.bgLoginUrl || globalConfig.bgLogin) && String(globalConfig.bgLoginUrl || globalConfig.bgLogin).trim()) ||
+        "";
+      const rawDashBg =
+        (userBgDash && String(userBgDash).trim()) ||
+        (globalConfig && (globalConfig.bgDashboardUrl || globalConfig.bgDashboard) && String(globalConfig.bgDashboardUrl || globalConfig.bgDashboard).trim()) ||
+        "";
+
+      const serverLoginBg = normalizeGoogleDriveImageUrl(rawLoginBg);
+      const serverDashBg = normalizeGoogleDriveImageUrl(rawDashBg);
+
+      if (serverLoginBg && localStorage.getItem("portal_custom_bg_login") !== serverLoginBg) {
         localStorage.setItem("portal_custom_bg_login", serverLoginBg);
         updated = true;
       }
-      if (serverDashBg && !localStorage.getItem("portal_custom_bg_dashboard")) {
+      if (serverDashBg && localStorage.getItem("portal_custom_bg_dashboard") !== serverDashBg) {
         localStorage.setItem("portal_custom_bg_dashboard", serverDashBg);
         updated = true;
       }
@@ -4512,8 +4860,11 @@
     async function saveCustomBackgrounds() {
       const inputLogin = document.getElementById("bgUrlLoginScreen");
       const inputDash = document.getElementById("bgUrlDashboardScreen");
-      const loginVal = inputLogin ? inputLogin.value.trim() : "";
-      const dashVal = inputDash ? inputDash.value.trim() : "";
+      const loginVal = normalizeGoogleDriveImageUrl(inputLogin ? inputLogin.value.trim() : "");
+      const dashVal = normalizeGoogleDriveImageUrl(inputDash ? inputDash.value.trim() : "");
+
+      if (inputLogin) inputLogin.value = loginVal;
+      if (inputDash) inputDash.value = dashVal;
 
       if (loginVal) localStorage.setItem("portal_custom_bg_login", loginVal);
       else localStorage.removeItem("portal_custom_bg_login");
@@ -4523,7 +4874,7 @@
 
       applyCustomBackgrounds();
       initCustomBgInputs();
-      triggerSideToast("Backgrounds Updated", "Custom background images applied with 100% clarity!", true);
+      triggerSideToast("Backgrounds Updated", "Custom background images converted & synced across all devices!", true);
 
       if (activeUser) {
         try {
@@ -4559,17 +4910,21 @@
       }
       const file = inputEl.files && inputEl.files[0];
       if (!file) return;
-      triggerSideToast("Uploading Background", `Uploading ${type === 'login' ? 'Lock Screen' : 'Home Page'} background to Google Drive ("Home" folder)...`, "warning");
+      triggerSideToast("Uploading Background", `Uploading ${type === 'login' ? 'Lock Screen' : 'Home Page'} background to shared Google Drive folder...`, "warning");
       try {
-        const compressedDataUrl = await compressImageFileToDataUrl(file, 1920, 0.88);
+        const compressedDataUrl = await compressImageFileToDataUrl(file, 1600, 0.85);
+        const sheetSafeBase64 = await compressImageFileToDataUrl(file, 460, 0.7);
         const res = await sendGasPost({
           action: "uploadBackgroundPhoto",
+          username: activeUser || "admin",
           type: type,
           fileName: file.name,
-          mimeType: file.type || "image/jpeg",
-          base64Data: compressedDataUrl
+          mimeType: "image/jpeg",
+          base64Data: compressedDataUrl,
+          sheetSafeBase64: sheetSafeBase64
         });
-        const finalUrl = (res && res.status === "success" && res.imageUrl) ? res.imageUrl : compressedDataUrl;
+        const rawUrl = (res && res.status === "success" && res.imageUrl) ? res.imageUrl : sheetSafeBase64;
+        const finalUrl = normalizeGoogleDriveImageUrl(rawUrl);
         if (type === "login") {
           const el = document.getElementById("bgUrlLoginScreen");
           if (el) el.value = finalUrl;
@@ -4582,7 +4937,7 @@
         applyCustomBackgrounds();
         initCustomBgInputs();
         if (activeUser) saveCustomBackgrounds();
-        triggerSideToast("Background Uploaded", `${type === 'login' ? 'Lock Screen' : 'Home Page'} background uploaded to Drive and applied globally!`, true);
+        triggerSideToast("Background Uploaded", `${type === 'login' ? 'Lock Screen' : 'Home Page'} background saved to Google Drive & synced across all devices!`, true);
       } catch (err) {
         triggerSideToast("Upload Failed", "Could not upload background to Drive. Please verify connection.", false);
       }
@@ -4601,48 +4956,17 @@
       if (activeUser) saveCustomBackgrounds();
     }
 
-    // Requirement 5: Permanent Photo Storage & Cache so photos NEVER disappear across login/logout
+    // No-cache photo helpers: Photos are loaded directly from Google Sheets / Google Drive so manual deletions in Sheets reflect immediately
     function cachePermanentRenterPhoto(prop, flat, renterId, docType, url) {
-      if (!url || isPlaceholderImageUrl(url)) return;
-      try {
-        const map = JSON.parse(localStorage.getItem("portal_permanent_photos") || "{}");
-        const pClean = String(prop || "").trim().toLowerCase();
-        const fClean = String(flat || "").trim().toLowerCase();
-        const rIdClean = String(renterId || "").trim().toLowerCase();
-        const dClean = String(docType || "profile").trim().toLowerCase();
-        if (rIdClean) map[`${pClean}::${fClean}::${rIdClean}::${dClean}`] = url;
-        map[`${pClean}::${fClean}::active::${dClean}`] = url;
-        localStorage.setItem("portal_permanent_photos", JSON.stringify(map));
-      } catch (e) {}
+      try { localStorage.removeItem("portal_permanent_photos"); } catch (e) {}
     }
 
     function getPermanentRenterPhoto(prop, flat, renterId, docType) {
-      try {
-        const map = JSON.parse(localStorage.getItem("portal_permanent_photos") || "{}");
-        const pClean = String(prop || "").trim().toLowerCase();
-        const fClean = String(flat || "").trim().toLowerCase();
-        const rIdClean = String(renterId || "").trim().toLowerCase();
-        const dClean = String(docType || "profile").trim().toLowerCase();
-        if (rIdClean && map[`${pClean}::${fClean}::${rIdClean}::${dClean}`]) {
-          return map[`${pClean}::${fClean}::${rIdClean}::${dClean}`];
-        }
-        return map[`${pClean}::${fClean}::active::${dClean}`] || "";
-      } catch (e) {
-        return "";
-      }
+      return "";
     }
 
     function removePermanentRenterPhoto(prop, flat, renterId, docType) {
-      try {
-        const map = JSON.parse(localStorage.getItem("portal_permanent_photos") || "{}");
-        const pClean = String(prop || "").trim().toLowerCase();
-        const fClean = String(flat || "").trim().toLowerCase();
-        const rIdClean = String(renterId || "").trim().toLowerCase();
-        const dClean = String(docType || "profile").trim().toLowerCase();
-        if (rIdClean) delete map[`${pClean}::${fClean}::${rIdClean}::${dClean}`];
-        delete map[`${pClean}::${fClean}::active::${dClean}`];
-        localStorage.setItem("portal_permanent_photos", JSON.stringify(map));
-      } catch (e) {}
+      try { localStorage.removeItem("portal_permanent_photos"); } catch (e) {}
     }
 
     // User Block Management & Blocked Login Modal
@@ -5495,31 +5819,16 @@ function formatMonthLabel(rawVal) {
       const savedTheme = localStorage.getItem("app_visual_theme") || "black";
       applyVisualTheme(savedTheme);
 
-      // Requirement 2 & 10: Hydrate cached DB snapshot immediately (0ms) and sort properties A-Z
-      const cachedSnapshot = sessionStorage.getItem("cached_db_snapshot") || localStorage.getItem("portal_full_db_backup");
-      if (cachedSnapshot) {
-        try {
-          const parsed = JSON.parse(cachedSnapshot);
-          DB.properties = sortPropertiesAlphabetically(parsed.properties || []);
-          DB.flats = parsed.flats || [];
-          DB.renters = parsed.renters || [];
-          DB.bills = sanitizeAllBillsMonths(parsed.bills || []);
-          DB.users = parsed.users || [];
-          DB.loginHistory = parsed.loginHistory || [];
-          DB.fdRecords = parsed.fdRecords || [];
-          DB.khetRecords = parsed.khetRecords || [];
-          lastSyncedDataHash = JSON.stringify({
-            p: DB.properties,
-            f: DB.flats,
-            r: DB.renters,
-            b: DB.bills,
-            u: DB.users,
-            l: DB.loginHistory,
-            fd: DB.fdRecords,
-            kh: DB.khetRecords
-          });
-        } catch (e) {}
-      }
+      // Strictly purge all legacy local DB & credential caches so deleted Google Sheets records or User IDs NEVER reappear
+      try {
+        sessionStorage.removeItem("cached_db_snapshot");
+        localStorage.removeItem("portal_full_db_backup");
+        localStorage.removeItem("portal_verified_auth_map");
+        localStorage.removeItem("portal_fd_records_v1");
+        localStorage.removeItem("portal_khet_records_v1");
+        localStorage.removeItem("portal_permanent_photos");
+        localStorage.removeItem("portal_flat_utility_meta_v1");
+      } catch (e) {}
 
       const savedSessionUser = sessionStorage.getItem("active_session_user");
       const savedRole = sessionStorage.getItem("active_session_role") || "Admin";
@@ -5532,7 +5841,7 @@ function formatMonthLabel(rawVal) {
       if (savedSelectedProp) selectedProperty = savedSelectedProp;
 
       if (savedSessionUser) {
-        // Requirement 2: Instant 0ms dashboard render from cached snapshot, then background delta sync
+        // Verify active session user and load fresh data directly from Google Apps Script / Google Sheets
         activeUser = savedSessionUser;
         activeRole = savedRole;
         activeUserFullName = savedFullName;
@@ -5543,7 +5852,6 @@ function formatMonthLabel(rawVal) {
         unlockDashboardInstant(false);
         return;
       } else {
-        // Pre-warm the Google Apps Script server & prefetch latest DB snapshot while user is on the Login screen
         prewarmServerInBackground();
       }
     });
@@ -5553,21 +5861,12 @@ function formatMonthLabel(rawVal) {
     let pendingWriteCount = 0;
     let lastWriteCompletedAt = 0;
 
+    // Zero-Cache Policy: Never save DB snapshots to localStorage or sessionStorage so Google Sheets is always the single source of truth
     function saveDbSnapshotToCache() {
       try {
         sortPropertiesAlphabetically(DB.properties);
-        const serialized = JSON.stringify(DB);
-        sessionStorage.setItem("cached_db_snapshot", serialized);
-        if (
-          (DB.properties && DB.properties.length > 0) ||
-          (DB.flats && DB.flats.length > 0) ||
-          (DB.renters && DB.renters.length > 0) ||
-          (DB.bills && DB.bills.length > 0) ||
-          (DB.fdRecords && DB.fdRecords.length > 0) ||
-          (DB.khetRecords && DB.khetRecords.length > 0)
-        ) {
-          localStorage.setItem("portal_full_db_backup", serialized);
-        }
+        sessionStorage.removeItem("cached_db_snapshot");
+        localStorage.removeItem("portal_full_db_backup");
         lastSyncedDataHash = JSON.stringify({
           p: DB.properties,
           f: DB.flats,
@@ -5588,8 +5887,13 @@ function formatMonthLabel(rawVal) {
       );
       if (matchedFlat) {
         selectedFlat = matchedFlat;
+      } else {
+        // Selected flat was deleted in Google Sheets — close modal immediately
+        selectedFlat = null;
+        activeFlatRenterObj = null;
+        closeModal("flatDetailsModal");
+        return;
       }
-      // Preserve activeFlatRenterObj if we are currently editing a specific renter (e.g. a departed renter in Profile)
       if (activeFlatRenterObj && activeFlatRenterObj.RenterID) {
         const byId = (DB.renters || []).find(r => String(r.RenterID || "").trim() === String(activeFlatRenterObj.RenterID).trim());
         if (byId) {
@@ -5738,80 +6042,34 @@ function formatMonthLabel(rawVal) {
 
       renderAllDashboardUI();
       if (!skipImmediateSync) {
-        syncDataLive(false);
+        syncDataLive(true);
       }
 
       if (syncTimer) clearInterval(syncTimer);
       syncTimer = setInterval(() => {
         if (!document.hidden) syncDataLive(false);
-      }, 25000);
+      }, 15000);
     }
 
-    // Verified Auth Cache Helpers for Instant 0ms Login (Never forces a double login)
+    // Zero Auth Cache Policy: Never store or validate usernames/passwords in localStorage so deleted IDs in Google Sheets fail login immediately
     function getVerifiedAuthMap() {
-      try {
-        const raw = localStorage.getItem("portal_verified_auth_map");
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (parsed && typeof parsed === "object") return parsed;
-        }
-      } catch (e) {}
+      try { localStorage.removeItem("portal_verified_auth_map"); } catch (e) {}
       return {};
     }
 
     function saveVerifiedUserAuth(username, password, details = {}) {
-      if (!username || !password) return;
-      try {
-        const map = getVerifiedAuthMap();
-        const key = String(username).trim().toLowerCase();
-        const existing = map[key] || {};
-        map[key] = {
-          username: String(username).trim(),
-          password: String(password),
-          fullName: details.fullName || existing.fullName || String(username).trim(),
-          role: details.role || existing.role || "Admin",
-          theme: details.theme || existing.theme || "black",
-          mobile: details.mobile !== undefined ? details.mobile : (existing.mobile || ""),
-          assignedProperty: details.assignedProperty !== undefined ? details.assignedProperty : (existing.assignedProperty || ""),
-          assignedFlat: details.assignedFlat !== undefined ? details.assignedFlat : (existing.assignedFlat || "")
-        };
-        localStorage.setItem("portal_verified_auth_map", JSON.stringify(map));
-      } catch (e) {}
+      try { localStorage.removeItem("portal_verified_auth_map"); } catch (e) {}
     }
 
     function syncUsersListToVerifiedAuthMap(usersArray) {
-      if (!Array.isArray(usersArray) || usersArray.length === 0) return;
-      try {
-        const map = getVerifiedAuthMap();
-        usersArray.forEach(u => {
-          const uName = String(u.Username || "").trim();
-          if (uName && u.Password !== undefined && u.Password !== null && String(u.Password) !== "") {
-            map[uName.toLowerCase()] = {
-              username: uName,
-              password: String(u.Password),
-              fullName: u.FullName || uName,
-              role: u.Role || "Admin",
-              theme: u.Theme || "black",
-              mobile: u.MobileNumber || "",
-              assignedProperty: u.AssignedProperty || "",
-              assignedFlat: u.AssignedFlat || ""
-            };
-          }
-        });
-        localStorage.setItem("portal_verified_auth_map", JSON.stringify(map));
-      } catch (e) {}
+      try { localStorage.removeItem("portal_verified_auth_map"); } catch (e) {}
     }
 
     function removeVerifiedUserAuth(username) {
-      if (!username) return;
-      try {
-        const map = getVerifiedAuthMap();
-        delete map[String(username).trim().toLowerCase()];
-        localStorage.setItem("portal_verified_auth_map", JSON.stringify(map));
-      } catch (e) {}
+      try { localStorage.removeItem("portal_verified_auth_map"); } catch (e) {}
     }
 
-    // Pre-warm Google Apps Script server while login screen is open so server is hot & data is ready
+    // Pre-warm Google Apps Script server while login screen is open so server is hot & custom backgrounds load
     let isPrewarmingServer = false;
     async function prewarmServerInBackground() {
       if (isPrewarmingServer || activeUser) return;
@@ -5824,27 +6082,9 @@ function formatMonthLabel(rawVal) {
         });
         const res = await resp.json();
         if (res && res.status === "success" && !activeUser) {
-          DB.properties = res.properties || [];
-          DB.flats = res.flats || [];
-          DB.renters = res.renters || [];
-          DB.bills = sanitizeAllBillsMonths(res.bills || []);
-          DB.users = res.users || [];
-          if (Array.isArray(res.fdRecords)) {
-            DB.fdRecords = res.fdRecords;
-            localStorage.setItem("portal_fd_records_v1", JSON.stringify(res.fdRecords));
+          if (res.globalConfig) {
+            syncServerBackgroundsToLocal(res.globalConfig, "", "");
           }
-          if (Array.isArray(res.khetRecords)) {
-            DB.khetRecords = res.khetRecords;
-            localStorage.setItem("portal_khet_records_v1", JSON.stringify(res.khetRecords));
-          }
-          syncUsersListToVerifiedAuthMap(DB.users);
-          if (Array.isArray(res.loginHistory) && res.loginHistory.length > 0) {
-            DB.loginHistory = res.loginHistory;
-            try {
-              // No-cache: login history storage disabled
-            } catch (e) {}
-          }
-          saveDbSnapshotToCache();
         }
       } catch (e) {} finally {
         isPrewarmingServer = false;
@@ -5892,47 +6132,33 @@ function formatMonthLabel(rawVal) {
         if (panelLoginHist) panelLoginHist.style.display = "none";
         if (btnEditEvery) btnEditEvery.style.display = "none";
         if (panelEditEvery) panelEditEvery.style.display = "none";
-        if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr";
+        if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr 1fr";
       } else {
         if (btnLoginHist) btnLoginHist.style.display = "flex";
         if (btnEditEvery) btnEditEvery.style.display = "flex";
-        if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr 1fr 1fr";
+        if (btnGrid) btnGrid.style.gridTemplateColumns = "repeat(2, 1fr)";
       }
     }
 
-    function applyServerLoginPayload(res, userPass, clientBackup) {
+    function applyServerLoginPayload(res) {
       activeUser = res.username;
       activeUserFullName = res.fullName || res.username;
       activeUserMobile = res.mobile || "";
       activeRole = res.role || "Admin";
       const sheetTheme = res.theme || "black";
 
-      DB.properties = res.properties || [];
-      DB.flats = res.flats || [];
-      DB.renters = res.renters || [];
-      DB.bills = sanitizeAllBillsMonths(res.bills || []);
-      DB.users = res.users || [];
-      if (Array.isArray(res.fdRecords) && res.fdRecords.length > 0) {
-        DB.fdRecords = res.fdRecords;
-        localStorage.setItem("portal_fd_records_v1", JSON.stringify(res.fdRecords));
-      } else {
-        try {
-          DB.fdRecords = JSON.parse(localStorage.getItem("portal_fd_records_v1") || "[]");
-        } catch (e) {
-          DB.fdRecords = [];
-        }
-      }
-      if (Array.isArray(res.khetRecords) && res.khetRecords.length > 0) {
-        DB.khetRecords = res.khetRecords;
-        localStorage.setItem("portal_khet_records_v1", JSON.stringify(res.khetRecords));
-      } else {
-        try {
-          DB.khetRecords = JSON.parse(localStorage.getItem("portal_khet_records_v1") || "[]");
-        } catch (e) {
-          DB.khetRecords = [];
-        }
-      }
-      syncUsersListToVerifiedAuthMap(DB.users);
+      // Strictly use the live arrays from Google Sheets (never fall back to localStorage or re-upload deleted rows)
+      DB.properties = Array.isArray(res.properties) ? res.properties : [];
+      DB.flats = Array.isArray(res.flats) ? res.flats : [];
+      DB.renters = (Array.isArray(res.renters) ? res.renters : []).map(r => {
+        if (r.ProfileImageURL) r.ProfileImageURL = normalizeGoogleDriveImageUrl(r.ProfileImageURL);
+        if (r.IdentityImageURL) r.IdentityImageURL = normalizeGoogleDriveImageUrl(r.IdentityImageURL);
+        return r;
+      });
+      DB.bills = sanitizeAllBillsMonths(Array.isArray(res.bills) ? res.bills : []);
+      DB.users = Array.isArray(res.users) ? res.users : [];
+      DB.fdRecords = Array.isArray(res.fdRecords) ? res.fdRecords : [];
+      DB.khetRecords = Array.isArray(res.khetRecords) ? res.khetRecords : [];
 
       const matchedU = (DB.users || []).find(u => String(u.Username || "").trim().toLowerCase() === String(activeUser).trim().toLowerCase());
       activeAssignedProperty = res.assignedProperty || matchedU?.AssignedProperty || "";
@@ -5945,81 +6171,18 @@ function formatMonthLabel(rawVal) {
       sessionStorage.setItem("active_session_assigned_prop", activeAssignedProperty);
       sessionStorage.setItem("active_session_assigned_flat", activeAssignedFlat);
 
-      saveVerifiedUserAuth(activeUser, userPass, {
-        fullName: activeUserFullName,
-        role: activeRole,
-        theme: sheetTheme,
-        mobile: activeUserMobile,
-        assignedProperty: activeAssignedProperty,
-        assignedFlat: activeAssignedFlat
-      });
-
       applyVisualTheme(sheetTheme);
       applyRolePermissions(activeRole);
 
-      // Requirement 4: Continuous Login History saved to Google Sheet; strictly Admin-only view
-      const localLogRaw = localStorage.getItem("portal_login_history_backup");
-      let localBackupLogs = [];
-      try { if (localLogRaw) localBackupLogs = JSON.parse(localLogRaw) || []; } catch (e) {}
-      const newLoginEntry = {
-        LoginID: "LOG-" + Date.now(),
-        Username: activeUser,
-        FullName: activeUserFullName,
-        Role: activeRole,
-        MobileNumber: activeUserMobile,
-        LoginTimestamp: new Date().toISOString()
-      };
-      const combinedLogs = Array.isArray(res.loginHistory) && res.loginHistory.length > 0
-        ? res.loginHistory
-        : [newLoginEntry, ...localBackupLogs];
-      try {
-        // No-cache: login history storage disabled
-      } catch (e) {}
-      DB.loginHistory = (String(activeRole).toLowerCase() === "admin") ? combinedLogs : [];
-
-      // Requirement 3: If any rows from local backup were missing on the Google Sheet, restore them automatically in background
-      if (clientBackup) {
-        let needsRowRestore = false;
-        if (Array.isArray(clientBackup.properties) && clientBackup.properties.length > DB.properties.length) needsRowRestore = true;
-        if (Array.isArray(clientBackup.flats) && clientBackup.flats.length > DB.flats.length) needsRowRestore = true;
-        if (Array.isArray(clientBackup.renters) && clientBackup.renters.length > DB.renters.length) needsRowRestore = true;
-        if (Array.isArray(clientBackup.bills) && clientBackup.bills.length > DB.bills.length) needsRowRestore = true;
-        if (Array.isArray(clientBackup.fdRecords) && clientBackup.fdRecords.length > (res.fdRecords || []).length) needsRowRestore = true;
-        if (Array.isArray(clientBackup.khetRecords) && clientBackup.khetRecords.length > (res.khetRecords || []).length) needsRowRestore = true;
-        if (needsRowRestore) {
-          sendGasPost({
-            action: "syncAllData",
-            properties: clientBackup.properties || [],
-            flats: clientBackup.flats || [],
-            renters: clientBackup.renters || [],
-            bills: clientBackup.bills || [],
-            fdRecords: clientBackup.fdRecords || DB.fdRecords || [],
-            khetRecords: clientBackup.khetRecords || DB.khetRecords || []
-          }).then(() => syncDataLive(true)).catch(() => {});
-        }
-      }
+      const liveLogs = Array.isArray(res.loginHistory) ? res.loginHistory : [];
+      DB.loginHistory = (String(activeRole).toLowerCase() === "admin") ? liveLogs : [];
 
       rebindSelectedFlatAndRenterReferences();
       saveDbSnapshotToCache();
       renderAllDashboardUI();
     }
 
-    // Background sync after instant login — NEVER logs out or redirects back to login screen
-    async function recordLoginAndSyncInBackground(user, pass, clientBackup) {
-      try {
-        const gasUrl = getGasUrl();
-        const response = await fetch(`${gasUrl}?action=login&username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}&t=${Date.now()}`, {
-          method: "GET",
-          cache: "no-store"
-        });
-        const res = await response.json();
-        if (res && res.status === "success" && activeUser) {
-          applyServerLoginPayload(res, pass, clientBackup);
-        }
-      } catch (e) {}
-    }
-
-    // 1. Single-Step Instant Login (Never shows a second login screen)
+    // 1. Live Server-Verified Login Every Time (Never uses cached credentials so deleted User IDs are rejected immediately)
     let isSubmittingLogin = false;
     async function handleLoginSubmit(e) {
       e.preventDefault();
@@ -6029,93 +6192,14 @@ function formatMonthLabel(rawVal) {
       const pass = document.getElementById("loginPassword").value;
       const btn = document.getElementById("loginBtn");
 
-      let clientBackup = null;
-      try {
-        const rawBackup = localStorage.getItem("portal_full_db_backup") || sessionStorage.getItem("cached_db_snapshot");
-        if (rawBackup) clientBackup = JSON.parse(rawBackup);
-      } catch (bkErr) {}
-
-      // Check pre-warmed DB.users and verified local auth cache for 0ms instant login
-      syncUsersListToVerifiedAuthMap(DB.users);
-      const authMap = getVerifiedAuthMap();
-      const cachedAuth = authMap[user.toLowerCase()];
-      const matchedUserInDb = (DB.users || []).find(u => String(u.Username || "").trim().toLowerCase() === user.toLowerCase());
-
-      const cleanUserLower = user.toLowerCase();
-      const isVerifiedMatch = (
-        (matchedUserInDb && matchedUserInDb.Password !== undefined && String(matchedUserInDb.Password) !== "" && String(matchedUserInDb.Username).trim().toLowerCase() === cleanUserLower && String(matchedUserInDb.Password) === pass) ||
-        (cachedAuth && String(cachedAuth.username).trim().toLowerCase() === cleanUserLower && cachedAuth.password === pass)
-      );
-
-      if (isVerifiedMatch) {
-        const targetStatus = (matchedUserInDb && matchedUserInDb.Status) || (cachedAuth && cachedAuth.status) || "Active";
-        if (String(targetStatus).toLowerCase() === "blocked") {
-          showAccountBlockedModal("Your account has been blocked. Please contact support to unblock it.");
-          isSubmittingLogin = false;
-          btn.disabled = false;
-          btn.innerHTML = '<span>Log In</span><i class="fa-solid fa-arrow-right-to-bracket"></i>';
-          return;
-        }
-        activeUser = (matchedUserInDb && matchedUserInDb.Username) || cachedAuth.username;
-        activeUserFullName = (matchedUserInDb && matchedUserInDb.FullName) || (cachedAuth && cachedAuth.fullName) || activeUser;
-        activeUserMobile = (matchedUserInDb && matchedUserInDb.MobileNumber) || (cachedAuth && cachedAuth.mobile) || "";
-        activeRole = (matchedUserInDb && matchedUserInDb.Role) || (cachedAuth && cachedAuth.role) || "Admin";
-        activeAssignedProperty = (matchedUserInDb && matchedUserInDb.AssignedProperty) || (cachedAuth && cachedAuth.assignedProperty) || "";
-        activeAssignedFlat = (matchedUserInDb && matchedUserInDb.AssignedFlat) || (cachedAuth && cachedAuth.assignedFlat) || "";
-        const userTheme = (matchedUserInDb && matchedUserInDb.Theme) || (cachedAuth && cachedAuth.theme) || "black";
-
-        hasAutoOpenedViewerFlatOnce = false;
-        selectedProperty = null;
-        sessionStorage.removeItem("active_selected_property");
-
-        sessionStorage.setItem("active_session_user", activeUser);
-        sessionStorage.setItem("active_session_fullname", activeUserFullName);
-        sessionStorage.setItem("active_session_mobile", activeUserMobile);
-        sessionStorage.setItem("active_session_role", activeRole);
-        sessionStorage.setItem("active_session_assigned_prop", activeAssignedProperty);
-        sessionStorage.setItem("active_session_assigned_flat", activeAssignedFlat);
-
-        saveVerifiedUserAuth(activeUser, pass, {
-          fullName: activeUserFullName,
-          role: activeRole,
-          theme: userTheme,
-          mobile: activeUserMobile,
-          assignedProperty: activeAssignedProperty,
-          assignedFlat: activeAssignedFlat
-        });
-
-        applyVisualTheme(userTheme);
-        applyRolePermissions(activeRole);
-
-        // Immediately record login in local LoginHistory for instant Admin view
-        const localLogRaw = localStorage.getItem("portal_login_history_backup");
-        let localBackupLogs = [];
-        try { if (localLogRaw) localBackupLogs = JSON.parse(localLogRaw) || []; } catch (err) {}
-        const instantLoginEntry = {
-          LoginID: "LOG-" + Date.now(),
-          Username: activeUser,
-          FullName: activeUserFullName,
-          Role: activeRole,
-          MobileNumber: activeUserMobile,
-          LoginTimestamp: new Date().toISOString()
-        };
-        const updatedLogs = [instantLoginEntry, ...localBackupLogs].slice(0, 500);
-        /* No-cache: storage disabled */
-        DB.loginHistory = (String(activeRole).toLowerCase() === "admin") ? updatedLogs : [];
-
-        document.getElementById("loginPassword").value = "";
-        unlockDashboardInstant(true);
-        triggerSideToast("Welcome Back", `Logged in as ${activeUserFullName}`, true);
-
-        // Record login history & self-heal Google Sheets in the background without ever logging out
-        setTimeout(() => recordLoginAndSyncInBackground(user, pass, clientBackup), 250);
+      if (!user || !pass) {
+        triggerSideToast("Missing Credentials", "Please enter both Username and Password.", false);
         return;
       }
 
-      // First-Time / Uncached User Path: Fast single GET login
       isSubmittingLogin = true;
       btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Signing In...`;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Verifying with Google Sheet...`;
 
       try {
         const gasUrl = getGasUrl();
@@ -6128,15 +6212,17 @@ function formatMonthLabel(rawVal) {
         if (res && res.status === "blocked") {
           showAccountBlockedModal(res.message || "Your account has been blocked by an administrator.");
         } else if (res && res.status === "success") {
+          hasAutoOpenedViewerFlatOnce = false;
           selectedProperty = null;
           sessionStorage.removeItem("active_selected_property");
           document.getElementById("loginPassword").value = "";
           syncServerBackgroundsToLocal(res.globalConfig, res.bgLogin, res.bgDashboard);
-          applyServerLoginPayload(res, pass, clientBackup);
+          applyServerLoginPayload(res);
           unlockDashboardInstant(true);
           triggerSideToast("Welcome Back", `Logged in as ${activeUserFullName}`, true);
         } else {
-          triggerSideToast("Login Failed", (res && res.message) ? res.message : "Your Username or Password is wrong.", false);
+          // Immediately reject deleted or wrong User IDs / Passwords
+          triggerSideToast("Login Failed", (res && res.message) ? res.message : "Your Username or Password is wrong or does not exist.", false);
         }
       } catch (err) {
         triggerSideToast("Connection Error", "Unable to reach Google Sheet server.", false);
@@ -6147,7 +6233,7 @@ function formatMonthLabel(rawVal) {
       }
     }
 
-    // 2. Continuous Live Background Sync (Skips while writes are in flight & Rebinds Selected Flat)
+    // 2. Continuous Live Background Sync Directly from Google Sheets (Detects manual row deletions & deleted User IDs immediately)
     async function syncDataLive(forceRender = false) {
       if (!activeUser || isSyncingLive) return;
       if (!forceRender && (pendingWriteCount > 0 || (Date.now() - lastWriteCompletedAt < 4000))) {
@@ -6162,31 +6248,49 @@ function formatMonthLabel(rawVal) {
         });
         const res = await response.json();
 
-        if (res.status === "success") {
-          // Guard again in case a write started while GET was in flight
+        if (res && res.status === "success") {
           if (!forceRender && (pendingWriteCount > 0 || (Date.now() - lastWriteCompletedAt < 4000))) {
             return;
           }
 
-          const incomingProperties = res.properties || [];
-          const incomingFlats = res.flats || [];
-          const incomingRenters = res.renters || [];
-          const incomingBills = sanitizeAllBillsMonths(res.bills || []);
-          const incomingUsers = res.users || [];
-          const incomingFdRecords = Array.isArray(res.fdRecords) ? res.fdRecords : (DB.fdRecords || []);
-          const incomingKhetRecords = Array.isArray(res.khetRecords) ? res.khetRecords : (DB.khetRecords || []);
-          let incomingLoginHistory = res.loginHistory;
-          if (!Array.isArray(incomingLoginHistory) || incomingLoginHistory.length === 0) {
-            try {
-              incomingLoginHistory = JSON.parse(localStorage.getItem("portal_login_history_backup") || "[]");
-            } catch (e) {
-              incomingLoginHistory = DB.loginHistory || [];
-            }
-          } else {
-            try {
-              // No-cache: login history storage disabled
-            } catch (e) {}
+          const incomingUsers = Array.isArray(res.users) ? res.users : [];
+          const activeUserStillInSheet = incomingUsers.some(
+            u => String(u.Username || "").trim().toLowerCase() === String(activeUser || "").trim().toLowerCase()
+          );
+
+          // If the currently logged-in user's row was manually deleted in Google Sheets, log out & wipe dashboard immediately!
+          if (res.userDeleted === true || res.userExists === false || !activeUserStillInSheet) {
+            DB.properties = [];
+            DB.flats = [];
+            DB.renters = [];
+            DB.bills = [];
+            DB.users = [];
+            DB.fdRecords = [];
+            DB.khetRecords = [];
+            performConfirmedLogout();
+            setTimeout(() => {
+              triggerSideToast("Account Removed", "Your User ID no longer exists in Google Sheets. Please log in with a valid ID.", false);
+            }, 120);
+            return;
           }
+
+          if (String(res.userStatus || res.accountStatus || "").toLowerCase() === "blocked") {
+            performConfirmedLogout();
+            showAccountBlockedModal("Your account has been blocked by an administrator.");
+            return;
+          }
+
+          const incomingProperties = Array.isArray(res.properties) ? res.properties : [];
+          const incomingFlats = Array.isArray(res.flats) ? res.flats : [];
+          const incomingRenters = (Array.isArray(res.renters) ? res.renters : []).map(r => {
+            if (r.ProfileImageURL) r.ProfileImageURL = normalizeGoogleDriveImageUrl(r.ProfileImageURL);
+            if (r.IdentityImageURL) r.IdentityImageURL = normalizeGoogleDriveImageUrl(r.IdentityImageURL);
+            return r;
+          });
+          const incomingBills = sanitizeAllBillsMonths(Array.isArray(res.bills) ? res.bills : []);
+          const incomingFdRecords = Array.isArray(res.fdRecords) ? res.fdRecords : [];
+          const incomingKhetRecords = Array.isArray(res.khetRecords) ? res.khetRecords : [];
+          let incomingLoginHistory = Array.isArray(res.loginHistory) ? res.loginHistory : [];
           if (String(activeRole).toLowerCase() !== "admin") {
             incomingLoginHistory = [];
           }
@@ -6212,16 +6316,12 @@ function formatMonthLabel(rawVal) {
           DB.loginHistory = incomingLoginHistory;
           DB.fdRecords = incomingFdRecords;
           DB.khetRecords = incomingKhetRecords;
-          try {
-            localStorage.setItem("portal_fd_records_v1", JSON.stringify(incomingFdRecords));
-            localStorage.setItem("portal_khet_records_v1", JSON.stringify(incomingKhetRecords));
-          } catch (e) {}
-          syncUsersListToVerifiedAuthMap(DB.users);
+
           rebindSelectedFlatAndRenterReferences();
           saveDbSnapshotToCache();
 
           if (res.globalConfig) {
-            syncServerBackgroundsToLocal(res.globalConfig, "", "");
+            syncServerBackgroundsToLocal(res.globalConfig, res.userBgLogin || "", res.userBgDashboard || "");
           }
           if (res.userAssignedProperty !== undefined) {
             activeAssignedProperty = res.userAssignedProperty || "";
@@ -7273,26 +7373,26 @@ function formatMonthLabel(rawVal) {
       }
 
       [usersPanel, historyPanel, changeBgPanel, eePanel].forEach(p => { if (p) p.style.display = "none"; });
-      if (btnUsers) btnUsers.className = "btn-ledger-action";
-      if (btnChangeBg) btnChangeBg.className = "btn-ledger-action";
-      [btnHistory, btnEe].forEach(b => { if (b) b.className = "btn-ledger-action admin-only"; });
+      if (btnUsers) btnUsers.className = "btn-ledger-action other-tool-card";
+      if (btnChangeBg) btnChangeBg.className = "btn-ledger-action other-tool-card";
+      [btnHistory, btnEe].forEach(b => { if (b) b.className = "btn-ledger-action admin-only other-tool-card"; });
 
       if (opt === "history") {
         if (historyPanel) historyPanel.style.display = "block";
-        if (btnHistory) btnHistory.className = "btn-primary admin-only";
+        if (btnHistory) btnHistory.className = "btn-primary admin-only other-tool-card";
         currentLoginHistoryPage = 1;
         renderLoginHistoryPage();
       } else if (opt === "changeBg") {
         if (changeBgPanel) changeBgPanel.style.display = "block";
-        if (btnChangeBg) btnChangeBg.className = "btn-primary";
+        if (btnChangeBg) btnChangeBg.className = "btn-primary other-tool-card";
         initCustomBgInputs();
       } else if (opt === "editEverything") {
         if (eePanel) eePanel.style.display = "block";
-        if (btnEe) btnEe.className = "btn-primary admin-only";
+        if (btnEe) btnEe.className = "btn-primary admin-only other-tool-card";
         renderEditEverythingBillsList();
       } else {
         if (usersPanel) usersPanel.style.display = "block";
-        if (btnUsers) btnUsers.className = "btn-primary";
+        if (btnUsers) btnUsers.className = "btn-primary other-tool-card";
         renderRegisteredUsersList();
       }
     }
@@ -7821,12 +7921,12 @@ function formatMonthLabel(rawVal) {
         if (panelLoginHist) panelLoginHist.style.display = "none";
         if (btnEditEvery) btnEditEvery.style.display = "none";
         if (panelEditEvery) panelEditEvery.style.display = "none";
-        if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr";
+        if (btnGrid) btnGrid.style.gridTemplateColumns = "repeat(2, 1fr)";
         switchOtherSubOption("users");
       } else {
         if (btnLoginHist) btnLoginHist.style.display = "flex";
         if (btnEditEvery) btnEditEvery.style.display = "flex";
-        if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr 1fr 1fr";
+        if (btnGrid) btnGrid.style.gridTemplateColumns = "repeat(2, 1fr)";
         renderLoginHistoryPage();
       }
 
@@ -8285,16 +8385,33 @@ function formatMonthLabel(rawVal) {
       const delBtn = document.getElementById(isIdentity ? "btnDeleteIdentityPic" : "btnDeleteProfilePic");
       const dlBtn = document.getElementById(isIdentity ? "btnDownloadIdentityPic" : "btnDownloadProfilePic");
       const fileInput = document.getElementById(isIdentity ? "fileIdentityPic" : "fileProfilePic");
+      const urlInput = document.getElementById(isIdentity ? "inputIdentityPicUrl" : "inputProfilePicUrl");
 
-      const hasRealImage = !isPlaceholderImageUrl(imageUrl);
+      const normalizedUrl = normalizeGoogleDriveImageUrl(imageUrl);
+      const hasRealImage = !isPlaceholderImageUrl(normalizedUrl);
       if (imgEl) {
+        const driveId = extractGoogleDriveFileId(normalizedUrl);
+        if (driveId) {
+          imgEl.onerror = function() {
+            if (!this.dataset.retriedThumb) {
+              this.dataset.retriedThumb = "1";
+              this.src = "https://drive.google.com/thumbnail?id=" + driveId + "&sz=w1200";
+            }
+          };
+          delete imgEl.dataset.retriedThumb;
+        } else {
+          imgEl.onerror = null;
+        }
         imgEl.src = hasRealImage
-          ? imageUrl
+          ? normalizedUrl
           : (isIdentity ? EMPTY_IDENTITY_PLACEHOLDER : EMPTY_PROFILE_PLACEHOLDER);
+      }
+      if (urlInput) {
+        urlInput.value = (hasRealImage && !String(normalizedUrl).startsWith("data:image/")) ? normalizedUrl : "";
       }
       if (badgeEl) {
         badgeEl.innerText = hasRealImage
-          ? (isIdentity ? "Aadhaar Card saved in Google Drive (Click photo to Zoom)" : "Profile photo saved in Google Drive (Click photo to Zoom)")
+          ? (isIdentity ? "Aadhaar Card synced across all devices (Click photo to Zoom)" : "Profile photo synced across all devices (Click photo to Zoom)")
           : (isIdentity ? "No Aadhaar / ID uploaded" : "No profile photo uploaded");
         badgeEl.style.color = hasRealImage ? "var(--accent-green)" : "var(--text-muted)";
       }
@@ -11083,25 +11200,13 @@ function formatMonthLabel(rawVal) {
     let editingKhetRecordId = null;
 
     function getStoredFdRecords() {
-      if (Array.isArray(DB.fdRecords) && DB.fdRecords.length > 0) {
-        return DB.fdRecords;
-      }
-      try {
-        const local = JSON.parse(localStorage.getItem("portal_fd_records_v1") || "[]");
-        if (Array.isArray(local)) {
-          DB.fdRecords = local;
-          return local;
-        }
-      } catch (e) {}
-      return [];
+      return Array.isArray(DB.fdRecords) ? DB.fdRecords : [];
     }
 
     function saveStoredFdRecords(list) {
       const cleanList = Array.isArray(list) ? list : [];
       DB.fdRecords = cleanList;
-      try {
-        localStorage.setItem("portal_fd_records_v1", JSON.stringify(cleanList));
-      } catch (e) {}
+      try { localStorage.removeItem("portal_fd_records_v1"); } catch (e) {}
       saveDbSnapshotToCache();
     }
 
@@ -11303,25 +11408,13 @@ function formatMonthLabel(rawVal) {
     }
 
     function getStoredKhetRecords() {
-      if (Array.isArray(DB.khetRecords) && DB.khetRecords.length > 0) {
-        return DB.khetRecords;
-      }
-      try {
-        const local = JSON.parse(localStorage.getItem("portal_khet_records_v1") || "[]");
-        if (Array.isArray(local)) {
-          DB.khetRecords = local;
-          return local;
-        }
-      } catch (e) {}
-      return [];
+      return Array.isArray(DB.khetRecords) ? DB.khetRecords : [];
     }
 
     function saveStoredKhetRecords(list) {
       const cleanList = Array.isArray(list) ? list : [];
       DB.khetRecords = cleanList;
-      try {
-        localStorage.setItem("portal_khet_records_v1", JSON.stringify(cleanList));
-      } catch (e) {}
+      try { localStorage.removeItem("portal_khet_records_v1"); } catch (e) {}
       saveDbSnapshotToCache();
     }
 
@@ -12584,6 +12677,54 @@ function formatMonthLabel(rawVal) {
       });
     }
 
+    async function applyRenterDocumentLink(docType) {
+      if (activeRole === "Viewer" || !selectedFlat) return;
+      const isIdentity = docType === "identity";
+      const inputEl = document.getElementById(isIdentity ? "inputIdentityPicUrl" : "inputProfilePicUrl");
+      const rawLink = inputEl ? inputEl.value.trim() : "";
+      if (!rawLink) {
+        return triggerSideToast("Enter Photo Link", "Please paste a Google Drive shared file link or direct image URL first.", false);
+      }
+      if (rawLink.includes("/folders/")) {
+        return triggerSideToast("Folder Link Detected", "That is a Google Drive Folder link. Please paste a specific Image File link or use the Upload File button above.", false);
+      }
+      const directImageUrl = normalizeGoogleDriveImageUrl(rawLink);
+      if (inputEl) inputEl.value = directImageUrl;
+
+      updateRenterImageSlotUI(docType, directImageUrl);
+      if (activeFlatRenterObj) {
+        if (isIdentity) activeFlatRenterObj.IdentityImageURL = directImageUrl;
+        else activeFlatRenterObj.ProfileImageURL = directImageUrl;
+      }
+      let matchedRenters = (DB.renters || []).filter(r => isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName));
+      let targetR = matchedRenters.find(r => activeFlatRenterObj?.RenterID && String(r.RenterID) === String(activeFlatRenterObj.RenterID)) ||
+                    matchedRenters.find(r => String(r.Status || "").toLowerCase() === "active");
+      if (targetR) {
+        if (isIdentity) targetR.IdentityImageURL = directImageUrl;
+        else targetR.ProfileImageURL = directImageUrl;
+      }
+      saveDbSnapshotToCache();
+      renderAllDashboardUI();
+      populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
+
+      triggerSideToast("Syncing Photo Link", "Saving direct photo link to Google Sheets so it loads across all devices...", "warning");
+      try {
+        await sendGasPost({
+          action: "uploadRenterDocument",
+          propertyName: selectedFlat.PropertyName,
+          flatName: selectedFlat.FlatName,
+          renterId: activeFlatRenterObj?.RenterID || "",
+          renterName: document.getElementById("renterName")?.value || activeFlatRenterObj?.RenterName || "Current Tenant",
+          rentAmount: selectedFlat.RentAmount || 0,
+          docType: docType,
+          directImageUrl: directImageUrl
+        });
+        triggerSideToast("Photo Link Synced", "Photo link saved to Google Sheets and active across all devices!", true);
+      } catch (e) {
+        triggerSideToast("Sync Warning", "Could not reach Google Sheets server.", false);
+      }
+    }
+
     async function handleRenterDocumentUpload(input, docType) {
       if (activeRole === "Viewer" || !selectedFlat) return;
       if (!input.files || !input.files[0]) return;
@@ -12594,11 +12735,13 @@ function formatMonthLabel(rawVal) {
 
       try {
         if (badgeEl) {
-          badgeEl.innerText = "Uploading to Cloud Drive...";
+          badgeEl.innerText = "Uploading to Shared Google Drive...";
           badgeEl.style.color = "var(--primary)";
         }
 
-        const compressedDataUrl = await compressImageFileToDataUrl(file, isIdentity ? 1000 : 600, 0.82);
+        const compressedDataUrl = await compressImageFileToDataUrl(file, isIdentity ? 1000 : 650, 0.82);
+        // Compact Sheet-safe version (< 40,000 chars) so Google Sheets cell storage NEVER fails even if Drive permissions are restricted
+        const sheetSafeBase64 = await compressImageFileToDataUrl(file, isIdentity ? 420 : 340, 0.68);
 
         // Immediately display inside its respective profile render / Aadhaar section
         updateRenterImageSlotUI(docType, compressedDataUrl);
@@ -12611,8 +12754,8 @@ function formatMonthLabel(rawVal) {
         renderAllDashboardUI();
 
         triggerSideToast(
-          "Uploading to Cloud Drive",
-          `Saving ${isIdentity ? "Aadhaar / ID Card" : "Profile Render"} to connected Cloud Drive...`,
+          "Uploading to Shared Drive",
+          `Saving ${isIdentity ? "Aadhaar / ID Card" : "Profile Photo"} to Google Drive & Google Sheets for all devices...`,
           "warning"
         );
 
@@ -12626,16 +12769,17 @@ function formatMonthLabel(rawVal) {
           docType: docType,
           fileName: file.name,
           mimeType: "image/jpeg",
-          base64Data: compressedDataUrl
+          base64Data: compressedDataUrl,
+          sheetSafeBase64: sheetSafeBase64
         });
 
-        const finalImageUrl = (res && res.status === "success" && res.imageUrl) ? res.imageUrl : compressedDataUrl;
+        const rawImageUrl = (res && res.status === "success" && res.imageUrl) ? res.imageUrl : sheetSafeBase64;
+        const finalImageUrl = normalizeGoogleDriveImageUrl(rawImageUrl);
         updateRenterImageSlotUI(docType, finalImageUrl);
         if (activeFlatRenterObj) {
           if (isIdentity) activeFlatRenterObj.IdentityImageURL = finalImageUrl;
           else activeFlatRenterObj.ProfileImageURL = finalImageUrl;
         }
-        // Update DB.renters matching flat so the photo persists permanently across sessions
         let matchedRenters = (DB.renters || []).filter(r => isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName));
         let targetR = matchedRenters.find(r => activeFlatRenterObj?.RenterID && String(r.RenterID) === String(activeFlatRenterObj.RenterID)) ||
                       matchedRenters.find(r => String(r.Status || "").toLowerCase() === "active");
@@ -12643,18 +12787,17 @@ function formatMonthLabel(rawVal) {
           if (isIdentity) targetR.IdentityImageURL = finalImageUrl;
           else targetR.ProfileImageURL = finalImageUrl;
         }
-        cachePermanentRenterPhoto(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj?.RenterID, docType, finalImageUrl);
         saveDbSnapshotToCache();
         renderAllDashboardUI();
         populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
 
         triggerSideToast(
-          "Saved to Cloud Drive",
-          `${isIdentity ? "Aadhaar / ID Card" : "Profile Render"} uploaded and saved to Cloud Drive!`,
+          "Synced Across All Devices",
+          `${isIdentity ? "Aadhaar / ID Card" : "Profile Photo"} uploaded to Google Drive & synced to all devices!`,
           true
         );
       } catch (err) {
-        triggerSideToast("Saved Locally", "Displayed image in profile. Will sync on next connection.", "warning");
+        triggerSideToast("Upload Warning", "Displayed image locally. Please check internet connection.", "warning");
       }
     }
 
