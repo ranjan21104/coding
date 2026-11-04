@@ -2764,122 +2764,327 @@
     </div>
   </div>
 
-  <!-- FD (FIXED DEPOSIT) POP-UP MODAL (AUTO-SAVES TO GOOGLE SHEET + EDIT SUPPORT) -->
+  <!-- FD (FIXED DEPOSIT & FUND UTILIZATION PORTFOLIO) POP-UP MODAL (AUTO-SAVES TO GOOGLE SHEET + EDIT SUPPORT) -->
   <div id="fdModal" class="modal-overlay" style="z-index: 2800;">
-    <div class="modal-window" style="max-width: 640px;">
+    <div class="modal-window" style="max-width: 980px; width: 96%;">
       <button class="modal-close-btn" onclick="closeModal('fdModal')"><i class="fa-solid fa-xmark"></i></button>
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding-right:36px; margin-bottom: 12px;">
-        <h3 style="display:flex; align-items:center; gap:8px; margin:0;">
-          <i class="fa-solid fa-building-columns" style="color:var(--primary);"></i> Fixed Deposit (FD) Management
-        </h3>
-        <span style="font-size:0.7rem; font-weight:700; color:var(--accent-green); background:rgba(16,185,129,0.14); padding:3px 9px; border-radius:20px;">
+        <div>
+          <h3 style="display:flex; align-items:center; gap:8px; margin:0; font-size:1.15rem;">
+            <i class="fa-solid fa-building-columns" style="color:var(--primary);"></i> FD, Savings &amp; Place Collection Utilization Portfolio
+          </h3>
+          <div style="font-size:0.74rem; color:var(--text-muted); margin-top:2px;">
+            Track total amount collected by each place, what purpose it was used for, and full Saving / Future Saving FD details
+          </div>
+        </div>
+        <span style="font-size:0.7rem; font-weight:700; color:var(--accent-green); background:rgba(16,185,129,0.14); padding:4px 10px; border-radius:20px; border:1px solid rgba(16,185,129,0.3);">
           <i class="fa-solid fa-cloud-arrow-up"></i> Live Sheet Sync
         </span>
       </div>
 
-      <!-- Requirement 6: Total Rent Money Shown Across All Properties (Strictly Rent Amount Only) -->
-      <div id="fdTotalCollectionsBanner" style="margin-bottom:14px; background:linear-gradient(135deg, rgba(79,70,229,0.2) 0%, rgba(16,185,129,0.2) 100%); border:1.5px solid var(--primary); border-radius:14px; padding:12px 14px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-          <div>
-            <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.5px;">
-              <i class="fa-solid fa-wallet"></i> Total Rent Amount Across All Properties (Rent Only)
+      <!-- Place-Wise Collection Summary & Portfolio KPI Banner -->
+      <div id="fdTotalCollectionsBanner" style="margin-bottom:14px; background:linear-gradient(135deg, rgba(79,70,229,0.22) 0%, rgba(16,185,129,0.18) 100%); border:1.5px solid var(--primary); border-radius:16px; padding:14px;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap:10px; margin-bottom:12px;">
+          <div style="background:rgba(15,23,42,0.55); border:1px solid rgba(255,255,255,0.12); border-radius:12px; padding:10px 12px;">
+            <div style="font-size:0.68rem; font-weight:700; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.4px;">
+              <i class="fa-solid fa-wallet" style="color:#34d399;"></i> Total Collected (All Places)
             </div>
-            <div id="fdTotalAmountDisplay" style="font-size:1.35rem; font-weight:800; color:var(--accent-green); margin-top:2px;">₹0</div>
+            <div id="fdTotalAmountDisplay" style="font-size:1.25rem; font-weight:800; color:#34d399; margin-top:3px;">₹0</div>
           </div>
-          <div id="fdPropertyBreakdownBadges" style="display:flex; gap:6px; flex-wrap:wrap; font-size:0.72rem;"></div>
+          <div style="background:rgba(15,23,42,0.55); border:1px solid rgba(56,189,248,0.28); border-radius:12px; padding:10px 12px;">
+            <div style="font-size:0.68rem; font-weight:700; text-transform:uppercase; color:#7dd3fc; letter-spacing:0.4px;">
+              <i class="fa-solid fa-piggy-bank" style="color:#38bdf8;"></i> Total in Saving / Future FD
+            </div>
+            <div id="fdTotalSavingFundedDisplay" style="font-size:1.2rem; font-weight:800; color:#38bdf8; margin-top:3px;">₹0</div>
+            <div id="fdTotalMaturityValueDisplay" style="font-size:0.68rem; color:#bae6fd; margin-top:2px;">Maturity Value: ₹0</div>
+          </div>
+          <div style="background:rgba(15,23,42,0.55); border:1px solid rgba(245,158,11,0.28); border-radius:12px; padding:10px 12px;">
+            <div style="font-size:0.68rem; font-weight:700; text-transform:uppercase; color:#fcd34d; letter-spacing:0.4px;">
+              <i class="fa-solid fa-screwdriver-wrench" style="color:#fbbf24;"></i> Used for Other Purposes
+            </div>
+            <div id="fdTotalOtherPurposeDisplay" style="font-size:1.2rem; font-weight:800; color:#fbbf24; margin-top:3px;">₹0</div>
+            <div id="fdTotalAllocatedCountDisplay" style="font-size:0.68rem; color:#fde68a; margin-top:2px;">0 Portfolio Entries</div>
+          </div>
+          <div style="background:rgba(15,23,42,0.55); border:1px solid rgba(167,139,250,0.3); border-radius:12px; padding:10px 12px;">
+            <div style="font-size:0.68rem; font-weight:700; text-transform:uppercase; color:#c4b5fd; letter-spacing:0.4px;">
+              <i class="fa-solid fa-scale-balanced" style="color:#a78bfa;"></i> Remaining Unallocated Pool
+            </div>
+            <div id="fdRemainingPoolDisplay" style="font-size:1.2rem; font-weight:800; color:#a78bfa; margin-top:3px;">₹0</div>
+            <div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">Collected minus Total Used</div>
+          </div>
         </div>
+
+        <div style="font-size:0.72rem; font-weight:800; text-transform:uppercase; color:#e2e8f0; margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+          <span><i class="fa-solid fa-building-user" style="color:var(--primary);"></i> Place-Wise Collection, Used Purpose &amp; Remaining Balance (Click any Place to filter portfolio):</span>
+          <button type="button" class="btn-ledger-action" style="padding:2px 8px; font-size:0.68rem;" onclick="setFdPlaceFilter('ALL')">Show All Places</button>
+        </div>
+        <div id="fdPropertyBreakdownBadges" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:8px; font-size:0.74rem;"></div>
       </div>
-      <div class="calc-grid-card admin-only" style="margin-bottom: 14px;">
-        <div class="calc-grid-title">
-          <span id="fdFormTitle"><i class="fa-solid fa-plus-circle"></i> Add New FD Record</span>
+
+      <!-- Portfolio / Saving / Utilization Entry Form -->
+      <div class="calc-grid-card admin-only" style="margin-bottom: 14px; border-left: 5px solid #6366f1; background: linear-gradient(135deg, rgba(99, 102, 241, 0.14) 0%, rgba(15, 23, 42, 0.72) 100%);">
+        <div class="calc-grid-title" style="margin-bottom:10px;">
+          <span id="fdFormTitle" style="color:#a5b4fc; font-weight:800;"><i class="fa-solid fa-briefcase"></i> Add Portfolio Usage / Saving (FD) Entry</span>
           <button type="button" id="btnCancelFdEdit" class="btn-ledger-action" style="display:none; padding:4px 10px; font-size:0.72rem;" onclick="cancelFdEdit()">
             <i class="fa-solid fa-xmark"></i> Cancel Edit
           </button>
         </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:10px; margin-bottom:10px;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label><i class="fa-solid fa-location-dot" style="color:#38bdf8;"></i> Source Place / Property <span class="req-star">*</span></label>
+            <select id="fdSourceProperty" class="form-control"></select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label><i class="fa-solid fa-tags" style="color:#fbbf24;"></i> Utilization Category <span class="req-star">*</span></label>
+            <select id="fdPurposeType" class="form-control" onchange="handleFdPurposeTypeChange()">
+              <option value="Saving / Fixed Deposit (FD)">Saving / Fixed Deposit (FD)</option>
+              <option value="Future Saving">Future Saving / Long-Term Deposit</option>
+              <option value="Property Maintenance / Renovation">Property Maintenance / Renovation</option>
+              <option value="Land / Khet Investment">Land / Khet Investment</option>
+              <option value="Personal / Family Expense">Personal / Family Expense</option>
+              <option value="Other Purpose">Other Purpose / Custom Usage</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label><i class="fa-solid fa-bullseye" style="color:#34d399;"></i> Used For What Purpose <span class="req-star">*</span></label>
+            <input type="text" id="fdUsedPurpose" class="form-control" placeholder="e.g. Future Education FD, Roof Repair, Khet Advance">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label><i class="fa-solid fa-indian-rupee-sign" style="color:#34d399;"></i> Total Initial Funding / Used Amount (₹) <span class="req-star">*</span></label>
+            <input type="number" id="fdAmount" class="form-control" placeholder="100000" oninput="autoEstimateFdMaturity()">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label><i class="fa-regular fa-calendar-check" style="color:#a78bfa;"></i> Usage / Start Date <span class="req-star">*</span></label>
+            <input type="date" id="fdUsageDate" class="form-control">
+          </div>
+        </div>
+
+        <!-- Saving / Future Saving Banking Details Block -->
+        <div id="fdSavingDetailsSection" style="background:rgba(15,23,42,0.58); border:1px solid rgba(56,189,248,0.35); border-radius:12px; padding:12px; margin-bottom:10px;">
+          <div style="font-size:0.75rem; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+            <span><i class="fa-solid fa-building-columns"></i> Complete Saving / Future Saving Bank &amp; Maturity Details</span>
+            <span style="font-size:0.68rem; color:var(--text-muted); font-weight:600;">Fill Bank, Account No., Interest Rate &amp; Maturity Amount</span>
+          </div>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap:10px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Bank / Institution Name <span id="fdBankReqStar" class="req-star">*</span></label>
+              <input type="text" id="fdBankName" class="form-control" placeholder="e.g. SBI / HDFC / Post Office">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Account No. / FD Receipt No.</label>
+              <input type="text" id="fdAccountNumber" class="form-control" placeholder="e.g. 40928172651 / FD-882">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Interest Rate (% p.a.)</label>
+              <input type="number" step="0.01" id="fdRate" class="form-control" placeholder="7.25" oninput="autoEstimateFdMaturity()">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Maturity Amount (₹)</label>
+              <input type="number" step="0.01" id="fdMaturityAmount" class="form-control" placeholder="e.g. 115000">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Maturity Date</label>
+              <input type="date" id="fdMaturityDate" class="form-control" onchange="autoEstimateFdMaturity()">
+            </div>
+          </div>
+        </div>
+
         <div class="form-group" style="margin-bottom:10px;">
-          <label>Fund Source Property <span class="req-star">*</span> (From which property's rent money are you creating this FD?)</label>
-          <select id="fdSourceProperty" class="form-control"></select>
+          <label><i class="fa-solid fa-note-sticky" style="color:#94a3b8;"></i> Detailed Notes / Remarks</label>
+          <input type="text" id="fdNotes" class="form-control" placeholder="Nominee details, branch name, voucher ref, or any extra notes">
         </div>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-          <div class="form-group" style="margin-bottom:8px;">
-            <label>Bank / FD Name <span class="req-star">*</span></label>
-            <input type="text" id="fdBankName" class="form-control" placeholder="e.g. SBI Fixed Deposit">
-          </div>
-          <div class="form-group" style="margin-bottom:8px;">
-            <label>Principal Amount (₹) <span class="req-star">*</span></label>
-            <input type="number" id="fdAmount" class="form-control" placeholder="100000">
-          </div>
-          <div class="form-group" style="margin-bottom:8px;">
-            <label>Interest Rate (%)</label>
-            <input type="number" step="0.01" id="fdRate" class="form-control" placeholder="7.25">
-          </div>
-          <div class="form-group" style="margin-bottom:8px;">
-            <label>Maturity Date</label>
-            <input type="date" id="fdMaturityDate" class="form-control">
-          </div>
-        </div>
-        <div class="form-group" style="margin-bottom:10px;">
-          <label>Notes / Account Number</label>
-          <input type="text" id="fdNotes" class="form-control" placeholder="FD Account / Receipt No. or remarks">
-        </div>
+
         <button type="button" id="btnSubmitFdRecord" class="btn-primary" onclick="addFdRecord()">
-          <i class="fa-solid fa-check"></i> <span id="btnSubmitFdRecordText">Save FD Record to Google Sheet</span>
+          <i class="fa-solid fa-check"></i> <span id="btnSubmitFdRecordText">Save Portfolio &amp; FD Entry to Google Sheet</span>
         </button>
       </div>
-      <div id="fdRecordsList" style="max-height: 290px; overflow-y: auto; display:flex; flex-direction:column; gap:8px;"></div>
+
+      <!-- Portfolio Filter & Search Bar -->
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; background:rgba(15,23,42,0.5); padding:8px 12px; border-radius:12px; border:1px solid var(--glass-border);">
+        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+          <span style="font-size:0.74rem; font-weight:800; color:var(--text-muted);"><i class="fa-solid fa-filter"></i> View:</span>
+          <button type="button" id="fdCatBtnAll" class="btn-ledger-action" style="padding:4px 10px; font-size:0.72rem; background:var(--primary); color:#fff;" onclick="setFdCategoryFilter('ALL')">All Portfolio</button>
+          <button type="button" id="fdCatBtnSaving" class="btn-ledger-action" style="padding:4px 10px; font-size:0.72rem;" onclick="setFdCategoryFilter('SAVING')">Saving / Future Saving (FD)</button>
+          <button type="button" id="fdCatBtnOther" class="btn-ledger-action" style="padding:4px 10px; font-size:0.72rem;" onclick="setFdCategoryFilter('OTHER')">Other Used Purposes</button>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <select id="fdFilterPlaceSelect" class="form-control" style="width:auto; min-width:170px; padding:5px 10px; font-size:0.75rem;" onchange="setFdPlaceFilter(this.value)">
+            <option value="ALL">All Places (Complete Portfolio)</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="fdRecordsList" style="max-height: 360px; overflow-y: auto; display:flex; flex-direction:column; gap:10px;"></div>
     </div>
   </div>
 
-  <!-- KHET (FIELD) POP-UP MODAL (Requirement 7: Field Name, Size in Bighas, Holder Name, Amount Paid, Payment Date) -->
+  <!-- KHET (FARMLAND REGISTRY, PARTNER KYC & SETTLEMENT) POP-UP MODAL -->
   <div id="khetModal" class="modal-overlay" style="z-index: 2800;">
-    <div class="modal-window" style="max-width: 640px;">
+    <div class="modal-window" style="max-width: 1060px; width: 96%;">
       <button class="modal-close-btn" onclick="closeModal('khetModal')"><i class="fa-solid fa-xmark"></i></button>
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding-right:36px; margin-bottom: 12px;">
-        <h3 style="display:flex; align-items:center; gap:8px; margin:0;">
-          <i class="fa-solid fa-seedling" style="color:var(--accent-green);"></i> Khet (Field) Management
-        </h3>
-        <span style="font-size:0.7rem; font-weight:700; color:var(--accent-green); background:rgba(16,185,129,0.14); padding:3px 9px; border-radius:20px;">
+        <div>
+          <h3 style="display:flex; align-items:center; gap:8px; margin:0; font-size:1.15rem;">
+            <i class="fa-solid fa-seedling" style="color:var(--accent-green);"></i> Khet (Farmland) Registry, Partner KYC &amp; Account Ledger
+          </h3>
+          <div style="font-size:0.74rem; color:var(--text-muted); margin-top:2px;">
+            Registered Name, Place, Khata No., Keshra No., Decimal, New Survey Decimal, Katha, Rate/Katha, Partner KYC &amp; Paid/Adjusted Ledger
+          </div>
+        </div>
+        <span style="font-size:0.7rem; font-weight:700; color:var(--accent-green); background:rgba(16,185,129,0.14); padding:4px 10px; border-radius:20px; border:1px solid rgba(16,185,129,0.3);">
           <i class="fa-solid fa-cloud-arrow-up"></i> Live Google Sheet Sync
         </span>
       </div>
-      <div class="calc-grid-card admin-only" style="margin-bottom: 14px; border-left: 5px solid #10b981; background: linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(15, 23, 42, 0.65) 100%);">
-        <div class="calc-grid-title">
-          <span id="khetFormTitle" style="color:#34d399;"><i class="fa-solid fa-wheat-awn"></i> Add New Khet (Field) Entry</span>
+
+      <div class="calc-grid-card admin-only" style="margin-bottom: 14px; border-left: 5px solid #10b981; background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(15, 23, 42, 0.75) 100%);">
+        <div class="calc-grid-title" style="margin-bottom:10px;">
+          <span id="khetFormTitle" style="color:#34d399; font-weight:800;"><i class="fa-solid fa-wheat-awn"></i> Add Complete Khet &amp; Farming Partner Record</span>
           <button type="button" id="btnCancelKhetEdit" class="btn-ledger-action" style="display:none; padding:4px 10px; font-size:0.72rem;" onclick="cancelKhetEdit()">
             <i class="fa-solid fa-xmark"></i> Cancel Edit
           </button>
         </div>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-          <div class="form-group" style="margin-bottom:8px;">
-            <label><i class="fa-solid fa-map-location-dot" style="color:#34d399;"></i> Field Name (Khet Name) <span class="req-star">*</span></label>
-            <input type="text" id="khetName" class="form-control" placeholder="e.g. North Canal Field / Plot 4">
+
+        <!-- Section 1: Land Registry, Survey & Rate Per Katha Details -->
+        <div style="background:rgba(15,23,42,0.55); border:1px solid rgba(52,211,153,0.3); border-radius:12px; padding:12px; margin-bottom:10px;">
+          <div style="font-size:0.74rem; font-weight:800; color:#34d399; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:8px;">
+            <i class="fa-solid fa-file-contract"></i> 1. Khet Land Registry, Survey Area &amp; Rate Details
           </div>
-          <div class="form-group" style="margin-bottom:8px;">
-            <label><i class="fa-solid fa-ruler-combined" style="color:#38bdf8;"></i> Size of the Field (in Bighas) <span class="req-star">*</span></label>
-            <input type="text" id="khetBigha" class="form-control" placeholder="e.g. 5 Bigha or 5.5">
-          </div>
-          <div class="form-group" style="margin-bottom:8px;">
-            <label><i class="fa-solid fa-user-check" style="color:#fbbf24;"></i> Name of Person Holding the Field <span class="req-star">*</span></label>
-            <input type="text" id="khetHolderName" class="form-control" placeholder="Enter holder / cultivator name">
-          </div>
-          <div class="form-group" style="margin-bottom:8px;">
-            <label><i class="fa-solid fa-indian-rupee-sign" style="color:#34d399;"></i> Amount of Money Paid (₹) <span class="req-star">*</span></label>
-            <input type="number" id="khetAmountPaid" class="form-control" placeholder="e.g. 45000">
-          </div>
-          <div class="form-group" style="margin-bottom:8px;">
-            <label><i class="fa-regular fa-calendar-days" style="color:#a78bfa;"></i> Date on Which It Was Paid <span class="req-star">*</span></label>
-            <input type="date" id="khetPaymentDate" class="form-control">
-          </div>
-          <div class="form-group" style="margin-bottom:8px;">
-            <label><i class="fa-solid fa-note-sticky" style="color:#94a3b8;"></i> Additional Notes (Optional)</label>
-            <input type="text" id="khetNotes" class="form-control" placeholder="Season, crop, or remarks">
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap:10px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label><i class="fa-solid fa-file-signature" style="color:#34d399;"></i> Registered Name (Deed Owner) <span class="req-star">*</span></label>
+              <input type="text" id="khetRegisteredName" class="form-control" placeholder="Owner name on land registry">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label><i class="fa-solid fa-map-location-dot" style="color:#38bdf8;"></i> Place / Mauza / Field Name <span class="req-star">*</span></label>
+              <input type="text" id="khetPlace" class="form-control" placeholder="e.g. Rampur Mauza / North Canal">
+              <input type="hidden" id="khetName">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label><i class="fa-solid fa-hashtag" style="color:#fbbf24;"></i> Khata No. <span class="req-star">*</span></label>
+              <input type="text" id="khetKhataNo" class="form-control" placeholder="e.g. Khata 142">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label><i class="fa-solid fa-border-all" style="color:#f472b6;"></i> Keshra No. (Plot No.) <span class="req-star">*</span></label>
+              <input type="text" id="khetKeshraNo" class="form-control" placeholder="e.g. Keshra 819 / 820">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label><i class="fa-solid fa-ruler-horizontal" style="color:#38bdf8;"></i> Decimal (Original Area)</label>
+              <input type="number" step="0.01" id="khetDecimalArea" class="form-control" placeholder="e.g. 32.5">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label><i class="fa-solid fa-compass-drafting" style="color:#a78bfa;"></i> New Decimal After Survey</label>
+              <input type="number" step="0.01" id="khetNewDecimalSurvey" class="form-control" placeholder="e.g. 31.8">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label><i class="fa-solid fa-ruler-combined" style="color:#34d399;"></i> Katha (Khataha) <span class="req-star">*</span></label>
+              <input type="number" step="0.01" id="khetKatha" class="form-control" placeholder="e.g. 10.5" oninput="runKhetLiveValuationMath()">
+              <input type="hidden" id="khetBigha">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label><i class="fa-solid fa-tags" style="color:#fbbf24;"></i> Rate per Katha (₹)</label>
+              <input type="number" step="0.01" id="khetRatePerKatha" class="form-control" placeholder="e.g. 25000" oninput="runKhetLiveValuationMath()">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label><i class="fa-solid fa-sack-dollar" style="color:#10b981;"></i> Total Land Value (Katha × Rate)</label>
+              <input type="number" step="0.01" id="khetTotalLandValue" class="form-control" placeholder="Auto-calculated or custom" oninput="runKhetLiveValuationMath(true)">
+            </div>
           </div>
         </div>
-        <button type="button" id="btnSubmitKhetRecord" class="btn-primary" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%); margin-top:4px;" onclick="addKhetRecord()">
-          <i class="fa-solid fa-check"></i> <span id="btnSubmitKhetRecordText">Save Khet (Field) Record to Google Sheet</span>
+
+        <!-- Section 2: Farming Partner (Cultivator) Complete KYC Details -->
+        <div style="background:rgba(15,23,42,0.55); border:1px solid rgba(251,191,36,0.35); border-radius:12px; padding:12px; margin-bottom:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+            <div style="font-size:0.74rem; font-weight:800; color:#fbbf24; text-transform:uppercase; letter-spacing:0.4px;">
+              <i class="fa-solid fa-user-Secret"></i><i class="fa-solid fa-user-check"></i> 2. Partner Details (Who Will Farm on That Land — Complete KYC)
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="font-size:0.7rem; color:var(--text-muted);">Auto-fill saved partner:</span>
+              <select id="khetQuickPartnerSelect" class="form-control" style="width:auto; min-width:165px; padding:3px 8px; font-size:0.72rem;" onchange="applyExistingPartnerQuickFill(this.value)">
+                <option value="">-- Select Existing Partner --</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label><i class="fa-solid fa-user-tie" style="color:#fbbf24;"></i> Partner Name (Farmer) <span class="req-star">*</span></label>
+              <input type="text" id="khetPartnerName" class="form-control" placeholder="Enter partner / farmer full name">
+              <input type="hidden" id="khetHolderName">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label><i class="fa-solid fa-id-card" style="color:#38bdf8;"></i> Partner Aadhaar No.</label>
+              <input type="text" id="khetPartnerAadhaar" class="form-control" maxlength="14" placeholder="12-digit Aadhaar Number">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label><i class="fa-solid fa-phone" style="color:#34d399;"></i> Partner Mobile No.</label>
+              <input type="tel" id="khetPartnerMobile" class="form-control" maxlength="15" placeholder="10-digit Mobile Number">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label><i class="fa-solid fa-house-user" style="color:#a78bfa;"></i> Partner Complete Address</label>
+              <input type="text" id="khetPartnerAddress" class="form-control" placeholder="Village, Post, Police Station, District">
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Paid Amount, Adjusted Amount & Settlement Details -->
+        <div style="background:rgba(15,23,42,0.55); border:1px solid rgba(56,189,248,0.3); border-radius:12px; padding:12px; margin-bottom:10px;">
+          <div style="font-size:0.74rem; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:8px;">
+            <i class="fa-solid fa-hand-holding-dollar"></i> 3. Payment, Adjusted Amount &amp; Settlement Tracking
+          </div>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap:10px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label><i class="fa-solid fa-indian-rupee-sign" style="color:#34d399;"></i> Paid Amount (₹)</label>
+              <input type="number" step="0.01" id="khetAmountPaid" class="form-control" placeholder="e.g. 45000" oninput="runKhetLiveValuationMath(true)">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label><i class="fa-solid fa-sliders" style="color:#fbbf24;"></i> Adjusted Amount (₹)</label>
+              <input type="number" step="0.01" id="khetAdjustedAmount" class="form-control" placeholder="Seeds / Fertilizer / Advance Adj." oninput="runKhetLiveValuationMath(true)">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label><i class="fa-solid fa-scale-unbalanced" style="color:#a78bfa;"></i> Net Settled &amp; Balance Preview</label>
+              <div id="khetLiveSettlementPreview" style="padding:9px 11px; border-radius:10px; background:rgba(15,23,42,0.8); border:1px solid var(--glass-border); font-size:0.75rem; font-weight:700; color:#e2e8f0;">
+                Settled: ₹0 | Balance: ₹0
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label><i class="fa-regular fa-calendar-days" style="color:#a78bfa;"></i> Payment / Entry Date</label>
+              <input type="date" id="khetPaymentDate" class="form-control">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label><i class="fa-solid fa-note-sticky" style="color:#94a3b8;"></i> Notes / Adjustment Reason</label>
+              <input type="text" id="khetNotes" class="form-control" placeholder="Crop season, adjustment details, remarks">
+            </div>
+          </div>
+        </div>
+
+        <button type="button" id="btnSubmitKhetRecord" class="btn-primary" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%);" onclick="addKhetRecord()">
+          <i class="fa-solid fa-check"></i> <span id="btnSubmitKhetRecordText">Save Complete Khet &amp; Partner Record to Google Sheet</span>
         </button>
       </div>
-      <div id="khetRecordsList" style="max-height: 290px; overflow-y: auto; display:flex; flex-direction:column; gap:10px;"></div>
+
+      <!-- Modal Filter & View Bar -->
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; background:rgba(15,23,42,0.55); padding:10px 12px; border-radius:12px; border:1px solid rgba(52,211,153,0.3);">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:1;">
+          <span style="font-size:0.75rem; font-weight:800; color:#34d399;"><i class="fa-solid fa-user-tag"></i> Filter by Partner:</span>
+          <select id="khetModalPartnerFilter" class="form-control" style="width:auto; min-width:200px; padding:5px 10px; font-size:0.78rem;" onchange="setKhetPartnerFilter(this.value)">
+            <option value="ALL">All Partners (Complete View)</option>
+          </select>
+          <input type="text" id="khetModalSearchInput" class="form-control" style="width:auto; min-width:190px; padding:5px 10px; font-size:0.78rem;" placeholder="Search Place, Khata, Keshra, Reg Name..." oninput="setKhetSearchQuery(this.value)">
+        </div>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <button type="button" id="btnKhetModalViewCards" class="btn-ledger-action" style="padding:5px 10px; font-size:0.72rem; background:#10b981; color:#fff;" onclick="setKhetViewMode('cards')">
+            <i class="fa-solid fa-grip"></i> Detailed Cards
+          </button>
+          <button type="button" id="btnKhetModalViewTable" class="btn-ledger-action" style="padding:5px 10px; font-size:0.72rem;" onclick="setKhetViewMode('table')">
+            <i class="fa-solid fa-table-list"></i> All-in-One Master Table
+          </button>
+        </div>
+      </div>
+
+      <!-- Active Partner KYC Summary Banner inside Modal -->
+      <div id="khetModalPartnerBanner" style="display:none; margin-bottom:10px;"></div>
+
+      <div id="khetRecordsList" style="max-height: 390px; overflow-y: auto; display:flex; flex-direction:column; gap:10px;"></div>
     </div>
   </div>
 
@@ -3014,7 +3219,7 @@
       <!-- Rendered Only When Property Is Clicked -->
     </main>
 
-    <!-- Stylish Home Page Khet (Field) Section -->
+    <!-- Stylish Home Page Khet (Farmland Registry, Partner KYC & Settlement) Section -->
     <section id="homeKhetSection" class="home-khet-section" style="display:none;">
       <div class="home-khet-shell">
         <div class="home-khet-header">
@@ -3023,28 +3228,63 @@
               <i class="fa-solid fa-seedling"></i>
             </div>
             <div>
-              <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:var(--text-main);">Khet (Field) Portfolio Overview</h3>
-              <p style="margin:2px 0 0 0; font-size:0.78rem; color:var(--text-muted);">Live agricultural land holdings, Bigha size, holder details &amp; payment records</p>
+              <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:var(--text-main);">Khet (Farmland) Registry &amp; Farming Partner Ledger</h3>
+              <p style="margin:2px 0 0 0; font-size:0.78rem; color:var(--text-muted);">Complete land records (Registered Name, Khata, Keshra, Decimal, Survey Decimal, Katha, Rate/Katha), Partner KYC &amp; Paid/Adjusted Accounts</p>
             </div>
           </div>
           <div class="home-khet-stats-bar">
             <div class="home-khet-stat-pill">
               <i class="fa-solid fa-layer-group" style="color:#34d399;"></i>
-              <span>Fields: <strong id="homeKhetTotalCount">0</strong></span>
+              <span>Plots: <strong id="homeKhetTotalCount">0</strong></span>
+            </div>
+            <div class="home-khet-stat-pill">
+              <i class="fa-solid fa-compass-drafting" style="color:#a78bfa;"></i>
+              <span>Decimal (Orig / Survey): <strong id="homeKhetTotalDecimal">0 / 0</strong></span>
             </div>
             <div class="home-khet-stat-pill">
               <i class="fa-solid fa-ruler-combined" style="color:#38bdf8;"></i>
-              <span>Total Size: <strong id="homeKhetTotalBigha">0 Bigha</strong></span>
+              <span>Total Katha: <strong id="homeKhetTotalBigha">0 Katha</strong></span>
+            </div>
+            <div class="home-khet-stat-pill">
+              <i class="fa-solid fa-sack-dollar" style="color:#fbbf24;"></i>
+              <span>Land Value: <strong id="homeKhetTotalValuation" style="color:#fbbf24;">₹0</strong></span>
             </div>
             <div class="home-khet-stat-pill">
               <i class="fa-solid fa-indian-rupee-sign" style="color:#10b981;"></i>
-              <span>Total Paid: <strong id="homeKhetTotalPaid" style="color:var(--accent-green);">₹0</strong></span>
+              <span>Paid: <strong id="homeKhetTotalPaid" style="color:var(--accent-green);">₹0</strong></span>
+            </div>
+            <div class="home-khet-stat-pill">
+              <i class="fa-solid fa-sliders" style="color:#38bdf8;"></i>
+              <span>Adjusted: <strong id="homeKhetTotalAdjusted" style="color:#38bdf8;">₹0</strong></span>
             </div>
             <button type="button" class="btn-primary admin-only" style="width:auto; padding:8px 14px; font-size:0.78rem; background:linear-gradient(135deg, #10b981 0%, #059669 100%);" onclick="openKhetModal()">
-              <i class="fa-solid fa-plus-circle"></i> Add / Manage Khet
+              <i class="fa-solid fa-plus-circle"></i> Add / Manage Khet &amp; Partners
             </button>
           </div>
         </div>
+
+        <!-- Home Khet All-in-One Filter & View Controls -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px; background:rgba(15,23,42,0.52); padding:10px 14px; border-radius:14px; border:1px solid rgba(52,211,153,0.28);">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:1;">
+            <span style="font-size:0.76rem; font-weight:800; color:#34d399;"><i class="fa-solid fa-user-check"></i> Filter by Farming Partner:</span>
+            <select id="homeKhetPartnerFilter" class="form-control" style="width:auto; min-width:210px; padding:6px 10px; font-size:0.78rem;" onchange="setKhetPartnerFilter(this.value)">
+              <option value="ALL">All Partners (Complete View)</option>
+            </select>
+            <input type="text" id="homeKhetSearchInput" class="form-control" style="width:auto; min-width:200px; padding:6px 10px; font-size:0.78rem;" placeholder="Search Place, Khata, Keshra, Reg Name..." oninput="setKhetSearchQuery(this.value)">
+          </div>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <button type="button" id="btnHomeKhetViewCards" class="btn-ledger-action" style="padding:6px 12px; font-size:0.74rem; background:#10b981; color:#fff;" onclick="setKhetViewMode('cards')">
+              <i class="fa-solid fa-grip"></i> Detailed Cards
+            </button>
+            <button type="button" id="btnHomeKhetViewTable" class="btn-ledger-action" style="padding:6px 12px; font-size:0.74rem;" onclick="setKhetViewMode('table')">
+              <i class="fa-solid fa-table-list"></i> All-in-One Master Table
+            </button>
+          </div>
+        </div>
+
+        <!-- Selected Partner KYC & Account Summary Banner on Dashboard -->
+        <div id="homeKhetPartnerSummaryBanner" style="display:none; margin-bottom:14px;"></div>
+
         <div id="homeKhetCardsGrid" class="home-khet-grid"></div>
       </div>
     </section>
@@ -8592,14 +8832,18 @@ function formatMonthLabel(rawVal) {
       }
     }
 
-    // Requirement 6: FD Total Money Shown Across All Properties Must Strictly Reflect Only the Rent Amount (Excludes Water, PNG & Electricity)
+    // Requirement 6 & Portfolio Upgrade: Place-Wise Collection, Used Purpose Allocation & Saving/FD Portfolio Breakdown
     function updateFdTotalCollectionsDisplay() {
       let grandTotalRentOnly = 0;
       const propRentTotals = {};
+      const propUsedSaving = {};
+      const propUsedOther = {};
       sortPropertiesAlphabetically(DB.properties);
 
       (DB.properties || []).forEach(p => {
         propRentTotals[p.PropertyName] = 0;
+        propUsedSaving[p.PropertyName] = 0;
+        propUsedOther[p.PropertyName] = 0;
       });
 
       (DB.bills || []).forEach(b => {
@@ -8610,28 +8854,124 @@ function formatMonthLabel(rawVal) {
         }
       });
 
+      const fdList = Array.isArray(DB.fdRecords) ? DB.fdRecords : [];
+      let totalSavingFunded = 0;
+      let totalSavingMaturity = 0;
+      let totalOtherUsed = 0;
+
+      fdList.forEach(item => {
+        const amt = parseFloat(item.amount !== undefined ? item.amount : (item.PrincipalAmount || 0)) || 0;
+        const matAmt = parseFloat(item.maturityAmount !== undefined ? item.maturityAmount : (item.MaturityAmount || 0)) || amt;
+        const pType = String(item.purposeType || item.PurposeType || "Saving / Fixed Deposit (FD)");
+        const isSaving = pType.toLowerCase().includes("saving") || pType.toLowerCase().includes("fd");
+        const srcProp = item.sourceProperty || item.SourceProperty || "All Properties";
+
+        if (isSaving) {
+          totalSavingFunded += amt;
+          totalSavingMaturity += matAmt;
+          if (propUsedSaving[srcProp] !== undefined) {
+            propUsedSaving[srcProp] += amt;
+          } else if (srcProp !== "All Properties") {
+            propUsedSaving[srcProp] = (propUsedSaving[srcProp] || 0) + amt;
+          }
+        } else {
+          totalOtherUsed += amt;
+          if (propUsedOther[srcProp] !== undefined) {
+            propUsedOther[srcProp] += amt;
+          } else if (srcProp !== "All Properties") {
+            propUsedOther[srcProp] = (propUsedOther[srcProp] || 0) + amt;
+          }
+        }
+      });
+
+      const totalUsedAll = totalSavingFunded + totalOtherUsed;
+      const remainingPool = grandTotalRentOnly - totalUsedAll;
+
       const displayEl = document.getElementById("fdTotalAmountDisplay");
-      if (displayEl) {
-        displayEl.innerText = '₹' + grandTotalRentOnly.toLocaleString('en-IN');
+      if (displayEl) displayEl.innerText = "₹" + grandTotalRentOnly.toLocaleString("en-IN");
+
+      const savEl = document.getElementById("fdTotalSavingFundedDisplay");
+      if (savEl) savEl.innerText = "₹" + totalSavingFunded.toLocaleString("en-IN");
+
+      const matEl = document.getElementById("fdTotalMaturityValueDisplay");
+      if (matEl) matEl.innerText = "Projected Maturity: ₹" + totalSavingMaturity.toLocaleString("en-IN");
+
+      const othEl = document.getElementById("fdTotalOtherPurposeDisplay");
+      if (othEl) othEl.innerText = "₹" + totalOtherUsed.toLocaleString("en-IN");
+
+      const cntEl = document.getElementById("fdTotalAllocatedCountDisplay");
+      if (cntEl) cntEl.innerText = fdList.length + " Portfolio Entr" + (fdList.length === 1 ? "y" : "ies");
+
+      const remEl = document.getElementById("fdRemainingPoolDisplay");
+      if (remEl) {
+        remEl.innerText = (remainingPool < 0 ? "-₹" : "₹") + Math.abs(remainingPool).toLocaleString("en-IN");
+        remEl.style.color = remainingPool >= 0 ? "#a78bfa" : "#f87171";
       }
+
+      const allPlaceNames = Array.from(new Set([
+        ...Object.keys(propRentTotals),
+        ...Object.keys(propUsedSaving),
+        ...Object.keys(propUsedOther)
+      ]));
 
       const badgesContainer = document.getElementById("fdPropertyBreakdownBadges");
       if (badgesContainer) {
-        badgesContainer.innerHTML = Object.entries(propRentTotals).map(([pName, amt]) => {
-          return '<span style="background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:6px; border:1px solid var(--glass-border);">' +
-                 pName + ' (Rent): <strong style="color:var(--accent-green);">₹' + amt.toLocaleString('en-IN') + '</strong></span>';
-        }).join("");
+        if (allPlaceNames.length === 0) {
+          badgesContainer.innerHTML = `<div style="color:var(--text-muted); font-size:0.75rem;">No places/properties added yet.</div>`;
+        } else {
+          badgesContainer.innerHTML = allPlaceNames.map(pName => {
+            const collected = propRentTotals[pName] || 0;
+            const savAmt = propUsedSaving[pName] || 0;
+            const othAmt = propUsedOther[pName] || 0;
+            const usedTotal = savAmt + othAmt;
+            const avail = collected - usedTotal;
+            const safeP = String(pName).replace(/'/g, "\\'");
+            const isSelected = typeof activeFdPlaceFilter !== "undefined" && activeFdPlaceFilter === pName;
+            return `
+              <div onclick="setFdPlaceFilter('${safeP}')" style="cursor:pointer; background:${isSelected ? 'rgba(99,102,241,0.28)' : 'rgba(15,23,42,0.65)'}; padding:9px 11px; border-radius:10px; border:1px solid ${isSelected ? '#818cf8' : 'rgba(255,255,255,0.12)'}; transition:0.2s;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px;">
+                  <strong style="color:#f8fafc; font-size:0.8rem;"><i class="fa-solid fa-building" style="color:#818cf8;"></i> ${pName}</strong>
+                  <span style="font-size:0.68rem; background:rgba(16,185,129,0.18); color:#34d399; padding:2px 7px; border-radius:10px; font-weight:800;">Collected: ₹${collected.toLocaleString('en-IN')}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px; font-size:0.69rem; color:var(--text-muted);">
+                  <span>Saving/FD: <strong style="color:#38bdf8;">₹${savAmt.toLocaleString('en-IN')}</strong></span>
+                  <span>Other Use: <strong style="color:#fbbf24;">₹${othAmt.toLocaleString('en-IN')}</strong></span>
+                  <span>Avail: <strong style="color:${avail >= 0 ? '#a78bfa' : '#f87171'};">₹${avail.toLocaleString('en-IN')}</strong></span>
+                </div>
+              </div>
+            `;
+          }).join("");
+        }
       }
 
-      // Populate Property selector dropdown for creating FD (showing Rent Only per property)
+      // Populate Source Place dropdown in form
       const propSelect = document.getElementById("fdSourceProperty");
       if (propSelect) {
-        const options = ['<option value="All Properties">All Properties (Total Rent Pool: ₹' + grandTotalRentOnly.toLocaleString('en-IN') + ')</option>'];
-        (DB.properties || []).forEach(p => {
-          const pRent = propRentTotals[p.PropertyName] || 0;
-          options.push('<option value="' + p.PropertyName + '">' + p.PropertyName + ' (Rent Only: ₹' + pRent.toLocaleString('en-IN') + ')</option>');
+        const currentVal = propSelect.value;
+        const options = ['<option value="All Properties">All Properties (Combined Pool: ₹' + grandTotalRentOnly.toLocaleString('en-IN') + ')</option>'];
+        allPlaceNames.forEach(pName => {
+          const pRent = propRentTotals[pName] || 0;
+          const pUsed = (propUsedSaving[pName] || 0) + (propUsedOther[pName] || 0);
+          const pRem = pRent - pUsed;
+          options.push('<option value="' + pName + '">' + pName + ' (Collected: ₹' + pRent.toLocaleString('en-IN') + ' | Avail: ₹' + pRem.toLocaleString('en-IN') + ')</option>');
         });
         propSelect.innerHTML = options.join("");
+        if (currentVal && Array.from(propSelect.options).some(o => o.value === currentVal)) {
+          propSelect.value = currentVal;
+        }
+      }
+
+      // Populate Filter Place dropdown
+      const filterPlaceEl = document.getElementById("fdFilterPlaceSelect");
+      if (filterPlaceEl) {
+        const curFilter = typeof activeFdPlaceFilter !== "undefined" ? activeFdPlaceFilter : "ALL";
+        const fOpts = ['<option value="ALL">All Places (Complete Portfolio)</option>'];
+        fOpts.push('<option value="All Properties">All Properties (General Pool)</option>');
+        allPlaceNames.forEach(pName => {
+          fOpts.push('<option value="' + pName + '">' + pName + '</option>');
+        });
+        filterPlaceEl.innerHTML = fOpts.join("");
+        filterPlaceEl.value = curFilter;
       }
     }
 
@@ -11195,9 +11535,14 @@ function formatMonthLabel(rawVal) {
       openModal("tenantFullProfileModal");
     }
 
-    // Requirement 4 (Latest): Fixed Deposit (FD) & Farmland (Khet) Auto-Save to Google Sheet + Full Edit Feature
+    // Requirement 4 (Latest): Fixed Deposit (FD) & Farmland (Khet) Auto-Save to Google Sheet + Full Portfolio & Partner Ledger
     let editingFdRecordId = null;
     let editingKhetRecordId = null;
+    let activeFdPlaceFilter = "ALL";
+    let activeFdCategoryFilter = "ALL";
+    let activeKhetPartnerFilter = "ALL";
+    let activeKhetSearchQuery = "";
+    let activeKhetViewMode = "cards";
 
     function getStoredFdRecords() {
       return Array.isArray(DB.fdRecords) ? DB.fdRecords : [];
@@ -11208,6 +11553,60 @@ function formatMonthLabel(rawVal) {
       DB.fdRecords = cleanList;
       try { localStorage.removeItem("portal_fd_records_v1"); } catch (e) {}
       saveDbSnapshotToCache();
+    }
+
+    function handleFdPurposeTypeChange() {
+      const purposeType = document.getElementById("fdPurposeType")?.value || "Saving / Fixed Deposit (FD)";
+      const isSaving = purposeType.toLowerCase().includes("saving") || purposeType.toLowerCase().includes("fd");
+      const savingSec = document.getElementById("fdSavingDetailsSection");
+      const reqStar = document.getElementById("fdBankReqStar");
+      if (savingSec) {
+        savingSec.style.borderColor = isSaving ? "rgba(56,189,248,0.45)" : "rgba(148,163,184,0.22)";
+        savingSec.style.opacity = isSaving ? "1" : "0.85";
+      }
+      if (reqStar) {
+        reqStar.style.display = isSaving ? "inline" : "none";
+      }
+    }
+
+    function autoEstimateFdMaturity() {
+      const principal = parseFloat(document.getElementById("fdAmount")?.value) || 0;
+      const rate = parseFloat(document.getElementById("fdRate")?.value) || 0;
+      const matEl = document.getElementById("fdMaturityAmount");
+      if (!matEl || principal <= 0 || rate <= 0) return;
+
+      const startStr = document.getElementById("fdUsageDate")?.value || new Date().toISOString().split("T")[0];
+      const matStr = document.getElementById("fdMaturityDate")?.value || "";
+      let years = 1;
+      if (matStr) {
+        const d1 = new Date(startStr);
+        const d2 = new Date(matStr);
+        const diffDays = (d2 - d1) / (1000 * 60 * 60 * 24);
+        if (diffDays > 0) years = diffDays / 365.25;
+      }
+      if (!matEl.dataset.userEdited || matEl.value === "") {
+        const est = Math.round(principal * Math.pow(1 + (rate / 100), years));
+        matEl.value = est;
+      }
+    }
+
+    function setFdPlaceFilter(placeName) {
+      activeFdPlaceFilter = placeName || "ALL";
+      const sel = document.getElementById("fdFilterPlaceSelect");
+      if (sel && sel.value !== activeFdPlaceFilter) sel.value = activeFdPlaceFilter;
+      updateFdTotalCollectionsDisplay();
+      renderFdRecordsList();
+    }
+
+    function setFdCategoryFilter(cat) {
+      activeFdCategoryFilter = cat || "ALL";
+      const btnAll = document.getElementById("fdCatBtnAll");
+      const btnSav = document.getElementById("fdCatBtnSaving");
+      const btnOth = document.getElementById("fdCatBtnOther");
+      if (btnAll) { btnAll.style.background = activeFdCategoryFilter === "ALL" ? "var(--primary)" : ""; btnAll.style.color = activeFdCategoryFilter === "ALL" ? "#fff" : ""; }
+      if (btnSav) { btnSav.style.background = activeFdCategoryFilter === "SAVING" ? "#0284c7" : ""; btnSav.style.color = activeFdCategoryFilter === "SAVING" ? "#fff" : ""; }
+      if (btnOth) { btnOth.style.background = activeFdCategoryFilter === "OTHER" ? "#d97706" : ""; btnOth.style.color = activeFdCategoryFilter === "OTHER" ? "#fff" : ""; }
+      renderFdRecordsList();
     }
 
     function openFdModal() {
@@ -11223,58 +11622,124 @@ function formatMonthLabel(rawVal) {
       if (!target) return;
 
       editingFdRecordId = String(target.id || target.FDID);
-      document.getElementById("fdBankName").value = target.bank || target.BankName || "";
-      document.getElementById("fdAmount").value = target.amount !== undefined ? target.amount : (target.PrincipalAmount !== undefined ? target.PrincipalAmount : "");
-      document.getElementById("fdRate").value = target.rate !== undefined ? target.rate : (target.InterestRate || "");
+      const pType = target.purposeType || target.PurposeType || "Saving / Fixed Deposit (FD)";
+      const usedPurpose = target.usedPurpose || target.UsedPurpose || target.purpose || target.bank || target.BankName || "";
+      const bankName = target.bank || target.BankName || "";
+      const accNo = target.accountNumber || target.AccountNumber || "";
+      const initAmt = target.amount !== undefined ? target.amount : (target.PrincipalAmount !== undefined ? target.PrincipalAmount : "");
+      const rateVal = target.rate !== undefined ? target.rate : (target.InterestRate || "");
+      const matAmt = target.maturityAmount !== undefined ? target.maturityAmount : (target.MaturityAmount !== undefined ? target.MaturityAmount : "");
       const rawMat = target.maturity || target.MaturityDate || "";
       const cleanMat = formatDateOnly(rawMat);
-      document.getElementById("fdMaturityDate").value = cleanMat === "--" ? "" : cleanMat;
-      document.getElementById("fdNotes").value = target.notes || target.Notes || "";
+      const rawUsage = target.usageDate || target.UsageDate || target.createdAt || target.CreatedAt || "";
+      const cleanUsage = toInputDateValue(rawUsage) || new Date().toISOString().split("T")[0];
+
+      const pTypeEl = document.getElementById("fdPurposeType");
+      if (pTypeEl) {
+        if (!Array.from(pTypeEl.options).some(o => o.value === pType)) {
+          pTypeEl.value = "Other Purpose";
+        } else {
+          pTypeEl.value = pType;
+        }
+      }
+      handleFdPurposeTypeChange();
+
+      const usedEl = document.getElementById("fdUsedPurpose");
+      if (usedEl) usedEl.value = usedPurpose;
+      const bankEl = document.getElementById("fdBankName");
+      if (bankEl) bankEl.value = bankName;
+      const accEl = document.getElementById("fdAccountNumber");
+      if (accEl) accEl.value = accNo;
+      const amtEl = document.getElementById("fdAmount");
+      if (amtEl) amtEl.value = initAmt;
+      const rateEl = document.getElementById("fdRate");
+      if (rateEl) rateEl.value = rateVal;
+      const matAmtEl = document.getElementById("fdMaturityAmount");
+      if (matAmtEl) {
+        matAmtEl.value = matAmt;
+        matAmtEl.dataset.userEdited = "true";
+      }
+      const matDateEl = document.getElementById("fdMaturityDate");
+      if (matDateEl) matDateEl.value = cleanMat === "--" ? "" : toInputDateValue(rawMat);
+      const usageDateEl = document.getElementById("fdUsageDate");
+      if (usageDateEl) usageDateEl.value = cleanUsage;
+      const notesEl = document.getElementById("fdNotes");
+      if (notesEl) notesEl.value = target.notes || target.Notes || "";
+
       const srcPropEl = document.getElementById("fdSourceProperty");
       const savedSrcProp = target.sourceProperty || target.SourceProperty || "All Properties";
-      if (srcPropEl) {
-        srcPropEl.value = savedSrcProp;
-      }
+      if (srcPropEl) srcPropEl.value = savedSrcProp;
 
       const titleEl = document.getElementById("fdFormTitle");
       const btnTextEl = document.getElementById("btnSubmitFdRecordText");
       const cancelBtn = document.getElementById("btnCancelFdEdit");
-      if (titleEl) titleEl.innerText = "Edit Fixed Deposit (FD)";
-      if (btnTextEl) btnTextEl.innerText = "Update FD Record (Auto-Save to Google Sheet)";
+      if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Portfolio / Saving (FD) Entry`;
+      if (btnTextEl) btnTextEl.innerText = "Update Portfolio & FD Record in Google Sheet";
       if (cancelBtn) cancelBtn.style.display = "inline-flex";
     }
 
     function cancelFdEdit() {
       editingFdRecordId = null;
+      const pTypeEl = document.getElementById("fdPurposeType");
+      const usedEl = document.getElementById("fdUsedPurpose");
       const bankEl = document.getElementById("fdBankName");
+      const accEl = document.getElementById("fdAccountNumber");
       const amtEl = document.getElementById("fdAmount");
       const rateEl = document.getElementById("fdRate");
+      const matAmtEl = document.getElementById("fdMaturityAmount");
       const matEl = document.getElementById("fdMaturityDate");
+      const usageEl = document.getElementById("fdUsageDate");
       const notesEl = document.getElementById("fdNotes");
+
+      if (pTypeEl) pTypeEl.value = "Saving / Fixed Deposit (FD)";
+      if (usedEl) usedEl.value = "";
       if (bankEl) bankEl.value = "";
+      if (accEl) accEl.value = "";
       if (amtEl) amtEl.value = "";
       if (rateEl) rateEl.value = "";
+      if (matAmtEl) {
+        matAmtEl.value = "";
+        delete matAmtEl.dataset.userEdited;
+      }
       if (matEl) matEl.value = "";
+      if (usageEl) usageEl.value = new Date().toISOString().split("T")[0];
       if (notesEl) notesEl.value = "";
+      handleFdPurposeTypeChange();
 
       const titleEl = document.getElementById("fdFormTitle");
       const btnTextEl = document.getElementById("btnSubmitFdRecordText");
       const cancelBtn = document.getElementById("btnCancelFdEdit");
-      if (titleEl) titleEl.innerText = "Add New Fixed Deposit";
-      if (btnTextEl) btnTextEl.innerText = "Save FD Record (Auto-Save to Google Sheet)";
+      if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-briefcase"></i> Add Portfolio Usage / Saving (FD) Entry`;
+      if (btnTextEl) btnTextEl.innerText = "Save Portfolio & FD Entry to Google Sheet";
       if (cancelBtn) cancelBtn.style.display = "none";
     }
 
     async function addFdRecord() {
       if (activeRole === "Viewer") return;
-      const bank = document.getElementById("fdBankName")?.value.trim();
+      const sourceProperty = document.getElementById("fdSourceProperty")?.value || "All Properties";
+      const purposeType = document.getElementById("fdPurposeType")?.value || "Saving / Fixed Deposit (FD)";
+      const isSaving = purposeType.toLowerCase().includes("saving") || purposeType.toLowerCase().includes("fd");
+      const usedPurposeRaw = document.getElementById("fdUsedPurpose")?.value.trim() || "";
+      const bankRaw = document.getElementById("fdBankName")?.value.trim() || "";
+      const accountNumber = document.getElementById("fdAccountNumber")?.value.trim() || "";
       const amount = parseFloat(document.getElementById("fdAmount")?.value) || 0;
       const rate = document.getElementById("fdRate")?.value.trim() || "";
+      const maturityAmount = parseFloat(document.getElementById("fdMaturityAmount")?.value) || (isSaving ? amount : 0);
       const maturity = document.getElementById("fdMaturityDate")?.value || "";
+      const usageDate = document.getElementById("fdUsageDate")?.value || new Date().toISOString().split("T")[0];
       const notes = document.getElementById("fdNotes")?.value.trim() || "";
-      const sourceProperty = document.getElementById("fdSourceProperty")?.value || "All Properties";
-      if (!bank || amount <= 0) {
-        return triggerSideToast("Required Fields", "Please enter Bank/FD Name and Principal Amount.", false);
+
+      const usedPurpose = usedPurposeRaw || purposeType;
+      const bank = bankRaw || (isSaving ? "" : usedPurpose);
+
+      if (amount <= 0) {
+        return triggerSideToast("Required Field", "Please enter the Total Initial Funding / Used Amount (₹).", false);
+      }
+      if (!usedPurposeRaw) {
+        return triggerSideToast("Required Field", "Please specify what purpose this money was used for.", false);
+      }
+      if (isSaving && !bankRaw) {
+        return triggerSideToast("Bank Name Required", "For Saving / Future Saving, please enter the Bank / Institution Name.", false);
       }
 
       const list = [...getStoredFdRecords()];
@@ -11302,6 +11767,16 @@ function formatMonthLabel(rawVal) {
             Notes: notes,
             sourceProperty,
             SourceProperty: sourceProperty,
+            purposeType,
+            PurposeType: purposeType,
+            usedPurpose,
+            UsedPurpose: usedPurpose,
+            accountNumber,
+            AccountNumber: accountNumber,
+            maturityAmount,
+            MaturityAmount: maturityAmount,
+            usageDate,
+            UsageDate: usageDate,
             updatedAt: new Date().toISOString()
           };
           list[idx] = savedRecord;
@@ -11325,6 +11800,16 @@ function formatMonthLabel(rawVal) {
           Notes: notes,
           sourceProperty,
           SourceProperty: sourceProperty,
+          purposeType,
+          PurposeType: purposeType,
+          usedPurpose,
+          UsedPurpose: usedPurpose,
+          accountNumber,
+          AccountNumber: accountNumber,
+          maturityAmount,
+          MaturityAmount: maturityAmount,
+          usageDate,
+          UsageDate: usageDate,
           createdAt: nowDate,
           updatedAt: new Date().toISOString()
         };
@@ -11333,11 +11818,12 @@ function formatMonthLabel(rawVal) {
 
       saveStoredFdRecords(list);
       cancelFdEdit();
+      updateFdTotalCollectionsDisplay();
       renderFdRecordsList();
 
       triggerSideToast(
-        isEditing ? "FD Updated & Saved" : "FD Saved to Google Sheet",
-        `${isEditing ? "Updated" : "Saved"} FD record for ${bank} and synced to Google Sheet!`,
+        isEditing ? "Portfolio Entry Updated" : "Portfolio Entry Saved",
+        `${isEditing ? "Updated" : "Saved"} ${usedPurpose} (₹${amount.toLocaleString('en-IN')}) under ${sourceProperty}!`,
         true
       );
 
@@ -11350,6 +11836,11 @@ function formatMonthLabel(rawVal) {
         maturity: savedRecord.maturity,
         notes: savedRecord.notes,
         sourceProperty: savedRecord.sourceProperty || "All Properties",
+        purposeType: savedRecord.purposeType,
+        usedPurpose: savedRecord.usedPurpose,
+        accountNumber: savedRecord.accountNumber,
+        maturityAmount: savedRecord.maturityAmount,
+        usageDate: savedRecord.usageDate,
         createdAt: savedRecord.createdAt
       });
     }
@@ -11361,8 +11852,9 @@ function formatMonthLabel(rawVal) {
       if (editingFdRecordId && String(editingFdRecordId) === String(id)) {
         cancelFdEdit();
       }
+      updateFdTotalCollectionsDisplay();
       renderFdRecordsList();
-      triggerSideToast("FD Removed", "FD record deleted from app & Google Sheet.", "warning");
+      triggerSideToast("Portfolio Record Removed", "Portfolio/FD record deleted from app & Google Sheet.", "warning");
 
       await sendGasPost({
         action: "deleteFdRecord",
@@ -11373,40 +11865,97 @@ function formatMonthLabel(rawVal) {
     function renderFdRecordsList() {
       const container = document.getElementById("fdRecordsList");
       if (!container) return;
-      const list = getStoredFdRecords();
-      if (list.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding:18px; color:var(--text-muted); font-size:0.82rem;">No FD records added yet.</div>`;
+      const rawList = getStoredFdRecords();
+
+      const filtered = rawList.filter(item => {
+        const srcProp = item.sourceProperty || item.SourceProperty || "All Properties";
+        if (activeFdPlaceFilter !== "ALL" && srcProp !== activeFdPlaceFilter) return false;
+
+        const pType = String(item.purposeType || item.PurposeType || "Saving / Fixed Deposit (FD)");
+        const isSaving = pType.toLowerCase().includes("saving") || pType.toLowerCase().includes("fd");
+        if (activeFdCategoryFilter === "SAVING" && !isSaving) return false;
+        if (activeFdCategoryFilter === "OTHER" && isSaving) return false;
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:22px; color:var(--text-muted); font-size:0.84rem; background:rgba(15,23,42,0.4); border-radius:12px; border:1px dashed var(--glass-border);">No portfolio or saving records found for the selected filter.</div>`;
         return;
       }
-      container.innerHTML = list.map(item => {
+
+      container.innerHTML = filtered.map(item => {
         const recId = item.id || item.FDID || "";
         const safeId = String(recId).replace(/'/g, "\\'");
-        const bankName = item.bank || item.BankName || "Fixed Deposit";
+        const purposeType = item.purposeType || item.PurposeType || "Saving / Fixed Deposit (FD)";
+        const isSaving = String(purposeType).toLowerCase().includes("saving") || String(purposeType).toLowerCase().includes("fd");
+        const usedPurpose = item.usedPurpose || item.UsedPurpose || item.bank || item.BankName || "Fixed Deposit";
+        const bankName = item.bank || item.BankName || "--";
+        const accountNo = item.accountNumber || item.AccountNumber || "--";
         const amt = Number(item.amount !== undefined ? item.amount : (item.PrincipalAmount || 0));
-        const rate = item.rate !== undefined ? item.rate : (item.InterestRate || "");
-        const maturity = item.maturity || item.MaturityDate || "--";
+        const rate = item.rate !== undefined && item.rate !== "" ? item.rate : (item.InterestRate || "");
+        const matAmt = Number(item.maturityAmount !== undefined && item.maturityAmount !== "" ? item.maturityAmount : (item.MaturityAmount || 0));
+        const maturity = formatDateOnly(item.maturity || item.MaturityDate || "");
+        const usageDate = formatDateOnly(item.usageDate || item.UsageDate || item.createdAt || item.CreatedAt || "");
+        const srcProp = item.sourceProperty || item.SourceProperty || "All Properties";
         const notes = item.notes || item.Notes || "";
+        const estGain = matAmt > amt ? (matAmt - amt) : 0;
+
         return `
-          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:10px;">
-            <div style="flex:1; min-width:0;">
-              <div style="font-weight:800; font-size:0.88rem;">${bankName} — <span style="color:var(--accent-green);">₹${amt.toLocaleString('en-IN')}</span></div>
-              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
-                Rate: ${rate ? rate + '%' : '--'} | Maturity: ${maturity} | <span style="color:var(--primary); font-weight:700;">Funded from: ${item.sourceProperty || item.SourceProperty || "General"}</span> ${notes ? ' | ' + notes : ''}
+          <div style="padding:13px 15px; background:rgba(15,23,42,0.68); border:1px solid ${isSaving ? 'rgba(56,189,248,0.38)' : 'rgba(251,191,36,0.38)'}; border-left:5px solid ${isSaving ? '#0ea5e9' : '#f59e0b'}; border-radius:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap; margin-bottom:8px;">
+              <div>
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                  <span style="font-size:0.68rem; font-weight:800; text-transform:uppercase; padding:2px 8px; border-radius:12px; background:${isSaving ? 'rgba(14,165,233,0.2)' : 'rgba(245,158,11,0.2)'}; color:${isSaving ? '#38bdf8' : '#fbbf24'};">
+                    <i class="fa-solid ${isSaving ? 'fa-piggy-bank' : 'fa-screwdriver-wrench'}"></i> ${purposeType}
+                  </span>
+                  <span style="font-size:0.72rem; font-weight:700; color:#a5b4fc; background:rgba(99,102,241,0.18); padding:2px 8px; border-radius:12px;">
+                    <i class="fa-solid fa-location-dot"></i> Place: ${srcProp}
+                  </span>
+                  <span style="font-size:0.7rem; color:var(--text-muted);"><i class="fa-regular fa-calendar"></i> Date: ${usageDate}</span>
+                </div>
+                <div style="font-weight:800; font-size:0.96rem; color:#f8fafc; margin-top:5px;">
+                  Purpose: <span style="color:${isSaving ? '#38bdf8' : '#fbbf24'};">${usedPurpose}</span>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <div style="text-align:right;">
+                  <div style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Initial Funding / Used</div>
+                  <div style="font-size:1.05rem; font-weight:800; color:#34d399;">₹${amt.toLocaleString('en-IN')}</div>
+                </div>
+                <div style="display:flex; align-items:center; gap:5px;">
+                  <button type="button" class="btn-ledger-action edit-btn admin-only" onclick="editFdRecord('${safeId}')" title="Edit Portfolio Entry">
+                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                  </button>
+                  <button type="button" class="btn-ledger-action admin-only" style="color:var(--accent-red);" onclick="deleteFdRecord('${safeId}')" title="Delete Portfolio Entry">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </div>
               </div>
             </div>
-            <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
-              <button type="button" class="btn-ledger-action edit-btn admin-only" onclick="editFdRecord('${safeId}')" title="Edit FD Details">
-                <i class="fa-solid fa-pen-to-square"></i> Edit
-              </button>
-              <button type="button" class="btn-ledger-action admin-only" style="color:var(--accent-red);" onclick="deleteFdRecord('${safeId}')" title="Delete FD Record">
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
+
+            ${isSaving ? `
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap:8px; padding:9px 11px; background:rgba(2,132,199,0.11); border:1px solid rgba(56,189,248,0.24); border-radius:10px; font-size:0.75rem; margin-top:6px;">
+              <div><span style="color:var(--text-muted);">Bank Name:</span> <strong style="color:#f8fafc;">${bankName}</strong></div>
+              <div><span style="color:var(--text-muted);">Account / FD No.:</span> <strong style="color:#38bdf8;">${accountNo}</strong></div>
+              <div><span style="color:var(--text-muted);">Initial Funding:</span> <strong style="color:#34d399;">₹${amt.toLocaleString('en-IN')}</strong></div>
+              <div><span style="color:var(--text-muted);">Interest Rate:</span> <strong style="color:#fbbf24;">${rate ? rate + '% p.a.' : '--'}</strong></div>
+              <div><span style="color:var(--text-muted);">Maturity Amount:</span> <strong style="color:#a78bfa;">${matAmt > 0 ? '₹' + matAmt.toLocaleString('en-IN') : '--'}</strong> ${estGain > 0 ? `<span style="font-size:0.66rem; color:#34d399;">(+₹${estGain.toLocaleString('en-IN')})</span>` : ''}</div>
+              <div><span style="color:var(--text-muted);">Maturity Date:</span> <strong style="color:#f8fafc;">${maturity}</strong></div>
             </div>
+            ` : ''}
+
+            ${notes ? `
+            <div style="font-size:0.74rem; color:#cbd5e1; margin-top:7px; padding-top:6px; border-top:1px dashed rgba(255,255,255,0.1);">
+              <i class="fa-solid fa-note-sticky" style="color:#94a3b8;"></i> <strong>Notes:</strong> ${notes}
+            </div>` : ''}
           </div>
         `;
       }).join("");
     }
 
+    // ============================================================================
+    // KHET (FARMLAND REGISTRY, PARTNER KYC, FILTER & PAID/ADJUSTED SETTLEMENT)
+    // ============================================================================
     function getStoredKhetRecords() {
       return Array.isArray(DB.khetRecords) ? DB.khetRecords : [];
     }
@@ -11418,8 +11967,143 @@ function formatMonthLabel(rawVal) {
       saveDbSnapshotToCache();
     }
 
+    function runKhetLiveValuationMath(keepManualTotal = false) {
+      const katha = parseFloat(document.getElementById("khetKatha")?.value) || 0;
+      const rate = parseFloat(document.getElementById("khetRatePerKatha")?.value) || 0;
+      const totalEl = document.getElementById("khetTotalLandValue");
+      if (totalEl && !keepManualTotal && (katha > 0 || rate > 0)) {
+        totalEl.value = Math.round(katha * rate * 100) / 100;
+      }
+      const totalVal = parseFloat(totalEl?.value) || (katha * rate) || 0;
+      const paid = parseFloat(document.getElementById("khetAmountPaid")?.value) || 0;
+      const adjusted = parseFloat(document.getElementById("khetAdjustedAmount")?.value) || 0;
+      const settled = paid + adjusted;
+      const balance = totalVal - settled;
+
+      const prevEl = document.getElementById("khetLiveSettlementPreview");
+      if (prevEl) {
+        prevEl.innerHTML = `Settled: <span style="color:#34d399;">₹${settled.toLocaleString('en-IN')}</span> | Bal: <span style="color:${balance > 0 ? '#fbbf24' : '#38bdf8'};">₹${balance.toLocaleString('en-IN')}</span>`;
+      }
+    }
+
+    function populateKhetPartnerFilterAndQuickFill() {
+      const list = getStoredKhetRecords();
+      const partnerMap = {};
+
+      list.forEach(item => {
+        const f = extractKhetDisplayFields(item);
+        const pName = f.partnerName && f.partnerName !== "--" ? f.partnerName.trim() : "";
+        if (!pName) return;
+        if (!partnerMap[pName]) {
+          partnerMap[pName] = {
+            name: pName,
+            aadhaar: f.partnerAadhaar !== "--" ? f.partnerAadhaar : "",
+            mobile: f.partnerMobile !== "--" ? f.partnerMobile : "",
+            address: f.partnerAddress !== "--" ? f.partnerAddress : "",
+            count: 0
+          };
+        } else {
+          if (!partnerMap[pName].aadhaar && f.partnerAadhaar !== "--") partnerMap[pName].aadhaar = f.partnerAadhaar;
+          if (!partnerMap[pName].mobile && f.partnerMobile !== "--") partnerMap[pName].mobile = f.partnerMobile;
+          if (!partnerMap[pName].address && f.partnerAddress !== "--") partnerMap[pName].address = f.partnerAddress;
+        }
+        partnerMap[pName].count++;
+      });
+
+      const partners = Object.values(partnerMap).sort((a, b) => a.name.localeCompare(b.name));
+
+      const filterOptions = ['<option value="ALL">All Partners (Complete View — ' + list.length + ' Plots)</option>'];
+      partners.forEach(p => {
+        filterOptions.push(`<option value="${p.name.replace(/"/g, '&quot;')}">${p.name} (${p.count} Plot${p.count > 1 ? 's' : ''})</option>`);
+      });
+
+      const modalFilter = document.getElementById("khetModalPartnerFilter");
+      const homeFilter = document.getElementById("homeKhetPartnerFilter");
+      if (modalFilter) {
+        modalFilter.innerHTML = filterOptions.join("");
+        modalFilter.value = partners.some(p => p.name === activeKhetPartnerFilter) ? activeKhetPartnerFilter : "ALL";
+      }
+      if (homeFilter) {
+        homeFilter.innerHTML = filterOptions.join("");
+        homeFilter.value = partners.some(p => p.name === activeKhetPartnerFilter) ? activeKhetPartnerFilter : "ALL";
+      }
+
+      const quickSel = document.getElementById("khetQuickPartnerSelect");
+      if (quickSel) {
+        const qOpts = ['<option value="">-- Select Existing Partner --</option>'];
+        partners.forEach(p => {
+          qOpts.push(`<option value="${p.name.replace(/"/g, '&quot;')}">${p.name} ${p.mobile ? '(' + p.mobile + ')' : ''}</option>`);
+        });
+        quickSel.innerHTML = qOpts.join("");
+      }
+    }
+
+    function applyExistingPartnerQuickFill(partnerName) {
+      if (!partnerName) return;
+      const list = getStoredKhetRecords();
+      for (const item of list) {
+        const f = extractKhetDisplayFields(item);
+        if (f.partnerName === partnerName) {
+          const pNameEl = document.getElementById("khetPartnerName");
+          const pAadhaarEl = document.getElementById("khetPartnerAadhaar");
+          const pMobEl = document.getElementById("khetPartnerMobile");
+          const pAddrEl = document.getElementById("khetPartnerAddress");
+          if (pNameEl) pNameEl.value = f.partnerName;
+          if (pAadhaarEl && f.partnerAadhaar !== "--") pAadhaarEl.value = f.partnerAadhaar;
+          if (pMobEl && f.partnerMobile !== "--") pMobEl.value = f.partnerMobile;
+          if (pAddrEl && f.partnerAddress !== "--") pAddrEl.value = f.partnerAddress;
+          break;
+        }
+      }
+    }
+
+    function setKhetPartnerFilter(partnerName) {
+      activeKhetPartnerFilter = partnerName || "ALL";
+      const modalFilter = document.getElementById("khetModalPartnerFilter");
+      const homeFilter = document.getElementById("homeKhetPartnerFilter");
+      if (modalFilter && modalFilter.value !== activeKhetPartnerFilter) modalFilter.value = activeKhetPartnerFilter;
+      if (homeFilter && homeFilter.value !== activeKhetPartnerFilter) homeFilter.value = activeKhetPartnerFilter;
+      renderKhetRecordsList();
+      renderHomeKhetSection();
+    }
+
+    function setKhetSearchQuery(query) {
+      activeKhetSearchQuery = String(query || "").trim();
+      const modalSearch = document.getElementById("khetModalSearchInput");
+      const homeSearch = document.getElementById("homeKhetSearchInput");
+      if (modalSearch && modalSearch.value !== activeKhetSearchQuery) modalSearch.value = activeKhetSearchQuery;
+      if (homeSearch && homeSearch.value !== activeKhetSearchQuery) homeSearch.value = activeKhetSearchQuery;
+      renderKhetRecordsList();
+      renderHomeKhetSection();
+    }
+
+    function setKhetViewMode(mode) {
+      activeKhetViewMode = mode === "table" ? "table" : "cards";
+      const mCards = document.getElementById("btnKhetModalViewCards");
+      const mTable = document.getElementById("btnKhetModalViewTable");
+      const hCards = document.getElementById("btnHomeKhetViewCards");
+      const hTable = document.getElementById("btnHomeKhetViewTable");
+
+      [mCards, hCards].forEach(btn => {
+        if (btn) {
+          btn.style.background = activeKhetViewMode === "cards" ? "#10b981" : "";
+          btn.style.color = activeKhetViewMode === "cards" ? "#fff" : "";
+        }
+      });
+      [mTable, hTable].forEach(btn => {
+        if (btn) {
+          btn.style.background = activeKhetViewMode === "table" ? "#10b981" : "";
+          btn.style.color = activeKhetViewMode === "table" ? "#fff" : "";
+        }
+      });
+
+      renderKhetRecordsList();
+      renderHomeKhetSection();
+    }
+
     function openKhetModal() {
       cancelKhetEdit();
+      populateKhetPartnerFilterAndQuickFill();
       renderKhetRecordsList();
       renderHomeKhetSection();
       openModal("khetModal");
@@ -11435,72 +12119,165 @@ function formatMonthLabel(rawVal) {
       }
 
       editingKhetRecordId = String(target.id || target.KhetID);
-      const bighaVal = target.bigha !== undefined ? target.bigha : (target.FieldSizeBigha || "");
-      const holderVal = target.holderName !== undefined ? target.holderName : (target.HolderName || target.crop || target.CropOrPurpose || "");
-      const paidVal = target.amountPaid !== undefined ? target.amountPaid : (target.AmountPaid !== undefined ? target.AmountPaid : (target.income !== undefined ? target.income : (target.IncomeAmount !== undefined ? target.IncomeAmount : "")));
-      const rawPayDate = target.paymentDate || target.PaymentDate || target.createdAt || target.CreatedAt || "";
+      const f = extractKhetDisplayFields(target);
 
-      document.getElementById("khetName").value = target.name || target.KhetName || "";
-      document.getElementById("khetBigha").value = bighaVal;
-      document.getElementById("khetHolderName").value = holderVal;
-      document.getElementById("khetAmountPaid").value = paidVal;
-      document.getElementById("khetPaymentDate").value = toInputDateValue(rawPayDate) || new Date().toISOString().split("T")[0];
-      document.getElementById("khetNotes").value = target.notes || target.Notes || "";
+      const setVal = (elId, val) => {
+        const el = document.getElementById(elId);
+        if (el) el.value = val === "--" ? "" : val;
+      };
+
+      setVal("khetRegisteredName", f.registeredName);
+      setVal("khetPlace", f.place);
+      setVal("khetName", f.place);
+      setVal("khetKhataNo", f.khataNo);
+      setVal("khetKeshraNo", f.keshraNo);
+      setVal("khetDecimalArea", f.decimalArea || "");
+      setVal("khetNewDecimalSurvey", f.newDecimalSurvey || "");
+      setVal("khetKatha", f.katha || "");
+      setVal("khetBigha", f.rawBigha);
+      setVal("khetRatePerKatha", f.ratePerKatha || "");
+      setVal("khetTotalLandValue", f.totalLandValue || "");
+      setVal("khetPartnerName", f.partnerName);
+      setVal("khetHolderName", f.partnerName);
+      setVal("khetPartnerAadhaar", f.partnerAadhaar);
+      setVal("khetPartnerMobile", f.partnerMobile);
+      setVal("khetPartnerAddress", f.partnerAddress);
+      setVal("khetAmountPaid", f.amountPaid || "");
+      setVal("khetAdjustedAmount", f.adjustedAmount || "");
+
+      const rawPayDate = target.paymentDate || target.PaymentDate || target.createdAt || target.CreatedAt || "";
+      const payDateEl = document.getElementById("khetPaymentDate");
+      if (payDateEl) payDateEl.value = toInputDateValue(rawPayDate) || new Date().toISOString().split("T")[0];
+      setVal("khetNotes", f.notes);
+
+      runKhetLiveValuationMath(true);
 
       const titleEl = document.getElementById("khetFormTitle");
       const btnTextEl = document.getElementById("btnSubmitKhetRecordText");
       const cancelBtn = document.getElementById("btnCancelKhetEdit");
-      if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Khet (Field) Details`;
-      if (btnTextEl) btnTextEl.innerText = "Update Khet (Field) Record in Google Sheet";
+      if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Khet Registry &amp; Partner Details`;
+      if (btnTextEl) btnTextEl.innerText = "Update Khet & Partner Record in Google Sheet";
       if (cancelBtn) cancelBtn.style.display = "inline-flex";
     }
 
     function cancelKhetEdit() {
       editingKhetRecordId = null;
-      const nameEl = document.getElementById("khetName");
-      const bighaEl = document.getElementById("khetBigha");
-      const holderEl = document.getElementById("khetHolderName");
-      const paidEl = document.getElementById("khetAmountPaid");
+      const clearIds = [
+        "khetRegisteredName", "khetPlace", "khetName", "khetKhataNo", "khetKeshraNo",
+        "khetDecimalArea", "khetNewDecimalSurvey", "khetKatha", "khetBigha",
+        "khetRatePerKatha", "khetTotalLandValue", "khetPartnerName", "khetHolderName",
+        "khetPartnerAadhaar", "khetPartnerMobile", "khetPartnerAddress",
+        "khetAmountPaid", "khetAdjustedAmount", "khetNotes", "khetQuickPartnerSelect"
+      ];
+      clearIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+      });
       const payDateEl = document.getElementById("khetPaymentDate");
-      const notesEl = document.getElementById("khetNotes");
-      if (nameEl) nameEl.value = "";
-      if (bighaEl) bighaEl.value = "";
-      if (holderEl) holderEl.value = "";
-      if (paidEl) paidEl.value = "";
       if (payDateEl) payDateEl.value = new Date().toISOString().split("T")[0];
-      if (notesEl) notesEl.value = "";
+      runKhetLiveValuationMath(true);
 
       const titleEl = document.getElementById("khetFormTitle");
       const btnTextEl = document.getElementById("btnSubmitKhetRecordText");
       const cancelBtn = document.getElementById("btnCancelKhetEdit");
-      if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-wheat-awn"></i> Add New Khet (Field) Entry`;
-      if (btnTextEl) btnTextEl.innerText = "Save Khet (Field) Record to Google Sheet";
+      if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-wheat-awn"></i> Add Complete Khet &amp; Farming Partner Record`;
+      if (btnTextEl) btnTextEl.innerText = "Save Complete Khet & Partner Record to Google Sheet";
       if (cancelBtn) cancelBtn.style.display = "none";
     }
 
     async function addKhetRecord() {
       if (activeRole === "Viewer") return;
-      const name = document.getElementById("khetName")?.value.trim() || "";
-      const bigha = document.getElementById("khetBigha")?.value.trim() || "";
-      const holderName = document.getElementById("khetHolderName")?.value.trim() || "";
+      const registeredName = document.getElementById("khetRegisteredName")?.value.trim() || "";
+      const place = document.getElementById("khetPlace")?.value.trim() || document.getElementById("khetName")?.value.trim() || "";
+      const khataNo = document.getElementById("khetKhataNo")?.value.trim() || "";
+      const keshraNo = document.getElementById("khetKeshraNo")?.value.trim() || "";
+      const decimalArea = parseFloat(document.getElementById("khetDecimalArea")?.value) || 0;
+      const newDecimalSurvey = parseFloat(document.getElementById("khetNewDecimalSurvey")?.value) || 0;
+      const katha = parseFloat(document.getElementById("khetKatha")?.value) || 0;
+      const ratePerKatha = parseFloat(document.getElementById("khetRatePerKatha")?.value) || 0;
+      const totalLandValue = parseFloat(document.getElementById("khetTotalLandValue")?.value) || Math.round(katha * ratePerKatha * 100) / 100;
+
+      const partnerName = document.getElementById("khetPartnerName")?.value.trim() || document.getElementById("khetHolderName")?.value.trim() || "";
+      const partnerAadhaar = document.getElementById("khetPartnerAadhaar")?.value.trim() || "";
+      const partnerMobile = document.getElementById("khetPartnerMobile")?.value.trim() || "";
+      const partnerAddress = document.getElementById("khetPartnerAddress")?.value.trim() || "";
+
       const amountPaid = parseFloat(document.getElementById("khetAmountPaid")?.value) || 0;
+      const adjustedAmount = parseFloat(document.getElementById("khetAdjustedAmount")?.value) || 0;
       const paymentDate = document.getElementById("khetPaymentDate")?.value || new Date().toISOString().split("T")[0];
       const notes = document.getElementById("khetNotes")?.value.trim() || "";
 
-      if (!name) {
-        return triggerSideToast("Required Field", "Please enter the Field Name (Khet Name).", false);
+      if (!registeredName) {
+        return triggerSideToast("Required Field", "Please enter the Registered Name (Land Owner).", false);
       }
-      if (!bigha) {
-        return triggerSideToast("Required Field", "Please enter the Size of the Field in Bighas.", false);
+      if (!place) {
+        return triggerSideToast("Required Field", "Please enter the Place / Mauza / Field Name.", false);
       }
-      if (!holderName) {
-        return triggerSideToast("Required Field", "Please enter the Name of the Person Holding the Field.", false);
+      if (!khataNo && !keshraNo) {
+        return triggerSideToast("Required Field", "Please enter Khata No. or Keshra No.", false);
       }
+      if (!partnerName) {
+        return triggerSideToast("Required Field", "Please enter the Partner Name (who will farm on that land).", false);
+      }
+
+      const name = place;
+      const bigha = katha ? `${katha} Katha` : (decimalArea ? `${decimalArea} Dec` : "--");
+      const holderName = partnerName;
 
       const list = [...getStoredKhetRecords()];
       const nowDate = new Date().toISOString().split("T")[0];
       let savedRecord = null;
       const isEditing = Boolean(editingKhetRecordId);
+
+      const commonFields = {
+        name,
+        KhetName: name,
+        bigha,
+        FieldSizeBigha: bigha,
+        holderName,
+        HolderName: holderName,
+        crop: holderName,
+        CropOrPurpose: holderName,
+        amountPaid,
+        AmountPaid: amountPaid,
+        income: amountPaid,
+        IncomeAmount: amountPaid,
+        expense: adjustedAmount,
+        ExpenseAmount: adjustedAmount,
+        paymentDate,
+        PaymentDate: paymentDate,
+        notes,
+        Notes: notes,
+        registeredName,
+        RegisteredName: registeredName,
+        partnerName,
+        PartnerName: partnerName,
+        partnerAadhaar,
+        PartnerAadhaar: partnerAadhaar,
+        partnerMobile,
+        PartnerMobile: partnerMobile,
+        partnerAddress,
+        PartnerAddress: partnerAddress,
+        place,
+        Place: place,
+        khataNo,
+        KhataNo: khataNo,
+        keshraNo,
+        KeshraNo: keshraNo,
+        decimalArea,
+        DecimalArea: decimalArea,
+        newDecimalSurvey,
+        NewDecimalSurvey: newDecimalSurvey,
+        katha,
+        Katha: katha,
+        ratePerKatha,
+        RatePerKatha: ratePerKatha,
+        totalLandValue,
+        TotalLandValue: totalLandValue,
+        adjustedAmount,
+        AdjustedAmount: adjustedAmount,
+        updatedAt: new Date().toISOString()
+      };
 
       if (isEditing) {
         const idx = list.findIndex(item => String(item.id || item.KhetID) === String(editingKhetRecordId));
@@ -11510,23 +12287,7 @@ function formatMonthLabel(rawVal) {
             ...list[idx],
             id: recId,
             KhetID: recId,
-            name,
-            KhetName: name,
-            bigha,
-            FieldSizeBigha: bigha,
-            holderName,
-            HolderName: holderName,
-            crop: holderName,
-            CropOrPurpose: holderName,
-            amountPaid,
-            AmountPaid: amountPaid,
-            income: amountPaid,
-            IncomeAmount: amountPaid,
-            paymentDate,
-            PaymentDate: paymentDate,
-            notes,
-            Notes: notes,
-            updatedAt: new Date().toISOString()
+            ...commonFields
           };
           list[idx] = savedRecord;
         }
@@ -11537,38 +12298,21 @@ function formatMonthLabel(rawVal) {
         savedRecord = {
           id: newId,
           KhetID: newId,
-          name,
-          KhetName: name,
-          bigha,
-          FieldSizeBigha: bigha,
-          holderName,
-          HolderName: holderName,
-          crop: holderName,
-          CropOrPurpose: holderName,
-          amountPaid,
-          AmountPaid: amountPaid,
-          income: amountPaid,
-          IncomeAmount: amountPaid,
-          expense: 0,
-          ExpenseAmount: 0,
-          paymentDate,
-          PaymentDate: paymentDate,
-          notes,
-          Notes: notes,
-          createdAt: nowDate,
-          updatedAt: new Date().toISOString()
+          ...commonFields,
+          createdAt: nowDate
         };
         list.unshift(savedRecord);
       }
 
       saveStoredKhetRecords(list);
       cancelKhetEdit();
+      populateKhetPartnerFilterAndQuickFill();
       renderKhetRecordsList();
       renderHomeKhetSection();
 
       triggerSideToast(
-        isEditing ? "Khet Updated & Saved" : "Khet Saved to Google Sheet",
-        `${isEditing ? "Updated" : "Saved"} Khet (${name}) and synced to Google Sheet!`,
+        isEditing ? "Khet Record Updated" : "Khet Record Saved",
+        `${isEditing ? "Updated" : "Saved"} ${place} (Partner: ${partnerName}) to Google Sheet!`,
         true
       );
 
@@ -11582,8 +12326,22 @@ function formatMonthLabel(rawVal) {
         paymentDate: savedRecord.paymentDate,
         crop: savedRecord.holderName,
         income: savedRecord.amountPaid,
-        expense: 0,
+        expense: savedRecord.adjustedAmount,
         notes: savedRecord.notes,
+        registeredName: savedRecord.registeredName,
+        partnerName: savedRecord.partnerName,
+        partnerAadhaar: savedRecord.partnerAadhaar,
+        partnerMobile: savedRecord.partnerMobile,
+        partnerAddress: savedRecord.partnerAddress,
+        place: savedRecord.place,
+        khataNo: savedRecord.khataNo,
+        keshraNo: savedRecord.keshraNo,
+        decimalArea: savedRecord.decimalArea,
+        newDecimalSurvey: savedRecord.newDecimalSurvey,
+        katha: savedRecord.katha,
+        ratePerKatha: savedRecord.ratePerKatha,
+        totalLandValue: savedRecord.totalLandValue,
+        adjustedAmount: savedRecord.adjustedAmount,
         createdAt: savedRecord.createdAt
       });
     }
@@ -11595,6 +12353,7 @@ function formatMonthLabel(rawVal) {
       if (editingKhetRecordId && String(editingKhetRecordId) === String(id)) {
         cancelKhetEdit();
       }
+      populateKhetPartnerFilterAndQuickFill();
       renderKhetRecordsList();
       renderHomeKhetSection();
       triggerSideToast("Khet Record Removed", "Khet record deleted from app & Google Sheet.", "warning");
@@ -11607,27 +12366,306 @@ function formatMonthLabel(rawVal) {
 
     function extractKhetDisplayFields(item) {
       const recId = item.id || item.KhetID || "";
-      const khetName = item.name || item.KhetName || "Unnamed Field";
-      const rawBigha = item.bigha !== undefined && item.bigha !== "" ? item.bigha : (item.FieldSizeBigha || "--");
-      const bighaLabel = String(rawBigha).toLowerCase().includes("bigha") ? String(rawBigha) : `${rawBigha} Bigha`;
-      const holderName = item.holderName || item.HolderName || item.crop || item.CropOrPurpose || "--";
+      const place = item.place || item.Place || item.name || item.KhetName || "Unnamed Plot";
+      const khetName = place;
+      const registeredName = item.registeredName || item.RegisteredName || "--";
+      const partnerName = item.partnerName || item.PartnerName || item.holderName || item.HolderName || item.crop || item.CropOrPurpose || "--";
+      const holderName = partnerName;
+      const partnerAadhaar = item.partnerAadhaar || item.PartnerAadhaar || "--";
+      const partnerMobile = item.partnerMobile || item.PartnerMobile || "--";
+      const partnerAddress = item.partnerAddress || item.PartnerAddress || "--";
+      const khataNo = item.khataNo || item.KhataNo || "--";
+      const keshraNo = item.keshraNo || item.KeshraNo || "--";
+      const decimalArea = Number(item.decimalArea !== undefined && item.decimalArea !== "" ? item.decimalArea : (item.DecimalArea || 0));
+      const newDecimalSurvey = Number(item.newDecimalSurvey !== undefined && item.newDecimalSurvey !== "" ? item.newDecimalSurvey : (item.NewDecimalSurvey || 0));
+      const rawBigha = item.bigha !== undefined && item.bigha !== "" ? item.bigha : (item.FieldSizeBigha || "");
+      const parsedFallbackKatha = parseFloat(String(rawBigha).replace(/[^0-9.]/g, "")) || 0;
+      const katha = Number(item.katha !== undefined && item.katha !== "" ? item.katha : (item.Katha !== undefined && item.Katha !== "" ? item.Katha : parsedFallbackKatha));
+      const ratePerKatha = Number(item.ratePerKatha !== undefined && item.ratePerKatha !== "" ? item.ratePerKatha : (item.RatePerKatha || 0));
+      const totalLandValue = Number(item.totalLandValue !== undefined && item.totalLandValue !== "" ? item.totalLandValue : (item.TotalLandValue || Math.round(katha * ratePerKatha * 100) / 100));
       const amountPaid = Number(
         item.amountPaid !== undefined ? item.amountPaid :
         (item.AmountPaid !== undefined ? item.AmountPaid :
         (item.income !== undefined ? item.income : (item.IncomeAmount || 0)))
       );
+      const adjustedAmount = Number(
+        item.adjustedAmount !== undefined ? item.adjustedAmount :
+        (item.AdjustedAmount !== undefined ? item.AdjustedAmount :
+        (item.expense !== undefined ? item.expense : (item.ExpenseAmount || 0)))
+      );
+      const netSettled = amountPaid + adjustedAmount;
+      const remainingBalance = totalLandValue > 0 ? (totalLandValue - netSettled) : 0;
+      const bighaLabel = katha > 0 ? `${katha} Katha` : (rawBigha ? String(rawBigha) : "--");
       const rawDate = item.paymentDate || item.PaymentDate || item.createdAt || item.CreatedAt || "";
       const paymentDate = formatDateOnly(rawDate);
       const notes = item.notes || item.Notes || "";
-      return { recId, khetName, rawBigha, bighaLabel, holderName, amountPaid, paymentDate, notes };
+
+      return {
+        recId, place, khetName, registeredName, partnerName, holderName,
+        partnerAadhaar, partnerMobile, partnerAddress, khataNo, keshraNo,
+        decimalArea, newDecimalSurvey, katha, ratePerKatha, totalLandValue,
+        amountPaid, adjustedAmount, netSettled, remainingBalance,
+        rawBigha, bighaLabel, paymentDate, notes
+      };
+    }
+
+    function getFilteredKhetList() {
+      const list = getStoredKhetRecords();
+      const q = activeKhetSearchQuery.toLowerCase();
+      return list.filter(item => {
+        const f = extractKhetDisplayFields(item);
+        if (activeKhetPartnerFilter !== "ALL" && f.partnerName !== activeKhetPartnerFilter) return false;
+        if (q) {
+          const hay = [
+            f.place, f.registeredName, f.partnerName, f.partnerAadhaar,
+            f.partnerMobile, f.partnerAddress, f.khataNo, f.keshraNo, f.notes
+          ].join(" ").toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+    }
+
+    function buildKhetPartnerBannerHtml(filteredList) {
+      if (activeKhetPartnerFilter === "ALL" || filteredList.length === 0) return "";
+      const first = extractKhetDisplayFields(filteredList[0]);
+      let totDec = 0, totSurvDec = 0, totKatha = 0, totVal = 0, totPaid = 0, totAdj = 0;
+      filteredList.forEach(item => {
+        const f = extractKhetDisplayFields(item);
+        totDec += f.decimalArea;
+        totSurvDec += f.newDecimalSurvey;
+        totKatha += f.katha;
+        totVal += f.totalLandValue;
+        totPaid += f.amountPaid;
+        totAdj += f.adjustedAmount;
+      });
+      const netSettled = totPaid + totAdj;
+      const remBal = totVal > 0 ? (totVal - netSettled) : 0;
+
+      return `
+        <div style="background:linear-gradient(135deg, rgba(245,158,11,0.18) 0%, rgba(16,185,129,0.16) 100%); border:1.5px solid rgba(251,191,36,0.5); border-radius:14px; padding:12px 15px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:8px;">
+            <div>
+              <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; color:#fbbf24; letter-spacing:0.4px;">
+                <i class="fa-solid fa-id-card-clip"></i> Selected Farming Partner Complete Profile &amp; Account Summary
+              </div>
+              <div style="font-size:1.08rem; font-weight:800; color:#f8fafc; margin-top:2px;">
+                ${first.partnerName} <span style="font-size:0.76rem; color:#34d399; font-weight:700;">(${filteredList.length} Plot${filteredList.length > 1 ? 's' : ''} Assigned)</span>
+              </div>
+            </div>
+            <button type="button" class="btn-ledger-action" style="padding:4px 10px; font-size:0.72rem;" onclick="setKhetPartnerFilter('ALL')">
+              <i class="fa-solid fa-rotate-left"></i> Show All Partners
+            </button>
+          </div>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap:8px; font-size:0.76rem; background:rgba(15,23,42,0.58); padding:10px; border-radius:10px; margin-bottom:8px;">
+            <div><span style="color:var(--text-muted);"><i class="fa-solid fa-id-card" style="color:#38bdf8;"></i> Aadhaar No.:</span> <strong style="color:#f8fafc;">${first.partnerAadhaar}</strong></div>
+            <div><span style="color:var(--text-muted);"><i class="fa-solid fa-phone" style="color:#34d399;"></i> Mobile No.:</span> <strong style="color:#34d399;">${first.partnerMobile}</strong></div>
+            <div style="grid-column: span 2;"><span style="color:var(--text-muted);"><i class="fa-solid fa-location-dot" style="color:#a78bfa;"></i> Address:</span> <strong style="color:#f8fafc;">${first.partnerAddress}</strong></div>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:10px; font-size:0.75rem;">
+            <span style="background:rgba(15,23,42,0.65); padding:4px 10px; border-radius:8px;">Total Decimal: <strong>${Number(totDec.toFixed(2))}</strong> (Survey: <strong>${Number(totSurvDec.toFixed(2))}</strong>)</span>
+            <span style="background:rgba(15,23,42,0.65); padding:4px 10px; border-radius:8px;">Total Katha: <strong style="color:#38bdf8;">${Number(totKatha.toFixed(2))} Katha</strong></span>
+            <span style="background:rgba(15,23,42,0.65); padding:4px 10px; border-radius:8px;">Total Valuation: <strong style="color:#fbbf24;">₹${totVal.toLocaleString('en-IN')}</strong></span>
+            <span style="background:rgba(15,23,42,0.65); padding:4px 10px; border-radius:8px;">Paid: <strong style="color:#34d399;">₹${totPaid.toLocaleString('en-IN')}</strong></span>
+            <span style="background:rgba(15,23,42,0.65); padding:4px 10px; border-radius:8px;">Adjusted: <strong style="color:#38bdf8;">₹${totAdj.toLocaleString('en-IN')}</strong></span>
+            <span style="background:rgba(15,23,42,0.65); padding:4px 10px; border-radius:8px;">Net Settled: <strong style="color:#10b981;">₹${netSettled.toLocaleString('en-IN')}</strong></span>
+            <span style="background:rgba(15,23,42,0.65); padding:4px 10px; border-radius:8px;">Balance: <strong style="color:${remBal > 0 ? '#f87171' : '#a78bfa'};">₹${remBal.toLocaleString('en-IN')}</strong></span>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildKhetMasterTableHtml(filteredList) {
+      let sumDec = 0, sumSurv = 0, sumKatha = 0, sumVal = 0, sumPaid = 0, sumAdj = 0;
+      const rowsHtml = filteredList.map((item, idx) => {
+        const f = extractKhetDisplayFields(item);
+        const safeId = String(f.recId).replace(/'/g, "\\'");
+        sumDec += f.decimalArea;
+        sumSurv += f.newDecimalSurvey;
+        sumKatha += f.katha;
+        sumVal += f.totalLandValue;
+        sumPaid += f.amountPaid;
+        sumAdj += f.adjustedAmount;
+
+        return `
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.08); font-size:0.75rem;">
+            <td style="padding:8px 10px; color:var(--text-muted);">${idx + 1}</td>
+            <td style="padding:8px 10px; font-weight:700; color:#f8fafc;">${f.registeredName}</td>
+            <td style="padding:8px 10px; color:#38bdf8; font-weight:700;">${f.place}</td>
+            <td style="padding:8px 10px;">${f.khataNo}</td>
+            <td style="padding:8px 10px;">${f.keshraNo}</td>
+            <td style="padding:8px 10px; text-align:right;">${f.decimalArea || '--'}</td>
+            <td style="padding:8px 10px; text-align:right; color:#a78bfa; font-weight:700;">${f.newDecimalSurvey || '--'}</td>
+            <td style="padding:8px 10px; text-align:right; color:#34d399; font-weight:800;">${f.katha || '--'}</td>
+            <td style="padding:8px 10px; text-align:right;">${f.ratePerKatha ? '₹' + f.ratePerKatha.toLocaleString('en-IN') : '--'}</td>
+            <td style="padding:8px 10px; text-align:right; font-weight:800; color:#fbbf24;">${f.totalLandValue ? '₹' + f.totalLandValue.toLocaleString('en-IN') : '--'}</td>
+            <td style="padding:8px 10px;">
+              <div style="font-weight:800; color:#fcd34d;">${f.partnerName}</div>
+              <div style="font-size:0.68rem; color:var(--text-muted);">Aadhaar: ${f.partnerAadhaar} | Mob: ${f.partnerMobile}</div>
+              <div style="font-size:0.68rem; color:var(--text-muted);">${f.partnerAddress !== '--' ? f.partnerAddress : ''}</div>
+            </td>
+            <td style="padding:8px 10px; text-align:right; color:#34d399; font-weight:800;">₹${f.amountPaid.toLocaleString('en-IN')}</td>
+            <td style="padding:8px 10px; text-align:right; color:#38bdf8; font-weight:800;">₹${f.adjustedAmount.toLocaleString('en-IN')}</td>
+            <td style="padding:8px 10px; text-align:right; color:${f.remainingBalance > 0 ? '#f87171' : '#a78bfa'}; font-weight:800;">₹${f.remainingBalance.toLocaleString('en-IN')}</td>
+            <td style="padding:8px 10px;">${f.paymentDate}</td>
+            <td style="padding:8px 10px;" class="admin-only">
+              <div style="display:flex; gap:4px;">
+                <button type="button" class="btn-ledger-action edit-btn" style="padding:3px 7px; font-size:0.68rem;" onclick="editKhetRecord('${safeId}', true)"><i class="fa-solid fa-pen"></i></button>
+                <button type="button" class="btn-ledger-action" style="padding:3px 7px; font-size:0.68rem; color:var(--accent-red);" onclick="deleteKhetRecord('${safeId}')"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      const sumBal = sumVal > 0 ? (sumVal - (sumPaid + sumAdj)) : 0;
+
+      return `
+        <div style="grid-column: 1 / -1; width:100%; overflow-x:auto; background:rgba(15,23,42,0.75); border:1px solid rgba(52,211,153,0.35); border-radius:14px;">
+          <table style="width:100%; border-collapse:collapse; min-width:1100px; text-align:left;">
+            <thead>
+              <tr style="background:rgba(16,185,129,0.18); color:#34d399; font-size:0.71rem; text-transform:uppercase; letter-spacing:0.4px;">
+                <th style="padding:9px 10px;">#</th>
+                <th style="padding:9px 10px;">Registered Name</th>
+                <th style="padding:9px 10px;">Place</th>
+                <th style="padding:9px 10px;">Khata No</th>
+                <th style="padding:9px 10px;">Keshra No</th>
+                <th style="padding:9px 10px; text-align:right;">Decimal</th>
+                <th style="padding:9px 10px; text-align:right;">New Survey Dec</th>
+                <th style="padding:9px 10px; text-align:right;">Katha</th>
+                <th style="padding:9px 10px; text-align:right;">Rate/Katha</th>
+                <th style="padding:9px 10px; text-align:right;">Total Value</th>
+                <th style="padding:9px 10px;">Partner KYC (Name, Aadhaar, Mob, Address)</th>
+                <th style="padding:9px 10px; text-align:right;">Paid (₹)</th>
+                <th style="padding:9px 10px; text-align:right;">Adjusted (₹)</th>
+                <th style="padding:9px 10px; text-align:right;">Balance (₹)</th>
+                <th style="padding:9px 10px;">Date</th>
+                <th style="padding:9px 10px;" class="admin-only">Action</th>
+              </tr>
+            </thead>
+            <tbody>${rowsHtml}</tbody>
+            <tfoot>
+              <tr style="background:rgba(15,23,42,0.95); font-weight:800; font-size:0.76rem; border-top:2px solid rgba(52,211,153,0.4);">
+                <td colspan="5" style="padding:9px 10px; color:#34d399;">TOTAL (${filteredList.length} Plots)</td>
+                <td style="padding:9px 10px; text-align:right;">${Number(sumDec.toFixed(2))}</td>
+                <td style="padding:9px 10px; text-align:right; color:#a78bfa;">${Number(sumSurv.toFixed(2))}</td>
+                <td style="padding:9px 10px; text-align:right; color:#34d399;">${Number(sumKatha.toFixed(2))}</td>
+                <td style="padding:9px 10px;"></td>
+                <td style="padding:9px 10px; text-align:right; color:#fbbf24;">₹${sumVal.toLocaleString('en-IN')}</td>
+                <td style="padding:9px 10px;"></td>
+                <td style="padding:9px 10px; text-align:right; color:#34d399;">₹${sumPaid.toLocaleString('en-IN')}</td>
+                <td style="padding:9px 10px; text-align:right; color:#38bdf8;">₹${sumAdj.toLocaleString('en-IN')}</td>
+                <td style="padding:9px 10px; text-align:right; color:${sumBal > 0 ? '#f87171' : '#a78bfa'};">₹${sumBal.toLocaleString('en-IN')}</td>
+                <td colspan="2"></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      `;
+    }
+
+    function buildKhetDetailedCardHtml(item) {
+      const f = extractKhetDisplayFields(item);
+      const safeId = String(f.recId).replace(/'/g, "\\'");
+      const safePartner = String(f.partnerName).replace(/'/g, "\\'");
+      return `
+        <div class="khet-stylish-card" style="display:flex; flex-direction:column; justify-content:space-between; gap:10px;">
+          <div>
+            <!-- Card Header -->
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:10px;">
+              <div style="display:flex; align-items:center; gap:9px;">
+                <div style="width:38px; height:38px; border-radius:10px; background:rgba(16,185,129,0.2); border:1px solid rgba(52,211,153,0.45); display:flex; align-items:center; justify-content:center; color:#34d399; font-size:1.05rem; flex-shrink:0;">
+                  <i class="fa-solid fa-seedling"></i>
+                </div>
+                <div>
+                  <div style="font-weight:800; font-size:0.98rem; color:var(--text-main);">${f.place}</div>
+                  <div style="font-size:0.72rem; color:#34d399; font-weight:700;">
+                    <i class="fa-solid fa-file-signature"></i> Reg. Owner: <strong>${f.registeredName}</strong>
+                  </div>
+                </div>
+              </div>
+              <div style="text-align:right;">
+                <span style="background:rgba(16,185,129,0.2); color:#34d399; border:1px solid rgba(52,211,153,0.4); padding:3px 9px; border-radius:20px; font-size:0.75rem; font-weight:800; display:inline-block;">
+                  Paid: ₹${f.amountPaid.toLocaleString('en-IN')}
+                </span>
+                ${f.adjustedAmount > 0 ? `<div style="font-size:0.68rem; color:#38bdf8; font-weight:700; margin-top:2px;">Adj: ₹${f.adjustedAmount.toLocaleString('en-IN')}</div>` : ''}
+              </div>
+            </div>
+
+            <!-- Land Registry & Survey Grid -->
+            <div style="background:rgba(15,23,42,0.55); border:1px solid rgba(52,211,153,0.25); border-radius:10px; padding:9px 11px; margin-bottom:8px;">
+              <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:#34d399; margin-bottom:5px;">
+                <i class="fa-solid fa-compass-drafting"></i> Land Registry &amp; Survey Measurements
+              </div>
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; font-size:0.75rem;">
+                <div><span style="color:var(--text-muted);">Khata No.:</span> <strong style="color:#fbbf24;">${f.khataNo}</strong></div>
+                <div><span style="color:var(--text-muted);">Keshra No.:</span> <strong style="color:#f472b6;">${f.keshraNo}</strong></div>
+                <div><span style="color:var(--text-muted);">Decimal:</span> <strong>${f.decimalArea || '--'}</strong></div>
+                <div><span style="color:var(--text-muted);">Survey Decimal:</span> <strong style="color:#a78bfa;">${f.newDecimalSurvey || '--'}</strong></div>
+                <div><span style="color:var(--text-muted);">Katha (Khataha):</span> <strong style="color:#38bdf8;">${f.bighaLabel}</strong></div>
+                <div><span style="color:var(--text-muted);">Rate / Katha:</span> <strong>${f.ratePerKatha ? '₹' + f.ratePerKatha.toLocaleString('en-IN') : '--'}</strong></div>
+                <div style="grid-column: 1 / -1; padding-top:4px; border-top:1px dashed rgba(255,255,255,0.1); display:flex; justify-content:space-between;">
+                  <span style="color:var(--text-muted);">Total Land Value:</span>
+                  <strong style="color:#fbbf24;">${f.totalLandValue ? '₹' + f.totalLandValue.toLocaleString('en-IN') : '--'}</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Farming Partner Complete KYC Box -->
+            <div style="background:rgba(245,158,11,0.1); border:1px solid rgba(251,191,36,0.3); border-radius:10px; padding:9px 11px; margin-bottom:8px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <span style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:#fbbf24;">
+                  <i class="fa-solid fa-user-check"></i> Farming Partner KYC Details
+                </span>
+                ${f.partnerName !== '--' ? `<button type="button" onclick="setKhetPartnerFilter('${safePartner}')" style="background:rgba(251,191,36,0.2); color:#fcd34d; border:none; border-radius:8px; padding:2px 7px; font-size:0.65rem; font-weight:700; cursor:pointer;">Filter Partner</button>` : ''}
+              </div>
+              <div style="font-size:0.75rem; display:flex; flex-direction:column; gap:3px;">
+                <div><span style="color:var(--text-muted);">Partner Name:</span> <strong style="color:#fde68a;">${f.partnerName}</strong></div>
+                <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+                  <span><span style="color:var(--text-muted);">Aadhaar:</span> <strong>${f.partnerAadhaar}</strong></span>
+                  <span><span style="color:var(--text-muted);">Mobile:</span> <strong style="color:#34d399;">${f.partnerMobile}</strong></span>
+                </div>
+                <div><span style="color:var(--text-muted);">Address:</span> <span>${f.partnerAddress}</span></div>
+              </div>
+            </div>
+
+            <!-- Financial Settlement Footer -->
+            <div style="background:rgba(15,23,42,0.6); border:1px solid rgba(56,189,248,0.22); border-radius:10px; padding:8px 11px; font-size:0.74rem;">
+              <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+                <span>Paid: <strong style="color:#34d399;">₹${f.amountPaid.toLocaleString('en-IN')}</strong></span>
+                <span>Adjusted: <strong style="color:#38bdf8;">₹${f.adjustedAmount.toLocaleString('en-IN')}</strong></span>
+                <span>Net Settled: <strong style="color:#10b981;">₹${f.netSettled.toLocaleString('en-IN')}</strong></span>
+              </div>
+              <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px; margin-top:4px; padding-top:4px; border-top:1px dashed rgba(255,255,255,0.08);">
+                <span>Balance: <strong style="color:${f.remainingBalance > 0 ? '#f87171' : '#a78bfa'};">₹${f.remainingBalance.toLocaleString('en-IN')}</strong></span>
+                <span>Date: <strong>${f.paymentDate}</strong></span>
+              </div>
+              ${f.notes ? `<div style="margin-top:4px; color:#cbd5e1; font-size:0.72rem;"><i class="fa-solid fa-comment-dots"></i> ${f.notes}</div>` : ''}
+            </div>
+          </div>
+
+          <div class="admin-only" style="display:flex; justify-content:flex-end; align-items:center; gap:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.08);">
+            <button type="button" class="btn-ledger-action edit-btn" onclick="editKhetRecord('${safeId}', true)" title="Edit Khet Details">
+              <i class="fa-solid fa-pen-to-square"></i> Edit / Adjust
+            </button>
+            <button type="button" class="btn-ledger-action" style="color:var(--accent-red); border-color:rgba(239,68,68,0.4);" onclick="deleteKhetRecord('${safeId}')" title="Delete Khet Record">
+              <i class="fa-solid fa-trash-can"></i> Delete
+            </button>
+          </div>
+        </div>
+      `;
     }
 
     function renderHomeKhetSection() {
       const sectionEl = document.getElementById("homeKhetSection");
       const gridEl = document.getElementById("homeKhetCardsGrid");
       const countEl = document.getElementById("homeKhetTotalCount");
+      const decEl = document.getElementById("homeKhetTotalDecimal");
       const bighaEl = document.getElementById("homeKhetTotalBigha");
+      const valEl = document.getElementById("homeKhetTotalValuation");
       const paidEl = document.getElementById("homeKhetTotalPaid");
+      const adjEl = document.getElementById("homeKhetTotalAdjusted");
+      const bannerEl = document.getElementById("homeKhetPartnerSummaryBanner");
       if (!gridEl) return;
 
       if (activeRole === "Viewer") {
@@ -11636,125 +12674,128 @@ function formatMonthLabel(rawVal) {
       }
       if (sectionEl) sectionEl.style.display = "block";
 
-      const list = getStoredKhetRecords();
-      let totalBighaNum = 0;
-      let totalPaidNum = 0;
+      populateKhetPartnerFilterAndQuickFill();
+      const filteredList = getFilteredKhetList();
 
-      list.forEach(item => {
+      let totalDecimalNum = 0;
+      let totalSurveyDecimalNum = 0;
+      let totalKathaNum = 0;
+      let totalValuationNum = 0;
+      let totalPaidNum = 0;
+      let totalAdjustedNum = 0;
+
+      filteredList.forEach(item => {
         const f = extractKhetDisplayFields(item);
-        const parsedBigha = parseFloat(String(f.rawBigha).replace(/[^0-9.]/g, "")) || 0;
-        totalBighaNum += parsedBigha;
+        totalDecimalNum += f.decimalArea;
+        totalSurveyDecimalNum += f.newDecimalSurvey;
+        totalKathaNum += f.katha;
+        totalValuationNum += f.totalLandValue;
         totalPaidNum += f.amountPaid;
+        totalAdjustedNum += f.adjustedAmount;
       });
 
-      if (countEl) countEl.innerText = String(list.length);
-      if (bighaEl) bighaEl.innerText = `${Number(totalBighaNum.toFixed(2))} Bigha`;
+      if (countEl) countEl.innerText = String(filteredList.length);
+      if (decEl) decEl.innerText = `${Number(totalDecimalNum.toFixed(2))} / ${Number(totalSurveyDecimalNum.toFixed(2))}`;
+      if (bighaEl) bighaEl.innerText = `${Number(totalKathaNum.toFixed(2))} Katha`;
+      if (valEl) valEl.innerText = `₹${totalValuationNum.toLocaleString("en-IN")}`;
       if (paidEl) paidEl.innerText = `₹${totalPaidNum.toLocaleString("en-IN")}`;
+      if (adjEl) adjEl.innerText = `₹${totalAdjustedNum.toLocaleString("en-IN")}`;
 
-      if (list.length === 0) {
+      if (bannerEl) {
+        const bHtml = buildKhetPartnerBannerHtml(filteredList);
+        bannerEl.innerHTML = bHtml;
+        bannerEl.style.display = bHtml ? "block" : "none";
+      }
+
+      if (filteredList.length === 0) {
         gridEl.innerHTML = `
           <div style="grid-column: 1 / -1; text-align:center; padding:26px 16px; background:rgba(15,23,42,0.38); border:1px dashed rgba(52,211,153,0.4); border-radius:16px; color:var(--text-muted);">
             <i class="fa-solid fa-wheat-awn" style="font-size:1.8rem; color:#34d399; margin-bottom:8px; display:block;"></i>
-            <strong style="color:var(--text-main); font-size:0.95rem;">No Khet (Field) Records Added Yet</strong>
-            <p style="font-size:0.78rem; margin-top:4px;">Click "Add / Manage Khet" to record field name, size in Bighas, holder name, amount paid, and payment date.</p>
+            <strong style="color:var(--text-main); font-size:0.95rem;">No Khet (Farmland) Records Match Current Filter</strong>
+            <p style="font-size:0.78rem; margin-top:4px;">Click "Add / Manage Khet &amp; Partners" to enter Registered Name, Partner KYC, Place, Khata No, Keshra No, Decimal, Survey Decimal, Katha, Rate/Katha, Paid &amp; Adjusted amounts.</p>
           </div>
         `;
         return;
       }
 
-      gridEl.innerHTML = list.map(item => {
-        const f = extractKhetDisplayFields(item);
-        const safeId = String(f.recId).replace(/'/g, "\\'");
-        return `
-          <div class="khet-stylish-card">
-            <div>
-              <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:10px;">
-                <div style="display:flex; align-items:center; gap:9px;">
-                  <div style="width:36px; height:36px; border-radius:10px; background:rgba(16,185,129,0.2); border:1px solid rgba(52,211,153,0.45); display:flex; align-items:center; justify-content:center; color:#34d399; font-size:1rem; flex-shrink:0;">
-                    <i class="fa-solid fa-seedling"></i>
-                  </div>
-                  <div>
-                    <div style="font-weight:800; font-size:0.96rem; color:var(--text-main);">${f.khetName}</div>
-                    <div style="font-size:0.7rem; color:#34d399; font-weight:700;"><i class="fa-solid fa-ruler-combined"></i> Size: ${f.bighaLabel}</div>
-                  </div>
-                </div>
-                <span style="background:rgba(16,185,129,0.2); color:#34d399; border:1px solid rgba(52,211,153,0.4); padding:4px 10px; border-radius:20px; font-size:0.78rem; font-weight:800;">
-                  ₹${f.amountPaid.toLocaleString('en-IN')}
-                </span>
-              </div>
-
-              <div style="display:flex; flex-direction:column; gap:6px;">
-                <div class="khet-detail-row">
-                  <span style="color:var(--text-muted);"><i class="fa-solid fa-map-pin" style="color:#34d399; width:16px;"></i> Field Name:</span>
-                  <strong>${f.khetName}</strong>
-                </div>
-                <div class="khet-detail-row">
-                  <span style="color:var(--text-muted);"><i class="fa-solid fa-ruler-combined" style="color:#38bdf8; width:16px;"></i> Field Size:</span>
-                  <strong style="color:#38bdf8;">${f.bighaLabel}</strong>
-                </div>
-                <div class="khet-detail-row">
-                  <span style="color:var(--text-muted);"><i class="fa-solid fa-user-tie" style="color:#fbbf24; width:16px;"></i> Holder Name:</span>
-                  <strong>${f.holderName}</strong>
-                </div>
-                <div class="khet-detail-row">
-                  <span style="color:var(--text-muted);"><i class="fa-solid fa-indian-rupee-sign" style="color:#34d399; width:16px;"></i> Amount Paid:</span>
-                  <strong style="color:var(--accent-green);">₹${f.amountPaid.toLocaleString('en-IN')}</strong>
-                </div>
-                <div class="khet-detail-row">
-                  <span style="color:var(--text-muted);"><i class="fa-regular fa-calendar-check" style="color:#a78bfa; width:16px;"></i> Payment Date:</span>
-                  <strong>${f.paymentDate}</strong>
-                </div>
-                ${f.notes ? `
-                <div class="khet-detail-row">
-                  <span style="color:var(--text-muted);"><i class="fa-solid fa-comment-dots" style="color:#94a3b8; width:16px;"></i> Notes:</span>
-                  <span>${f.notes}</span>
-                </div>` : ''}
-              </div>
-            </div>
-
-            <div class="admin-only" style="display:flex; justify-content:flex-end; align-items:center; gap:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.08);">
-              <button type="button" class="btn-ledger-action edit-btn" onclick="editKhetRecord('${safeId}', true)" title="Edit Khet Details">
-                <i class="fa-solid fa-pen-to-square"></i> Edit
-              </button>
-              <button type="button" class="btn-ledger-action" style="color:var(--accent-red); border-color:rgba(239,68,68,0.4);" onclick="deleteKhetRecord('${safeId}')" title="Delete Khet Record">
-                <i class="fa-solid fa-trash-can"></i> Delete
-              </button>
-            </div>
-          </div>
-        `;
-      }).join("");
+      if (activeKhetViewMode === "table") {
+        gridEl.innerHTML = buildKhetMasterTableHtml(filteredList);
+      } else {
+        gridEl.innerHTML = filteredList.map(item => buildKhetDetailedCardHtml(item)).join("");
+      }
     }
 
     function renderKhetRecordsList() {
       const container = document.getElementById("khetRecordsList");
+      const bannerEl = document.getElementById("khetModalPartnerBanner");
       if (!container) return;
-      const list = getStoredKhetRecords();
-      if (list.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding:18px; color:var(--text-muted); font-size:0.82rem;">No Khet (Field) records added yet.</div>`;
+
+      populateKhetPartnerFilterAndQuickFill();
+      const filteredList = getFilteredKhetList();
+
+      if (bannerEl) {
+        const bHtml = buildKhetPartnerBannerHtml(filteredList);
+        bannerEl.innerHTML = bHtml;
+        bannerEl.style.display = bHtml ? "block" : "none";
+      }
+
+      if (filteredList.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:0.82rem; background:rgba(15,23,42,0.4); border-radius:12px; border:1px dashed rgba(52,211,153,0.3);">No Khet records found for the selected partner/search filter.</div>`;
         return;
       }
-      container.innerHTML = list.map(item => {
+
+      if (activeKhetViewMode === "table") {
+        container.innerHTML = buildKhetMasterTableHtml(filteredList);
+        return;
+      }
+
+      container.innerHTML = filteredList.map(item => {
         const f = extractKhetDisplayFields(item);
         const safeId = String(f.recId).replace(/'/g, "\\'");
+        const safePartner = String(f.partnerName).replace(/'/g, "\\'");
         return `
-          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:12px 14px; background:var(--bg-input); border:1px solid rgba(52,211,153,0.35); border-left:4px solid #10b981; border-radius:12px;">
-            <div style="flex:1; min-width:0;">
-              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <strong style="font-size:0.9rem;">${f.khetName}</strong>
-                <span style="font-size:0.72rem; background:rgba(56,189,248,0.16); color:#38bdf8; padding:2px 8px; border-radius:12px; font-weight:700;">${f.bighaLabel}</span>
-                <span style="font-size:0.78rem; color:var(--accent-green); font-weight:800;">Paid: ₹${f.amountPaid.toLocaleString('en-IN')}</span>
+          <div style="padding:12px 14px; background:rgba(15,23,42,0.72); border:1px solid rgba(52,211,153,0.35); border-left:5px solid #10b981; border-radius:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
+              <div style="flex:1; min-width:240px;">
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                  <strong style="font-size:0.95rem; color:#f8fafc;">${f.place}</strong>
+                  <span style="font-size:0.7rem; background:rgba(16,185,129,0.18); color:#34d399; padding:2px 8px; border-radius:10px; font-weight:700;">Reg: ${f.registeredName}</span>
+                  <span style="font-size:0.7rem; background:rgba(251,191,36,0.18); color:#fbbf24; padding:2px 8px; border-radius:10px; font-weight:700;">Khata: ${f.khataNo} | Keshra: ${f.keshraNo}</span>
+                  <span style="font-size:0.7rem; background:rgba(56,189,248,0.18); color:#38bdf8; padding:2px 8px; border-radius:10px; font-weight:700;">${f.bighaLabel} ${f.ratePerKatha ? '@ ₹' + f.ratePerKatha.toLocaleString('en-IN') + '/Katha' : ''}</span>
+                </div>
+
+                <div style="font-size:0.74rem; color:#cbd5e1; margin-top:5px; display:flex; flex-wrap:wrap; gap:10px;">
+                  <span>Orig Decimal: <strong>${f.decimalArea || '--'}</strong></span>
+                  <span>New Survey Decimal: <strong style="color:#a78bfa;">${f.newDecimalSurvey || '--'}</strong></span>
+                  <span>Total Land Value: <strong style="color:#fbbf24;">${f.totalLandValue ? '₹' + f.totalLandValue.toLocaleString('en-IN') : '--'}</strong></span>
+                </div>
+
+                <div style="font-size:0.74rem; color:#fde68a; margin-top:5px; background:rgba(245,158,11,0.1); padding:5px 9px; border-radius:8px; border:1px solid rgba(251,191,36,0.22);">
+                  <i class="fa-solid fa-user-check"></i> <strong>Partner: ${f.partnerName}</strong>
+                  &nbsp;|&nbsp; Aadhaar: <strong>${f.partnerAadhaar}</strong>
+                  &nbsp;|&nbsp; Mob: <strong style="color:#34d399;">${f.partnerMobile}</strong>
+                  &nbsp;|&nbsp; Addr: <span>${f.partnerAddress}</span>
+                  ${f.partnerName !== '--' ? `<button type="button" onclick="setKhetPartnerFilter('${safePartner}')" style="margin-left:6px; background:rgba(251,191,36,0.22); color:#fcd34d; border:none; border-radius:6px; padding:1px 6px; font-size:0.65rem; cursor:pointer;">Filter Partner</button>` : ''}
+                </div>
+
+                <div style="font-size:0.74rem; color:var(--text-muted); margin-top:5px; display:flex; flex-wrap:wrap; gap:12px;">
+                  <span>Paid: <strong style="color:#34d399;">₹${f.amountPaid.toLocaleString('en-IN')}</strong></span>
+                  <span>Adjusted: <strong style="color:#38bdf8;">₹${f.adjustedAmount.toLocaleString('en-IN')}</strong></span>
+                  <span>Net Settled: <strong style="color:#10b981;">₹${f.netSettled.toLocaleString('en-IN')}</strong></span>
+                  <span>Balance: <strong style="color:${f.remainingBalance > 0 ? '#f87171' : '#a78bfa'};">₹${f.remainingBalance.toLocaleString('en-IN')}</strong></span>
+                  <span>Date: <strong>${f.paymentDate}</strong></span>
+                  ${f.notes ? `<span>Notes: <em>${f.notes}</em></span>` : ''}
+                </div>
               </div>
-              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">
-                Holder: <strong>${f.holderName}</strong> &nbsp;|&nbsp; Payment Date: <strong>${f.paymentDate}</strong> ${f.notes ? ' | ' + f.notes : ''}
+
+              <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
+                <button type="button" class="btn-ledger-action edit-btn admin-only" onclick="editKhetRecord('${safeId}')" title="Edit Khet & Partner Details">
+                  <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
+                <button type="button" class="btn-ledger-action admin-only" style="color:var(--accent-red);" onclick="deleteKhetRecord('${safeId}')" title="Delete Khet Record">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
               </div>
-            </div>
-            <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
-              <button type="button" class="btn-ledger-action edit-btn admin-only" onclick="editKhetRecord('${safeId}')" title="Edit Khet (Field) Details">
-                <i class="fa-solid fa-pen-to-square"></i> Edit
-              </button>
-              <button type="button" class="btn-ledger-action admin-only" style="color:var(--accent-red);" onclick="deleteKhetRecord('${safeId}')" title="Delete Khet Record">
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
             </div>
           </div>
         `;
