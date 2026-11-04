@@ -4929,6 +4929,22 @@
     </div>
   </div>
 
+  <!-- REQUIREMENT 1: SINGLE-DEVICE SESSION CONFLICT POPUP MODAL -->
+  <div id="sessionConflictModal" class="modal-overlay" style="z-index: 99999; background: rgba(2, 6, 23, 0.88); backdrop-filter: blur(16px);">
+    <div class="modal-content" style="max-width: 440px; width: 92%; text-align: center; border: 2px solid #f43f5e; background: linear-gradient(145deg, #0f172a 0%, #1e1b4b 55%, #31102f 100%); box-shadow: 0 24px 60px rgba(244, 63, 94, 0.38); border-radius: 24px; padding: 28px 24px;">
+      <div style="width: 68px; height: 68px; border-radius: 50%; background: linear-gradient(135deg, rgba(244, 63, 94, 0.28), rgba(249, 115, 22, 0.25)); border: 2px solid #f43f5e; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; color: #fb7185; font-size: 1.85rem; box-shadow: 0 0 24px rgba(244, 63, 94, 0.4);">
+        <i class="fa-solid fa-laptop-medical"></i>
+      </div>
+      <h3 style="font-size: 1.22rem; font-weight: 900; color: #ffffff; margin: 0 0 10px 0;">Logged In on Another Device</h3>
+      <p id="sessionConflictMessage" style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.55; margin: 0 0 22px 0;">
+        This ID has been logged in elsewhere on another device. Only one device is allowed at a time, so this session has been automatically logged out.
+      </p>
+      <button type="button" class="btn-primary" style="width: 100%; padding: 12px 20px; font-size: 0.95rem; font-weight: 800; border-radius: 14px; background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%); box-shadow: 0 8px 22px rgba(244, 63, 94, 0.4);" onclick="confirmSessionConflictRedirect()">
+        <i class="fa-solid fa-circle-check"></i> OK — Return to Login Screen
+      </button>
+    </div>
+  </div>
+
 <script>
     /**
      * ============================================================================
@@ -4961,6 +4977,9 @@
     let activeRole = "Admin";
     let activeAssignedProperty = "";
     let activeAssignedFlat = "";
+    let activeAssignedAadhaar = "";
+    let activeSessionToken = "";
+    let isSessionConflictModalOpen = false;
     let activeThemePref = "black";
     let selectedProperty = null;
     let selectedFlat = null;
@@ -5069,28 +5088,42 @@
       }
     }
 
-    function syncServerBackgroundsToLocal(globalConfig, userBgLogin, userBgDash) {
-      let updated = false;
+    function syncServerBackgroundsToLocal(globalConfig, userBgLogin, userBgDash, hasServerConfig = true) {
       const rawLoginBg =
-        (userBgLogin && String(userBgLogin).trim()) ||
         (globalConfig && (globalConfig.bgLoginUrl || globalConfig.bgLogin) && String(globalConfig.bgLoginUrl || globalConfig.bgLogin).trim()) ||
+        (userBgLogin && String(userBgLogin).trim()) ||
+        (globalConfig && globalConfig.backgroundUrl && String(globalConfig.backgroundUrl).trim()) ||
         "";
       const rawDashBg =
-        (userBgDash && String(userBgDash).trim()) ||
         (globalConfig && (globalConfig.bgDashboardUrl || globalConfig.bgDashboard) && String(globalConfig.bgDashboardUrl || globalConfig.bgDashboard).trim()) ||
+        (userBgDash && String(userBgDash).trim()) ||
+        (globalConfig && globalConfig.backgroundUrl && String(globalConfig.backgroundUrl).trim()) ||
         "";
 
       const serverLoginBg = normalizeGoogleDriveImageUrl(rawLoginBg);
       const serverDashBg = normalizeGoogleDriveImageUrl(rawDashBg);
 
-      if (serverLoginBg && localStorage.getItem("portal_custom_bg_login") !== serverLoginBg) {
-        localStorage.setItem("portal_custom_bg_login", serverLoginBg);
+      let updated = false;
+      if (serverLoginBg) {
+        if (localStorage.getItem("portal_custom_bg_login") !== serverLoginBg) {
+          localStorage.setItem("portal_custom_bg_login", serverLoginBg);
+          updated = true;
+        }
+      } else if (hasServerConfig && localStorage.getItem("portal_custom_bg_login")) {
+        localStorage.removeItem("portal_custom_bg_login");
         updated = true;
       }
-      if (serverDashBg && localStorage.getItem("portal_custom_bg_dashboard") !== serverDashBg) {
-        localStorage.setItem("portal_custom_bg_dashboard", serverDashBg);
+
+      if (serverDashBg) {
+        if (localStorage.getItem("portal_custom_bg_dashboard") !== serverDashBg) {
+          localStorage.setItem("portal_custom_bg_dashboard", serverDashBg);
+          updated = true;
+        }
+      } else if (hasServerConfig && localStorage.getItem("portal_custom_bg_dashboard")) {
+        localStorage.removeItem("portal_custom_bg_dashboard");
         updated = true;
       }
+
       if (updated) {
         applyCustomBackgrounds();
         initCustomBgInputs();
@@ -5098,10 +5131,17 @@
     }
 
     async function saveCustomBackgrounds() {
+      if (String(activeRole || "").trim().toLowerCase() !== "admin") {
+        return triggerSideToast("Admin Permission Required", "Only the Admin has authority to change the background photo.", false);
+      }
       const inputLogin = document.getElementById("bgUrlLoginScreen");
       const inputDash = document.getElementById("bgUrlDashboardScreen");
-      const loginVal = normalizeGoogleDriveImageUrl(inputLogin ? inputLogin.value.trim() : "");
-      const dashVal = normalizeGoogleDriveImageUrl(inputDash ? inputDash.value.trim() : "");
+      let loginVal = normalizeGoogleDriveImageUrl(inputLogin ? inputLogin.value.trim() : "");
+      let dashVal = normalizeGoogleDriveImageUrl(inputDash ? inputDash.value.trim() : "");
+
+      // If Admin set one background photo, apply it to both Dashboard & Login if the other is blank so it displays everywhere
+      if (dashVal && !loginVal) loginVal = dashVal;
+      if (loginVal && !dashVal) dashVal = loginVal;
 
       if (inputLogin) inputLogin.value = loginVal;
       if (inputDash) inputDash.value = dashVal;
@@ -5114,7 +5154,7 @@
 
       applyCustomBackgrounds();
       initCustomBgInputs();
-      triggerSideToast("Backgrounds Updated", "Custom background images converted & synced across all devices!", true);
+      triggerSideToast("Global Background Saved", "Admin background photo applied & synced across all devices and roles!", true);
 
       if (activeUser) {
         try {
@@ -5129,6 +5169,9 @@
     }
 
     function deleteCustomBgImage(type) {
+      if (String(activeRole || "").trim().toLowerCase() !== "admin") {
+        return triggerSideToast("Admin Permission Required", "Only the Admin has authority to change or remove the background photo.", false);
+      }
       if (type === "login") {
         localStorage.removeItem("portal_custom_bg_login");
         const input = document.getElementById("bgUrlLoginScreen");
