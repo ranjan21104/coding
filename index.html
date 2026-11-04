@@ -2601,45 +2601,9 @@
     display: none !important;
   }
 
-  /* Requirement 2, 3, 4 & 5: Stylish & Colorful Dashboard, FD & Khet Enhancements */
-  header.top-nav {
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(30, 27, 75, 0.85) 50%, rgba(15, 23, 42, 0.9) 100%) !important;
-    border-bottom: 1.5px solid rgba(99, 102, 241, 0.45) !important;
-    box-shadow: 0 12px 34px rgba(2, 6, 23, 0.65), 0 0 24px rgba(99, 102, 241, 0.18) !important;
-  }
-
-  .nav-left h2 {
-    background: linear-gradient(135deg, #38bdf8 0%, #a855f7 55%, #ec4899 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: 900 !important;
-    letter-spacing: 0.8px;
-  }
-
-  .pnl-tracker {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(15, 23, 42, 0.82) 50%, rgba(244, 63, 94, 0.16) 100%) !important;
-    border: 1.5px solid rgba(56, 189, 248, 0.38) !important;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35) !important;
-  }
-
-  .fd-icon-only-btn {
-    width: 42px !important;
-    height: 42px !important;
-    padding: 0 !important;
-    border-radius: 12px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.28) 0%, rgba(236, 72, 153, 0.25) 100%) !important;
-    border: 1.5px solid rgba(129, 140, 248, 0.55) !important;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.28) !important;
-    transition: all 0.22s ease !important;
-  }
-  .fd-icon-only-btn:hover {
-    transform: translateY(-2px) scale(1.04) !important;
-    box-shadow: 0 8px 22px rgba(236, 72, 153, 0.42) !important;
-  }
-
+  /* Requirement 1, 8 & 9: Clean Standard Dashboard Theme (Colorful Theme Removed), Icon-Only Header Buttons & White Outline-Only FD Modal */
+  .fd-icon-only-btn,
+  .kharch-icon-only-btn,
   .khet-icon-only-btn {
     width: 42px !important;
     height: 42px !important;
@@ -2648,65 +2612,59 @@
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.28) 0%, rgba(245, 158, 11, 0.24) 100%) !important;
-    border: 1.5px solid rgba(52, 211, 153, 0.55) !important;
-    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.28) !important;
+    background: var(--bg-input) !important;
+    border: 1.5px solid var(--glass-border) !important;
+    transition: all 0.2s ease !important;
+  }
+  .fd-icon-only-btn:hover,
+  .kharch-icon-only-btn:hover,
+  .khet-icon-only-btn:hover {
+    transform: translateY(-2px) !important;
+    border-color: var(--primary) !important;
   }
 
-  .property-block {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(49, 46, 129, 0.55) 100%) !important;
-    border: 1.5px solid rgba(99, 102, 241, 0.4) !important;
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35) !important;
-  }
-  .property-block.active {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 52%, #db2777 100%) !important;
-    border-color: #f472b6 !important;
-    box-shadow: 0 10px 28px rgba(124, 58, 237, 0.5) !important;
-  }
-
-  .flat-card {
-    background: linear-gradient(145deg, rgba(15, 23, 42, 0.86) 0%, rgba(30, 27, 75, 0.65) 100%) !important;
-    border: 1.5px solid rgba(99, 102, 241, 0.32) !important;
-    box-shadow: 0 12px 28px rgba(2, 6, 23, 0.5) !important;
-  }
-  .flat-card:hover {
-    border-color: #38bdf8 !important;
-    box-shadow: 0 16px 36px rgba(56, 189, 248, 0.25) !important;
-  }
-
-  /* Requirement 4: Colorful & Stylish FD Modal & Cards */
+  /* Requirement 9: White Background for FD Modal & Modern Stylish Outline-Only Inner Boxes */
   #fdModal .modal-window {
-    background: linear-gradient(155deg, rgba(10, 15, 32, 0.97) 0%, rgba(30, 27, 75, 0.95) 50%, rgba(19, 34, 56, 0.97) 100%) !important;
-    border: 2px solid rgba(56, 189, 248, 0.5) !important;
-    box-shadow: 0 28px 70px rgba(14, 165, 233, 0.28) !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1.5px solid #cbd5e1 !important;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28) !important;
   }
-
-  /* Requirement 5: Colorful & Stylish Khet Section & Modal */
-  #khetModal .modal-window {
-    background: linear-gradient(155deg, rgba(6, 24, 20, 0.97) 0%, rgba(15, 23, 42, 0.96) 50%, rgba(28, 25, 23, 0.97) 100%) !important;
-    border: 2px solid rgba(16, 185, 129, 0.55) !important;
-    box-shadow: 0 28px 70px rgba(16, 185, 129, 0.28) !important;
+  #fdModal .modal-close-btn {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    border: 1.5px solid #cbd5e1 !important;
   }
-
-  .home-khet-shell {
-    background: linear-gradient(140deg, rgba(6, 38, 30, 0.84) 0%, rgba(15, 23, 42, 0.9) 50%, rgba(45, 27, 68, 0.82) 100%) !important;
-    border: 2px solid rgba(52, 211, 153, 0.5) !important;
-    box-shadow: 0 20px 50px rgba(16, 185, 129, 0.22) !important;
+  #fdModal label {
+    color: #334155 !important;
+    font-weight: 700 !important;
+  }
+  #fdModal .form-control {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1.5px solid #cbd5e1 !important;
+    box-shadow: none !important;
+  }
+  #fdModal .form-control:focus {
+    border-color: #4f46e5 !important;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12) !important;
+  }
+  #fdModal .btn-ledger-action {
+    background: #ffffff !important;
+    color: #1e293b !important;
+    border: 1.5px solid #cbd5e1 !important;
   }
 
   .khet-stylish-card {
-    background: linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(6, 52, 40, 0.55) 55%, rgba(30, 27, 75, 0.65) 100%) !important;
-    border: 1.5px solid rgba(52, 211, 153, 0.45) !important;
-    border-top: 4px solid #10b981 !important;
-    border-radius: 18px !important;
+    background: var(--bg-card) !important;
+    border: 1.5px solid var(--glass-border) !important;
+    border-top: 3px solid var(--accent-green) !important;
+    border-radius: 16px !important;
     padding: 15px !important;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.42) !important;
-    transition: transform 0.22s ease, box-shadow 0.22s ease !important;
+    transition: transform 0.2s ease !important;
   }
   .khet-stylish-card:hover {
-    transform: translateY(-3px) !important;
-    border-color: #fbbf24 !important;
-    box-shadow: 0 16px 36px rgba(16, 185, 129, 0.3) !important;
+    transform: translateY(-2px) !important;
   }
 
   @media (max-width: 960px) {
@@ -2877,79 +2835,79 @@
     </div>
   </div>
 
-  <!-- FD (FIXED DEPOSIT & FUND UTILIZATION PORTFOLIO) POP-UP MODAL (AUTO-SAVES TO GOOGLE SHEET + EDIT SUPPORT) -->
+  <!-- FD (FIXED DEPOSIT & FUND UTILIZATION PORTFOLIO) POP-UP MODAL (Requirement 9: White Background & Clean Modern Outline-Only Boxes) -->
   <div id="fdModal" class="modal-overlay" style="z-index: 2800;">
-    <div class="modal-window" style="max-width: 980px; width: 96%;">
+    <div class="modal-window" style="max-width: 980px; width: 96%; background: #ffffff; color: #0f172a;">
       <button class="modal-close-btn" onclick="closeModal('fdModal')"><i class="fa-solid fa-xmark"></i></button>
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding-right:36px; margin-bottom: 12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding-right:36px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1.5px solid #e2e8f0;">
         <div>
-          <h3 style="display:flex; align-items:center; gap:8px; margin:0; font-size:1.15rem;">
-            <i class="fa-solid fa-building-columns" style="color:var(--primary);"></i> FD, Savings &amp; Place Collection Utilization Portfolio
+          <h3 style="display:flex; align-items:center; gap:8px; margin:0; font-size:1.15rem; color:#0f172a; font-weight:800;">
+            <i class="fa-solid fa-building-columns" style="color:#4f46e5;"></i> FD, Savings &amp; Place Collection Utilization Portfolio
           </h3>
-          <div style="font-size:0.74rem; color:var(--text-muted); margin-top:2px;">
+          <div style="font-size:0.75rem; color:#475569; margin-top:2px;">
             Track total amount collected by each place, what purpose it was used for, and full Saving / Future Saving FD details
           </div>
         </div>
-        <span style="font-size:0.7rem; font-weight:700; color:var(--accent-green); background:rgba(16,185,129,0.14); padding:4px 10px; border-radius:20px; border:1px solid rgba(16,185,129,0.3);">
+        <span style="font-size:0.7rem; font-weight:800; color:#059669; background:#ffffff; padding:5px 12px; border-radius:20px; border:1.5px solid #10b981;">
           <i class="fa-solid fa-cloud-arrow-up"></i> Live Sheet Sync
         </span>
       </div>
 
-      <!-- Place-Wise Collection Summary & Portfolio KPI Banner (Requirement 4: Colorful & Stylish FD Section) -->
-      <div id="fdTotalCollectionsBanner" style="margin-bottom:14px; background:linear-gradient(135deg, rgba(79,70,229,0.28) 0%, rgba(14,165,233,0.22) 50%, rgba(236,72,153,0.22) 100%); border:1.5px solid rgba(56,189,248,0.55); border-radius:18px; padding:15px; box-shadow: 0 12px 32px rgba(14,165,233,0.18);">
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap:10px; margin-bottom:12px;">
-          <div style="background:linear-gradient(135deg, rgba(16,185,129,0.26) 0%, rgba(5,150,105,0.14) 100%); border:1.5px solid rgba(52,211,153,0.5); border-radius:14px; padding:11px 13px; box-shadow:0 6px 16px rgba(16,185,129,0.15);">
-            <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:#a7f3d0; letter-spacing:0.4px;">
-              <i class="fa-solid fa-wallet" style="color:#34d399;"></i> Total Collected (All Places)
+      <!-- Place-Wise Collection Summary & Portfolio KPI Banner (Clean Outline-Only Separate Boxes on White Background) -->
+      <div id="fdTotalCollectionsBanner" style="margin-bottom:16px; background:#ffffff; border:1.5px solid #cbd5e1; border-radius:16px; padding:16px;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap:12px; margin-bottom:14px;">
+          <div style="background:#ffffff; border:1.5px solid #10b981; border-radius:14px; padding:12px 14px;">
+            <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:#047857; letter-spacing:0.4px;">
+              <i class="fa-solid fa-wallet" style="color:#10b981;"></i> Total Collected (All Places)
             </div>
-            <div id="fdTotalAmountDisplay" style="font-size:1.3rem; font-weight:900; color:#34d399; margin-top:4px;">₹0</div>
+            <div id="fdTotalAmountDisplay" style="font-size:1.3rem; font-weight:900; color:#065f46; margin-top:4px;">₹0</div>
           </div>
-          <div style="background:linear-gradient(135deg, rgba(14,165,233,0.26) 0%, rgba(37,99,235,0.16) 100%); border:1.5px solid rgba(56,189,248,0.5); border-radius:14px; padding:11px 13px; box-shadow:0 6px 16px rgba(14,165,233,0.15);">
-            <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:#bae6fd; letter-spacing:0.4px;">
-              <i class="fa-solid fa-piggy-bank" style="color:#38bdf8;"></i> Total in Saving / Future FD
+          <div style="background:#ffffff; border:1.5px solid #0ea5e9; border-radius:14px; padding:12px 14px;">
+            <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:#0369a1; letter-spacing:0.4px;">
+              <i class="fa-solid fa-piggy-bank" style="color:#0ea5e9;"></i> Total in Saving / Future FD
             </div>
-            <div id="fdTotalSavingFundedDisplay" style="font-size:1.25rem; font-weight:900; color:#38bdf8; margin-top:4px;">₹0</div>
-            <div id="fdTotalMaturityValueDisplay" style="font-size:0.7rem; font-weight:700; color:#e0f2fe; margin-top:2px;">Maturity Value: ₹0</div>
+            <div id="fdTotalSavingFundedDisplay" style="font-size:1.25rem; font-weight:900; color:#0c4a6e; margin-top:4px;">₹0</div>
+            <div id="fdTotalMaturityValueDisplay" style="font-size:0.7rem; font-weight:700; color:#0284c7; margin-top:2px;">Maturity Value: ₹0</div>
           </div>
-          <div style="background:linear-gradient(135deg, rgba(245,158,11,0.26) 0%, rgba(217,119,6,0.15) 100%); border:1.5px solid rgba(251,191,36,0.5); border-radius:14px; padding:11px 13px; box-shadow:0 6px 16px rgba(245,158,11,0.15);">
-            <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:#fde68a; letter-spacing:0.4px;">
-              <i class="fa-solid fa-screwdriver-wrench" style="color:#fbbf24;"></i> Used for Other Purposes
+          <div style="background:#ffffff; border:1.5px solid #f59e0b; border-radius:14px; padding:12px 14px;">
+            <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:#b45309; letter-spacing:0.4px;">
+              <i class="fa-solid fa-screwdriver-wrench" style="color:#f59e0b;"></i> Used for Other Purposes
             </div>
-            <div id="fdTotalOtherPurposeDisplay" style="font-size:1.25rem; font-weight:900; color:#fbbf24; margin-top:4px;">₹0</div>
-            <div id="fdTotalAllocatedCountDisplay" style="font-size:0.7rem; font-weight:700; color:#fef3c7; margin-top:2px;">0 Portfolio Entries</div>
+            <div id="fdTotalOtherPurposeDisplay" style="font-size:1.25rem; font-weight:900; color:#92400e; margin-top:4px;">₹0</div>
+            <div id="fdTotalAllocatedCountDisplay" style="font-size:0.7rem; font-weight:700; color:#d97706; margin-top:2px;">0 Portfolio Entries</div>
           </div>
-          <div style="background:linear-gradient(135deg, rgba(168,85,247,0.28) 0%, rgba(236,72,153,0.16) 100%); border:1.5px solid rgba(192,132,252,0.5); border-radius:14px; padding:11px 13px; box-shadow:0 6px 16px rgba(168,85,247,0.15);">
-            <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:#e9d5ff; letter-spacing:0.4px;">
-              <i class="fa-solid fa-scale-balanced" style="color:#c084fc;"></i> Remaining Unallocated Pool
+          <div style="background:#ffffff; border:1.5px solid #8b5cf6; border-radius:14px; padding:12px 14px;">
+            <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:#6d28d9; letter-spacing:0.4px;">
+              <i class="fa-solid fa-scale-balanced" style="color:#8b5cf6;"></i> Remaining Unallocated Pool
             </div>
-            <div id="fdRemainingPoolDisplay" style="font-size:1.25rem; font-weight:900; color:#e879f9; margin-top:4px;">₹0</div>
-            <div style="font-size:0.7rem; font-weight:600; color:#f3e8ff; margin-top:2px;">Collected minus Total Used</div>
+            <div id="fdRemainingPoolDisplay" style="font-size:1.25rem; font-weight:900; color:#5b21b6; margin-top:4px;">₹0</div>
+            <div style="font-size:0.7rem; font-weight:600; color:#64748b; margin-top:2px;">Collected minus Total Used</div>
           </div>
         </div>
 
-        <div style="font-size:0.72rem; font-weight:800; text-transform:uppercase; color:#e2e8f0; margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px;">
-          <span><i class="fa-solid fa-building-user" style="color:#38bdf8;"></i> Place-Wise Collection, Used Purpose &amp; Remaining Balance (Click any Place to filter portfolio):</span>
-          <button type="button" class="btn-ledger-action" style="padding:3px 10px; font-size:0.68rem; background:linear-gradient(135deg, #6366f1, #ec4899); color:#fff; border:none;" onclick="setFdPlaceFilter('ALL')">Show All Places</button>
+        <div style="font-size:0.72rem; font-weight:800; text-transform:uppercase; color:#334155; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+          <span><i class="fa-solid fa-building-user" style="color:#4f46e5;"></i> Place-Wise Collection, Used Purpose &amp; Remaining Balance (Click any Place to filter portfolio):</span>
+          <button type="button" class="btn-ledger-action" style="padding:4px 12px; font-size:0.7rem; background:#ffffff !important; color:#4f46e5 !important; border:1.5px solid #4f46e5 !important; font-weight:800;" onclick="setFdPlaceFilter('ALL')">Show All Places</button>
         </div>
-        <div id="fdPropertyBreakdownBadges" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:8px; font-size:0.74rem;"></div>
+        <div id="fdPropertyBreakdownBadges" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap:10px; font-size:0.74rem;"></div>
       </div>
 
-      <!-- Portfolio / Saving / Utilization Entry Form -->
-      <div class="calc-grid-card admin-only" style="margin-bottom: 14px; border-left: 5px solid #6366f1; background: linear-gradient(135deg, rgba(99, 102, 241, 0.14) 0%, rgba(15, 23, 42, 0.72) 100%);">
-        <div class="calc-grid-title" style="margin-bottom:10px;">
-          <span id="fdFormTitle" style="color:#a5b4fc; font-weight:800;"><i class="fa-solid fa-briefcase"></i> Add Portfolio Usage / Saving (FD) Entry</span>
+      <!-- Portfolio / Saving / Utilization Entry Form (Clean Outline-Only Box) -->
+      <div class="calc-grid-card admin-only" style="margin-bottom: 16px; background: #ffffff !important; border: 1.5px solid #cbd5e1 !important; border-left: 4px solid #4f46e5 !important; border-radius: 16px !important; padding: 16px !important; box-shadow: none !important;">
+        <div class="calc-grid-title" style="margin-bottom:12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
+          <span id="fdFormTitle" style="color:#0f172a; font-weight:800;"><i class="fa-solid fa-briefcase" style="color:#4f46e5;"></i> Add Portfolio Usage / Saving (FD) Entry</span>
           <button type="button" id="btnCancelFdEdit" class="btn-ledger-action" style="display:none; padding:4px 10px; font-size:0.72rem;" onclick="cancelFdEdit()">
             <i class="fa-solid fa-xmark"></i> Cancel Edit
           </button>
         </div>
 
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:10px; margin-bottom:10px;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:12px; margin-bottom:12px;">
           <div class="form-group" style="margin-bottom:0;">
-            <label><i class="fa-solid fa-location-dot" style="color:#38bdf8;"></i> Source Place / Property <span class="req-star">*</span></label>
+            <label><i class="fa-solid fa-location-dot" style="color:#0284c7;"></i> Source Place / Property <span class="req-star">*</span></label>
             <select id="fdSourceProperty" class="form-control"></select>
           </div>
           <div class="form-group" style="margin-bottom:0;">
-            <label><i class="fa-solid fa-tags" style="color:#fbbf24;"></i> Utilization Category <span class="req-star">*</span></label>
+            <label><i class="fa-solid fa-tags" style="color:#d97706;"></i> Utilization Category <span class="req-star">*</span></label>
             <select id="fdPurposeType" class="form-control" onchange="handleFdPurposeTypeChange()">
               <option value="Saving / Fixed Deposit (FD)">Saving / Fixed Deposit (FD)</option>
               <option value="Future Saving">Future Saving / Long-Term Deposit</option>
@@ -2960,26 +2918,26 @@
             </select>
           </div>
           <div class="form-group" style="margin-bottom:0;">
-            <label><i class="fa-solid fa-bullseye" style="color:#34d399;"></i> Used For What Purpose <span class="req-star">*</span></label>
+            <label><i class="fa-solid fa-bullseye" style="color:#059669;"></i> Used For What Purpose <span class="req-star">*</span></label>
             <input type="text" id="fdUsedPurpose" class="form-control" placeholder="e.g. Future Education FD, Roof Repair, Khet Advance">
           </div>
           <div class="form-group" style="margin-bottom:0;">
-            <label><i class="fa-solid fa-indian-rupee-sign" style="color:#34d399;"></i> Total Initial Funding / Used Amount (₹) <span class="req-star">*</span></label>
+            <label><i class="fa-solid fa-indian-rupee-sign" style="color:#059669;"></i> Total Initial Funding / Used Amount (₹) <span class="req-star">*</span></label>
             <input type="number" id="fdAmount" class="form-control" placeholder="100000" oninput="autoEstimateFdMaturity()">
           </div>
           <div class="form-group" style="margin-bottom:0;">
-            <label><i class="fa-regular fa-calendar-check" style="color:#a78bfa;"></i> Usage / Start Date <span class="req-star">*</span></label>
+            <label><i class="fa-regular fa-calendar-check" style="color:#6d28d9;"></i> Usage / Start Date <span class="req-star">*</span></label>
             <input type="date" id="fdUsageDate" class="form-control">
           </div>
         </div>
 
-        <!-- Saving / Future Saving Banking Details Block -->
-        <div id="fdSavingDetailsSection" style="background:rgba(15,23,42,0.58); border:1px solid rgba(56,189,248,0.35); border-radius:12px; padding:12px; margin-bottom:10px;">
-          <div style="font-size:0.75rem; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-            <span><i class="fa-solid fa-building-columns"></i> Complete Saving / Future Saving Bank &amp; Maturity Details</span>
-            <span style="font-size:0.68rem; color:var(--text-muted); font-weight:600;">Fill Bank, Account No., Interest Rate &amp; Maturity Amount</span>
+        <!-- Saving / Future Saving Banking Details Block (Outline-Only Box) -->
+        <div id="fdSavingDetailsSection" style="background:#ffffff; border:1.5px solid #94a3b8; border-radius:14px; padding:14px; margin-bottom:12px;">
+          <div style="font-size:0.75rem; font-weight:800; color:#0f172a; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; border-bottom:1px dashed #cbd5e1; padding-bottom:6px;">
+            <span><i class="fa-solid fa-building-columns" style="color:#0284c7;"></i> Complete Saving / Future Saving Bank &amp; Maturity Details</span>
+            <span style="font-size:0.68rem; color:#64748b; font-weight:600;">Fill Bank, Account No., Interest Rate &amp; Maturity Amount</span>
           </div>
-          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap:10px;">
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap:12px;">
             <div class="form-group" style="margin-bottom:0;">
               <label>Bank / Institution Name <span id="fdBankReqStar" class="req-star">*</span></label>
               <input type="text" id="fdBankName" class="form-control" placeholder="e.g. SBI / HDFC / Post Office">
@@ -3003,23 +2961,23 @@
           </div>
         </div>
 
-        <div class="form-group" style="margin-bottom:10px;">
-          <label><i class="fa-solid fa-note-sticky" style="color:#94a3b8;"></i> Detailed Notes / Remarks</label>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label><i class="fa-solid fa-note-sticky" style="color:#475569;"></i> Detailed Notes / Remarks</label>
           <input type="text" id="fdNotes" class="form-control" placeholder="Nominee details, branch name, voucher ref, or any extra notes">
         </div>
 
-        <button type="button" id="btnSubmitFdRecord" class="btn-primary" onclick="addFdRecord()">
+        <button type="button" id="btnSubmitFdRecord" class="btn-primary" style="background:#4f46e5; color:#ffffff;" onclick="addFdRecord()">
           <i class="fa-solid fa-check"></i> <span id="btnSubmitFdRecordText">Save Portfolio &amp; FD Entry to Google Sheet</span>
         </button>
       </div>
 
-      <!-- Portfolio Filter & Search Bar -->
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; background:rgba(15,23,42,0.5); padding:8px 12px; border-radius:12px; border:1px solid var(--glass-border);">
+      <!-- Portfolio Filter & Search Bar (Outline-Only Box) -->
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px; background:#ffffff; padding:10px 14px; border-radius:14px; border:1.5px solid #cbd5e1;">
         <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-          <span style="font-size:0.74rem; font-weight:800; color:var(--text-muted);"><i class="fa-solid fa-filter"></i> View:</span>
-          <button type="button" id="fdCatBtnAll" class="btn-ledger-action" style="padding:4px 10px; font-size:0.72rem; background:var(--primary); color:#fff;" onclick="setFdCategoryFilter('ALL')">All Portfolio</button>
-          <button type="button" id="fdCatBtnSaving" class="btn-ledger-action" style="padding:4px 10px; font-size:0.72rem;" onclick="setFdCategoryFilter('SAVING')">Saving / Future Saving (FD)</button>
-          <button type="button" id="fdCatBtnOther" class="btn-ledger-action" style="padding:4px 10px; font-size:0.72rem;" onclick="setFdCategoryFilter('OTHER')">Other Used Purposes</button>
+          <span style="font-size:0.74rem; font-weight:800; color:#334155;"><i class="fa-solid fa-filter"></i> View:</span>
+          <button type="button" id="fdCatBtnAll" class="btn-ledger-action" style="padding:5px 12px; font-size:0.72rem; background:#4f46e5 !important; color:#fff !important; border-color:#4f46e5 !important;" onclick="setFdCategoryFilter('ALL')">All Portfolio</button>
+          <button type="button" id="fdCatBtnSaving" class="btn-ledger-action" style="padding:5px 12px; font-size:0.72rem;" onclick="setFdCategoryFilter('SAVING')">Saving / Future Saving (FD)</button>
+          <button type="button" id="fdCatBtnOther" class="btn-ledger-action" style="padding:5px 12px; font-size:0.72rem;" onclick="setFdCategoryFilter('OTHER')">Other Used Purposes</button>
         </div>
         <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
           <select id="fdFilterPlaceSelect" class="form-control" style="width:auto; min-width:170px; padding:5px 10px; font-size:0.75rem;" onchange="setFdPlaceFilter(this.value)">
@@ -3028,7 +2986,7 @@
         </div>
       </div>
 
-      <div id="fdRecordsList" style="max-height: 360px; overflow-y: auto; display:flex; flex-direction:column; gap:10px;"></div>
+      <div id="fdRecordsList" style="max-height: 360px; overflow-y: auto; display:flex; flex-direction:column; gap:12px;"></div>
     </div>
   </div>
 
@@ -3201,6 +3159,106 @@
     </div>
   </div>
 
+  <!-- REQUIREMENT 8: KHARCH (EXPENSES) POP-UP MODAL -->
+  <div id="kharchModal" class="modal-overlay" style="z-index: 2800;">
+    <div class="modal-window" style="max-width: 920px; width: 96%;">
+      <button class="modal-close-btn" onclick="closeModal('kharchModal')"><i class="fa-solid fa-xmark"></i></button>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding-right:36px; margin-bottom: 14px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;">
+        <div>
+          <h3 style="display:flex; align-items:center; gap:8px; margin:0; font-size:1.15rem;">
+            <i class="fa-solid fa-wallet" style="color:#f59e0b;"></i> Kharch (Expenses) Ledger &amp; Tracker
+          </h3>
+          <div style="font-size:0.74rem; color:var(--text-muted); margin-top:2px;">
+            Record and track all property, maintenance, utility, and personal expenses synced live with Google Sheets
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="padding:6px 12px; border-radius:12px; border:1.5px solid rgba(245,158,11,0.45); background:rgba(245,158,11,0.1); font-size:0.78rem; font-weight:800; color:#fbbf24;">
+            Total Kharch: <span id="kharchTotalAmountBadge">₹0</span>
+          </div>
+          <span style="font-size:0.7rem; font-weight:700; color:var(--accent-green); background:rgba(16,185,129,0.14); padding:4px 10px; border-radius:20px; border:1px solid rgba(16,185,129,0.3);">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Live Sheet Sync
+          </span>
+        </div>
+      </div>
+
+      <div class="calc-grid-card admin-only" style="margin-bottom: 14px; border-left: 4px solid #f59e0b;">
+        <div class="calc-grid-title" style="margin-bottom:10px;">
+          <span id="kharchFormTitle" style="color:#fbbf24; font-weight:800;"><i class="fa-solid fa-plus-circle"></i> Add New Kharch (Expense) Entry</span>
+          <button type="button" id="btnCancelKharchEdit" class="btn-ledger-action" style="display:none; padding:4px 10px; font-size:0.72rem;" onclick="cancelKharchEdit()">
+            <i class="fa-solid fa-xmark"></i> Cancel Edit
+          </button>
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap:10px; margin-bottom:10px;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Expense Title / Purpose <span class="req-star">*</span></label>
+            <input type="text" id="kharchTitle" class="form-control" placeholder="e.g. Plumber Repair, Paint, Wiring">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Category</label>
+            <select id="kharchCategory" class="form-control">
+              <option value="Maintenance & Repair">Maintenance &amp; Repair</option>
+              <option value="Electricity / Water / Bill">Electricity / Water / Bill</option>
+              <option value="Construction / Renovation">Construction / Renovation</option>
+              <option value="Khet / Farmland Expense">Khet / Farmland Expense</option>
+              <option value="Tax / Government Fee">Tax / Government Fee</option>
+              <option value="Household / Personal">Household / Personal</option>
+              <option value="Other Kharch">Other Kharch</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Expense Amount (₹) <span class="req-star">*</span></label>
+            <input type="number" step="0.01" id="kharchAmount" class="form-control" placeholder="e.g. 2500">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Place / Property</label>
+            <select id="kharchPropertyName" class="form-control">
+              <option value="General / All">General / All</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Payment Mode</label>
+            <select id="kharchPaymentMode" class="form-control">
+              <option value="Cash">Cash</option>
+              <option value="UPI">UPI</option>
+              <option value="Bank">Bank Transfer</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Expense Date</label>
+            <input type="date" id="kharchExpenseDate" class="form-control">
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:10px;">
+          <label>Notes / Remarks</label>
+          <input type="text" id="kharchNotes" class="form-control" placeholder="Optional bill reference, person paid, or details">
+        </div>
+
+        <button type="button" id="btnSubmitKharchRecord" class="btn-primary" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%);" onclick="addKharchRecord()">
+          <i class="fa-solid fa-check"></i> <span id="btnSubmitKharchRecordText">Save Kharch Entry to Google Sheet</span>
+        </button>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; background:var(--bg-input); padding:8px 12px; border-radius:12px; border:1px solid var(--glass-border);">
+        <input type="text" id="kharchSearchInput" class="form-control" style="max-width:260px; padding:6px 10px; font-size:0.78rem;" placeholder="Search kharch title, category, place..." oninput="renderKharchRecordsList()">
+        <select id="kharchFilterCategory" class="form-control" style="width:auto; min-width:180px; padding:6px 10px; font-size:0.78rem;" onchange="renderKharchRecordsList()">
+          <option value="ALL">All Categories</option>
+          <option value="Maintenance & Repair">Maintenance &amp; Repair</option>
+          <option value="Electricity / Water / Bill">Electricity / Water / Bill</option>
+          <option value="Construction / Renovation">Construction / Renovation</option>
+          <option value="Khet / Farmland Expense">Khet / Farmland Expense</option>
+          <option value="Tax / Government Fee">Tax / Government Fee</option>
+          <option value="Household / Personal">Household / Personal</option>
+          <option value="Other Kharch">Other Kharch</option>
+        </select>
+      </div>
+
+      <div id="kharchRecordsList" style="max-height: 360px; overflow-y: auto; display:flex; flex-direction:column; gap:10px;"></div>
+    </div>
+  </div>
+
   <!-- SCREEN 1: LOGIN / LOGOUT SCREEN (100% Transparent Box & Inputs on Crisp Clear House & Heart Background) -->
   <section id="loginScreen" class="screen active">
     <div class="glass-card login-container">
@@ -3276,11 +3334,7 @@
         <div class="nav-actions-group">
           <!-- Requirement 3: Show ONLY the logo for FD on dashboard (no text label) -->
           <button type="button" class="nav-btn fd-icon-only-btn" onclick="openFdModal()" title="Fixed Deposit (FD) &amp; Savings Portfolio" aria-label="Fixed Deposit (FD)">
-            <i class="fa-solid fa-building-columns" style="color:#c084fc; font-size:1.05rem;"></i>
-          </button>
-
-          <button type="button" class="nav-btn khet-icon-only-btn" onclick="openKhetModal()" title="Khet (Field)" aria-label="Khet (Field)">
-            <i class="fa-solid fa-seedling" style="color:#34d399; font-size:1.05rem;"></i>
+            <i class="fa-solid fa-building-columns" style="color:#818cf8; font-size:1.05rem;"></i>
           </button>
 
           <!-- Dynamic Add Plus (+) Icon (Delete Property & Delete Flat Moved to Internal Home Settings) -->
@@ -3300,6 +3354,16 @@
               </div>
             </div>
           </div>
+
+          <!-- Requirement 8: 'Kharch' (Expenses) Icon-Only Button Between '+' Button and 'Field' (Khet) Button -->
+          <button type="button" class="nav-btn kharch-icon-only-btn admin-only" onclick="openKharchModal()" title="Kharch (Expenses)" aria-label="Kharch (Expenses)">
+            <i class="fa-solid fa-wallet" style="color:#f59e0b; font-size:1.05rem;"></i>
+          </button>
+
+          <!-- 'Field' (Khet) Icon-Only Button -->
+          <button type="button" class="nav-btn khet-icon-only-btn" onclick="openKhetModal()" title="Khet (Field)" aria-label="Khet (Field)">
+            <i class="fa-solid fa-seedling" style="color:#34d399; font-size:1.05rem;"></i>
+          </button>
 
           <!-- Dedicated Profile Icon -->
           <button class="nav-btn" onclick="openProfileModal()" title="My Profile">
@@ -3345,31 +3409,31 @@
             </div>
           </div>
           <div class="home-khet-stats-bar">
-            <div class="home-khet-stat-pill" style="background:linear-gradient(135deg, rgba(16,185,129,0.28), rgba(5,150,105,0.14)); border:1px solid rgba(52,211,153,0.5);">
+            <div class="home-khet-stat-pill">
               <i class="fa-solid fa-layer-group" style="color:#34d399;"></i>
-              <span>Plots: <strong id="homeKhetTotalCount" style="color:#6ee7b7;">0</strong></span>
+              <span>Plots: <strong id="homeKhetTotalCount">0</strong></span>
             </div>
-            <div class="home-khet-stat-pill" style="background:linear-gradient(135deg, rgba(168,85,247,0.28), rgba(124,58,237,0.14)); border:1px solid rgba(192,132,252,0.5);">
-              <i class="fa-solid fa-compass-drafting" style="color:#c084fc;"></i>
-              <span>Decimal (Orig / Survey): <strong id="homeKhetTotalDecimal" style="color:#e9d5ff;">0 / 0</strong></span>
+            <div class="home-khet-stat-pill">
+              <i class="fa-solid fa-compass-drafting" style="color:#94a3b8;"></i>
+              <span>Decimal (Orig / Survey): <strong id="homeKhetTotalDecimal">0 / 0</strong></span>
             </div>
-            <div class="home-khet-stat-pill" style="background:linear-gradient(135deg, rgba(14,165,233,0.28), rgba(37,99,235,0.14)); border:1px solid rgba(56,189,248,0.5);">
+            <div class="home-khet-stat-pill">
               <i class="fa-solid fa-ruler-combined" style="color:#38bdf8;"></i>
-              <span>Total Katha: <strong id="homeKhetTotalBigha" style="color:#bae6fd;">0 Katha</strong></span>
+              <span>Total Katha: <strong id="homeKhetTotalBigha">0 Katha</strong></span>
             </div>
-            <div class="home-khet-stat-pill" style="background:linear-gradient(135deg, rgba(245,158,11,0.28), rgba(217,119,6,0.14)); border:1px solid rgba(251,191,36,0.5);">
+            <div class="home-khet-stat-pill">
               <i class="fa-solid fa-sack-dollar" style="color:#fbbf24;"></i>
-              <span>Land Value: <strong id="homeKhetTotalValuation" style="color:#fde68a;">₹0</strong></span>
+              <span>Land Value: <strong id="homeKhetTotalValuation">₹0</strong></span>
             </div>
-            <div class="home-khet-stat-pill" style="background:linear-gradient(135deg, rgba(34,197,94,0.28), rgba(16,185,129,0.14)); border:1px solid rgba(74,222,128,0.5);">
-              <i class="fa-solid fa-indian-rupee-sign" style="color:#4ade80;"></i>
-              <span>Paid: <strong id="homeKhetTotalPaid" style="color:#86efac;">₹0</strong></span>
+            <div class="home-khet-stat-pill">
+              <i class="fa-solid fa-indian-rupee-sign" style="color:#34d399;"></i>
+              <span>Paid: <strong id="homeKhetTotalPaid">₹0</strong></span>
             </div>
-            <div class="home-khet-stat-pill" style="background:linear-gradient(135deg, rgba(236,72,153,0.28), rgba(219,39,119,0.14)); border:1px solid rgba(244,114,182,0.5);">
-              <i class="fa-solid fa-sliders" style="color:#f472b6;"></i>
-              <span>Adjusted: <strong id="homeKhetTotalAdjusted" style="color:#fbcfe8;">₹0</strong></span>
+            <div class="home-khet-stat-pill">
+              <i class="fa-solid fa-sliders" style="color:#38bdf8;"></i>
+              <span>Adjusted: <strong id="homeKhetTotalAdjusted">₹0</strong></span>
             </div>
-            <button type="button" class="btn-primary admin-only" style="width:auto; padding:8px 15px; font-size:0.78rem; background:linear-gradient(135deg, #10b981 0%, #0ea5e9 55%, #8b5cf6 100%); box-shadow:0 6px 18px rgba(16,185,129,0.35);" onclick="openKhetModal()">
+            <button type="button" class="btn-primary admin-only" style="width:auto; padding:8px 15px; font-size:0.78rem;" onclick="openKhetModal()">
               <i class="fa-solid fa-plus-circle"></i> Add / Manage Khet &amp; Partners
             </button>
           </div>
@@ -3732,8 +3796,8 @@
           <input type="text" id="editLeftName" class="form-control">
         </div>
         <div class="form-group">
-          <label>Aadhaar Card Number (Strictly 12 Digits)</label>
-          <input type="text" id="editLeftIdentityNum" class="form-control" maxlength="12" inputmode="numeric" pattern="\d{12}" placeholder="12-digit Aadhaar Number" oninput="this.value = sanitizeAadhaar12Digits(this.value)">
+          <label>Aadhaar Card Number (12 Digits: XXXX-XXXX-XXXX)</label>
+          <input type="text" id="editLeftIdentityNum" class="form-control" maxlength="14" inputmode="numeric" placeholder="XXXX-XXXX-XXXX" oninput="this.value = formatAadhaarWithHyphens(this.value)">
         </div>
         <div class="form-group">
           <label>Mobile Number (+91 &amp; 10 Digits)</label>
@@ -4246,82 +4310,51 @@
         </div>
 
         
-        <!-- Option: Change Background Photo (Requirement 7: Strictly Admin-Only Global Background Authority) -->
+        <!-- Option: Change Background Photo (Requirement 3: Single Login Home Page Background Link for Entire Platform) -->
         <div id="otherPanelChangeBg" class="stat-pill admin-only" style="text-align: left; display: none;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--glass-border);">
             <div>
               <span style="font-weight:800; font-size:0.88rem; color:#ec4899;">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Admin Global Portal Background Wallpaper
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Login Home Page Background Wallpaper (Global Admin Control)
               </span>
               <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">
-                Upload a photo or paste an image link. Once set by the Admin, this exact background displays globally on all devices and for all roles.
+                Upload a photo or insert an image link below. This background is displayed everywhere across the entire platform for Admin, Viewers, and Renters. If deleted or left empty, the default photo is automatically displayed.
               </div>
             </div>
             <span style="font-size:0.7rem; color:#10b981; font-weight:700; background:rgba(16,185,129,0.15); padding:3px 8px; border-radius:12px;">
-              <i class="fa-solid fa-circle-check"></i> HD Crystal Clarity
+              <i class="fa-solid fa-circle-check"></i> Global Sync
             </span>
           </div>
 
           <div style="display:flex; flex-direction:column; gap:12px;">
             <div style="background:var(--bg-input); padding:12px; border-radius:12px; border:1px solid var(--glass-border);">
               <label style="font-size:0.76rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-                <i class="fa-solid fa-right-to-bracket" style="color:#818cf8;"></i> 1. Logout / Login Home Page Background Link (URL or Upload)
+                <i class="fa-solid fa-house" style="color:#ec4899;"></i> Login Home Page Background Link (URL or Upload Photo)
               </label>
               <div style="display:flex; gap:8px; margin-bottom:8px;">
                 <input
                   type="url"
                   id="bgUrlLoginScreen"
                   class="form-control"
-                  placeholder="Paste image link for Logout/Login screen (e.g. https://...)"
+                  placeholder="Paste image link for Login / Home Page background (e.g. https://...)"
                   style="font-size:0.78rem;"
                 >
                 <button
                   type="button"
                   class="btn-ledger-action"
                   style="padding:6px 12px; color:var(--accent-red); border-color:rgba(239,68,68,0.4); flex-shrink:0; font-size:0.75rem; font-weight:700;"
-                  onclick="deleteCustomBgImage('login')"
-                  title="Remove custom image and revert to default"
-                >
-                  <i class="fa-solid fa-trash-can"></i> Delete
-                </button>
-              </div>
-              <div class="admin-only" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <label style="font-size:0.72rem; color:var(--text-muted); margin:0;"><i class="fa-solid fa-cloud-arrow-up" style="color:#818cf8;"></i> Or Upload Photo from Device:</label>
-                <input type="file" accept="image/*" class="form-control" style="padding:5px 8px; font-size:0.74rem; max-width:260px;" onchange="handleDirectBgUpload(this, 'login')">
-              </div>
-              <div id="bgLoginStatusHint" style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">
-                Leave empty to retain the default theme background.
-              </div>
-            </div>
-
-            <div style="background:var(--bg-input); padding:12px; border-radius:12px; border:1px solid var(--glass-border);">
-              <label style="font-size:0.76rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-                <i class="fa-solid fa-house" style="color:#ec4899;"></i> 2. Login Home Page (Dashboard) Background Link (URL or Upload)
-              </label>
-              <div style="display:flex; gap:8px; margin-bottom:8px;">
-                <input
-                  type="url"
-                  id="bgUrlDashboardScreen"
-                  class="form-control"
-                  placeholder="Paste image link for Login Home Page / Dashboard (e.g. https://...)"
-                  style="font-size:0.78rem;"
-                >
-                <button
-                  type="button"
-                  class="btn-ledger-action"
-                  style="padding:6px 12px; color:var(--accent-red); border-color:rgba(239,68,68,0.4); flex-shrink:0; font-size:0.75rem; font-weight:700;"
-                  onclick="deleteCustomBgImage('dashboard')"
-                  title="Remove custom image and revert to default"
+                  onclick="deleteCustomBgImage()"
+                  title="Delete custom image and revert entire platform to default photo"
                 >
                   <i class="fa-solid fa-trash-can"></i> Delete
                 </button>
               </div>
               <div class="admin-only" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                 <label style="font-size:0.72rem; color:var(--text-muted); margin:0;"><i class="fa-solid fa-cloud-arrow-up" style="color:#ec4899;"></i> Or Upload Photo from Device:</label>
-                <input type="file" accept="image/*" class="form-control" style="padding:5px 8px; font-size:0.74rem; max-width:260px;" onchange="handleDirectBgUpload(this, 'dashboard')">
+                <input type="file" accept="image/*" class="form-control" style="padding:5px 8px; font-size:0.74rem; max-width:260px;" onchange="handleDirectBgUpload(this)">
               </div>
-              <div id="bgDashboardStatusHint" style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">
-                Leave empty to retain the default theme background.
+              <div id="bgLoginStatusHint" style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">
+                Leave empty to automatically display the default background photo across the entire platform.
               </div>
             </div>
 
@@ -4332,7 +4365,7 @@
                 style="padding:8px 16px; font-size:0.78rem; font-weight:700;"
                 onclick="resetDefaultBackgrounds()"
               >
-                <i class="fa-solid fa-rotate-left"></i> Reset Both to Default
+                <i class="fa-solid fa-rotate-left"></i> Reset to Default Photo
               </button>
               <button
                 type="button"
@@ -4340,7 +4373,7 @@
                 style="width:auto; padding:8px 20px; font-size:0.78rem; font-weight:700; background:linear-gradient(135deg, #ec4899 0%, #db2777 100%);"
                 onclick="saveCustomBackgrounds()"
               >
-                <i class="fa-solid fa-floppy-disk"></i> Save &amp; Apply Backgrounds
+                <i class="fa-solid fa-floppy-disk"></i> Save &amp; Apply Background Everywhere
               </button>
             </div>
           </div>
@@ -4577,16 +4610,20 @@
         <!-- Box 1: Billing Month and Base Rent (Royal Indigo Theme) -->
         <div class="calc-grid-card calc-box-rent">
           <div class="calc-grid-title">
-            <span><i class="fa-solid fa-calendar-check"></i> Billing Month &amp; Monthly Base Rent</span>
+            <span><i class="fa-solid fa-calendar-check"></i> Billing Month, Billing Date &amp; Monthly Base Rent</span>
             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
               <span id="calcMonthStatusTag" class="calc-month-status-tag">New Month Calculation</span>
               <span id="calcRentBadge" style="font-size:0.78rem; font-weight:800; color:#fff; background:linear-gradient(135deg, #6366f1, #4f46e5); padding:4px 12px; border-radius:20px;">₹ 0</span>
             </div>
           </div>
-          <div class="calc-half-split-row" style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; align-items:end;">
+          <div class="calc-half-split-row" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap:12px; align-items:end;">
             <div class="calc-field-col">
               <label><i class="fa-regular fa-calendar"></i> Billing Month</label>
               <input type="month" id="calcMonthPicker" class="form-control" onchange="handleBillingMonthChange()">
+            </div>
+            <div class="calc-field-col">
+              <label><i class="fa-regular fa-calendar-days"></i> Billing Date</label>
+              <input type="date" id="calcBillDatePicker" class="form-control">
             </div>
             <div class="calc-field-col">
               <label><i class="fa-solid fa-house-chimney"></i> Base Rent (₹) <span style="font-size:0.68rem; font-weight:600; color:var(--text-muted);">(This Month Only)</span></label>
@@ -4860,8 +4897,8 @@
             
             <div class="form-group"><label>Renter Name <span class="req-star">*</span></label><input type="text" id="renterName" class="form-control"></div>
             <div class="form-group">
-              <label>Aadhaar Card Number (Strictly 12 Digits)</label>
-              <input type="text" id="renterIdentityNum" class="form-control" maxlength="12" inputmode="numeric" pattern="\d{12}" placeholder="Enter 12-digit Aadhaar Number" oninput="this.value = sanitizeAadhaar12Digits(this.value); handleAadhaarLookupInput(this.value)" onchange="this.value = sanitizeAadhaar12Digits(this.value); handleAadhaarLookupInput(this.value)">
+              <label>Aadhaar Card Number (12 Digits: XXXX-XXXX-XXXX)</label>
+              <input type="text" id="renterIdentityNum" class="form-control" maxlength="14" inputmode="numeric" placeholder="XXXX-XXXX-XXXX" oninput="this.value = formatAadhaarWithHyphens(this.value); handleAadhaarLookupInput(this.value)" onchange="this.value = formatAadhaarWithHyphens(this.value); handleAadhaarLookupInput(this.value)">
               <div id="aadhaarPreviousRenterPrompt" style="display:none; margin-top:8px;"></div>
             </div>
             <div class="form-group"><label>Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
@@ -5115,7 +5152,8 @@
       users: [],
       loginHistory: [],
       fdRecords: [],
-      khetRecords: []
+      khetRecords: [],
+      kharchRecords: []
     };
 
     const EMPTY_PROFILE_PLACEHOLDER = "https://via.placeholder.com/150?text=No+Profile+Photo";
@@ -5175,104 +5213,67 @@
       return str;
     }
 
-    // Requirement 4: Custom Backgrounds (Login & Dashboard) with 100% Clarity & Cross-Device Sync
+    // Requirement 3: Single Admin-Controlled Global Background Photo Across Entire Platform (Fallback to Default When Deleted/Empty)
     function getCustomBackgrounds() {
-      const loginBg = normalizeGoogleDriveImageUrl(localStorage.getItem("portal_custom_bg_login") || "");
-      const dashBg = normalizeGoogleDriveImageUrl(localStorage.getItem("portal_custom_bg_dashboard") || "");
-      return { loginBg, dashBg };
+      const globalBg = normalizeGoogleDriveImageUrl(localStorage.getItem("portal_custom_bg_login") || "");
+      return { loginBg: globalBg, dashBg: globalBg };
     }
 
     function initCustomBgInputs() {
-      const { loginBg, dashBg } = getCustomBackgrounds();
+      const { loginBg } = getCustomBackgrounds();
       const inputLogin = document.getElementById("bgUrlLoginScreen");
-      const inputDash = document.getElementById("bgUrlDashboardScreen");
       const hintLogin = document.getElementById("bgLoginStatusHint");
-      const hintDash = document.getElementById("bgDashboardStatusHint");
 
       if (inputLogin) inputLogin.value = loginBg;
-      if (inputDash) inputDash.value = dashBg;
 
       if (hintLogin) {
         hintLogin.innerText = loginBg
-          ? "Custom Logout/Login background active across all devices (100% clarity)."
-          : "Using default Logout/Login background image.";
+          ? "Custom global background photo is active across the entire platform for all users."
+          : "No custom photo set — automatically displaying default background photo across the entire platform.";
         hintLogin.style.color = loginBg ? "var(--accent-green)" : "var(--text-muted)";
-      }
-      if (hintDash) {
-        hintDash.innerText = dashBg
-          ? "Custom Dashboard background active across all devices (100% clarity)."
-          : "Using default Dashboard background image.";
-        hintDash.style.color = dashBg ? "var(--accent-green)" : "var(--text-muted)";
       }
     }
 
     function applyCustomBackgrounds() {
-      const { loginBg, dashBg } = getCustomBackgrounds();
+      const { loginBg } = getCustomBackgrounds();
       const loginScreenEl = document.getElementById("loginScreen");
       const dashScreenEl = document.getElementById("dashboardScreen");
       const bgCanvasEl = document.querySelector(".bg-canvas");
 
-      const effectiveLoginBg = (loginBg && loginBg.trim()) ? normalizeGoogleDriveImageUrl(loginBg.trim()) : DEFAULT_PORTAL_BACKGROUND_IMAGE;
-      const effectiveDashBg = (dashBg && dashBg.trim()) ? normalizeGoogleDriveImageUrl(dashBg.trim()) : DEFAULT_PORTAL_BACKGROUND_IMAGE;
+      const effectiveGlobalBg = (loginBg && loginBg.trim())
+        ? normalizeGoogleDriveImageUrl(loginBg.trim())
+        : DEFAULT_PORTAL_BACKGROUND_IMAGE;
 
-      if (loginScreenEl) {
-        loginScreenEl.style.setProperty("background-image", 'url("' + effectiveLoginBg + '")', "important");
-        loginScreenEl.style.backgroundSize = "cover";
-        loginScreenEl.style.backgroundPosition = "center";
-        loginScreenEl.style.backgroundRepeat = "no-repeat";
-        loginScreenEl.style.backgroundAttachment = "fixed";
-      }
-
-      if (dashScreenEl) {
-        dashScreenEl.style.setProperty("background-image", 'url("' + effectiveDashBg + '")', "important");
-        dashScreenEl.style.backgroundSize = "cover";
-        dashScreenEl.style.backgroundPosition = "center";
-        dashScreenEl.style.backgroundRepeat = "no-repeat";
-        dashScreenEl.style.backgroundAttachment = "fixed";
-      }
-
-      if (bgCanvasEl) {
-        bgCanvasEl.style.setProperty("background-image", 'url("' + effectiveDashBg + '")', "important");
-        bgCanvasEl.style.backgroundSize = "cover";
-        bgCanvasEl.style.backgroundPosition = "center";
-        bgCanvasEl.style.backgroundRepeat = "no-repeat";
-        bgCanvasEl.style.backgroundAttachment = "fixed";
-      }
+      [loginScreenEl, dashScreenEl, bgCanvasEl].forEach(el => {
+        if (!el) return;
+        el.style.setProperty("background-image", 'url("' + effectiveGlobalBg + '")', "important");
+        el.style.backgroundSize = "cover";
+        el.style.backgroundPosition = "center";
+        el.style.backgroundRepeat = "no-repeat";
+        el.style.backgroundAttachment = "fixed";
+      });
     }
 
     function syncServerBackgroundsToLocal(globalConfig, userBgLogin, userBgDash, hasServerConfig = true) {
-      const rawLoginBg =
-        (globalConfig && (globalConfig.bgLoginUrl || globalConfig.bgLogin) && String(globalConfig.bgLoginUrl || globalConfig.bgLogin).trim()) ||
-        (userBgLogin && String(userBgLogin).trim()) ||
-        (globalConfig && globalConfig.backgroundUrl && String(globalConfig.backgroundUrl).trim()) ||
-        "";
-      const rawDashBg =
-        (globalConfig && (globalConfig.bgDashboardUrl || globalConfig.bgDashboard) && String(globalConfig.bgDashboardUrl || globalConfig.bgDashboard).trim()) ||
-        (userBgDash && String(userBgDash).trim()) ||
-        (globalConfig && globalConfig.backgroundUrl && String(globalConfig.backgroundUrl).trim()) ||
-        "";
+      let rawGlobalBg = "";
+      if (globalConfig && typeof globalConfig === "object") {
+        const cfgBg = String(globalConfig.bgLoginUrl || globalConfig.bgLogin || globalConfig.bgDashboardUrl || globalConfig.bgDashboard || globalConfig.backgroundUrl || "").trim();
+        rawGlobalBg = cfgBg;
+      } else if (!hasServerConfig) {
+        rawGlobalBg = String(userBgLogin || userBgDash || "").trim();
+      }
 
-      const serverLoginBg = normalizeGoogleDriveImageUrl(rawLoginBg);
-      const serverDashBg = normalizeGoogleDriveImageUrl(rawDashBg);
+      const serverGlobalBg = normalizeGoogleDriveImageUrl(rawGlobalBg);
+      localStorage.removeItem("portal_custom_bg_dashboard");
 
       let updated = false;
-      if (serverLoginBg) {
-        if (localStorage.getItem("portal_custom_bg_login") !== serverLoginBg) {
-          localStorage.setItem("portal_custom_bg_login", serverLoginBg);
+      if (serverGlobalBg) {
+        if (localStorage.getItem("portal_custom_bg_login") !== serverGlobalBg) {
+          localStorage.setItem("portal_custom_bg_login", serverGlobalBg);
           updated = true;
         }
       } else if (hasServerConfig && localStorage.getItem("portal_custom_bg_login")) {
         localStorage.removeItem("portal_custom_bg_login");
-        updated = true;
-      }
-
-      if (serverDashBg) {
-        if (localStorage.getItem("portal_custom_bg_dashboard") !== serverDashBg) {
-          localStorage.setItem("portal_custom_bg_dashboard", serverDashBg);
-          updated = true;
-        }
-      } else if (hasServerConfig && localStorage.getItem("portal_custom_bg_dashboard")) {
-        localStorage.removeItem("portal_custom_bg_dashboard");
         updated = true;
       }
 
@@ -5287,72 +5288,66 @@
         return triggerSideToast("Admin Permission Required", "Only the Admin has authority to change the background photo.", false);
       }
       const inputLogin = document.getElementById("bgUrlLoginScreen");
-      const inputDash = document.getElementById("bgUrlDashboardScreen");
-      let loginVal = normalizeGoogleDriveImageUrl(inputLogin ? inputLogin.value.trim() : "");
-      let dashVal = normalizeGoogleDriveImageUrl(inputDash ? inputDash.value.trim() : "");
+      const globalVal = normalizeGoogleDriveImageUrl(inputLogin ? inputLogin.value.trim() : "");
 
-      // If Admin set one background photo, apply it to both Dashboard & Login if the other is blank so it displays everywhere
-      if (dashVal && !loginVal) loginVal = dashVal;
-      if (loginVal && !dashVal) dashVal = loginVal;
+      if (inputLogin) inputLogin.value = globalVal;
 
-      if (inputLogin) inputLogin.value = loginVal;
-      if (inputDash) inputDash.value = dashVal;
-
-      if (loginVal) localStorage.setItem("portal_custom_bg_login", loginVal);
-      else localStorage.removeItem("portal_custom_bg_login");
-
-      if (dashVal) localStorage.setItem("portal_custom_bg_dashboard", dashVal);
-      else localStorage.removeItem("portal_custom_bg_dashboard");
+      localStorage.removeItem("portal_custom_bg_dashboard");
+      if (globalVal) {
+        localStorage.setItem("portal_custom_bg_login", globalVal);
+      } else {
+        localStorage.removeItem("portal_custom_bg_login");
+      }
 
       applyCustomBackgrounds();
       initCustomBgInputs();
-      triggerSideToast("Global Background Saved", "Admin background photo applied & synced across all devices and roles!", true);
+      triggerSideToast(
+        globalVal ? "Global Background Saved" : "Default Background Restored",
+        globalVal
+          ? "Background photo applied everywhere for Admin, Viewers, and Renters!"
+          : "Custom background cleared — default background photo is now active across the entire platform.",
+        true
+      );
 
       if (activeUser) {
         try {
           await sendGasPost({
             action: "saveBackgrounds",
             username: activeUser,
-            bgLogin: loginVal,
-            bgDashboard: dashVal
+            bgLogin: globalVal,
+            bgDashboard: globalVal
           });
         } catch (e) {}
       }
     }
 
-    function deleteCustomBgImage(type) {
+    function deleteCustomBgImage() {
       if (String(activeRole || "").trim().toLowerCase() !== "admin") {
         return triggerSideToast("Admin Permission Required", "Only the Admin has authority to change or remove the background photo.", false);
       }
-      if (type === "login") {
-        localStorage.removeItem("portal_custom_bg_login");
-        const input = document.getElementById("bgUrlLoginScreen");
-        if (input) input.value = "";
-      } else if (type === "dashboard") {
-        localStorage.removeItem("portal_custom_bg_dashboard");
-        const input = document.getElementById("bgUrlDashboardScreen");
-        if (input) input.value = "";
-      }
+      localStorage.removeItem("portal_custom_bg_login");
+      localStorage.removeItem("portal_custom_bg_dashboard");
+      const input = document.getElementById("bgUrlLoginScreen");
+      if (input) input.value = "";
       applyCustomBackgrounds();
       initCustomBgInputs();
-      triggerSideToast("Background Removed", `Default background restored for ${type === 'login' ? 'Logout/Login screen' : 'Dashboard'}.`, true);
-      if (activeUser) saveCustomBackgrounds();
+      saveCustomBackgrounds();
     }
 
-    async function handleDirectBgUpload(inputEl, type) {
+    async function handleDirectBgUpload(inputEl) {
       if (String(activeRole || "").trim().toLowerCase() !== "admin") {
         return triggerSideToast("Admin Only", "Only Administrators can change portal backgrounds.", false);
       }
       const file = inputEl.files && inputEl.files[0];
       if (!file) return;
-      triggerSideToast("Uploading Background", `Uploading ${type === 'login' ? 'Lock Screen' : 'Home Page'} background to shared Google Drive folder...`, "warning");
+      triggerSideToast("Uploading Background", "Uploading global background photo to Google Drive...", "warning");
       try {
         const compressedDataUrl = await compressImageFileToDataUrl(file, 1600, 0.85);
         const sheetSafeBase64 = await compressImageFileToDataUrl(file, 460, 0.7);
         const res = await sendGasPost({
           action: "uploadBackgroundPhoto",
           username: activeUser || "admin",
-          type: type,
+          type: "login",
           fileName: file.name,
           mimeType: "image/jpeg",
           base64Data: compressedDataUrl,
@@ -5360,35 +5355,20 @@
         });
         const rawUrl = (res && res.status === "success" && res.imageUrl) ? res.imageUrl : sheetSafeBase64;
         const finalUrl = normalizeGoogleDriveImageUrl(rawUrl);
-        if (type === "login") {
-          const el = document.getElementById("bgUrlLoginScreen");
-          if (el) el.value = finalUrl;
-          localStorage.setItem("portal_custom_bg_login", finalUrl);
-        } else {
-          const el = document.getElementById("bgUrlDashboardScreen");
-          if (el) el.value = finalUrl;
-          localStorage.setItem("portal_custom_bg_dashboard", finalUrl);
-        }
+        const el = document.getElementById("bgUrlLoginScreen");
+        if (el) el.value = finalUrl;
+        localStorage.setItem("portal_custom_bg_login", finalUrl);
+        localStorage.removeItem("portal_custom_bg_dashboard");
         applyCustomBackgrounds();
         initCustomBgInputs();
         if (activeUser) saveCustomBackgrounds();
-        triggerSideToast("Background Uploaded", `${type === 'login' ? 'Lock Screen' : 'Home Page'} background saved to Google Drive & synced across all devices!`, true);
       } catch (err) {
         triggerSideToast("Upload Failed", "Could not upload background to Drive. Please verify connection.", false);
       }
     }
 
     function resetDefaultBackgrounds() {
-      localStorage.removeItem("portal_custom_bg_login");
-      localStorage.removeItem("portal_custom_bg_dashboard");
-      const inputLogin = document.getElementById("bgUrlLoginScreen");
-      const inputDash = document.getElementById("bgUrlDashboardScreen");
-      if (inputLogin) inputLogin.value = "";
-      if (inputDash) inputDash.value = "";
-      applyCustomBackgrounds();
-      initCustomBgInputs();
-      triggerSideToast("Default Backgrounds Restored", "Both screens reverted to original backgrounds.", true);
-      if (activeUser) saveCustomBackgrounds();
+      deleteCustomBgImage();
     }
 
     // No-cache photo helpers: Photos are loaded directly from Google Sheets / Google Drive so manual deletions in Sheets reflect immediately
@@ -5588,27 +5568,30 @@
         return triggerSideToast("Destination Required", "Please select both the Property and the Flat where this returning renter should be added.", false);
       }
 
-      if (!pendingReactivatingRenter.RenterID) {
-        pendingReactivatingRenter.RenterID = "R-" + Date.now();
-      }
+      // Requirement 10: Preserve the departed renter's historical record in the previous flat where they stayed before leaving,
+      // AND create a new Active record in the new destination flat with the same Aadhaar card!
+      const formattedAadhaar = formatAadhaarWithHyphens(pendingReactivatingRenter.IdentityDocNumber || "");
+      const newStayRenterId = "R-" + Date.now();
+      const newActiveRenterRecord = {
+        ...pendingReactivatingRenter,
+        RenterID: newStayRenterId,
+        PropertyName: destProp,
+        FlatName: destFlat,
+        IdentityDocNumber: formattedAadhaar,
+        Status: "Active",
+        JoinDate: joinDate,
+        EndDate: "",
+        RentAmount: rentAmt
+      };
 
-      // Requirement 4: NEVER trigger a "Left" ("Inactive") status for any currently active renters!
-      // All existing active renters remain untouched and active.
+      // Keep the old flat's record intact in DB.renters as Inactive, and add the new stay record for the destination flat
+      DB.renters.push(newActiveRenterRecord);
 
-      // Reactivate strictly into the selected destination property & flat
-      pendingReactivatingRenter.PropertyName = destProp;
-      pendingReactivatingRenter.FlatName = destFlat;
-      pendingReactivatingRenter.Status = "Active";
-      pendingReactivatingRenter.JoinDate = joinDate;
-      pendingReactivatingRenter.EndDate = "";
-      pendingReactivatingRenter.RentAmount = rentAmt;
-
-      saveLocalFlatUtilityAndDateMeta(destProp, destFlat, pendingReactivatingRenter.RenterID, {
+      saveLocalFlatUtilityAndDateMeta(destProp, destFlat, newStayRenterId, {
         JoinDate: joinDate,
         EndDate: ""
       });
 
-      // Update target flat in DB.flats and switch active view to destination flat
       const targetFlatObj = (DB.flats || []).find(f => isSamePropAndFlat(f.PropertyName, f.FlatName, destProp, destFlat));
       if (targetFlatObj) {
         targetFlatObj.RentAmount = rentAmt;
@@ -5616,7 +5599,7 @@
       }
       selectedProperty = destProp;
       sessionStorage.setItem("active_selected_property", destProp);
-      activeFlatRenterObj = pendingReactivatingRenter;
+      activeFlatRenterObj = newActiveRenterRecord;
 
       const promptEl = document.getElementById("aadhaarPreviousRenterPrompt");
       if (promptEl) {
@@ -5629,32 +5612,33 @@
       renderAllDashboardUI();
 
       if (targetFlatObj) {
-        openFlatDetailsModal(targetFlatObj, pendingReactivatingRenter);
+        openFlatDetailsModal(targetFlatObj, newActiveRenterRecord);
       }
 
       triggerSideToast(
-        "Renter Reactivated",
-        pendingReactivatingRenter.RenterName + " is now active in " + destProp + " - Flat " + destFlat + "!",
+        "Returning Renter Placed",
+        newActiveRenterRecord.RenterName + " is now Active in " + destProp + " - Flat " + destFlat + " (previous flat history preserved)!",
         true
       );
 
       await sendGasPost({
         action: "updateRenterProfile",
-        renterId: pendingReactivatingRenter.RenterID,
+        createNewStayRecord: true,
+        renterId: newStayRenterId,
         propertyName: destProp,
         flatName: destFlat,
-        renterName: pendingReactivatingRenter.RenterName,
-        identityDocNumber: pendingReactivatingRenter.IdentityDocNumber,
-        mobileNumber: pendingReactivatingRenter.MobileNumber,
-        altMobileNumber: pendingReactivatingRenter.AltMobileNumber,
-        address: pendingReactivatingRenter.Address,
-        familyMembers: pendingReactivatingRenter.TotalFamilyMembers || 1,
+        renterName: newActiveRenterRecord.RenterName,
+        identityDocNumber: formattedAadhaar,
+        mobileNumber: newActiveRenterRecord.MobileNumber,
+        altMobileNumber: newActiveRenterRecord.AltMobileNumber,
+        address: newActiveRenterRecord.Address,
+        familyMembers: newActiveRenterRecord.TotalFamilyMembers || 1,
         renterStatus: "Active",
         joinDate: joinDate,
         endDate: "",
         rentAmount: rentAmt,
-        profileImageUrl: pendingReactivatingRenter.ProfileImageURL || "",
-        identityImageUrl: pendingReactivatingRenter.IdentityImageURL || ""
+        profileImageUrl: newActiveRenterRecord.ProfileImageURL || "",
+        identityImageUrl: newActiveRenterRecord.IdentityImageURL || ""
       });
     }
 
@@ -5755,8 +5739,19 @@ function formatMonthLabel(rawVal) {
 
     function sanitizeContactPhoneDisplay(rawVal) {
       if (rawVal === undefined || rawVal === null) return "";
-      const cleaned = String(rawVal).replace(/^'+/, "").trim();
-      if (!cleaned || cleaned === "--" || cleaned === "+91" || cleaned === "undefined" || cleaned === "null") return "";
+      const cleaned = String(rawVal).replace(/^['=]+/, "").trim();
+      if (
+        !cleaned ||
+        cleaned === "--" ||
+        cleaned === "+91" ||
+        cleaned === "undefined" ||
+        cleaned === "null" ||
+        cleaned.toUpperCase().includes("#ERROR") ||
+        cleaned.toUpperCase().includes("#VALUE") ||
+        cleaned.toUpperCase().includes("#NAME")
+      ) {
+        return "";
+      }
       const digits = cleaned.replace(/\D/g, "");
       if (!digits || digits === "91") return "";
       if (digits.length === 10) return "+91 " + digits;
@@ -5799,10 +5794,20 @@ function formatMonthLabel(rawVal) {
     }
 
     /**
-     * Requirement 11: Strictly 12-Digit Aadhaar Number Sanitizer & Validator (neither more nor less)
+     * Requirement 5 & 6: 12-Digit Aadhaar Number Sanitizer & Auto-Hyphen Formatter (XXXX-XXXX-XXXX)
      */
     function sanitizeAadhaar12Digits(val) {
       return String(val || "").replace(/\D/g, "").slice(0, 12);
+    }
+
+    function formatAadhaarWithHyphens(val) {
+      const digits = sanitizeAadhaar12Digits(val);
+      if (!digits) return "";
+      const parts = [];
+      for (let i = 0; i < digits.length; i += 4) {
+        parts.push(digits.slice(i, i + 4));
+      }
+      return parts.join("-");
     }
 
     function isValidAadhaar12Digits(val) {
@@ -5811,19 +5816,26 @@ function formatMonthLabel(rawVal) {
     }
 
     /**
-     * Requirement 12: Valid Indian Mobile Number starting with +91 and containing strictly 10 digits after it
+     * Requirement 2 & 12: Valid Indian Mobile Number starting with +91 and containing 10 digits (never #ERROR!)
      */
     function ensurePlus91Prefix(inputEl) {
       if (!inputEl) return;
-      const cur = String(inputEl.value || "").trim();
+      const cur = sanitizeContactPhoneDisplay(inputEl.value);
       if (!cur) {
         inputEl.value = "+91 ";
       }
     }
 
     function formatIndianMobilePlus91(val) {
-      const raw = String(val || "").trim();
-      if (!raw || raw === "+" || raw === "+9" || raw === "+91") {
+      const raw = String(val || "").replace(/^['=]+/, "").trim();
+      if (
+        !raw ||
+        raw === "+" ||
+        raw === "+9" ||
+        raw === "+91" ||
+        raw.toUpperCase().includes("#ERROR") ||
+        raw.toUpperCase().includes("#VALUE")
+      ) {
         return raw.startsWith("+") ? "+91 " : "";
       }
       let digits = raw.replace(/\D/g, "");
@@ -5839,8 +5851,8 @@ function formatMonthLabel(rawVal) {
     }
 
     function extractIndianMobile10Digits(val) {
-      const raw = String(val || "").trim();
-      if (!raw) return "";
+      const raw = String(val || "").replace(/^['=]+/, "").trim();
+      if (!raw || raw.toUpperCase().includes("#ERROR") || raw.toUpperCase().includes("#VALUE")) return "";
       let digits = raw.replace(/\D/g, "");
       if (raw.startsWith("+91") && digits.startsWith("91")) {
         digits = digits.slice(2);
@@ -5853,8 +5865,8 @@ function formatMonthLabel(rawVal) {
     }
 
     function isValidIndianMobilePlus91(val) {
-      const raw = String(val || "").trim();
-      if (!raw || raw === "+91") return false;
+      const raw = String(val || "").replace(/^['=]+/, "").trim();
+      if (!raw || raw === "+91" || raw.toUpperCase().includes("#ERROR")) return false;
       const digits10 = extractIndianMobile10Digits(raw);
       return /^\d{10}$/.test(digits10);
     }
@@ -6177,12 +6189,14 @@ function formatMonthLabel(rawVal) {
         body.role-viewer .pnl-tracker,
         body.role-viewer .properties-bar,
         body.role-viewer button[onclick="openFdModal()"],
+        body.role-viewer button[onclick="openKharchModal()"],
         body.role-viewer button[onclick="openKhetModal()"],
         body.role-viewer button[onclick="openSettingsModal()"],
         body.role-renter #searchContainer,
         body.role-renter .pnl-tracker,
         body.role-renter .properties-bar,
         body.role-renter button[onclick="openFdModal()"],
+        body.role-renter button[onclick="openKharchModal()"],
         body.role-renter button[onclick="openKhetModal()"],
         body.role-renter button[onclick="openSettingsModal()"] {
           display: none !important;
@@ -6323,7 +6337,8 @@ function formatMonthLabel(rawVal) {
           u: DB.users,
           l: DB.loginHistory,
           fd: DB.fdRecords,
-          kh: DB.khetRecords
+          kh: DB.khetRecords,
+          kharch: DB.kharchRecords
         });
       } catch (e) {}
     }
@@ -6778,7 +6793,7 @@ function formatMonthLabel(rawVal) {
     function applyServerLoginPayload(res) {
       activeUser = res.username;
       activeUserFullName = res.fullName || res.username;
-      activeUserMobile = res.mobile || "";
+      activeUserMobile = sanitizeContactPhoneDisplay(res.mobile || "");
       activeRole = res.role || "Admin";
       const sheetTheme = res.theme || "black";
 
@@ -6788,12 +6803,19 @@ function formatMonthLabel(rawVal) {
       DB.renters = (Array.isArray(res.renters) ? res.renters : []).map(r => {
         if (r.ProfileImageURL) r.ProfileImageURL = normalizeGoogleDriveImageUrl(r.ProfileImageURL);
         if (r.IdentityImageURL) r.IdentityImageURL = normalizeGoogleDriveImageUrl(r.IdentityImageURL);
+        if (r.IdentityDocNumber) r.IdentityDocNumber = formatAadhaarWithHyphens(r.IdentityDocNumber);
+        if (r.MobileNumber) r.MobileNumber = sanitizeContactPhoneDisplay(r.MobileNumber);
+        if (r.AltMobileNumber) r.AltMobileNumber = sanitizeContactPhoneDisplay(r.AltMobileNumber);
         return r;
       });
       DB.bills = sanitizeAllBillsMonths(Array.isArray(res.bills) ? res.bills : []);
-      DB.users = Array.isArray(res.users) ? res.users : [];
+      DB.users = (Array.isArray(res.users) ? res.users : []).map(u => {
+        if (u.MobileNumber !== undefined) u.MobileNumber = sanitizeContactPhoneDisplay(u.MobileNumber);
+        return u;
+      });
       DB.fdRecords = Array.isArray(res.fdRecords) ? res.fdRecords : [];
       DB.khetRecords = Array.isArray(res.khetRecords) ? res.khetRecords : [];
+      DB.kharchRecords = Array.isArray(res.kharchRecords) ? res.kharchRecords : [];
 
       const matchedU = (DB.users || []).find(u => String(u.Username || "").trim().toLowerCase() === String(activeUser).trim().toLowerCase());
       activeAssignedProperty = res.assignedProperty || matchedU?.AssignedProperty || "";
@@ -6942,11 +6964,18 @@ function formatMonthLabel(rawVal) {
           const incomingRenters = (Array.isArray(res.renters) ? res.renters : []).map(r => {
             if (r.ProfileImageURL) r.ProfileImageURL = normalizeGoogleDriveImageUrl(r.ProfileImageURL);
             if (r.IdentityImageURL) r.IdentityImageURL = normalizeGoogleDriveImageUrl(r.IdentityImageURL);
+            if (r.IdentityDocNumber) r.IdentityDocNumber = formatAadhaarWithHyphens(r.IdentityDocNumber);
+            if (r.MobileNumber) r.MobileNumber = sanitizeContactPhoneDisplay(r.MobileNumber);
+            if (r.AltMobileNumber) r.AltMobileNumber = sanitizeContactPhoneDisplay(r.AltMobileNumber);
             return r;
           });
           const incomingBills = sanitizeAllBillsMonths(Array.isArray(res.bills) ? res.bills : []);
           const incomingFdRecords = Array.isArray(res.fdRecords) ? res.fdRecords : [];
           const incomingKhetRecords = Array.isArray(res.khetRecords) ? res.khetRecords : [];
+          const incomingKharchRecords = Array.isArray(res.kharchRecords) ? res.kharchRecords : [];
+          incomingUsers.forEach(u => {
+            if (u.MobileNumber !== undefined) u.MobileNumber = sanitizeContactPhoneDisplay(u.MobileNumber);
+          });
           let incomingLoginHistory = Array.isArray(res.loginHistory) ? res.loginHistory : [];
           if (String(activeRole).toLowerCase() !== "admin") {
             incomingLoginHistory = [];
@@ -6960,7 +6989,8 @@ function formatMonthLabel(rawVal) {
             u: incomingUsers,
             l: incomingLoginHistory,
             fd: incomingFdRecords,
-            kh: incomingKhetRecords
+            kh: incomingKhetRecords,
+            kharch: incomingKharchRecords
           });
 
           const hasDataChanged = incomingHash !== lastSyncedDataHash;
@@ -6973,6 +7003,7 @@ function formatMonthLabel(rawVal) {
           DB.loginHistory = incomingLoginHistory;
           DB.fdRecords = incomingFdRecords;
           DB.khetRecords = incomingKhetRecords;
+          DB.kharchRecords = incomingKharchRecords;
 
           rebindSelectedFlatAndRenterReferences();
           saveDbSnapshotToCache();
@@ -7003,7 +7034,7 @@ function formatMonthLabel(rawVal) {
             sessionStorage.setItem("active_session_fullname", activeUserFullName);
           }
           if (res.userMobile !== undefined && res.userMobile !== null) {
-            activeUserMobile = res.userMobile;
+            activeUserMobile = sanitizeContactPhoneDisplay(res.userMobile);
             sessionStorage.setItem("active_session_mobile", activeUserMobile);
           }
 
@@ -7575,6 +7606,7 @@ function formatMonthLabel(rawVal) {
         document.getElementById("profAvatarInitials").innerText = (heroDispName[0] || "U").toUpperCase();
       }
 
+      activeUserMobile = sanitizeContactPhoneDisplay(activeUserMobile);
       document.getElementById("profViewFullName").value = activeUserFullName || activeUser || "";
       document.getElementById("profViewMobile").value = activeUserMobile || "";
       document.getElementById("profViewUsername").value = activeUser || "";
@@ -7610,7 +7642,7 @@ function formatMonthLabel(rawVal) {
         const res = await response.json();
         if (res.status === "success") {
           activeUserFullName = res.fullName || activeUser;
-          activeUserMobile = res.mobile || "";
+          activeUserMobile = sanitizeContactPhoneDisplay(res.mobile || "");
           if (res.role) activeRole = res.role;
 
           sessionStorage.setItem("active_session_fullname", activeUserFullName);
@@ -8584,7 +8616,7 @@ function formatMonthLabel(rawVal) {
                   ${isCurrentLoggedUser ? `<span style="font-size:0.66rem; color:var(--accent-green); font-weight:800; margin-left:4px;">(You)</span>` : ''}
                 </div>
                 <div style="font-size:0.73rem; color:var(--text-muted); margin-top:2px;">
-                  ${u.MobileNumber ? `<i class="fa-solid fa-phone"></i> ${u.MobileNumber}` : 'No mobile set'}
+                  ${sanitizeContactPhoneDisplay(u.MobileNumber) ? `<i class="fa-solid fa-phone"></i> ${sanitizeContactPhoneDisplay(u.MobileNumber)}` : 'No mobile set'}
                 </div>
                 ${assignedInfo}
               </div>
@@ -8762,10 +8794,11 @@ function formatMonthLabel(rawVal) {
     async function submitCreateNewUser() {
       const fullName = document.getElementById("createUserName").value.trim();
       const rawMobile = document.getElementById("createUserMobile").value.trim();
-      if (rawMobile && rawMobile !== "+91" && !isValidIndianMobilePlus91(rawMobile)) {
-        return triggerSideToast("Invalid Mobile Number", "Please enter a valid Indian mobile number starting with +91 followed by exactly 10 digits.", false);
+      const digitsMob = extractIndianMobile10Digits(rawMobile);
+      if (rawMobile && rawMobile !== "+91" && digitsMob.length > 0 && digitsMob.length !== 10) {
+        return triggerSideToast("Invalid Mobile Number", "Please enter a valid 10-digit Indian mobile number.", false);
       }
-      const mobile = (rawMobile && rawMobile !== "+91") ? formatIndianMobilePlus91(rawMobile) : "";
+      const mobile = (digitsMob.length === 10) ? ("+91 " + digitsMob) : "";
       const newU = document.getElementById("createUserLoginId").value.trim();
       const newP = document.getElementById("createUserPass").value;
       const role = document.getElementById("createUserRole").value;
@@ -9083,6 +9116,10 @@ function formatMonthLabel(rawVal) {
           : autoCarryBalance;
         document.getElementById("calcPrevCarryBalance").value = savedCarry;
         document.getElementById("calcPaidNow").value = existingBill.PaidAmount ?? 0;
+        const billDateEl = document.getElementById("calcBillDatePicker");
+        if (billDateEl) {
+          billDateEl.value = toInputDateValue(existingBill.BillDate || existingBill.PaymentDate) || new Date().toISOString().split("T")[0];
+        }
         const payDateEl = document.getElementById("calcPaymentDate");
         if (payDateEl) {
           payDateEl.value = toInputDateValue(existingBill.PaymentDate || existingBill.BillDate) || new Date().toISOString().split("T")[0];
@@ -9143,9 +9180,14 @@ function formatMonthLabel(rawVal) {
         document.getElementById("calcAddAmount").value = "";
         document.getElementById("calcPrevCarryBalance").value = autoCarryBalance;
         document.getElementById("calcPaidNow").value = 0;
+        const todayIso = new Date().toISOString().split("T")[0];
+        const billDateElNew = document.getElementById("calcBillDatePicker");
+        if (billDateElNew) {
+          billDateElNew.value = todayIso;
+        }
         const payDateElNew = document.getElementById("calcPaymentDate");
         if (payDateElNew) {
-          payDateElNew.value = new Date().toISOString().split("T")[0];
+          payDateElNew.value = todayIso;
         }
         document.getElementById("calcNotes").value = "";
       }
@@ -9448,7 +9490,7 @@ function formatMonthLabel(rawVal) {
       const remEl = document.getElementById("fdRemainingPoolDisplay");
       if (remEl) {
         remEl.innerText = (remainingPool < 0 ? "-₹" : "₹") + Math.abs(remainingPool).toLocaleString("en-IN");
-        remEl.style.color = remainingPool >= 0 ? "#a78bfa" : "#f87171";
+        remEl.style.color = remainingPool >= 0 ? "#5b21b6" : "#dc2626";
       }
 
       const allPlaceNames = Array.from(new Set([
@@ -9460,7 +9502,7 @@ function formatMonthLabel(rawVal) {
       const badgesContainer = document.getElementById("fdPropertyBreakdownBadges");
       if (badgesContainer) {
         if (allPlaceNames.length === 0) {
-          badgesContainer.innerHTML = `<div style="color:var(--text-muted); font-size:0.75rem;">No places/properties added yet.</div>`;
+          badgesContainer.innerHTML = `<div style="color:#64748b; font-size:0.75rem;">No places/properties added yet.</div>`;
         } else {
           badgesContainer.innerHTML = allPlaceNames.map(pName => {
             const collected = propRentTotals[pName] || 0;
@@ -9471,15 +9513,15 @@ function formatMonthLabel(rawVal) {
             const safeP = String(pName).replace(/'/g, "\\'");
             const isSelected = typeof activeFdPlaceFilter !== "undefined" && activeFdPlaceFilter === pName;
             return `
-              <div onclick="setFdPlaceFilter('${safeP}')" style="cursor:pointer; background:${isSelected ? 'rgba(99,102,241,0.28)' : 'rgba(15,23,42,0.65)'}; padding:9px 11px; border-radius:10px; border:1px solid ${isSelected ? '#818cf8' : 'rgba(255,255,255,0.12)'}; transition:0.2s;">
-                <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px;">
-                  <strong style="color:#f8fafc; font-size:0.8rem;"><i class="fa-solid fa-building" style="color:#818cf8;"></i> ${pName}</strong>
-                  <span style="font-size:0.68rem; background:rgba(16,185,129,0.18); color:#34d399; padding:2px 7px; border-radius:10px; font-weight:800;">Collected: ₹${collected.toLocaleString('en-IN')}</span>
+              <div onclick="setFdPlaceFilter('${safeP}')" style="cursor:pointer; background:#ffffff; padding:11px 13px; border-radius:12px; border:${isSelected ? '2px solid #4f46e5' : '1.5px solid #cbd5e1'}; transition:0.2s;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:6px;">
+                  <strong style="color:#0f172a; font-size:0.82rem;"><i class="fa-solid fa-building" style="color:#4f46e5;"></i> ${pName}</strong>
+                  <span style="font-size:0.68rem; background:#ffffff; color:#047857; border:1px solid #10b981; padding:2px 8px; border-radius:10px; font-weight:800;">Collected: ₹${collected.toLocaleString('en-IN')}</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px; font-size:0.69rem; color:var(--text-muted);">
-                  <span>Saving/FD: <strong style="color:#38bdf8;">₹${savAmt.toLocaleString('en-IN')}</strong></span>
-                  <span>Other Use: <strong style="color:#fbbf24;">₹${othAmt.toLocaleString('en-IN')}</strong></span>
-                  <span>Avail: <strong style="color:${avail >= 0 ? '#a78bfa' : '#f87171'};">₹${avail.toLocaleString('en-IN')}</strong></span>
+                <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px; font-size:0.71rem; color:#475569; padding-top:4px; border-top:1px dashed #e2e8f0;">
+                  <span>Saving/FD: <strong style="color:#0284c7;">₹${savAmt.toLocaleString('en-IN')}</strong></span>
+                  <span>Other Use: <strong style="color:#d97706;">₹${othAmt.toLocaleString('en-IN')}</strong></span>
+                  <span>Avail: <strong style="color:${avail >= 0 ? '#6d28d9' : '#dc2626'};">₹${avail.toLocaleString('en-IN')}</strong></span>
                 </div>
               </div>
             `;
@@ -9689,9 +9731,9 @@ function formatMonthLabel(rawVal) {
       const existingStatus = String(targetRenter.Status || "Inactive").trim().toLowerCase() === "active" ? "Active" : "Inactive";
       document.getElementById("editLeftRenterId").value = targetRenter.RenterID || "";
       document.getElementById("editLeftName").value = targetRenter.RenterName || "";
-      document.getElementById("editLeftIdentityNum").value = sanitizeAadhaar12Digits(targetRenter.IdentityDocNumber || "");
-      document.getElementById("editLeftMobile").value = targetRenter.MobileNumber ? formatIndianMobilePlus91(targetRenter.MobileNumber) : "";
-      document.getElementById("editLeftAltMobile").value = targetRenter.AltMobileNumber ? formatIndianMobilePlus91(targetRenter.AltMobileNumber) : "";
+      document.getElementById("editLeftIdentityNum").value = formatAadhaarWithHyphens(targetRenter.IdentityDocNumber || "");
+      document.getElementById("editLeftMobile").value = sanitizeContactPhoneDisplay(targetRenter.MobileNumber) || "";
+      document.getElementById("editLeftAltMobile").value = sanitizeContactPhoneDisplay(targetRenter.AltMobileNumber) || "";
       document.getElementById("editLeftAddress").value = targetRenter.Address || "";
       document.getElementById("editLeftFamily").value = targetRenter.TotalFamilyMembers || 1;
       document.getElementById("editLeftStatus").value = existingStatus;
@@ -9729,22 +9771,25 @@ function formatMonthLabel(rawVal) {
       }
 
       const rawAadhaar = document.getElementById("editLeftIdentityNum").value.trim();
-      if (rawAadhaar && !isValidAadhaar12Digits(rawAadhaar)) {
-        return triggerSideToast("Invalid Aadhaar Number", "Aadhaar card number must be exactly 12 digits (neither more nor less).", false);
+      const digitsAadhaar = sanitizeAadhaar12Digits(rawAadhaar);
+      if (digitsAadhaar.length > 0 && digitsAadhaar.length !== 12) {
+        return triggerSideToast("Invalid Aadhaar Number", "When entered, Aadhaar card number must be 12 digits (XXXX-XXXX-XXXX).", false);
       }
-      const cleanAadhaar = rawAadhaar ? sanitizeAadhaar12Digits(rawAadhaar) : "";
+      const cleanAadhaar = digitsAadhaar.length === 12 ? formatAadhaarWithHyphens(digitsAadhaar) : "";
 
       const rawMob = document.getElementById("editLeftMobile").value.trim();
-      if (rawMob && rawMob !== "+91" && !isValidIndianMobilePlus91(rawMob)) {
-        return triggerSideToast("Invalid Mobile Number", "Mobile number must start with +91 and contain exactly 10 digits after it.", false);
+      const digitsMob = extractIndianMobile10Digits(rawMob);
+      if (rawMob && rawMob !== "+91" && digitsMob.length > 0 && digitsMob.length !== 10) {
+        return triggerSideToast("Invalid Mobile Number", "When entered, mobile number must contain 10 digits.", false);
       }
-      const cleanMob = (rawMob && rawMob !== "+91") ? formatIndianMobilePlus91(rawMob) : "";
+      const cleanMob = digitsMob.length === 10 ? ("+91 " + digitsMob) : "";
 
       const rawAltMob = document.getElementById("editLeftAltMobile").value.trim();
-      if (rawAltMob && rawAltMob !== "+91" && !isValidIndianMobilePlus91(rawAltMob)) {
-        return triggerSideToast("Invalid Alt. Mobile Number", "Alternative mobile number must start with +91 and contain exactly 10 digits after it.", false);
+      const digitsAltMob = extractIndianMobile10Digits(rawAltMob);
+      if (rawAltMob && rawAltMob !== "+91" && digitsAltMob.length > 0 && digitsAltMob.length !== 10) {
+        return triggerSideToast("Invalid Alt. Mobile Number", "When entered, alternative mobile number must contain 10 digits.", false);
       }
-      const cleanAltMob = (rawAltMob && rawAltMob !== "+91") ? formatIndianMobilePlus91(rawAltMob) : "";
+      const cleanAltMob = digitsAltMob.length === 10 ? ("+91 " + digitsAltMob) : "";
 
       const targetRenter = (DB.renters || []).find(r => String(r.RenterID || "").trim() === String(targetRenterId).trim());
       if (!targetRenter) {
@@ -10449,9 +10494,9 @@ function formatMonthLabel(rawVal) {
       document.getElementById("profElecMeter").value = resolvedMeta.elecMeterNumber;
 
       document.getElementById("renterName").value = targetRenter.RenterName || "";
-      document.getElementById("renterIdentityNum").value = targetRenter.IdentityDocNumber || "";
-      document.getElementById("renterMobile").value = targetRenter.MobileNumber || "";
-      document.getElementById("renterAltMobile").value = targetRenter.AltMobileNumber || "";
+      document.getElementById("renterIdentityNum").value = formatAadhaarWithHyphens(targetRenter.IdentityDocNumber || "");
+      document.getElementById("renterMobile").value = sanitizeContactPhoneDisplay(targetRenter.MobileNumber) || "";
+      document.getElementById("renterAltMobile").value = sanitizeContactPhoneDisplay(targetRenter.AltMobileNumber) || "";
       document.getElementById("renterAddress").value = targetRenter.Address || "";
       document.getElementById("renterFamily").value = targetRenter.TotalFamilyMembers || 1;
       document.getElementById("renterStatus").value = String(targetRenter.Status || "Active").trim().toLowerCase() === "active" ? "Active" : "Inactive";
@@ -10524,9 +10569,9 @@ function formatMonthLabel(rawVal) {
 
       if (renter) {
         document.getElementById("renterName").value = renter.RenterName || "";
-        document.getElementById("renterIdentityNum").value = renter.IdentityDocNumber || "";
-        document.getElementById("renterMobile").value = renter.MobileNumber || "";
-        document.getElementById("renterAltMobile").value = renter.AltMobileNumber || "";
+        document.getElementById("renterIdentityNum").value = formatAadhaarWithHyphens(renter.IdentityDocNumber || "");
+        document.getElementById("renterMobile").value = sanitizeContactPhoneDisplay(renter.MobileNumber) || "";
+        document.getElementById("renterAltMobile").value = sanitizeContactPhoneDisplay(renter.AltMobileNumber) || "";
         document.getElementById("renterAddress").value = renter.Address || "";
         document.getElementById("renterFamily").value = renter.TotalFamilyMembers || 1;
         document.getElementById("renterStatus").value = String(renter.Status || "Active").trim().toLowerCase() === "active" ? "Active" : "Inactive";
@@ -10762,7 +10807,7 @@ function formatMonthLabel(rawVal) {
         PaymentMode: document.getElementById("calcPayMode").value,
         Status: billStatus,
         Notes: document.getElementById("calcNotes").value,
-        BillDate: existingBillRecord?.BillDate || new Date().toISOString(),
+        BillDate: document.getElementById("calcBillDatePicker")?.value || toInputDateValue(existingBillRecord?.BillDate) || new Date().toISOString().split("T")[0],
         RenterID: existingBillRecord?.RenterID || currentRenterId,
         PrevCarryBalance: prevCarryBalance,
         UPIName: snapshotUpiName,
@@ -10820,6 +10865,7 @@ function formatMonthLabel(rawVal) {
         totalBilled: newBillObj.TotalBilled,
         paidAmount: newBillObj.PaidAmount,
         paymentDate: newBillObj.PaymentDate,
+        billDate: newBillObj.BillDate,
         paymentMode: newBillObj.PaymentMode,
         status: newBillObj.Status,
         notes: newBillObj.Notes,
@@ -11083,8 +11129,9 @@ function formatMonthLabel(rawVal) {
       currentOpenedReceiptRenter = findRenterForBill(bill);
       currentOpenedReceiptFlat = DB.flats.find(f => isSamePropAndFlat(f.PropertyName, f.FlatName, bill.PropertyName, bill.FlatName)) || selectedFlat;
 
+      const billDateFormatted = formatDateOnly(bill.BillDate || bill.PaymentDate);
       document.getElementById("recPropAndFlat").innerText = `${bill.PropertyName} — Flat ${bill.FlatName}`;
-      document.getElementById("recMonthLabel").innerText = `Billing Month: ${formatMonthLabel(bill.MonthYear)}`;
+      document.getElementById("recMonthLabel").innerText = `Billing Month: ${formatMonthLabel(bill.MonthYear)} • Billing Date: ${billDateFormatted}`;
 
       const carryVal = parseFloat(bill.PrevCarryBalance) || 0;
       const carryLine = carryVal > 0
@@ -11102,11 +11149,16 @@ function formatMonthLabel(rawVal) {
         "--";
 
       document.getElementById("receiptBodyDetails").innerHTML = `
-        <!-- Clean Receipt Content (Requirement 4 & 5: WhatsApp Target Number & Total Amount Paid Removed) -->
+        <!-- Clean Receipt Content (Requirement 4: Billing Date Clearly Displayed on Receipt) -->
         <div id="receiptItemsListContainer">
           <div class="receipt-line" id="row_rec_tenant">
             <span>Tenant Name:</span>
             <strong>${bill.TenantName || '--'}</strong>
+          </div>
+
+          <div class="receipt-line" id="row_rec_billdate">
+            <span>Billing Date:</span>
+            <strong>${billDateFormatted}</strong>
           </div>
 
           <div class="receipt-line" id="row_rec_rent">
@@ -11199,6 +11251,7 @@ function formatMonthLabel(rawVal) {
           </div>
           <div class="wa-checklist-grid" id="waChecklistInputsContainer">
             <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="tenant" data-row="row_rec_tenant" checked onchange="recalculateReceiptSelection()"> <span>Tenant Name</span></label>
+            <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="billdate" data-row="row_rec_billdate" checked onchange="recalculateReceiptSelection()"> <span>Billing Date</span></label>
             <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="rent" data-row="row_rec_rent" data-amount="${parseFloat(bill.BaseRent) || 0}" checked onchange="recalculateReceiptSelection()"> <span>Base Rent</span></label>
             <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="elec" data-row="row_rec_elec" data-amount="${parseFloat(bill.ElecTotal) || 0}" checked onchange="recalculateReceiptSelection()"> <span>Electricity</span></label>
             <label class="wa-check-item"><input type="checkbox" class="rec-item-check" data-key="png" data-row="row_rec_png" data-amount="${parseFloat(bill.PNGTotal) || 0}" checked onchange="recalculateReceiptSelection()"> <span>PNG Gas</span></label>
@@ -12458,7 +12511,7 @@ function formatMonthLabel(rawVal) {
       });
 
       if (filtered.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding:22px; color:var(--text-muted); font-size:0.84rem; background:rgba(15,23,42,0.4); border-radius:12px; border:1px dashed var(--glass-border);">No portfolio or saving records found for the selected filter.</div>`;
+        container.innerHTML = `<div style="text-align:center; padding:22px; color:#64748b; font-size:0.84rem; background:#ffffff; border-radius:14px; border:1.5px dashed #cbd5e1;">No portfolio or saving records found for the selected filter.</div>`;
         return;
       }
 
@@ -12480,32 +12533,32 @@ function formatMonthLabel(rawVal) {
         const estGain = matAmt > amt ? (matAmt - amt) : 0;
 
         return `
-          <div style="padding:14px 16px; background:${isSaving ? 'linear-gradient(135deg, rgba(15,23,42,0.88) 0%, rgba(14,165,233,0.2) 55%, rgba(99,102,241,0.22) 100%)' : 'linear-gradient(135deg, rgba(15,23,42,0.88) 0%, rgba(245,158,11,0.2) 55%, rgba(236,72,153,0.2) 100%)'}; border:1.5px solid ${isSaving ? 'rgba(56,189,248,0.5)' : 'rgba(251,191,36,0.5)'}; border-left:6px solid ${isSaving ? '#0ea5e9' : '#f59e0b'}; border-radius:16px; box-shadow:0 10px 26px rgba(0,0,0,0.35);">
+          <div style="padding:14px 16px; background:#ffffff; color:#0f172a; border:1.5px solid #cbd5e1; border-left:5px solid ${isSaving ? '#0284c7' : '#d97706'}; border-radius:14px;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap; margin-bottom:8px;">
               <div>
                 <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                  <span style="font-size:0.68rem; font-weight:800; text-transform:uppercase; padding:3px 10px; border-radius:12px; background:${isSaving ? 'linear-gradient(135deg, rgba(14,165,233,0.35), rgba(59,130,246,0.25))' : 'linear-gradient(135deg, rgba(245,158,11,0.35), rgba(236,72,153,0.25))'}; color:${isSaving ? '#bae6fd' : '#fef3c7'}; border:1px solid ${isSaving ? 'rgba(56,189,248,0.45)' : 'rgba(251,191,36,0.45)'};">
+                  <span style="font-size:0.68rem; font-weight:800; text-transform:uppercase; padding:3px 10px; border-radius:12px; background:#ffffff; color:${isSaving ? '#0369a1' : '#b45309'}; border:1.5px solid ${isSaving ? '#0ea5e9' : '#f59e0b'};">
                     <i class="fa-solid ${isSaving ? 'fa-piggy-bank' : 'fa-screwdriver-wrench'}"></i> ${purposeType}
                   </span>
-                  <span style="font-size:0.72rem; font-weight:800; color:#e0e7ff; background:linear-gradient(135deg, rgba(99,102,241,0.32), rgba(168,85,247,0.25)); padding:3px 10px; border-radius:12px; border:1px solid rgba(165,180,252,0.4);">
+                  <span style="font-size:0.72rem; font-weight:800; color:#4f46e5; background:#ffffff; padding:3px 10px; border-radius:12px; border:1.5px solid #818cf8;">
                     <i class="fa-solid fa-location-dot"></i> Place: ${srcProp}
                   </span>
-                  <span style="font-size:0.7rem; color:#cbd5e1; font-weight:600;"><i class="fa-regular fa-calendar"></i> Date: ${usageDate}</span>
+                  <span style="font-size:0.7rem; color:#475569; font-weight:700;"><i class="fa-regular fa-calendar"></i> Date: ${usageDate}</span>
                 </div>
-                <div style="font-weight:900; font-size:0.98rem; color:#f8fafc; margin-top:6px;">
-                  Purpose: <span style="color:${isSaving ? '#38bdf8' : '#fbbf24'};">${usedPurpose}</span>
+                <div style="font-weight:900; font-size:0.98rem; color:#0f172a; margin-top:6px;">
+                  Purpose: <span style="color:${isSaving ? '#0284c7' : '#b45309'};">${usedPurpose}</span>
                 </div>
               </div>
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <div style="text-align:right; background:rgba(16,185,129,0.16); padding:4px 10px; border-radius:10px; border:1px solid rgba(52,211,153,0.35);">
-                  <div style="font-size:0.65rem; color:#a7f3d0; text-transform:uppercase; font-weight:800;">Initial Funding / Used</div>
-                  <div style="font-size:1.06rem; font-weight:900; color:#34d399;">₹${amt.toLocaleString('en-IN')}</div>
+                <div style="text-align:right; background:#ffffff; padding:5px 12px; border-radius:10px; border:1.5px solid #10b981;">
+                  <div style="font-size:0.65rem; color:#047857; text-transform:uppercase; font-weight:800;">Initial Funding / Used</div>
+                  <div style="font-size:1.06rem; font-weight:900; color:#065f46;">₹${amt.toLocaleString('en-IN')}</div>
                 </div>
                 <div style="display:flex; align-items:center; gap:5px;">
                   <button type="button" class="btn-ledger-action edit-btn admin-only" onclick="editFdRecord('${safeId}')" title="Edit Portfolio Entry">
                     <i class="fa-solid fa-pen-to-square"></i> Edit
                   </button>
-                  <button type="button" class="btn-ledger-action admin-only" style="color:var(--accent-red);" onclick="deleteFdRecord('${safeId}')" title="Delete Portfolio Entry">
+                  <button type="button" class="btn-ledger-action admin-only" style="color:#dc2626 !important; border-color:#fca5a5 !important;" onclick="deleteFdRecord('${safeId}')" title="Delete Portfolio Entry">
                     <i class="fa-solid fa-trash-can"></i>
                   </button>
                 </div>
@@ -12513,20 +12566,244 @@ function formatMonthLabel(rawVal) {
             </div>
 
             ${isSaving ? `
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap:8px; padding:10px 12px; background:linear-gradient(135deg, rgba(2,132,199,0.2), rgba(79,70,229,0.18)); border:1px solid rgba(56,189,248,0.35); border-radius:12px; font-size:0.75rem; margin-top:6px;">
-              <div><span style="color:#bae6fd;">Bank Name:</span> <strong style="color:#f8fafc;">${bankName}</strong></div>
-              <div><span style="color:#bae6fd;">Account / FD No.:</span> <strong style="color:#38bdf8;">${accountNo}</strong></div>
-              <div><span style="color:#bae6fd;">Initial Funding:</span> <strong style="color:#34d399;">₹${amt.toLocaleString('en-IN')}</strong></div>
-              <div><span style="color:#bae6fd;">Interest Rate:</span> <strong style="color:#fbbf24;">${rate ? rate + '% p.a.' : '--'}</strong></div>
-              <div><span style="color:#bae6fd;">Maturity Amount:</span> <strong style="color:#e879f9;">${matAmt > 0 ? '₹' + matAmt.toLocaleString('en-IN') : '--'}</strong> ${estGain > 0 ? `<span style="font-size:0.66rem; color:#34d399; font-weight:800;">(+₹${estGain.toLocaleString('en-IN')})</span>` : ''}</div>
-              <div><span style="color:#bae6fd;">Maturity Date:</span> <strong style="color:#f8fafc;">${maturity}</strong></div>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap:8px; padding:10px 12px; background:#ffffff; border:1.5px solid #cbd5e1; border-radius:12px; font-size:0.75rem; margin-top:8px;">
+              <div><span style="color:#64748b;">Bank Name:</span> <strong style="color:#0f172a;">${bankName}</strong></div>
+              <div><span style="color:#64748b;">Account / FD No.:</span> <strong style="color:#0284c7;">${accountNo}</strong></div>
+              <div><span style="color:#64748b;">Initial Funding:</span> <strong style="color:#059669;">₹${amt.toLocaleString('en-IN')}</strong></div>
+              <div><span style="color:#64748b;">Interest Rate:</span> <strong style="color:#b45309;">${rate ? rate + '% p.a.' : '--'}</strong></div>
+              <div><span style="color:#64748b;">Maturity Amount:</span> <strong style="color:#6d28d9;">${matAmt > 0 ? '₹' + matAmt.toLocaleString('en-IN') : '--'}</strong> ${estGain > 0 ? `<span style="font-size:0.66rem; color:#059669; font-weight:800;">(+₹${estGain.toLocaleString('en-IN')})</span>` : ''}</div>
+              <div><span style="color:#64748b;">Maturity Date:</span> <strong style="color:#0f172a;">${maturity}</strong></div>
             </div>
             ` : ''}
 
             ${notes ? `
-            <div style="font-size:0.74rem; color:#e2e8f0; margin-top:7px; padding-top:6px; border-top:1px dashed rgba(255,255,255,0.15);">
-              <i class="fa-solid fa-note-sticky" style="color:#f472b6;"></i> <strong>Notes:</strong> ${notes}
+            <div style="font-size:0.74rem; color:#334155; margin-top:7px; padding-top:6px; border-top:1px dashed #cbd5e1;">
+              <i class="fa-solid fa-note-sticky" style="color:#4f46e5;"></i> <strong>Notes:</strong> ${notes}
             </div>` : ''}
+          </div>
+        `;
+      }).join("");
+    }
+
+    // ============================================================================
+    // REQUIREMENT 8: KHARCH (EXPENSES) MANAGEMENT MODULE
+    // ============================================================================
+    let editingKharchRecordId = null;
+
+    function getStoredKharchRecords() {
+      return Array.isArray(DB.kharchRecords) ? DB.kharchRecords : [];
+    }
+
+    function openKharchModal() {
+      cancelKharchEdit();
+      const propSel = document.getElementById("kharchPropertyName");
+      if (propSel) {
+        const opts = ['<option value="General / All">General / All Properties</option>'];
+        sortPropertiesAlphabetically(DB.properties).forEach(p => {
+          opts.push(`<option value="${p.PropertyName}">${p.PropertyName}</option>`);
+        });
+        propSel.innerHTML = opts.join("");
+      }
+      renderKharchRecordsList();
+      openModal("kharchModal");
+    }
+
+    function cancelKharchEdit() {
+      editingKharchRecordId = null;
+      const tEl = document.getElementById("kharchTitle");
+      const cEl = document.getElementById("kharchCategory");
+      const aEl = document.getElementById("kharchAmount");
+      const pEl = document.getElementById("kharchPropertyName");
+      const mEl = document.getElementById("kharchPaymentMode");
+      const dEl = document.getElementById("kharchExpenseDate");
+      const nEl = document.getElementById("kharchNotes");
+      if (tEl) tEl.value = "";
+      if (cEl) cEl.value = "Maintenance & Repair";
+      if (aEl) aEl.value = "";
+      if (pEl) pEl.value = "General / All";
+      if (mEl) mEl.value = "Cash";
+      if (dEl) dEl.value = new Date().toISOString().split("T")[0];
+      if (nEl) nEl.value = "";
+
+      const formTitle = document.getElementById("kharchFormTitle");
+      const btnText = document.getElementById("btnSubmitKharchRecordText");
+      const cancelBtn = document.getElementById("btnCancelKharchEdit");
+      if (formTitle) formTitle.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Add New Kharch (Expense) Entry`;
+      if (btnText) btnText.innerText = "Save Kharch Entry to Google Sheet";
+      if (cancelBtn) cancelBtn.style.display = "none";
+    }
+
+    function editKharchRecord(id) {
+      const target = getStoredKharchRecords().find(item => String(item.id || item.KharchID) === String(id));
+      if (!target) return;
+      editingKharchRecordId = String(target.id || target.KharchID);
+
+      document.getElementById("kharchTitle").value = target.title || target.Title || "";
+      document.getElementById("kharchCategory").value = target.category || target.Category || "Maintenance & Repair";
+      document.getElementById("kharchAmount").value = target.amount !== undefined ? target.amount : (target.Amount || "");
+      document.getElementById("kharchPropertyName").value = target.propertyName || target.PropertyName || "General / All";
+      document.getElementById("kharchPaymentMode").value = target.paymentMode || target.PaymentMode || "Cash";
+      document.getElementById("kharchExpenseDate").value = toInputDateValue(target.expenseDate || target.ExpenseDate) || new Date().toISOString().split("T")[0];
+      document.getElementById("kharchNotes").value = target.notes || target.Notes || "";
+
+      const formTitle = document.getElementById("kharchFormTitle");
+      const btnText = document.getElementById("btnSubmitKharchRecordText");
+      const cancelBtn = document.getElementById("btnCancelKharchEdit");
+      if (formTitle) formTitle.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Kharch (Expense) Entry`;
+      if (btnText) btnText.innerText = "Update Kharch Entry in Google Sheet";
+      if (cancelBtn) cancelBtn.style.display = "inline-flex";
+    }
+
+    async function addKharchRecord() {
+      if (activeRole === "Viewer" || activeRole === "Renter") return;
+      const title = document.getElementById("kharchTitle")?.value.trim() || "";
+      const category = document.getElementById("kharchCategory")?.value || "Other Kharch";
+      const amount = parseFloat(document.getElementById("kharchAmount")?.value) || 0;
+      const propertyName = document.getElementById("kharchPropertyName")?.value || "General / All";
+      const paymentMode = document.getElementById("kharchPaymentMode")?.value || "Cash";
+      const expenseDate = document.getElementById("kharchExpenseDate")?.value || new Date().toISOString().split("T")[0];
+      const notes = document.getElementById("kharchNotes")?.value.trim() || "";
+
+      if (!title) {
+        return triggerSideToast("Title Required", "Please enter the Kharch (Expense) Title / Purpose.", false);
+      }
+      if (amount <= 0) {
+        return triggerSideToast("Amount Required", "Please enter a valid Expense Amount greater than 0.", false);
+      }
+
+      const list = [...getStoredKharchRecords()];
+      const isEditing = Boolean(editingKharchRecordId);
+      const recId = editingKharchRecordId || ("KHARCH-" + Date.now());
+      const nowDate = new Date().toISOString().split("T")[0];
+
+      const recordObj = {
+        id: recId,
+        KharchID: recId,
+        title,
+        Title: title,
+        category,
+        Category: category,
+        amount,
+        Amount: amount,
+        propertyName,
+        PropertyName: propertyName,
+        paymentMode,
+        PaymentMode: paymentMode,
+        expenseDate,
+        ExpenseDate: expenseDate,
+        notes,
+        Notes: notes,
+        createdAt: nowDate,
+        CreatedAt: nowDate
+      };
+
+      if (isEditing) {
+        const idx = list.findIndex(item => String(item.id || item.KharchID) === String(editingKharchRecordId));
+        if (idx !== -1) list[idx] = recordObj;
+        else list.unshift(recordObj);
+      } else {
+        list.unshift(recordObj);
+      }
+
+      DB.kharchRecords = list;
+      saveDbSnapshotToCache();
+      cancelKharchEdit();
+      renderKharchRecordsList();
+      triggerSideToast(
+        isEditing ? "Kharch Updated" : "Kharch Saved",
+        `${title} (₹${amount.toLocaleString('en-IN')}) saved to Google Sheet!`,
+        true
+      );
+
+      await sendGasPost({
+        action: "saveKharchRecord",
+        id: recId,
+        title,
+        category,
+        amount,
+        propertyName,
+        paymentMode,
+        expenseDate,
+        notes,
+        createdAt: nowDate
+      });
+    }
+
+    async function deleteKharchRecord(id) {
+      if (activeRole === "Viewer" || activeRole === "Renter") return;
+      DB.kharchRecords = getStoredKharchRecords().filter(item => String(item.id || item.KharchID) !== String(id));
+      saveDbSnapshotToCache();
+      renderKharchRecordsList();
+      triggerSideToast("Kharch Deleted", "Expense entry removed from Google Sheet.", "warning");
+      await sendGasPost({
+        action: "deleteKharchRecord",
+        id: id
+      });
+    }
+
+    function renderKharchRecordsList() {
+      const container = document.getElementById("kharchRecordsList");
+      const totalBadge = document.getElementById("kharchTotalAmountBadge");
+      if (!container) return;
+
+      const q = (document.getElementById("kharchSearchInput")?.value || "").trim().toLowerCase();
+      const catFilter = document.getElementById("kharchFilterCategory")?.value || "ALL";
+      const all = getStoredKharchRecords();
+
+      let grandTotal = 0;
+      const filtered = all.filter(item => {
+        const title = String(item.title || item.Title || "").toLowerCase();
+        const cat = String(item.category || item.Category || "");
+        const prop = String(item.propertyName || item.PropertyName || "").toLowerCase();
+        const notes = String(item.notes || item.Notes || "").toLowerCase();
+        if (catFilter !== "ALL" && cat !== catFilter) return false;
+        if (q && !title.includes(q) && !cat.toLowerCase().includes(q) && !prop.includes(q) && !notes.includes(q)) return false;
+        grandTotal += parseFloat(item.amount !== undefined ? item.amount : (item.Amount || 0)) || 0;
+        return true;
+      });
+
+      if (totalBadge) {
+        totalBadge.innerText = "₹" + grandTotal.toLocaleString("en-IN");
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:0.82rem; border:1px dashed var(--glass-border); border-radius:12px;">No Kharch (Expense) entries recorded yet.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        const recId = item.id || item.KharchID || "";
+        const safeId = String(recId).replace(/'/g, "\\'");
+        const title = item.title || item.Title || "Expense";
+        const cat = item.category || item.Category || "Other Kharch";
+        const amt = parseFloat(item.amount !== undefined ? item.amount : (item.Amount || 0)) || 0;
+        const prop = item.propertyName || item.PropertyName || "General / All";
+        const mode = item.paymentMode || item.PaymentMode || "Cash";
+        const dateStr = formatDateOnly(item.expenseDate || item.ExpenseDate || item.createdAt || item.CreatedAt);
+        const notes = item.notes || item.Notes || "";
+
+        return `
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:12px 14px; background:var(--bg-input); border:1px solid var(--glass-border); border-left:4px solid #f59e0b; border-radius:12px;">
+            <div style="flex:1; min-width:200px;">
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <strong style="font-size:0.92rem; color:var(--text-main);">${title}</strong>
+                <span style="font-size:0.68rem; font-weight:700; padding:2px 8px; border-radius:10px; background:rgba(245,158,11,0.16); color:#fbbf24; border:1px solid rgba(245,158,11,0.35);">${cat}</span>
+                <span style="font-size:0.7rem; color:var(--text-muted);"><i class="fa-solid fa-location-dot"></i> ${prop}</span>
+              </div>
+              <div style="font-size:0.74rem; color:var(--text-muted); margin-top:4px;">
+                <i class="fa-regular fa-calendar"></i> Date: <strong>${dateStr}</strong> • Mode: <strong>${mode}</strong>
+                ${notes ? ` • Notes: ${notes}` : ''}
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <strong style="font-size:1.02rem; color:#fbbf24;">₹${amt.toLocaleString('en-IN')}</strong>
+              <button type="button" class="btn-ledger-action edit-btn admin-only" onclick="editKharchRecord('${safeId}')" title="Edit Kharch">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+              <button type="button" class="btn-ledger-action admin-only" style="color:var(--accent-red);" onclick="deleteKharchRecord('${safeId}')" title="Delete Kharch">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
           </div>
         `;
       }).join("");
@@ -13590,12 +13867,15 @@ function formatMonthLabel(rawVal) {
       return String(val || "").replace(/\D+/g, "").slice(0, 12);
     }
 
+    let lastAutoPromptedReturningAadhaar = "";
+
     function handleAadhaarLookupInput(rawVal) {
       const promptEl = document.getElementById("aadhaarPreviousRenterPrompt");
       if (!promptEl) return;
 
       const cleanAadhaar = normalizeAadhaarString(rawVal);
       if (!cleanAadhaar || cleanAadhaar.length < 4) {
+        lastAutoPromptedReturningAadhaar = "";
         promptEl.style.display = "none";
         promptEl.innerHTML = "";
         return;
@@ -13637,7 +13917,7 @@ function formatMonthLabel(rawVal) {
       promptEl.innerHTML = `
         <div style="background:rgba(16, 185, 129, 0.12); border:1.5px solid var(--accent-green); border-radius:12px; padding:12px; text-align:left;">
           <div style="display:flex; align-items:center; gap:6px; font-size:0.76rem; font-weight:800; color:var(--accent-green); margin-bottom:8px;">
-            <i class="fa-solid fa-clock-rotate-left"></i> Matching Aadhaar Found — Returning Renter Detected!
+            <i class="fa-solid fa-clock-rotate-left"></i> Matching Aadhaar (${formatAadhaarWithHyphens(cleanAadhaar)}) — Returning Renter Found!
           </div>
           <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
             <div class="renter-avatar" style="width:44px; height:44px; flex-shrink:0;">
@@ -13645,7 +13925,7 @@ function formatMonthLabel(rawVal) {
             </div>
             <div style="font-size:0.78rem; line-height:1.35;">
               <div><strong>${pastRenter.RenterName || 'Saved Renter'}</strong> <span class="badge-unpaid" style="font-size:0.65rem; margin-left:4px;">${pastRenter.Status || 'Past Stay'}</span></div>
-              <div style="color:var(--text-muted);">Previous Flat: <strong>${pastRenter.PropertyName || '--'} - Flat ${pastRenter.FlatName || '--'}</strong> • Phone: ${pastRenter.MobileNumber || '--'}</div>
+              <div style="color:var(--text-muted);">Previous Flat: <strong>${pastRenter.PropertyName || '--'} - Flat ${pastRenter.FlatName || '--'}</strong> (History Retained) • Phone: ${sanitizeContactPhoneDisplay(pastRenter.MobileNumber) || '--'}</div>
               <div style="color:var(--text-muted);">Stay: ${formatDateOnly(pastRenter.JoinDate)} to ${formatDateOnly(pastRenter.EndDate) || 'Left'} • Past Bills: <strong>${pastBills.length}</strong></div>
             </div>
           </div>
@@ -13655,10 +13935,16 @@ function formatMonthLabel(rawVal) {
             style="padding:9px 12px; font-size:0.78rem; background:var(--accent-green);"
             onclick="reactivatePreviousRenterProfile('${safeRId}')"
           >
-            <i class="fa-solid fa-user-check"></i> Reactivate Renter (Choose Property &amp; Flat)
+            <i class="fa-solid fa-user-check"></i> Choose Property &amp; Flat to Place Returning Renter
           </button>
         </div>
       `;
+
+      // Requirement 10: When all 12 digits of a departed renter's Aadhaar are entered, prompt where to place them while keeping old flat history intact
+      if (cleanAadhaar.length === 12 && lastAutoPromptedReturningAadhaar !== cleanAadhaar) {
+        lastAutoPromptedReturningAadhaar = cleanAadhaar;
+        reactivatePreviousRenterProfile(bestMatch.rId);
+      }
     }
 
     async function submitRenterProfileRight() {
@@ -13671,48 +13957,53 @@ function formatMonthLabel(rawVal) {
         return triggerSideToast("Renter Name Required", "Please enter the Renter Name.", false);
       }
 
-      // Requirement 11: Aadhaar card must be exactly 12 digits (neither more nor less)
+      // Requirement 5, 6 & 7: Aadhaar Card is formatted as XXXX-XXXX-XXXX when entered, AND saving is allowed even if Aadhaar is left blank
       const rawAadhaar = document.getElementById("renterIdentityNum").value.trim();
-      const cleanAadhaar = sanitizeAadhaar12Digits(rawAadhaar);
-      if (!isValidAadhaar12Digits(cleanAadhaar)) {
-        return triggerSideToast("Invalid Aadhaar Number", "Aadhaar Card Number must be exactly 12 digits (neither more nor less).", false);
+      const digitsAadhaar = sanitizeAadhaar12Digits(rawAadhaar);
+      if (digitsAadhaar.length > 0 && digitsAadhaar.length !== 12) {
+        return triggerSideToast("Invalid Aadhaar Number", "When entered, Aadhaar Card Number must consist of 12 digits (XXXX-XXXX-XXXX).", false);
       }
+      const cleanAadhaar = digitsAadhaar.length === 12 ? formatAadhaarWithHyphens(digitsAadhaar) : "";
       document.getElementById("renterIdentityNum").value = cleanAadhaar;
 
-      // Requirement 12: Mobile Number must start with +91 followed by exactly 10 digits
+      // Requirement 7: Allow saving the rent/profile record even without entering a Mobile Number
       const rawMobile = document.getElementById("renterMobile").value.trim();
-      if (!isValidIndianMobilePlus91(rawMobile)) {
-        return triggerSideToast("Invalid Mobile Number", "Mobile Number must start with +91 followed by exactly 10 digits (e.g. +919876543210).", false);
+      let cleanMobile = "";
+      const digitsMobile = extractIndianMobile10Digits(rawMobile);
+      if (rawMobile && rawMobile !== "+91" && digitsMobile.length > 0) {
+        if (digitsMobile.length !== 10) {
+          return triggerSideToast("Invalid Mobile Number", "When entered, Mobile Number must contain 10 digits (e.g. +91 9876543210).", false);
+        }
+        cleanMobile = "+91 " + digitsMobile;
       }
-      const cleanMobile = formatIndianMobilePlus91(rawMobile);
       document.getElementById("renterMobile").value = cleanMobile;
 
       const rawAltMobile = document.getElementById("renterAltMobile").value.trim();
       let cleanAltMobile = "";
-      if (rawAltMobile && rawAltMobile !== "+91") {
-        if (!isValidIndianMobilePlus91(rawAltMobile)) {
-          return triggerSideToast("Invalid Alternate Mobile", "Alternate Mobile Number must start with +91 followed by exactly 10 digits.", false);
+      const digitsAltMobile = extractIndianMobile10Digits(rawAltMobile);
+      if (rawAltMobile && rawAltMobile !== "+91" && digitsAltMobile.length > 0) {
+        if (digitsAltMobile.length !== 10) {
+          return triggerSideToast("Invalid Alternate Mobile", "When entered, Alternate Mobile Number must contain 10 digits.", false);
         }
-        cleanAltMobile = formatIndianMobilePlus91(rawAltMobile);
-        document.getElementById("renterAltMobile").value = cleanAltMobile;
-      } else {
-        document.getElementById("renterAltMobile").value = "";
+        cleanAltMobile = "+91 " + digitsAltMobile;
       }
+      document.getElementById("renterAltMobile").value = cleanAltMobile;
 
       const rawContractMobile = document.getElementById("profContractMobile").value.trim();
       let cleanContractMobile = "";
-      if (rawContractMobile && rawContractMobile !== "+91") {
-        if (!isValidIndianMobilePlus91(rawContractMobile)) {
-          return triggerSideToast("Invalid Contract Mobile", "Contract Mobile Number must start with +91 followed by exactly 10 digits.", false);
+      const digitsContractMobile = extractIndianMobile10Digits(rawContractMobile);
+      if (rawContractMobile && rawContractMobile !== "+91" && digitsContractMobile.length > 0) {
+        if (digitsContractMobile.length !== 10) {
+          return triggerSideToast("Invalid Contract Mobile", "When entered, Contract Mobile Number must contain 10 digits.", false);
         }
-        cleanContractMobile = formatIndianMobilePlus91(rawContractMobile);
-        document.getElementById("profContractMobile").value = cleanContractMobile;
+        cleanContractMobile = "+91 " + digitsContractMobile;
       }
+      document.getElementById("profContractMobile").value = cleanContractMobile;
 
       const targetRenterId = activeFlatRenterObj?.RenterID || ("R-" + Date.now());
       const wasAlreadyInactive = activeFlatRenterObj && String(activeFlatRenterObj.Status || "").trim().toLowerCase() === "inactive";
 
-      // Requirement 4: If a Left / Inactive renter is switched to Active, open the Property & Flat destination popup instead of auto-reactivating in their old flat
+      // Requirement 10: If a Left / Inactive renter is switched to Active, open the Property & Flat destination popup while preserving old flat history
       if (wasAlreadyInactive && statusVal === "Active" && activeFlatRenterObj) {
         activeFlatRenterObj.RenterName = rName;
         activeFlatRenterObj.IdentityDocNumber = cleanAadhaar;
