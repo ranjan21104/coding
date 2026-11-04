@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Include html2canvas for receipt image rendering & QRious for 100% reliable client-side UPI QR code generation -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
-    // Requirement 4: High-Clarity Custom Background Management
+    // Requirement 4: Custom Backgrounds (Login & Dashboard) with 100% Clarity
     function getCustomBackgrounds() {
       const loginBg = localStorage.getItem("portal_custom_bg_login") || "";
       const dashBg = localStorage.getItem("portal_custom_bg_dashboard") || "";
@@ -122,9 +122,7 @@
       applyCustomBackgrounds();
       initCustomBgInputs();
       triggerSideToast("Background Removed", `Default background restored for ${type === 'login' ? 'Logout/Login screen' : 'Dashboard'}.`, true);
-      if (activeUser) {
-        saveCustomBackgrounds();
-      }
+      if (activeUser) saveCustomBackgrounds();
     }
 
     function resetDefaultBackgrounds() {
@@ -136,14 +134,11 @@
       if (inputDash) inputDash.value = "";
       applyCustomBackgrounds();
       initCustomBgInputs();
-      triggerSideToast("Default Backgrounds Restored", "Both screens reverted to their original theme backgrounds.", true);
-      if (activeUser) {
-        saveCustomBackgrounds();
-      }
+      triggerSideToast("Default Backgrounds Restored", "Both screens reverted to original backgrounds.", true);
+      if (activeUser) saveCustomBackgrounds();
     }
 
-
-    // Requirement 3: User Block / Unblock Management & Blocked Login Modal
+    // User Block Management & Blocked Login Modal
     async function toggleUserBlockStatus(targetUsername, newStatus) {
       if (String(activeRole || "").trim().toLowerCase() !== "admin") return;
       const isBlocking = newStatus === "Blocked";
@@ -169,7 +164,6 @@
               newStatus: newStatus
             });
             if (res && res.status === "success") {
-              // Update local state
               const targetU = (DB.users || []).find(u => String(u.Username || "").toLowerCase() === targetUsername.toLowerCase());
               if (targetU) targetU.Status = newStatus;
               saveDbSnapshotToCache();
@@ -303,13 +297,62 @@
       max-width: 425px;
       padding: 36px 28px;
       text-align: center;
-      background: rgba(15, 23, 42, 0.34) !important;
-      backdrop-filter: blur(18px) !important;
-      -webkit-backdrop-filter: blur(18px) !important;
-      border: 1.5px solid rgba(255, 255, 255, 0.72) !important;
-      border-radius: 22px !important;
-      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45) !important;
+      background: transparent !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      border: none !important;
+      box-shadow: none !important;
       color: #ffffff !important;
+    }
+    #loginScreen .glass-card {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+    #loginScreen .login-brand-icon-wrap {
+      border: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+    }
+    #loginScreen .login-input-shell {
+      background: rgba(15, 23, 42, 0.75) !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.48) !important;
+      border-radius: 14px !important;
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+    }
+    #loginScreen .login-input-shell:focus-within {
+      border-color: #a855f7 !important;
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.4), 0 8px 24px rgba(0, 0, 0, 0.45) !important;
+    }
+    #loginScreen #loginBtn {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%) !important;
+      color: #ffffff !important;
+      border: none !important;
+      border-radius: 16px !important;
+      padding: 14px 24px !important;
+      font-size: 1.05rem !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.5px !important;
+      box-shadow: 0 10px 28px rgba(124, 58, 237, 0.5), 0 0 20px rgba(236, 72, 153, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      cursor: pointer !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 10px !important;
+      width: 100% !important;
+    }
+    #loginScreen #loginBtn:hover {
+      transform: translateY(-2px) scale(1.02) !important;
+      box-shadow: 0 16px 36px rgba(124, 58, 237, 0.65), 0 0 28px rgba(236, 72, 153, 0.5) !important;
+      background: linear-gradient(135deg, #4338ca 0%, #6d28d9 50%, #db2777 100%) !important;
+    }
+    #loginScreen #loginBtn:active {
+      transform: translateY(0) scale(0.99) !important;
     }
 
     #loginScreen .login-brand {
@@ -2845,8 +2888,6 @@
     <main class="flats-container" id="flatsList">
       <!-- Rendered Only When Property Is Clicked -->
     </main>
-
-    
   </section>
 
   <!-- ==================== POPUP MODALS ==================== -->
@@ -3205,7 +3246,7 @@
     </div>
   </div>
 
-  <!-- 1. VIBRANT & COLORFUL REDESIGNED MY PROFILE MODAL -->
+  <!-- 1. PROFILE MODAL -->
   <div id="profileModal" class="modal-overlay">
     <div class="modal-window" style="max-width:540px; padding:0; overflow:hidden; border-radius:24px; border:1.5px solid rgba(129, 140, 248, 0.4); box-shadow:0 25px 60px rgba(0,0,0,0.5), 0 0 30px rgba(99,102,241,0.25);">
       <button class="modal-close-btn" style="top:14px; right:14px; z-index:10; background:rgba(15,23,42,0.6); backdrop-filter:blur(8px);" onclick="closeModal('profileModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -3216,7 +3257,6 @@
         <div style="position:absolute; bottom:-40px; left:-20px; width:120px; height:120px; background:radial-gradient(circle, rgba(56,189,248,0.3) 0%, transparent 70%); border-radius:50%;"></div>
         
         <div style="display:flex; align-items:center; gap:16px; position:relative; z-index:2;">
-          <!-- Glowing Avatar Ring -->
           <div style="position:relative;">
             <div style="width:68px; height:68px; border-radius:20px; background:linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%); display:flex; align-items:center; justify-content:center; box-shadow:0 10px 25px rgba(0,0,0,0.35); border:3px solid rgba(255,255,255,0.85); overflow:hidden;">
               <span id="profAvatarInitials" style="font-size:1.6rem; font-weight:900; background:linear-gradient(135deg, #4f46e5 0%, #ec4899 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">U</span>
@@ -3226,14 +3266,16 @@
 
           <div style="flex:1; min-width:0;">
             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-              <h3 id="profDisplayHeroName" style="margin:0; font-size:1.25rem; font-weight:900; color:#ffffff; text-shadow:0 2px 4px rgba(0,0,0,0.25); letter-spacing:-0.2px;">User Profile</h3>
+              <!-- Requirement 3: User's Name displayed at the top -->
+              <h3 id="profDisplayHeroName" style="margin:0; font-size:1.35rem; font-weight:900; color:#ffffff; text-shadow:0 2px 4px rgba(0,0,0,0.25); letter-spacing:-0.2px;">User Profile</h3>
               <span id="profRoleBadgePill" style="font-size:0.68rem; font-weight:800; padding:2px 10px; border-radius:20px; background:rgba(255,255,255,0.22); color:#ffffff; backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.5px;">ADMIN</span>
             </div>
-            <div style="font-size:0.78rem; color:rgba(255,255,255,0.88); margin-top:3px; display:flex; align-items:center; gap:6px;">
-              <i class="fa-solid fa-at" style="color:rgba(255,255,255,0.7); font-size:0.7rem;"></i>
-              <span id="profDisplayHeroUser" style="font-weight:700;">@username</span>
-              <span>•</span>
-              <span style="color:#a7f3d0; font-weight:600;"><i class="fa-solid fa-cloud-arrow-up"></i> Google Drive Synced</span>
+            <!-- Requirement 3: Username written right underneath -->
+            <div style="font-size:0.86rem; color:rgba(255,255,255,0.95); margin-top:3px; display:flex; align-items:center; gap:6px; font-weight:700;">
+              <i class="fa-solid fa-at" style="color:#38bdf8; font-size:0.78rem;"></i>
+              <span id="profDisplayHeroUser" style="color:#38bdf8; letter-spacing:0.3px;">@username</span>
+              <span style="color:rgba(255,255,255,0.4);">•</span>
+              <span style="color:#a7f3d0; font-weight:600; font-size:0.74rem;"><i class="fa-solid fa-cloud-arrow-up"></i> Google Drive Synced</span>
             </div>
           </div>
         </div>
@@ -3243,32 +3285,28 @@
       <div style="padding:20px 24px 24px 24px; max-height:72vh; overflow-y:auto;">
         <!-- Vibrant Locked Info Grid -->
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:12px;">
-          <!-- Card 1: Full Name -->
-          <div style="background:rgba(99,102,241,0.08); border:1.5px solid rgba(99,102,241,0.25); border-radius:14px; padding:10px 12px; transition:all 0.2s ease;">
+          <div style="background:rgba(99,102,241,0.08); border:1.5px solid rgba(99,102,241,0.25); border-radius:14px; padding:10px 12px;">
             <label style="font-size:0.7rem; font-weight:800; color:#818cf8; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:5px; margin-bottom:4px;">
               <i class="fa-solid fa-signature"></i> Full Name
             </label>
             <input type="text" id="profViewFullName" class="form-control" readonly style="background:transparent; border:none; padding:0; font-weight:800; font-size:0.92rem; color:var(--text-main); cursor:default; box-shadow:none;">
           </div>
 
-          <!-- Card 2: Mobile Number -->
-          <div style="background:rgba(56,189,248,0.08); border:1.5px solid rgba(56,189,248,0.25); border-radius:14px; padding:10px 12px; transition:all 0.2s ease;">
+          <div style="background:rgba(56,189,248,0.08); border:1.5px solid rgba(56,189,248,0.25); border-radius:14px; padding:10px 12px;">
             <label style="font-size:0.7rem; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:5px; margin-bottom:4px;">
               <i class="fa-solid fa-phone"></i> Mobile No.
             </label>
             <input type="text" id="profViewMobile" class="form-control" readonly placeholder="Not set" style="background:transparent; border:none; padding:0; font-weight:800; font-size:0.92rem; color:var(--text-main); cursor:default; box-shadow:none;">
           </div>
 
-          <!-- Card 3: Username -->
-          <div style="background:rgba(236,72,153,0.08); border:1.5px solid rgba(236,72,153,0.25); border-radius:14px; padding:10px 12px; transition:all 0.2s ease;">
+          <div style="background:rgba(236,72,153,0.08); border:1.5px solid rgba(236,72,153,0.25); border-radius:14px; padding:10px 12px;">
             <label style="font-size:0.7rem; font-weight:800; color:#ec4899; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:5px; margin-bottom:4px;">
               <i class="fa-solid fa-user-tag"></i> Login Username
             </label>
             <input type="text" id="profViewUsername" class="form-control" readonly style="background:transparent; border:none; padding:0; font-weight:800; font-size:0.92rem; color:var(--text-main); cursor:default; box-shadow:none;">
           </div>
 
-          <!-- Card 4: Password with Eye Toggle -->
-          <div style="background:rgba(245,158,11,0.08); border:1.5px solid rgba(245,158,11,0.25); border-radius:14px; padding:10px 12px; transition:all 0.2s ease;">
+          <div style="background:rgba(245,158,11,0.08); border:1.5px solid rgba(245,158,11,0.25); border-radius:14px; padding:10px 12px;">
             <label style="font-size:0.7rem; font-weight:800; color:#fbbf24; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:5px; margin-bottom:4px;">
               <i class="fa-solid fa-key"></i> Current Password
             </label>
@@ -3403,7 +3441,6 @@
     </div>
   </div>
 
-  <!-- 2. SETTINGS MODAL (Theme, Create User ID, Delete Property/Flat, Other) -->
   <div id="settingsModal" class="modal-overlay">
     <div class="modal-window">
       <button class="modal-close-btn" onclick="closeModal('settingsModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -3602,7 +3639,7 @@
         </div>
 
         
-        <!-- Option: Change Background Photo (Requirement 4: 100% Clarity Custom Background Links) -->
+        <!-- Option: Change Background Photo -->
         <div id="otherPanelChangeBg" class="stat-pill" style="text-align: left; display: none;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--glass-border);">
             <div>
@@ -3610,7 +3647,7 @@
                 <i class="fa-solid fa-wand-magic-sparkles"></i> Customize Portal Background Photos
               </span>
               <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">
-                Paste any high-resolution image link. Images are rendered with 100% clarity and saved across your logins.
+                Paste any high-resolution image link. Images render with 100% clarity and save across your logins.
               </div>
             </div>
             <span style="font-size:0.7rem; color:#10b981; font-weight:700; background:rgba(16,185,129,0.15); padding:3px 8px; border-radius:12px;">
@@ -3619,7 +3656,6 @@
           </div>
 
           <div style="display:flex; flex-direction:column; gap:12px;">
-            <!-- Field 1: Logout / Login Screen Background -->
             <div style="background:var(--bg-input); padding:12px; border-radius:12px; border:1px solid var(--glass-border);">
               <label style="font-size:0.76rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:6px; margin-bottom:6px;">
                 <i class="fa-solid fa-right-to-bracket" style="color:#818cf8;"></i> 1. Logout / Login Home Page Background Link (URL)
@@ -3629,7 +3665,7 @@
                   type="url"
                   id="bgUrlLoginScreen"
                   class="form-control"
-                  placeholder="Paste image link for Logout/Login screen (e.g. https://images.unsplash.com/...)"
+                  placeholder="Paste image link for Logout/Login screen (e.g. https://...)"
                   style="font-size:0.78rem;"
                 >
                 <button
@@ -3647,7 +3683,6 @@
               </div>
             </div>
 
-            <!-- Field 2: Dashboard / Logged-in Home Page Background -->
             <div style="background:var(--bg-input); padding:12px; border-radius:12px; border:1px solid var(--glass-border);">
               <label style="font-size:0.76rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:6px; margin-bottom:6px;">
                 <i class="fa-solid fa-house" style="color:#ec4899;"></i> 2. Login Home Page (Dashboard) Background Link (URL)
@@ -3657,7 +3692,7 @@
                   type="url"
                   id="bgUrlDashboardScreen"
                   class="form-control"
-                  placeholder="Paste image link for Login Home Page / Dashboard (e.g. https://images.unsplash.com/...)"
+                  placeholder="Paste image link for Login Home Page / Dashboard (e.g. https://...)"
                   style="font-size:0.78rem;"
                 >
                 <button
@@ -3675,7 +3710,6 @@
               </div>
             </div>
 
-            <!-- Action buttons -->
             <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; margin-top:4px;">
               <button
                 type="button"
@@ -4202,128 +4236,12 @@
 
       <!-- TAB 3: PROFILE MATRIX (Requirement 3, 5 & 6: 1. Renter Profile Photo, 2. Aadhaar Card Document Photo, 3. Renter Profile Details, 4. Rent & Utility Details) -->
       <div id="tabProfile" class="tab-content">
-        <div class="profile-matrix">
-          <!-- 1st Box: Renter's Profile Photo (Upload, Google Drive Auto-Save, Click-to-Zoom, Download & Delete) -->
-          <div class="matrix-col photo-card-profile" style="text-align: center;">
-            <div class="col-title"><i class="fa-solid fa-user-astronaut"></i> 1. Renter Profile Photo (Google Drive)</div>
-            <div class="image-frame-container zoomable-photo-frame" style="height: 175px; margin-bottom: 8px;" onclick="openPhotoZoomModal(document.getElementById('profilePicturePreview')?.src, (document.getElementById('renterName')?.value || 'Renter') + ' — Profile Photo')">
-              <img id="profilePicturePreview" src="https://via.placeholder.com/150?text=No+Profile+Photo" alt="Renter Profile Photo">
-              <span class="zoomable-photo-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Click Photo to Zoom</span>
-            </div>
-            <div id="profileCloudStatusBadge" style="font-size:0.74rem; font-weight:700; color:var(--text-muted); margin-bottom:8px;">No profile photo uploaded</div>
-            <div class="form-group admin-only" style="text-align:left; margin-bottom:10px;">
-              <label>Upload Profile Photo (Auto-Saves to Google Drive)</label>
-              <input type="file" id="fileProfilePic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'profile')">
-            </div>
-            <div style="display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap;">
-              <a
-                href="https://drive.google.com/drive/folders/1Yz4O6NyLJFGMjXYEQiG2THyLLsm82zRW?usp=drive_link"
-                target="_blank"
-                rel="noreferrer"
-                class="btn-ledger-action"
-                style="background: rgba(59, 130, 246, 0.16); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.45); padding: 7px 12px; font-size: 0.74rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"
-                title="Open 'Home' folder in Google Drive"
-              >
-                <i class="fa-brands fa-google-drive" style="color:#60a5fa;"></i> Drive Folder ("Home")
-              </a>
-              <button
-                type="button"
-                id="btnDownloadProfilePic"
-                class="btn-ledger-action"
-                style="background: rgba(56, 189, 248, 0.16); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.45); padding: 7px 14px; font-size: 0.76rem; font-weight: 700;"
-                onclick="downloadRenterDocumentPhoto('profile')"
-              >
-                <i class="fa-solid fa-download"></i> Download Photo
-              </button>
-              <button
-                type="button"
-                id="btnDeleteProfilePic"
-                class="btn-ledger-action admin-only"
-                style="background: rgba(239, 68, 68, 0.16); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.35); padding: 7px 14px; font-size: 0.76rem; font-weight: 700;"
-                onclick="deleteRenterDocumentFromCloud('profile')"
-              >
-                <i class="fa-solid fa-trash-can"></i> Delete Profile Photo
-              </button>
-            </div>
-          </div>
+        <!-- Requirement 4: Reordered Matrix (Number 3 Left, Number 2 Center, Number 1 Right) -->
+        <div class="profile-matrix" style="display:grid; grid-template-columns: 1fr 1.15fr 1fr; gap:16px; align-items:start;">
 
-          <!-- 2nd Box: Renter's Aadhaar Card Document Photo (Upload, Google Drive Auto-Save, Click-to-Zoom, Download & Delete) -->
-          <div class="matrix-col photo-card-aadhaar" style="text-align: center;">
-            <div class="col-title"><i class="fa-solid fa-id-card"></i> 2. Aadhaar Card Document Photo (Google Drive)</div>
-            <div class="image-frame-container zoomable-photo-frame" style="height: 175px; margin-bottom: 8px;" onclick="openPhotoZoomModal(document.getElementById('identityPicturePreview')?.src, (document.getElementById('renterName')?.value || 'Renter') + ' — Aadhaar Card Document')">
-              <img id="identityPicturePreview" src="https://via.placeholder.com/300x150?text=No+Aadhaar+Uploaded" alt="Aadhaar / ID Document">
-              <span class="zoomable-photo-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Click Photo to Zoom</span>
-            </div>
-            <div id="identityCloudStatusBadge" style="font-size:0.74rem; font-weight:700; color:var(--text-muted); margin-bottom:8px;">No Aadhaar / ID uploaded</div>
-            <div class="form-group admin-only" style="text-align:left; margin-bottom:10px;">
-              <label>Upload Aadhaar Card Photo (Auto-Saves to Google Drive)</label>
-              <input type="file" id="fileIdentityPic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'identity')">
-            </div>
-            <div style="display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap;">
-              <a
-                href="https://drive.google.com/drive/folders/1Yz4O6NyLJFGMjXYEQiG2THyLLsm82zRW?usp=drive_link"
-                target="_blank"
-                rel="noreferrer"
-                class="btn-ledger-action"
-                style="background: rgba(59, 130, 246, 0.16); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.45); padding: 7px 12px; font-size: 0.74rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"
-                title="Open 'Home' folder in Google Drive"
-              >
-                <i class="fa-brands fa-google-drive" style="color:#60a5fa;"></i> Drive Folder ("Home")
-              </a>
-              <button
-                type="button"
-                id="btnDownloadIdentityPic"
-                class="btn-ledger-action"
-                style="background: rgba(16, 185, 129, 0.16); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.45); padding: 7px 14px; font-size: 0.76rem; font-weight: 700;"
-                onclick="downloadRenterDocumentPhoto('identity')"
-              >
-                <i class="fa-solid fa-download"></i> Download Aadhaar
-              </button>
-              <button
-                type="button"
-                id="btnDeleteIdentityPic"
-                class="btn-ledger-action admin-only"
-                style="background: rgba(239, 68, 68, 0.16); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.35); padding: 7px 14px; font-size: 0.76rem; font-weight: 700;"
-                onclick="deleteRenterDocumentFromCloud('identity')"
-              >
-                <i class="fa-solid fa-trash-can"></i> Delete Aadhaar Photo
-              </button>
-            </div>
-          </div>
-
-          <!-- 3rd Box: Renter Profile Details (Requirement 5: Reactivate Options Hidden for Active Renters; Only Shown When Renter Has Left) -->
-          <div class="matrix-col details-card-renter">
-            <div class="col-title"><i class="fa-solid fa-address-card"></i> 3. Renter Profile Details</div>
-            <div class="form-group"><label>Renter Name <span class="req-star">*</span></label><input type="text" id="renterName" class="form-control"></div>
-            <div class="form-group">
-              <label>Aadhaar Card Number (Strictly 12 Digits)</label>
-              <input type="text" id="renterIdentityNum" class="form-control" maxlength="12" inputmode="numeric" pattern="\d{12}" placeholder="Enter 12-digit Aadhaar Number" oninput="this.value = sanitizeAadhaar12Digits(this.value); handleAadhaarLookupInput(this.value)" onchange="this.value = sanitizeAadhaar12Digits(this.value); handleAadhaarLookupInput(this.value)">
-              <!-- Returning Renter Aadhaar Match & Reactivate Same Profile Banner (Only for Left Renters) -->
-              <div id="aadhaarPreviousRenterPrompt" style="display:none; margin-top:8px;"></div>
-            </div>
-            <div class="form-group"><label>Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
-            <div class="form-group"><label>Alternative Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterAltMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
-            <div class="form-group"><label>Address</label><input type="text" id="renterAddress" class="form-control"></div>
-            <div class="form-group"><label>Total Family Members</label><input type="number" id="renterFamily" class="form-control" value="1"></div>
-            <div class="form-group">
-              <label>Renter Status</label>
-              <select id="renterStatus" class="form-control" onchange="syncProfileReactivateButtonVisibility()">
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive (Archive &amp; Clear for Next Renter)</option>
-              </select>
-            </div>
-            <div class="form-group"><label>Join Date</label><input type="date" id="renterJoinDate" class="form-control"></div>
-            <div class="form-group"><label>End Date</label><input type="date" id="renterEndDate" class="form-control"></div>
-            <!-- Requirement 5: Strictly hidden for active renters; only visible when viewing a renter who has already left -->
-            <button type="button" id="btnReactivateProfileTab" class="btn-ledger-action admin-only" style="display:none; width:100%; justify-content:center; margin-bottom:10px; padding:10px 14px; font-weight:800; color:var(--accent-green); border-color:rgba(16,185,129,0.55); background:rgba(16,185,129,0.1);" onclick="triggerReactivateFromProfileTab()">
-              <i class="fa-solid fa-user-check"></i> Re-active Renter / Returning Renter (Choose Property &amp; Flat)
-            </button>
-            <button class="btn-primary admin-only" onclick="submitRenterProfileRight()">Save Renter Record</button>
-          </div>
-
-          <!-- 4th Box: Rent & Utility Details -->
+          <!-- LEFT SIDE: NUMBER 3 (was item 4: Rent & Utility Details) -->
           <div class="matrix-col details-card-utility">
-            <div class="col-title"><i class="fa-solid fa-bolt"></i> 4. Rent &amp; Utility Details</div>
+            <div class="col-title"><i class="fa-solid fa-bolt" style="color:#fbbf24;"></i> 3. Rent &amp; Utility Details</div>
             <div class="form-group">
               <label>Rent Amount (₹)</label>
               <input type="number" id="profRent" class="form-control" oninput="syncProfileRatesToLiveCalculator()" onchange="saveUtilitiesLeft(true)">
@@ -4349,15 +4267,147 @@
               <label>Electricity Fixed Rate (₹/Unit)</label>
               <input type="number" id="profElecRate" class="form-control" oninput="syncProfileRatesToLiveCalculator()" onchange="saveUtilitiesLeft(true)">
             </div>
-            <div class="form-group"><label>UPI Name</label><input type="text" id="profUpiName" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
-            <div class="form-group"><label>UPI ID</label><input type="text" id="profUpiId" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
-            <div class="form-group"><label>Contract Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="profContractMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)" onchange="saveUtilitiesLeft(true)"></div>
-            <button class="btn-primary admin-only" onclick="saveUtilitiesLeft(false)">Update Utilities</button>
+            <div class="form-group"><label>Property UPI Display Name</label><input type="text" id="profUpiName" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
+            <div class="form-group"><label>Property UPI ID / VPA</label><input type="text" id="profUpiId" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
+            <div class="form-group"><label>Owner Contract Phone (+91)</label><input type="tel" id="profContractMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)" onchange="saveUtilitiesLeft(true)"></div>
+            <button class="btn-primary admin-only" onclick="saveUtilitiesLeft(false)">Save Utility &amp; Rates</button>
           </div>
+
+          <!-- CENTER: NUMBER 2 (Merged: Renter Profile Photo + Aadhaar Card Photo with Direct Upload to Google Drive) -->
+          <div class="matrix-col photos-combined-col" style="display:flex; flex-direction:column; gap:16px;">
+            <div class="col-title" style="text-align:center; font-size:0.95rem; font-weight:800; color:#38bdf8; display:flex; align-items:center; justify-content:center; gap:8px;">
+              <i class="fa-solid fa-images" style="color:#38bdf8;"></i> 2. Renter &amp; Aadhaar Documents (Google Drive)
+            </div>
+
+            <!-- 2A. Renter's Profile Photo Box -->
+            <div class="photo-card-profile" style="text-align:center; background:var(--bg-input); border-radius:16px; padding:14px; border:1px solid var(--glass-border); box-shadow:0 4px 16px rgba(0,0,0,0.2);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-weight:800; font-size:0.84rem; color:var(--text-main); display:flex; align-items:center; gap:6px;">
+                  <i class="fa-solid fa-user-astronaut" style="color:#818cf8;"></i> Renter Profile Photo
+                </span>
+                <span id="profileCloudStatusBadge" style="font-size:0.7rem; font-weight:700; color:var(--text-muted);">No photo</span>
+              </div>
+              <div class="image-frame-container zoomable-photo-frame" style="height: 165px; margin-bottom: 10px;" onclick="openPhotoZoomModal(document.getElementById('profilePicturePreview')?.src, (document.getElementById('renterName')?.value || 'Renter') + ' — Profile Photo')">
+                <img id="profilePicturePreview" src="https://via.placeholder.com/150?text=No+Profile+Photo" alt="Renter Profile Photo">
+                <span class="zoomable-photo-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Click Photo to Zoom</span>
+              </div>
+              <!-- Requirement 5: Direct upload option right here on renter profile -->
+              <div class="form-group admin-only" style="text-align:left; margin-bottom:10px;">
+                <label style="font-size:0.74rem; font-weight:700; color:var(--text-main);"><i class="fa-solid fa-cloud-arrow-up" style="color:#818cf8;"></i> Upload Profile Photo Directly (Auto-Saves to Drive):</label>
+                <input type="file" id="fileProfilePic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'profile')" style="font-size:0.75rem;">
+              </div>
+              <div style="display:flex; justify-content:center; align-items:center; gap:6px; flex-wrap:wrap;">
+                <a
+                  href="https://drive.google.com/drive/folders/1Yz4O6NyLJFGMjXYEQiG2THyLLsm82zRW?usp=drive_link"
+                  target="_blank"
+                  rel="noreferrer"
+                  class="btn-ledger-action"
+                  style="background: rgba(59, 130, 246, 0.16); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.45); padding: 6px 12px; font-size: 0.74rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"
+                  title="Open 'Home' folder in Google Drive"
+                >
+                  <i class="fa-brands fa-google-drive"></i> Drive Folder ("Home")
+                </a>
+                <button
+                  type="button"
+                  id="btnDownloadProfilePic"
+                  class="btn-ledger-action"
+                  style="background: rgba(56, 189, 248, 0.16); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.45); padding: 6px 12px; font-size: 0.74rem; font-weight: 700;"
+                  onclick="downloadRenterDocumentPhoto('profile')"
+                >
+                  <i class="fa-solid fa-download"></i> Download
+                </button>
+                <button
+                  type="button"
+                  id="btnDeleteProfilePic"
+                  class="btn-ledger-action admin-only"
+                  style="background: rgba(239, 68, 68, 0.16); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.35); padding: 6px 12px; font-size: 0.74rem; font-weight: 700;"
+                  onclick="deleteRenterDocumentFromCloud('profile')"
+                >
+                  <i class="fa-solid fa-trash-can"></i> Delete
+                </button>
+              </div>
+            </div>
+
+            <!-- 2B. Aadhaar Card Photo Box -->
+            <div class="photo-card-aadhaar" style="text-align:center; background:var(--bg-input); border-radius:16px; padding:14px; border:1px solid var(--glass-border); box-shadow:0 4px 16px rgba(0,0,0,0.2);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-weight:800; font-size:0.84rem; color:var(--text-main); display:flex; align-items:center; gap:6px;">
+                  <i class="fa-solid fa-id-card" style="color:#34d399;"></i> Aadhaar Card Photo
+                </span>
+                <span id="identityCloudStatusBadge" style="font-size:0.7rem; font-weight:700; color:var(--text-muted);">No Aadhaar</span>
+              </div>
+              <div class="image-frame-container zoomable-photo-frame" style="height: 165px; margin-bottom: 10px;" onclick="openPhotoZoomModal(document.getElementById('identityPicturePreview')?.src, (document.getElementById('renterName')?.value || 'Renter') + ' — Aadhaar Card Document')">
+                <img id="identityPicturePreview" src="https://via.placeholder.com/300x150?text=No+Aadhaar+Uploaded" alt="Aadhaar / ID Document">
+                <span class="zoomable-photo-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Click Photo to Zoom</span>
+              </div>
+              <!-- Requirement 5: Direct upload option right here on renter profile -->
+              <div class="form-group admin-only" style="text-align:left; margin-bottom:10px;">
+                <label style="font-size:0.74rem; font-weight:700; color:var(--text-main);"><i class="fa-solid fa-cloud-arrow-up" style="color:#34d399;"></i> Upload Aadhaar Directly (Auto-Saves to Drive):</label>
+                <input type="file" id="fileIdentityPic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'identity')" style="font-size:0.75rem;">
+              </div>
+              <div style="display:flex; justify-content:center; align-items:center; gap:6px; flex-wrap:wrap;">
+                <a
+                  href="https://drive.google.com/drive/folders/1Yz4O6NyLJFGMjXYEQiG2THyLLsm82zRW?usp=drive_link"
+                  target="_blank"
+                  rel="noreferrer"
+                  class="btn-ledger-action"
+                  style="background: rgba(59, 130, 246, 0.16); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.45); padding: 6px 12px; font-size: 0.74rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"
+                  title="Open 'Home' folder in Google Drive"
+                >
+                  <i class="fa-brands fa-google-drive"></i> Drive Folder ("Home")
+                </a>
+                <button
+                  type="button"
+                  id="btnDownloadIdentityPic"
+                  class="btn-ledger-action"
+                  style="background: rgba(16, 185, 129, 0.16); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.45); padding: 6px 12px; font-size: 0.74rem; font-weight: 700;"
+                  onclick="downloadRenterDocumentPhoto('identity')"
+                >
+                  <i class="fa-solid fa-download"></i> Download
+                </button>
+                <button
+                  type="button"
+                  id="btnDeleteIdentityPic"
+                  class="btn-ledger-action admin-only"
+                  style="background: rgba(239, 68, 68, 0.16); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.35); padding: 6px 12px; font-size: 0.74rem; font-weight: 700;"
+                  onclick="deleteRenterDocumentFromCloud('identity')"
+                >
+                  <i class="fa-solid fa-trash-can"></i> Delete
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT SIDE: NUMBER 1 (was item 3: Renter Profile Details) -->
+          <div class="matrix-col details-card-renter">
+            <div class="col-title"><i class="fa-solid fa-address-card" style="color:#34d399;"></i> 1. Renter Profile Details</div>
+            <div class="form-group"><label>Renter Name <span class="req-star">*</span></label><input type="text" id="renterName" class="form-control"></div>
+            <div class="form-group">
+              <label>Aadhaar Card Number (Strictly 12 Digits)</label>
+              <input type="text" id="renterIdentityNum" class="form-control" maxlength="12" inputmode="numeric" pattern="\d{12}" placeholder="Enter 12-digit Aadhaar Number" oninput="this.value = sanitizeAadhaar12Digits(this.value); handleAadhaarLookupInput(this.value)" onchange="this.value = sanitizeAadhaar12Digits(this.value); handleAadhaarLookupInput(this.value)">
+              <div id="aadhaarPreviousRenterPrompt" style="display:none; margin-top:8px;"></div>
+            </div>
+            <div class="form-group"><label>Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
+            <div class="form-group"><label>Alternative Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterAltMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
+            <div class="form-group"><label>Address</label><input type="text" id="renterAddress" class="form-control"></div>
+            <div class="form-group"><label>Total Family Members</label><input type="number" id="renterFamily" class="form-control" value="1"></div>
+            <div class="form-group">
+              <label>Renter Status</label>
+              <select id="renterStatus" class="form-control" onchange="syncProfileReactivateButtonVisibility()">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive (Archive &amp; Clear for Next Renter)</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Join Date</label><input type="date" id="renterJoinDate" class="form-control"></div>
+            <div class="form-group"><label>End Date</label><input type="date" id="renterEndDate" class="form-control"></div>
+            <button type="button" id="btnReactivateProfileTab" class="btn-ledger-action admin-only" style="display:none; width:100%; justify-content:center; margin-bottom:10px; padding:10px 14px; font-weight:800; color:var(--accent-green); border-color:rgba(16,185,129,0.55); background:rgba(16,185,129,0.1);" onclick="triggerReactivateFromProfileTab()">
+              <i class="fa-solid fa-user-check"></i> Re-active Renter / Returning Renter (Choose Property &amp; Flat)
+            </button>
+            <button class="btn-primary admin-only" onclick="submitRenterProfileRight()">Save Renter Record</button>
+          </div>
+
         </div>
       </div>
-
-      <!-- TAB 4: RENTER HISTORY (Requirement 8 & 3: Top-Corner Search Bar + Quick Search Result Box Below Search Bar + View Profile Popup) -->
       <div id="tabRenterHistory" class="tab-content">
         
 
@@ -5355,7 +5405,7 @@ function formatMonthLabel(rawVal) {
 
     let hasAutoOpenedViewerFlatOnce = false;
     function resolveViewerAssignedScope() {
-      if (activeRole !== "Viewer" && activeRole !== "Renter") return null;
+      if (activeRole !== "Viewer") return null;
       let prop = String(activeAssignedProperty || "").trim();
       let flat = String(activeAssignedFlat || "").trim();
       if (!prop && activeUser) {
@@ -5590,34 +5640,20 @@ function formatMonthLabel(rawVal) {
     }
 
     function applyRolePermissions(role) {
-      const roleLower = String(role || "").trim().toLowerCase();
-      if (roleLower === "renter") activeRole = "Renter";
-      else if (roleLower === "viewer") activeRole = "Viewer";
-      else activeRole = "Admin";
-
+      activeRole = (role === "Viewer") ? "Viewer" : "Admin";
       sessionStorage.setItem("active_session_role", activeRole);
-      const isRestricted = (activeRole === "Viewer" || activeRole === "Renter");
-      document.body.classList.toggle("role-viewer", isRestricted);
+      document.body.classList.toggle("role-viewer", activeRole === "Viewer");
       const badge = document.getElementById("headerRoleBadge");
       if (badge) {
         const scope = resolveViewerAssignedScope();
-        if (isRestricted && scope) {
-          if (scope.mode === "ALL") badge.innerText = `${activeRole} • Full Access`;
-          else if (scope.mode === "SELECTED") badge.innerText = `${activeRole} • ${scope.prop}`;
-          else badge.innerText = `${activeRole} • ${scope.prop} (Flat ${scope.flat})`;
+        if (activeRole === "Viewer" && scope) {
+          if (scope.mode === "ALL") badge.innerText = "Viewer • All Properties";
+          else if (scope.mode === "SELECTED") badge.innerText = `Viewer • ${scope.prop}`;
+          else badge.innerText = `Viewer • ${scope.prop} (Flat ${scope.flat})`;
         } else {
           badge.innerText = activeRole;
         }
-        if (activeRole === "Admin") {
-          badge.style.background = "rgba(16, 185, 129, 0.2)";
-          badge.style.color = "#10b981";
-        } else if (activeRole === "Renter") {
-          badge.style.background = "rgba(192, 132, 252, 0.2)";
-          badge.style.color = "#c084fc";
-        } else {
-          badge.style.background = "rgba(245, 158, 11, 0.2)";
-          badge.style.color = "#fbbf24";
-        }
+        badge.style.background = activeRole === "Admin" ? "rgba(16, 185, 129, 0.2)" : "rgba(245, 158, 11, 0.2)";
       }
       const btnLoginHist = document.getElementById("btnOtherOptLoginHistory");
       const panelLoginHist = document.getElementById("otherPanelLoginHistory");
@@ -6867,8 +6903,7 @@ function formatMonthLabel(rawVal) {
       const roleSelect = document.getElementById("createUserRole");
       const scopeBox = document.getElementById("viewerScopeSelectionBox");
       if (!roleSelect || !scopeBox) return;
-      const isRestrictedRole = (roleSelect.value === "Viewer" || roleSelect.value === "Renter");
-      if (isRestrictedRole) {
+      if (roleSelect.value === "Viewer") {
         scopeBox.style.display = "block";
         populateCreateUserFlatsDropdown();
       } else {
@@ -7333,10 +7368,7 @@ function renderRegisteredUsersList() {
                 </div>
                 ${assignedInfo}
               </div>
-              <div style="display:flex; align-items:center; gap:6px;">
-                ${isBlocked ? '<span class="role-badge" style="background:rgba(239,68,68,0.25); color:#f87171; border:1px solid #ef4444;"><i class="fa-solid fa-ban"></i> BLOCKED</span>' : ''}
-                <span class="role-badge" style="background:${isTargetAdmin ? 'rgba(16, 185, 129, 0.2)' : (isTargetRenter ? 'rgba(192, 132, 252, 0.2)' : 'rgba(245, 158, 11, 0.2)')}; color:${isTargetAdmin ? '#10b981' : (isTargetRenter ? '#c084fc' : '#fbbf24')};">${displayRoleLabel}</span>
-              </div>
+              <span class="role-badge" style="background:${isTargetAdmin ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)'};">${displayRoleLabel}</span>
             </div>
             ${adminControlsHtml}
           </div>
@@ -12280,7 +12312,7 @@ function renderRegisteredUsersList() {
     }
   </script>
 
-  <!-- ACCOUNT BLOCKED ALERT MODAL (Requirement 3) -->
+  <!-- ACCOUNT BLOCKED ALERT MODAL -->
   <div id="accountBlockedModal" class="modal-overlay" style="z-index:9999;">
     <div class="modal-window" style="max-width:440px; text-align:center; border:2px solid #ef4444; box-shadow:0 25px 60px rgba(239,68,68,0.3);">
       <div style="width:68px; height:68px; border-radius:50%; background:rgba(239,68,68,0.15); border:2px solid #ef4444; display:flex; align-items:center; justify-content:center; margin:0 auto 16px auto; color:#ef4444; font-size:2rem;">
