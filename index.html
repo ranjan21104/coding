@@ -12,7 +12,196 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Include html2canvas for receipt image rendering & QRious for 100% reliable client-side UPI QR code generation -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+    // Requirement 4: High-Clarity Custom Background Management
+    function getCustomBackgrounds() {
+      const loginBg = localStorage.getItem("portal_custom_bg_login") || "";
+      const dashBg = localStorage.getItem("portal_custom_bg_dashboard") || "";
+      return { loginBg, dashBg };
+    }
+
+    function applyCustomBackgrounds() {
+      const { loginBg, dashBg } = getCustomBackgrounds();
+      const loginScreenEl = document.getElementById("loginScreen");
+      const dashScreenEl = document.getElementById("dashboardScreen");
+
+      if (loginScreenEl) {
+        if (loginBg && loginBg.trim()) {
+          loginScreenEl.style.backgroundImage = 'url("' + loginBg.trim() + '")';
+          loginScreenEl.style.backgroundSize = "cover";
+          loginScreenEl.style.backgroundPosition = "center";
+          loginScreenEl.style.backgroundRepeat = "no-repeat";
+          loginScreenEl.style.backgroundAttachment = "fixed";
+          loginScreenEl.style.imageRendering = "-webkit-optimize-contrast";
+        } else {
+          loginScreenEl.style.backgroundImage = "";
+          loginScreenEl.style.backgroundSize = "";
+          loginScreenEl.style.backgroundPosition = "";
+          loginScreenEl.style.backgroundRepeat = "";
+          loginScreenEl.style.backgroundAttachment = "";
+        }
+      }
+
+      if (dashScreenEl) {
+        if (dashBg && dashBg.trim()) {
+          dashScreenEl.style.backgroundImage = 'url("' + dashBg.trim() + '")';
+          dashScreenEl.style.backgroundSize = "cover";
+          dashScreenEl.style.backgroundPosition = "center";
+          dashScreenEl.style.backgroundRepeat = "no-repeat";
+          dashScreenEl.style.backgroundAttachment = "fixed";
+          dashScreenEl.style.imageRendering = "-webkit-optimize-contrast";
+        } else {
+          dashScreenEl.style.backgroundImage = "";
+          dashScreenEl.style.backgroundSize = "";
+          dashScreenEl.style.backgroundPosition = "";
+          dashScreenEl.style.backgroundRepeat = "";
+          dashScreenEl.style.backgroundAttachment = "";
+        }
+      }
+    }
+
+    function initCustomBgInputs() {
+      const { loginBg, dashBg } = getCustomBackgrounds();
+      const inputLogin = document.getElementById("bgUrlLoginScreen");
+      const inputDash = document.getElementById("bgUrlDashboardScreen");
+      if (inputLogin) inputLogin.value = loginBg;
+      if (inputDash) inputDash.value = dashBg;
+
+      const hintLogin = document.getElementById("bgLoginStatusHint");
+      const hintDash = document.getElementById("bgDashboardStatusHint");
+      if (hintLogin) {
+        hintLogin.innerHTML = loginBg
+          ? '<span style="color:#10b981;"><i class="fa-solid fa-circle-check"></i> Custom background active (100% clarity)</span>'
+          : 'Using default login background.';
+      }
+      if (hintDash) {
+        hintDash.innerHTML = dashBg
+          ? '<span style="color:#10b981;"><i class="fa-solid fa-circle-check"></i> Custom background active (100% clarity)</span>'
+          : 'Using default dashboard background.';
+      }
+    }
+
+    async function saveCustomBackgrounds() {
+      const inputLogin = document.getElementById("bgUrlLoginScreen");
+      const inputDash = document.getElementById("bgUrlDashboardScreen");
+      const loginVal = inputLogin ? inputLogin.value.trim() : "";
+      const dashVal = inputDash ? inputDash.value.trim() : "";
+
+      if (loginVal) localStorage.setItem("portal_custom_bg_login", loginVal);
+      else localStorage.removeItem("portal_custom_bg_login");
+
+      if (dashVal) localStorage.setItem("portal_custom_bg_dashboard", dashVal);
+      else localStorage.removeItem("portal_custom_bg_dashboard");
+
+      applyCustomBackgrounds();
+      initCustomBgInputs();
+      triggerSideToast("Backgrounds Updated", "Custom background images applied with 100% clarity!", true);
+
+      if (activeUser) {
+        try {
+          await sendGasPost({
+            action: "saveBackgrounds",
+            username: activeUser,
+            bgLogin: loginVal,
+            bgDashboard: dashVal
+          });
+        } catch (e) {}
+      }
+    }
+
+    function deleteCustomBgImage(type) {
+      if (type === "login") {
+        localStorage.removeItem("portal_custom_bg_login");
+        const input = document.getElementById("bgUrlLoginScreen");
+        if (input) input.value = "";
+      } else if (type === "dashboard") {
+        localStorage.removeItem("portal_custom_bg_dashboard");
+        const input = document.getElementById("bgUrlDashboardScreen");
+        if (input) input.value = "";
+      }
+      applyCustomBackgrounds();
+      initCustomBgInputs();
+      triggerSideToast("Background Removed", `Default background restored for ${type === 'login' ? 'Logout/Login screen' : 'Dashboard'}.`, true);
+      if (activeUser) {
+        saveCustomBackgrounds();
+      }
+    }
+
+    function resetDefaultBackgrounds() {
+      localStorage.removeItem("portal_custom_bg_login");
+      localStorage.removeItem("portal_custom_bg_dashboard");
+      const inputLogin = document.getElementById("bgUrlLoginScreen");
+      const inputDash = document.getElementById("bgUrlDashboardScreen");
+      if (inputLogin) inputLogin.value = "";
+      if (inputDash) inputDash.value = "";
+      applyCustomBackgrounds();
+      initCustomBgInputs();
+      triggerSideToast("Default Backgrounds Restored", "Both screens reverted to their original theme backgrounds.", true);
+      if (activeUser) {
+        saveCustomBackgrounds();
+      }
+    }
+
+
+    // Requirement 3: User Block / Unblock Management & Blocked Login Modal
+    async function toggleUserBlockStatus(targetUsername, newStatus) {
+      if (String(activeRole || "").trim().toLowerCase() !== "admin") return;
+      const isBlocking = newStatus === "Blocked";
+      showCustomConfirmModal(
+        `${isBlocking ? 'Block' : 'Unblock'} Account ${targetUsername}?`,
+        isBlocking
+          ? `Are you sure you want to BLOCK @${targetUsername}? They will immediately be prohibited from logging in, and any login attempts will show an Account Blocked notification.`
+          : `Unblock @${targetUsername} to restore their login access?`,
+        isBlocking ? "Yes, Block Account" : "Yes, Unblock",
+        "Cancel",
+        isBlocking ? "fa-ban" : "fa-lock-open",
+        async () => {
+          triggerSideToast(
+            isBlocking ? "Blocking User..." : "Unblocking User...",
+            `Updating account status for @${targetUsername}...`,
+            "warning"
+          );
+          try {
+            const res = await sendGasPost({
+              action: "toggleUserBlock",
+              requesterUsername: activeUser,
+              targetUsername: targetUsername,
+              newStatus: newStatus
+            });
+            if (res && res.status === "success") {
+              // Update local state
+              const targetU = (DB.users || []).find(u => String(u.Username || "").toLowerCase() === targetUsername.toLowerCase());
+              if (targetU) targetU.Status = newStatus;
+              saveDbSnapshotToCache();
+              renderRegisteredUsersList();
+              triggerSideToast(
+                isBlocking ? "Account Blocked" : "Account Unblocked",
+                `@${targetUsername} is now ${newStatus.toLowerCase()}.`,
+                true
+              );
+            } else {
+              triggerSideToast("Action Failed", res?.message || "Could not update block status.", false);
+            }
+          } catch (e) {
+            triggerSideToast("Network Error", "Failed to update block status in cloud.", false);
+          }
+        }
+      );
+    }
+
+    function showAccountBlockedModal(message) {
+      const msgEl = document.getElementById("accountBlockedMessage");
+      if (msgEl) {
+        msgEl.innerText = message || "Your account has been blocked by an administrator. Please contact your administrator for access.";
+      }
+      openModal("accountBlockedModal");
+    }
+
+    function closeAccountBlockedModal() {
+      closeModal("accountBlockedModal");
+    }
+
+</script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <style>
     /* ==========================================================================
@@ -2657,47 +2846,7 @@
       <!-- Rendered Only When Property Is Clicked -->
     </main>
 
-    <!-- Home Khet (Field) Portfolio Overview Section -->
-    <section id="homeKhetSection" class="home-khet-section" style="display:none;">
-      <div class="home-khet-shell">
-        <div class="home-khet-header">
-          <div class="home-khet-brand">
-            <div class="home-khet-icon-badge">
-              <i class="fa-solid fa-wheat-awn"></i>
-            </div>
-            <div>
-              <h2 style="margin:0; font-size:1.18rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px;">
-                Khet (Field) Portfolio Overview
-                <span style="font-size:0.72rem; padding:2px 8px; border-radius:12px; background:rgba(16,185,129,0.22); color:#34d399; border:1px solid rgba(52,211,153,0.4);">Active Holdings</span>
-              </h2>
-              <p style="margin:2px 0 0 0; font-size:0.78rem; color:var(--text-muted);">
-                Agricultural field portfolio, land size in Bigha, and tenant payment tracking
-              </p>
-            </div>
-          </div>
-          <div class="home-khet-stats-bar">
-            <div class="home-khet-stat-pill">
-              <i class="fa-solid fa-layer-group" style="color:#34d399;"></i>
-              <span>Fields: <strong id="homeKhetTotalCount">0</strong></span>
-            </div>
-            <div class="home-khet-stat-pill">
-              <i class="fa-solid fa-ruler-combined" style="color:#38bdf8;"></i>
-              <span>Total Size: <strong id="homeKhetTotalBigha">0 Bigha</strong></span>
-            </div>
-            <div class="home-khet-stat-pill">
-              <i class="fa-solid fa-indian-rupee-sign" style="color:#fbbf24;"></i>
-              <span>Total Paid: <strong id="homeKhetTotalPaid">₹0</strong></span>
-            </div>
-            <button type="button" class="btn-primary" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%); padding:7px 14px; font-size:0.78rem;" onclick="openKhetModal()">
-              <i class="fa-solid fa-plus-circle"></i> Add / Manage Khet
-            </button>
-          </div>
-        </div>
-        <div class="home-khet-grid" id="homeKhetCardsGrid">
-          <!-- Rendered dynamically by renderHomeKhetSection() -->
-        </div>
-      </div>
-    </section>
+    
   </section>
 
   <!-- ==================== POPUP MODALS ==================== -->
@@ -2848,8 +2997,9 @@
       <div class="form-group">
         <label>Account Role</label>
         <select id="editAssignRole" class="form-control" onchange="handleEditAssignRoleChange()">
-          <option value="Admin">Admin (Full Access - Can Edit &amp; View Everything)</option>
-          <option value="Viewer">Viewer (Restricted Scope)</option>
+          <option value="Admin">Admin (Full Access — Can edit, delete, view, or perform any action)</option>
+          <option value="Viewer">Viewer (Read-Only Access — Can only view data without making changes)</option>
+          <option value="Renter">Renter (Restricted — Access to assigned flat/property only, or full access if granted)</option>
         </select>
       </div>
 
@@ -3055,130 +3205,202 @@
     </div>
   </div>
 
-  <!-- 1. PROFILE MODAL -->
+  <!-- 1. VIBRANT & COLORFUL REDESIGNED MY PROFILE MODAL -->
   <div id="profileModal" class="modal-overlay">
-    <div class="modal-window">
-      <button class="modal-close-btn" onclick="closeModal('profileModal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 14px;"><i class="fa-solid fa-id-badge" style="color:var(--primary); margin-right:8px;"></i>My Profile</h3>
+    <div class="modal-window" style="max-width:540px; padding:0; overflow:hidden; border-radius:24px; border:1.5px solid rgba(129, 140, 248, 0.4); box-shadow:0 25px 60px rgba(0,0,0,0.5), 0 0 30px rgba(99,102,241,0.25);">
+      <button class="modal-close-btn" style="top:14px; right:14px; z-index:10; background:rgba(15,23,42,0.6); backdrop-filter:blur(8px);" onclick="closeModal('profileModal')"><i class="fa-solid fa-xmark"></i></button>
+      
+      <!-- Vibrant Header Hero Banner -->
+      <div style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 45%, #ec4899 100%); padding:28px 24px 22px 24px; position:relative; overflow:hidden;">
+        <div style="position:absolute; -webkit-mask-image: radial-gradient(white, transparent); top:-30px; right:-30px; width:160px; height:160px; background:radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%); border-radius:50%;"></div>
+        <div style="position:absolute; bottom:-40px; left:-20px; width:120px; height:120px; background:radial-gradient(circle, rgba(56,189,248,0.3) 0%, transparent 70%); border-radius:50%;"></div>
+        
+        <div style="display:flex; align-items:center; gap:16px; position:relative; z-index:2;">
+          <!-- Glowing Avatar Ring -->
+          <div style="position:relative;">
+            <div style="width:68px; height:68px; border-radius:20px; background:linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%); display:flex; align-items:center; justify-content:center; box-shadow:0 10px 25px rgba(0,0,0,0.35); border:3px solid rgba(255,255,255,0.85); overflow:hidden;">
+              <span id="profAvatarInitials" style="font-size:1.6rem; font-weight:900; background:linear-gradient(135deg, #4f46e5 0%, #ec4899 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">U</span>
+            </div>
+            <span style="position:absolute; bottom:-3px; right:-3px; width:18px; height:18px; background:#10b981; border:3px solid #4f46e5; border-radius:50%;" title="Active Cloud Session"></span>
+          </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <div class="form-group">
-          <label>Name (Locked)</label>
-          <input type="text" id="profViewFullName" class="form-control" readonly>
-        </div>
-        <div class="form-group">
-          <label>Mobile No. (Locked)</label>
-          <input type="text" id="profViewMobile" class="form-control" readonly placeholder="Not set">
+          <div style="flex:1; min-width:0;">
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <h3 id="profDisplayHeroName" style="margin:0; font-size:1.25rem; font-weight:900; color:#ffffff; text-shadow:0 2px 4px rgba(0,0,0,0.25); letter-spacing:-0.2px;">User Profile</h3>
+              <span id="profRoleBadgePill" style="font-size:0.68rem; font-weight:800; padding:2px 10px; border-radius:20px; background:rgba(255,255,255,0.22); color:#ffffff; backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.5px;">ADMIN</span>
+            </div>
+            <div style="font-size:0.78rem; color:rgba(255,255,255,0.88); margin-top:3px; display:flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-at" style="color:rgba(255,255,255,0.7); font-size:0.7rem;"></i>
+              <span id="profDisplayHeroUser" style="font-weight:700;">@username</span>
+              <span>•</span>
+              <span style="color:#a7f3d0; font-weight:600;"><i class="fa-solid fa-cloud-arrow-up"></i> Google Drive Synced</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <label>Username (Locked)</label>
-        <input type="text" id="profViewUsername" class="form-control" readonly>
-      </div>
+      <!-- Modal Body Content -->
+      <div style="padding:20px 24px 24px 24px; max-height:72vh; overflow-y:auto;">
+        <!-- Vibrant Locked Info Grid -->
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:12px;">
+          <!-- Card 1: Full Name -->
+          <div style="background:rgba(99,102,241,0.08); border:1.5px solid rgba(99,102,241,0.25); border-radius:14px; padding:10px 12px; transition:all 0.2s ease;">
+            <label style="font-size:0.7rem; font-weight:800; color:#818cf8; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:5px; margin-bottom:4px;">
+              <i class="fa-solid fa-signature"></i> Full Name
+            </label>
+            <input type="text" id="profViewFullName" class="form-control" readonly style="background:transparent; border:none; padding:0; font-weight:800; font-size:0.92rem; color:var(--text-main); cursor:default; box-shadow:none;">
+          </div>
 
-      <div class="form-group">
-        <label>Password (Locked)</label>
-        <div class="password-field-wrapper">
-          <input type="password" id="profViewPassword" class="form-control" readonly placeholder="Fetching live...">
-          <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('profViewPassword', this)" title="Show / Hide Password">
-            <i class="fa-solid fa-eye"></i>
+          <!-- Card 2: Mobile Number -->
+          <div style="background:rgba(56,189,248,0.08); border:1.5px solid rgba(56,189,248,0.25); border-radius:14px; padding:10px 12px; transition:all 0.2s ease;">
+            <label style="font-size:0.7rem; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:5px; margin-bottom:4px;">
+              <i class="fa-solid fa-phone"></i> Mobile No.
+            </label>
+            <input type="text" id="profViewMobile" class="form-control" readonly placeholder="Not set" style="background:transparent; border:none; padding:0; font-weight:800; font-size:0.92rem; color:var(--text-main); cursor:default; box-shadow:none;">
+          </div>
+
+          <!-- Card 3: Username -->
+          <div style="background:rgba(236,72,153,0.08); border:1.5px solid rgba(236,72,153,0.25); border-radius:14px; padding:10px 12px; transition:all 0.2s ease;">
+            <label style="font-size:0.7rem; font-weight:800; color:#ec4899; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:5px; margin-bottom:4px;">
+              <i class="fa-solid fa-user-tag"></i> Login Username
+            </label>
+            <input type="text" id="profViewUsername" class="form-control" readonly style="background:transparent; border:none; padding:0; font-weight:800; font-size:0.92rem; color:var(--text-main); cursor:default; box-shadow:none;">
+          </div>
+
+          <!-- Card 4: Password with Eye Toggle -->
+          <div style="background:rgba(245,158,11,0.08); border:1.5px solid rgba(245,158,11,0.25); border-radius:14px; padding:10px 12px; transition:all 0.2s ease;">
+            <label style="font-size:0.7rem; font-weight:800; color:#fbbf24; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:5px; margin-bottom:4px;">
+              <i class="fa-solid fa-key"></i> Current Password
+            </label>
+            <div class="password-field-wrapper" style="margin:0;">
+              <input type="password" id="profViewPassword" class="form-control" readonly placeholder="Fetching live..." style="background:transparent; border:none; padding:0; font-weight:800; font-size:0.92rem; color:var(--text-main); cursor:default; box-shadow:none;">
+              <button type="button" class="eye-toggle-btn" style="color:#fbbf24; opacity:0.9;" onclick="togglePasswordVisibility('profViewPassword', this)" title="Show / Hide Password">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Vibrant Action Switch Buttons -->
+        <div style="margin: 16px 0 12px 0;">
+          <div style="font-size:0.72rem; font-weight:800; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.6px; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-sliders" style="color:var(--primary);"></i> Account Security &amp; Quick Updates
+          </div>
+          <div class="profile-action-switch" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
+            <button
+              type="button"
+              id="btnShowChangePass"
+              class="btn-switch-option"
+              style="border-radius:12px; padding:9px 6px; font-size:0.75rem; font-weight:700; border:1px solid rgba(245,158,11,0.3); background:rgba(245,158,11,0.08); color:#fbbf24;"
+              onclick="toggleProfileDrawer('drawerChangePass', 'btnShowChangePass')"
+            >
+              <i class="fa-solid fa-lock" style="font-size:0.85rem; margin-bottom:3px; display:block;"></i>
+              Password
+            </button>
+            <button
+              type="button"
+              id="btnShowChangeUser"
+              class="btn-switch-option"
+              style="border-radius:12px; padding:9px 6px; font-size:0.75rem; font-weight:700; border:1px solid rgba(236,72,153,0.3); background:rgba(236,72,153,0.08); color:#f472b6;"
+              onclick="toggleProfileDrawer('drawerChangeUser', 'btnShowChangeUser')"
+            >
+              <i class="fa-solid fa-at" style="font-size:0.85rem; margin-bottom:3px; display:block;"></i>
+              Username
+            </button>
+            <button
+              type="button"
+              id="btnShowChangeName"
+              class="btn-switch-option"
+              style="border-radius:12px; padding:9px 6px; font-size:0.75rem; font-weight:700; border:1px solid rgba(16,185,129,0.3); background:rgba(16,185,129,0.08); color:#34d399;"
+              onclick="toggleProfileDrawer('drawerChangeName', 'btnShowChangeName')"
+            >
+              <i class="fa-solid fa-user-pen" style="font-size:0.85rem; margin-bottom:3px; display:block;"></i>
+              Name &amp; Mobile
+            </button>
+          </div>
+        </div>
+
+        <!-- Option A: Change Password Drawer -->
+        <div id="drawerChangePass" class="profile-sub-drawer" style="border:1.5px solid rgba(245,158,11,0.4); border-radius:16px; background:linear-gradient(145deg, rgba(245,158,11,0.08) 0%, rgba(15,23,42,0.7) 100%);">
+          <h4 style="margin-bottom: 12px; font-size: 0.92rem; color: #fbbf24; font-weight:800; display:flex; align-items:center; gap:7px;">
+            <i class="fa-solid fa-shield-halved"></i> Update Account Password
+          </h4>
+          <div class="form-group">
+            <label>Current Password <span class="req-star">*</span></label>
+            <div class="password-field-wrapper">
+              <input type="password" id="oldPassInput" class="form-control" placeholder="Enter current password">
+              <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('oldPassInput', this)">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>New Password <span class="req-star">*</span></label>
+            <div class="password-field-wrapper">
+              <input type="password" id="newPassInput" class="form-control" placeholder="Enter new strong password">
+              <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('newPassInput', this)">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Confirm New Password <span class="req-star">*</span></label>
+            <div class="password-field-wrapper">
+              <input type="password" id="confirmNewPassInput" class="form-control" placeholder="Confirm new password">
+              <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('confirmNewPassInput', this)">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <button class="btn-primary" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); font-weight:800;" onclick="submitChangePassword()">
+            <i class="fa-solid fa-check-circle"></i> Save New Password
           </button>
+          <div id="passChangeBottomMsg" class="bottom-status-msg"></div>
         </div>
-      </div>
 
-      <!-- 3 Dedicated Action Switch Buttons Below Locked Fields -->
-      <div class="profile-action-switch">
-        <button type="button" id="btnShowChangePass" class="btn-switch-option" onclick="toggleProfileDrawer('drawerChangePass', 'btnShowChangePass')">
-          <i class="fa-solid fa-key"></i> Change Password
-        </button>
-        <button type="button" id="btnShowChangeUser" class="btn-switch-option" onclick="toggleProfileDrawer('drawerChangeUser', 'btnShowChangeUser')">
-          <i class="fa-solid fa-at"></i> Change Username
-        </button>
-        <button type="button" id="btnShowChangeName" class="btn-switch-option" onclick="toggleProfileDrawer('drawerChangeName', 'btnShowChangeName')">
-          <i class="fa-solid fa-user-pen"></i> Change Name
-        </button>
-      </div>
-
-      <!-- Option A: Change Password Drawer -->
-      <div id="drawerChangePass" class="profile-sub-drawer">
-        <h4 style="margin-bottom: 12px; font-size: 0.92rem; color: var(--primary);">Update Your Password</h4>
-        <div class="form-group">
-          <label>Current Password <span class="req-star">*</span></label>
-          <div class="password-field-wrapper">
-            <input type="password" id="oldPassInput" class="form-control" placeholder="Enter current password">
-            <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('oldPassInput', this)">
-              <i class="fa-solid fa-eye"></i>
-            </button>
+        <!-- Option B: Dedicated Change Username Drawer -->
+        <div id="drawerChangeUser" class="profile-sub-drawer" style="border:1.5px solid rgba(236,72,153,0.4); border-radius:16px; background:linear-gradient(145deg, rgba(236,72,153,0.08) 0%, rgba(15,23,42,0.7) 100%);">
+          <h4 style="margin-bottom: 12px; font-size: 0.92rem; color: #f472b6; font-weight:800; display:flex; align-items:center; gap:7px;">
+            <i class="fa-solid fa-at"></i> Update Your Unique Username
+          </h4>
+          <div class="form-group">
+            <label>Current Username <span class="req-star">*</span></label>
+            <input type="text" id="currentUsernameVerifyInput" class="form-control" placeholder="Enter your current username">
           </div>
-        </div>
-
-        <div class="form-group">
-          <label>New Password <span class="req-star">*</span></label>
-          <div class="password-field-wrapper">
-            <input type="password" id="newPassInput" class="form-control" placeholder="Enter new password">
-            <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('newPassInput', this)">
-              <i class="fa-solid fa-eye"></i>
-            </button>
+          <div class="form-group">
+            <label>New Username <span class="req-star">*</span></label>
+            <input type="text" id="newUsernameInput" class="form-control" placeholder="Enter new unique username">
           </div>
-        </div>
-
-        <div class="form-group">
-          <label>Confirm New Password <span class="req-star">*</span></label>
-          <div class="password-field-wrapper">
-            <input type="password" id="confirmNewPassInput" class="form-control" placeholder="Confirm new password">
-            <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('confirmNewPassInput', this)">
-              <i class="fa-solid fa-eye"></i>
-            </button>
+          <div class="form-group">
+            <label>Confirm New Username <span class="req-star">*</span></label>
+            <input type="text" id="confirmNewUsernameInput" class="form-control" placeholder="Confirm new username">
           </div>
+          <button class="btn-primary" style="background:linear-gradient(135deg, #ec4899 0%, #be185d 100%); font-weight:800;" onclick="submitChangeUsernameOnly()">
+            <i class="fa-solid fa-check-circle"></i> Save New Username
+          </button>
+          <div id="userChangeBottomMsg" class="bottom-status-msg"></div>
         </div>
 
-        <button class="btn-primary" onclick="submitChangePassword()">Update Password</button>
-        <div id="passChangeBottomMsg" class="bottom-status-msg"></div>
+        <!-- Option C: Dedicated Change Name & Mobile No. Drawer -->
+        <div id="drawerChangeName" class="profile-sub-drawer" style="border:1.5px solid rgba(16,185,129,0.4); border-radius:16px; background:linear-gradient(145deg, rgba(16,185,129,0.08) 0%, rgba(15,23,42,0.7) 100%);">
+          <h4 style="margin-bottom: 12px; font-size: 0.92rem; color: #34d399; font-weight:800; display:flex; align-items:center; gap:7px;">
+            <i class="fa-solid fa-user-pen"></i> Update Full Name &amp; Phone
+          </h4>
+          <div class="form-group">
+            <label>New Full Name <span class="req-star">*</span></label>
+            <input type="text" id="changeNameOnlyInput" class="form-control" placeholder="Enter your official full name">
+          </div>
+          <div class="form-group">
+            <label>Mobile No. (+91 &amp; 10 Digits) <span class="req-star">*</span></label>
+            <input type="tel" id="changeMobileOnlyInput" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)">
+          </div>
+          <button class="btn-primary" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%); font-weight:800;" onclick="submitChangeNameAndMobile()">
+            <i class="fa-solid fa-check-circle"></i> Save Name &amp; Mobile
+          </button>
+          <div id="nameChangeBottomMsg" class="bottom-status-msg"></div>
+        </div>
       </div>
-
-      <!-- Option B: Dedicated Change Username Drawer -->
-      <div id="drawerChangeUser" class="profile-sub-drawer">
-        <h4 style="margin-bottom: 12px; font-size: 0.92rem; color: var(--primary);">Update Your Username</h4>
-
-        <div class="form-group">
-          <label>Current Username <span class="req-star">*</span></label>
-          <input type="text" id="currentUsernameVerifyInput" class="form-control" placeholder="Enter your current username">
-        </div>
-
-        <div class="form-group">
-          <label>New Username <span class="req-star">*</span></label>
-          <input type="text" id="newUsernameInput" class="form-control" placeholder="Enter new username">
-        </div>
-
-        <div class="form-group">
-          <label>Confirm New Username <span class="req-star">*</span></label>
-          <input type="text" id="confirmNewUsernameInput" class="form-control" placeholder="Confirm new username">
-        </div>
-
-        <button class="btn-primary" onclick="submitChangeUsernameOnly()">Update Username</button>
-        <div id="userChangeBottomMsg" class="bottom-status-msg"></div>
-      </div>
-
-      <!-- Option C: Dedicated Change Name & Mobile No. Drawer -->
-      <div id="drawerChangeName" class="profile-sub-drawer">
-        <h4 style="margin-bottom: 12px; font-size: 0.92rem; color: var(--primary);">Update Name & Mobile No.</h4>
-
-        <div class="form-group">
-          <label>New Full Name <span class="req-star">*</span></label>
-          <input type="text" id="changeNameOnlyInput" class="form-control" placeholder="Enter your full name">
-        </div>
-
-        <div class="form-group">
-          <label>Mobile No. (+91 &amp; 10 Digits) <span class="req-star">*</span></label>
-          <input type="tel" id="changeMobileOnlyInput" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)">
-        </div>
-
-        <button class="btn-primary" onclick="submitChangeNameAndMobile()">Update Name & Mobile No.</button>
-        <div id="nameChangeBottomMsg" class="bottom-status-msg"></div>
-      </div>
-
-      </div>
+    </div>
   </div>
 
   <!-- 2. SETTINGS MODAL (Theme, Create User ID, Delete Property/Flat, Other) -->
@@ -3252,8 +3474,9 @@
         <div class="form-group">
           <label>Assign Role <span class="req-star">*</span></label>
           <select id="createUserRole" class="form-control" onchange="handleCreateUserRoleChange()">
-            <option value="Admin">Admin (Full Access - Can View &amp; Edit Everything)</option>
-            <option value="Viewer">Viewer / Regular User (Restricted to Selected Flat Only)</option>
+            <option value="Admin">Admin (Full Access — Can edit, delete, view, or perform any action)</option>
+            <option value="Viewer">Viewer (Read-Only Access — Can only view data without making changes)</option>
+            <option value="Renter">Renter (Restricted — Access to assigned flat/property only, or full access if granted)</option>
           </select>
         </div>
 
@@ -3328,7 +3551,7 @@
       <!-- Settings Tab 4: Other (Registered User Management & Admin-Only Last Login History; Google Sheet Auto-Create Removed) -->
       <div id="setSubOther" class="tab-content">
         <!-- Two Dedicated Options: Registered User & Admin-Only Last Login History -->
-        <div id="otherOptionsBtnGrid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+        <div id="otherOptionsBtnGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 12px;">
           <button
             type="button"
             id="btnOtherOptUsers"
@@ -3346,6 +3569,15 @@
             onclick="switchOtherSubOption('history')"
           >
             <i class="fa-solid fa-clock-rotate-left"></i> Last Logins
+          </button>
+          <button
+            type="button"
+            id="btnOtherOptChangeBg"
+            class="btn-ledger-action"
+            style="padding: 9px 8px; font-size: 0.74rem; font-weight:700; justify-content: center; display: flex; align-items: center; gap: 5px; color:#ec4899; border-color:rgba(236,72,153,0.5);"
+            onclick="switchOtherSubOption('changeBg')"
+          >
+            <i class="fa-solid fa-image"></i> Change Background Photo
           </button>
           <button
             type="button"
@@ -3370,6 +3602,101 @@
         </div>
 
         
+        <!-- Option: Change Background Photo (Requirement 4: 100% Clarity Custom Background Links) -->
+        <div id="otherPanelChangeBg" class="stat-pill" style="text-align: left; display: none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--glass-border);">
+            <div>
+              <span style="font-weight:800; font-size:0.88rem; color:#ec4899;">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Customize Portal Background Photos
+              </span>
+              <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">
+                Paste any high-resolution image link. Images are rendered with 100% clarity and saved across your logins.
+              </div>
+            </div>
+            <span style="font-size:0.7rem; color:#10b981; font-weight:700; background:rgba(16,185,129,0.15); padding:3px 8px; border-radius:12px;">
+              <i class="fa-solid fa-circle-check"></i> HD Crystal Clarity
+            </span>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <!-- Field 1: Logout / Login Screen Background -->
+            <div style="background:var(--bg-input); padding:12px; border-radius:12px; border:1px solid var(--glass-border);">
+              <label style="font-size:0.76rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+                <i class="fa-solid fa-right-to-bracket" style="color:#818cf8;"></i> 1. Logout / Login Home Page Background Link (URL)
+              </label>
+              <div style="display:flex; gap:8px;">
+                <input
+                  type="url"
+                  id="bgUrlLoginScreen"
+                  class="form-control"
+                  placeholder="Paste image link for Logout/Login screen (e.g. https://images.unsplash.com/...)"
+                  style="font-size:0.78rem;"
+                >
+                <button
+                  type="button"
+                  class="btn-ledger-action"
+                  style="padding:6px 12px; color:var(--accent-red); border-color:rgba(239,68,68,0.4); flex-shrink:0; font-size:0.75rem; font-weight:700;"
+                  onclick="deleteCustomBgImage('login')"
+                  title="Remove custom image and revert to default"
+                >
+                  <i class="fa-solid fa-trash-can"></i> Delete
+                </button>
+              </div>
+              <div id="bgLoginStatusHint" style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">
+                Leave empty to retain the default theme background.
+              </div>
+            </div>
+
+            <!-- Field 2: Dashboard / Logged-in Home Page Background -->
+            <div style="background:var(--bg-input); padding:12px; border-radius:12px; border:1px solid var(--glass-border);">
+              <label style="font-size:0.76rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+                <i class="fa-solid fa-house" style="color:#ec4899;"></i> 2. Login Home Page (Dashboard) Background Link (URL)
+              </label>
+              <div style="display:flex; gap:8px;">
+                <input
+                  type="url"
+                  id="bgUrlDashboardScreen"
+                  class="form-control"
+                  placeholder="Paste image link for Login Home Page / Dashboard (e.g. https://images.unsplash.com/...)"
+                  style="font-size:0.78rem;"
+                >
+                <button
+                  type="button"
+                  class="btn-ledger-action"
+                  style="padding:6px 12px; color:var(--accent-red); border-color:rgba(239,68,68,0.4); flex-shrink:0; font-size:0.75rem; font-weight:700;"
+                  onclick="deleteCustomBgImage('dashboard')"
+                  title="Remove custom image and revert to default"
+                >
+                  <i class="fa-solid fa-trash-can"></i> Delete
+                </button>
+              </div>
+              <div id="bgDashboardStatusHint" style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">
+                Leave empty to retain the default theme background.
+              </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; margin-top:4px;">
+              <button
+                type="button"
+                class="btn-ledger-action"
+                style="padding:8px 16px; font-size:0.78rem; font-weight:700;"
+                onclick="resetDefaultBackgrounds()"
+              >
+                <i class="fa-solid fa-rotate-left"></i> Reset Both to Default
+              </button>
+              <button
+                type="button"
+                class="btn-primary"
+                style="width:auto; padding:8px 20px; font-size:0.78rem; font-weight:700; background:linear-gradient(135deg, #ec4899 0%, #db2777 100%);"
+                onclick="saveCustomBackgrounds()"
+              >
+                <i class="fa-solid fa-floppy-disk"></i> Save &amp; Apply Backgrounds
+              </button>
+            </div>
+          </div>
+        </div>
+
         <!-- Option 3 Panel: Edit Everything (System-wide Complete Billing History Editor & Deleter) (Requirement 4) -->
         <div id="otherPanelEditEverything" class="stat-pill admin-only" style="text-align: left; display: none;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
@@ -3889,6 +4216,16 @@
               <input type="file" id="fileProfilePic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'profile')">
             </div>
             <div style="display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap;">
+              <a
+                href="https://drive.google.com/drive/folders/1Yz4O6NyLJFGMjXYEQiG2THyLLsm82zRW?usp=drive_link"
+                target="_blank"
+                rel="noreferrer"
+                class="btn-ledger-action"
+                style="background: rgba(59, 130, 246, 0.16); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.45); padding: 7px 12px; font-size: 0.74rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"
+                title="Open 'Home' folder in Google Drive"
+              >
+                <i class="fa-brands fa-google-drive" style="color:#60a5fa;"></i> Drive Folder ("Home")
+              </a>
               <button
                 type="button"
                 id="btnDownloadProfilePic"
@@ -3923,6 +4260,16 @@
               <input type="file" id="fileIdentityPic" class="form-control" accept="image/*" onchange="handleRenterDocumentUpload(this, 'identity')">
             </div>
             <div style="display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap;">
+              <a
+                href="https://drive.google.com/drive/folders/1Yz4O6NyLJFGMjXYEQiG2THyLLsm82zRW?usp=drive_link"
+                target="_blank"
+                rel="noreferrer"
+                class="btn-ledger-action"
+                style="background: rgba(59, 130, 246, 0.16); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.45); padding: 7px 12px; font-size: 0.74rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"
+                title="Open 'Home' folder in Google Drive"
+              >
+                <i class="fa-brands fa-google-drive" style="color:#60a5fa;"></i> Drive Folder ("Home")
+              </a>
               <button
                 type="button"
                 id="btnDownloadIdentityPic"
@@ -5008,7 +5355,7 @@ function formatMonthLabel(rawVal) {
 
     let hasAutoOpenedViewerFlatOnce = false;
     function resolveViewerAssignedScope() {
-      if (activeRole !== "Viewer") return null;
+      if (activeRole !== "Viewer" && activeRole !== "Renter") return null;
       let prop = String(activeAssignedProperty || "").trim();
       let flat = String(activeAssignedFlat || "").trim();
       if (!prop && activeUser) {
@@ -5243,20 +5590,34 @@ function formatMonthLabel(rawVal) {
     }
 
     function applyRolePermissions(role) {
-      activeRole = (role === "Viewer") ? "Viewer" : "Admin";
+      const roleLower = String(role || "").trim().toLowerCase();
+      if (roleLower === "renter") activeRole = "Renter";
+      else if (roleLower === "viewer") activeRole = "Viewer";
+      else activeRole = "Admin";
+
       sessionStorage.setItem("active_session_role", activeRole);
-      document.body.classList.toggle("role-viewer", activeRole === "Viewer");
+      const isRestricted = (activeRole === "Viewer" || activeRole === "Renter");
+      document.body.classList.toggle("role-viewer", isRestricted);
       const badge = document.getElementById("headerRoleBadge");
       if (badge) {
         const scope = resolveViewerAssignedScope();
-        if (activeRole === "Viewer" && scope) {
-          if (scope.mode === "ALL") badge.innerText = "Viewer • All Properties";
-          else if (scope.mode === "SELECTED") badge.innerText = `Viewer • ${scope.prop}`;
-          else badge.innerText = `Viewer • ${scope.prop} (Flat ${scope.flat})`;
+        if (isRestricted && scope) {
+          if (scope.mode === "ALL") badge.innerText = `${activeRole} • Full Access`;
+          else if (scope.mode === "SELECTED") badge.innerText = `${activeRole} • ${scope.prop}`;
+          else badge.innerText = `${activeRole} • ${scope.prop} (Flat ${scope.flat})`;
         } else {
           badge.innerText = activeRole;
         }
-        badge.style.background = activeRole === "Admin" ? "rgba(16, 185, 129, 0.2)" : "rgba(245, 158, 11, 0.2)";
+        if (activeRole === "Admin") {
+          badge.style.background = "rgba(16, 185, 129, 0.2)";
+          badge.style.color = "#10b981";
+        } else if (activeRole === "Renter") {
+          badge.style.background = "rgba(192, 132, 252, 0.2)";
+          badge.style.color = "#c084fc";
+        } else {
+          badge.style.background = "rgba(245, 158, 11, 0.2)";
+          badge.style.color = "#fbbf24";
+        }
       }
       const btnLoginHist = document.getElementById("btnOtherOptLoginHistory");
       const panelLoginHist = document.getElementById("otherPanelLoginHistory");
@@ -6506,7 +6867,8 @@ function formatMonthLabel(rawVal) {
       const roleSelect = document.getElementById("createUserRole");
       const scopeBox = document.getElementById("viewerScopeSelectionBox");
       if (!roleSelect || !scopeBox) return;
-      if (roleSelect.value === "Viewer") {
+      const isRestrictedRole = (roleSelect.value === "Viewer" || roleSelect.value === "Renter");
+      if (isRestrictedRole) {
         scopeBox.style.display = "block";
         populateCreateUserFlatsDropdown();
       } else {
@@ -6971,7 +7333,10 @@ function renderRegisteredUsersList() {
                 </div>
                 ${assignedInfo}
               </div>
-              <span class="role-badge" style="background:${isTargetAdmin ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)'};">${displayRoleLabel}</span>
+              <div style="display:flex; align-items:center; gap:6px;">
+                ${isBlocked ? '<span class="role-badge" style="background:rgba(239,68,68,0.25); color:#f87171; border:1px solid #ef4444;"><i class="fa-solid fa-ban"></i> BLOCKED</span>' : ''}
+                <span class="role-badge" style="background:${isTargetAdmin ? 'rgba(16, 185, 129, 0.2)' : (isTargetRenter ? 'rgba(192, 132, 252, 0.2)' : 'rgba(245, 158, 11, 0.2)')}; color:${isTargetAdmin ? '#10b981' : (isTargetRenter ? '#c084fc' : '#fbbf24')};">${displayRoleLabel}</span>
+              </div>
             </div>
             ${adminControlsHtml}
           </div>
@@ -11914,5 +12279,22 @@ function renderRegisteredUsersList() {
       }
     }
   </script>
+
+  <!-- ACCOUNT BLOCKED ALERT MODAL (Requirement 3) -->
+  <div id="accountBlockedModal" class="modal-overlay" style="z-index:9999;">
+    <div class="modal-window" style="max-width:440px; text-align:center; border:2px solid #ef4444; box-shadow:0 25px 60px rgba(239,68,68,0.3);">
+      <div style="width:68px; height:68px; border-radius:50%; background:rgba(239,68,68,0.15); border:2px solid #ef4444; display:flex; align-items:center; justify-content:center; margin:0 auto 16px auto; color:#ef4444; font-size:2rem;">
+        <i class="fa-solid fa-ban"></i>
+      </div>
+      <h3 style="color:#ef4444; font-size:1.3rem; font-weight:900; margin-bottom:8px;">Account Blocked</h3>
+      <p id="accountBlockedMessage" style="font-size:0.86rem; color:var(--text-main); line-height:1.5; margin-bottom:20px;">
+        Your account has been blocked by an administrator. Please contact your administrator for access.
+      </p>
+      <button type="button" class="btn-primary" style="background:#ef4444; border-color:#dc2626; font-weight:800;" onclick="closeAccountBlockedModal()">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Understood &amp; Return to Login
+      </button>
+    </div>
+  </div>
+
 </body>
 </html>
