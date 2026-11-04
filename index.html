@@ -12,252 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Include html2canvas for receipt image rendering & QRious for 100% reliable client-side UPI QR code generation -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
-    // Requirement 4: Custom Backgrounds (Login & Dashboard) with 100% Clarity
-    const DEFAULT_PORTAL_BACKGROUND_IMAGE = "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=90";
-
-    function getCustomBackgrounds() {
-      const loginBg = localStorage.getItem("portal_custom_bg_login") || "";
-      const dashBg = localStorage.getItem("portal_custom_bg_dashboard") || "";
-      return { loginBg, dashBg };
-    }
-
-    function applyCustomBackgrounds() {
-      const { loginBg, dashBg } = getCustomBackgrounds();
-      const loginScreenEl = document.getElementById("loginScreen");
-      const dashScreenEl = document.getElementById("dashboardScreen");
-
-      const effectiveLoginBg = (loginBg && loginBg.trim()) ? loginBg.trim() : DEFAULT_PORTAL_BACKGROUND_IMAGE;
-      const effectiveDashBg = (dashBg && dashBg.trim()) ? dashBg.trim() : DEFAULT_PORTAL_BACKGROUND_IMAGE;
-
-      if (loginScreenEl) {
-        loginScreenEl.style.backgroundImage = 'url("' + effectiveLoginBg + '")';
-        loginScreenEl.style.backgroundSize = "cover";
-        loginScreenEl.style.backgroundPosition = "center";
-        loginScreenEl.style.backgroundRepeat = "no-repeat";
-        loginScreenEl.style.backgroundAttachment = "fixed";
-        loginScreenEl.style.imageRendering = "-webkit-optimize-contrast";
-      }
-
-      if (dashScreenEl) {
-        dashScreenEl.style.backgroundImage = 'url("' + effectiveDashBg + '")';
-        dashScreenEl.style.backgroundSize = "cover";
-        dashScreenEl.style.backgroundPosition = "center";
-        dashScreenEl.style.backgroundRepeat = "no-repeat";
-        dashScreenEl.style.backgroundAttachment = "fixed";
-        dashScreenEl.style.imageRendering = "-webkit-optimize-contrast";
-      }
-    }
-
-    function saveCustomBackgrounds() {
-      const inputLogin = document.getElementById("bgUrlLoginScreen");
-      const inputDash = document.getElementById("bgUrlDashboardScreen");
-      const loginVal = inputLogin ? inputLogin.value.trim() : "";
-      const dashVal = inputDash ? inputDash.value.trim() : "";
-
-      if (loginVal) localStorage.setItem("portal_custom_bg_login", loginVal);
-      else localStorage.removeItem("portal_custom_bg_login");
-
-      if (dashVal) localStorage.setItem("portal_custom_bg_dashboard", dashVal);
-      else localStorage.removeItem("portal_custom_bg_dashboard");
-
-      applyCustomBackgrounds();
-      initCustomBgInputs();
-      triggerSideToast("Backgrounds Updated", "Custom background images applied with 100% clarity!", true);
-
-      if (activeUser) {
-        try {
-          await sendGasPost({
-            action: "saveBackgrounds",
-            username: activeUser,
-            bgLogin: loginVal,
-            bgDashboard: dashVal
-          });
-        } catch (e) {}
-      }
-    }
-
-    function deleteCustomBgImage(type) {
-      if (type === "login") {
-        localStorage.removeItem("portal_custom_bg_login");
-        const input = document.getElementById("bgUrlLoginScreen");
-        if (input) input.value = "";
-      } else if (type === "dashboard") {
-        localStorage.removeItem("portal_custom_bg_dashboard");
-        const input = document.getElementById("bgUrlDashboardScreen");
-        if (input) input.value = "";
-      }
-      applyCustomBackgrounds();
-      initCustomBgInputs();
-      triggerSideToast("Background Removed", `Default background restored for ${type === 'login' ? 'Logout/Login screen' : 'Dashboard'}.`, true);
-      if (activeUser) saveCustomBackgrounds();
-    }
-
-    
-    async function handleDirectBgUpload(inputEl, type) {
-      if (String(activeRole || "").trim().toLowerCase() !== "admin") {
-        return triggerSideToast("Admin Only", "Only Administrators can change portal backgrounds.", false);
-      }
-      const file = inputEl.files && inputEl.files[0];
-      if (!file) return;
-      triggerSideToast("Uploading Background", `Uploading ${type === 'login' ? 'Lock Screen' : 'Home Page'} background to Google Drive ("Home" folder)...`, "warning");
-      try {
-        const compressedDataUrl = await compressImageFileToDataUrl(file, 1920, 0.88);
-        const res = await sendGasPost({
-          action: "uploadBackgroundPhoto",
-          type: type,
-          fileName: file.name,
-          mimeType: file.type || "image/jpeg",
-          base64Data: compressedDataUrl
-        });
-        const finalUrl = (res && res.status === "success" && res.imageUrl) ? res.imageUrl : compressedDataUrl;
-        if (type === "login") {
-          document.getElementById("bgUrlLoginScreen").value = finalUrl;
-          localStorage.setItem("portal_custom_bg_login", finalUrl);
-        } else {
-          document.getElementById("bgUrlDashboardScreen").value = finalUrl;
-          localStorage.setItem("portal_custom_bg_dashboard", finalUrl);
-        }
-        applyCustomBackgrounds();
-        initCustomBgInputs();
-        triggerSideToast("Background Uploaded", `${type === 'login' ? 'Lock Screen' : 'Home Page'} background uploaded to Drive and applied globally!`, true);
-      } catch (err) {
-        triggerSideToast("Upload Failed", "Could not upload background to Drive. Please verify connection.", false);
-      }
-    }
-
-    function resetDefaultBackgrounds() {
-      localStorage.removeItem("portal_custom_bg_login");
-      localStorage.removeItem("portal_custom_bg_dashboard");
-      const inputLogin = document.getElementById("bgUrlLoginScreen");
-      const inputDash = document.getElementById("bgUrlDashboardScreen");
-      if (inputLogin) inputLogin.value = "";
-      if (inputDash) inputDash.value = "";
-      applyCustomBackgrounds();
-      initCustomBgInputs();
-      triggerSideToast("Default Backgrounds Restored", "Both screens reverted to original backgrounds.", true);
-      if (activeUser) saveCustomBackgrounds();
-    }
-
-    
-    // Requirement 5: Permanent Photo Storage & Cache so photos NEVER disappear across login/logout
-    function cachePermanentRenterPhoto(prop, flat, renterId, docType, url) {
-      if (!url || isPlaceholderImageUrl(url)) return;
-      try {
-        const map = JSON.parse(localStorage.getItem("portal_permanent_photos") || "{}");
-        const pClean = String(prop || "").trim().toLowerCase();
-        const fClean = String(flat || "").trim().toLowerCase();
-        const rIdClean = String(renterId || "").trim().toLowerCase();
-        const dClean = String(docType || "profile").trim().toLowerCase();
-        if (rIdClean) map[`${pClean}::${fClean}::${rIdClean}::${dClean}`] = url;
-        map[`${pClean}::${fClean}::active::${dClean}`] = url;
-        localStorage.setItem("portal_permanent_photos", JSON.stringify(map));
-      } catch (e) {}
-    }
-
-    function getPermanentRenterPhoto(prop, flat, renterId, docType) {
-      try {
-        const map = JSON.parse(localStorage.getItem("portal_permanent_photos") || "{}");
-        const pClean = String(prop || "").trim().toLowerCase();
-        const fClean = String(flat || "").trim().toLowerCase();
-        const rIdClean = String(renterId || "").trim().toLowerCase();
-        const dClean = String(docType || "profile").trim().toLowerCase();
-        if (rIdClean && map[`${pClean}::${fClean}::${rIdClean}::${dClean}`]) {
-          return map[`${pClean}::${fClean}::${rIdClean}::${dClean}`];
-        }
-        return map[`${pClean}::${fClean}::active::${dClean}`] || "";
-      } catch (e) {
-        return "";
-      }
-    }
-
-    function removePermanentRenterPhoto(prop, flat, renterId, docType) {
-      try {
-        const map = JSON.parse(localStorage.getItem("portal_permanent_photos") || "{}");
-        const pClean = String(prop || "").trim().toLowerCase();
-        const fClean = String(flat || "").trim().toLowerCase();
-        const rIdClean = String(renterId || "").trim().toLowerCase();
-        const dClean = String(docType || "profile").trim().toLowerCase();
-        if (rIdClean) delete map[`${pClean}::${fClean}::${rIdClean}::${dClean}`];
-        delete map[`${pClean}::${fClean}::active::${dClean}`];
-        localStorage.setItem("portal_permanent_photos", JSON.stringify(map));
-      } catch (e) {}
-    }
-
-    // User Block Management & Blocked Login Modal
-    async function toggleUserBlockStatus(targetUsername, newStatus) {
-      if (String(activeRole || "").trim().toLowerCase() !== "admin") {
-        return triggerSideToast("Admin Only", "Only an Administrator has authority to block or unblock users.", false);
-      }
-      const targetClean = String(targetUsername || "").trim().toLowerCase();
-      if (targetClean === String(activeUser || "").trim().toLowerCase()) {
-        return triggerSideToast("Action Blocked", "You cannot block your own active Admin account.", false);
-      }
-      const isBlocking = newStatus === "Blocked";
-      openCenteredConfirmModal(
-        isBlocking ? `Block User Account @${targetUsername}?` : `Unblock User Account @${targetUsername}?`,
-        isBlocking
-          ? `Are you sure you want to BLOCK @${targetUsername}? They will be immediately barred from logging in and a popup will notify them that their account has been blocked.`
-          : `Restore login access for @${targetUsername}?`,
-        async () => {
-          // Immediately update memory and local storage
-          const targetU = (DB.users || []).find(u => String(u.Username || "").toLowerCase() === targetClean);
-          if (targetU) targetU.Status = newStatus;
-          
-          let blockedList = [];
-          try {
-            blockedList = JSON.parse(localStorage.getItem("portal_blocked_users") || "[]");
-          } catch (e) {}
-          if (isBlocking) {
-            if (!blockedList.includes(targetClean)) blockedList.push(targetClean);
-          } else {
-            blockedList = blockedList.filter(u => u !== targetClean);
-          }
-          localStorage.setItem("portal_blocked_users", JSON.stringify(blockedList));
-
-          const authMap = getVerifiedAuthMap();
-          if (authMap[targetClean]) {
-            authMap[targetClean].status = newStatus;
-            localStorage.setItem("portal_verified_auth_map", JSON.stringify(authMap));
-          }
-
-          saveDbSnapshotToCache();
-          renderRegisteredUsersList();
-          renderAllDashboardUI();
-
-          triggerSideToast(
-            isBlocking ? "Account Blocked" : "Account Unblocked",
-            `User @${targetUsername} is now ${isBlocking ? 'Blocked from logging in' : 'Active and unblocked'}!`,
-            true
-          );
-
-          try {
-            await sendGasPost({
-              action: "toggleUserBlock",
-              requesterUsername: activeUser,
-              targetUsername: targetUsername,
-              newStatus: newStatus
-            });
-          } catch (err) {
-            console.warn("Cloud block sync warning:", err);
-          }
-        }
-      );
-    }
-
-    function showAccountBlockedModal(message) {
-      const msgEl = document.getElementById("accountBlockedMessage");
-      if (msgEl) {
-        msgEl.innerText = message || "Your account has been blocked by an administrator. Please contact your administrator for access.";
-      }
-      openModal("accountBlockedModal");
-    }
-
-    function closeAccountBlockedModal() {
-      closeModal("accountBlockedModal");
-    }
-
-</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <style>
     /* ==========================================================================
@@ -321,7 +76,7 @@
     .bg-canvas {
       position: fixed;
       inset: 0;
-      background: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=90') center/cover no-repeat fixed !important;
+      background: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=90') center/cover no-repeat fixed;
       z-index: -1;
       transition: background 0.3s ease;
     }
@@ -331,7 +86,7 @@
       min-height: 100vh;
       min-height: 100dvh;
       width: 100%;
-      background: transparent !important;
+      background: transparent;
     }
     .screen.active {
       display: flex !important;
@@ -342,7 +97,7 @@
       align-items: center;
       justify-content: center;
       padding: 16px;
-      background: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=90') center/cover no-repeat fixed !important;
+      background: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=90') center/cover no-repeat fixed;
     }
 
     .glass-card {
@@ -2639,7 +2394,7 @@
   }
 
 </style>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body class="theme-black">
 
   <!-- PERMANENT HOUSE BACKGROUND CANVAS FOR HOME PAGE & LOGIN -->
@@ -3011,6 +2766,41 @@
     <main class="flats-container" id="flatsList">
       <!-- Rendered Only When Property Is Clicked -->
     </main>
+
+    <!-- Stylish Home Page Khet (Field) Section -->
+    <section id="homeKhetSection" class="home-khet-section" style="display:none;">
+      <div class="home-khet-shell">
+        <div class="home-khet-header">
+          <div class="home-khet-brand">
+            <div class="home-khet-icon-badge">
+              <i class="fa-solid fa-seedling"></i>
+            </div>
+            <div>
+              <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:var(--text-main);">Khet (Field) Portfolio Overview</h3>
+              <p style="margin:2px 0 0 0; font-size:0.78rem; color:var(--text-muted);">Live agricultural land holdings, Bigha size, holder details &amp; payment records</p>
+            </div>
+          </div>
+          <div class="home-khet-stats-bar">
+            <div class="home-khet-stat-pill">
+              <i class="fa-solid fa-layer-group" style="color:#34d399;"></i>
+              <span>Fields: <strong id="homeKhetTotalCount">0</strong></span>
+            </div>
+            <div class="home-khet-stat-pill">
+              <i class="fa-solid fa-ruler-combined" style="color:#38bdf8;"></i>
+              <span>Total Size: <strong id="homeKhetTotalBigha">0 Bigha</strong></span>
+            </div>
+            <div class="home-khet-stat-pill">
+              <i class="fa-solid fa-indian-rupee-sign" style="color:#10b981;"></i>
+              <span>Total Paid: <strong id="homeKhetTotalPaid" style="color:var(--accent-green);">₹0</strong></span>
+            </div>
+            <button type="button" class="btn-primary admin-only" style="width:auto; padding:8px 14px; font-size:0.78rem; background:linear-gradient(135deg, #10b981 0%, #059669 100%);" onclick="openKhetModal()">
+              <i class="fa-solid fa-plus-circle"></i> Add / Manage Khet
+            </button>
+          </div>
+        </div>
+        <div id="homeKhetCardsGrid" class="home-khet-grid"></div>
+      </div>
+    </section>
   </section>
 
   <!-- ==================== POPUP MODALS ==================== -->
@@ -3167,13 +2957,13 @@
         </select>
       </div>
 
-      <!-- Scope fields when Viewer is selected -->
+      <!-- Scope fields when Viewer or Renter is selected -->
       <div id="editAssignScopeBox" style="background:var(--bg-input); border:1px solid var(--glass-border); border-radius:12px; padding:12px; margin-bottom:14px;">
         <div class="form-group" style="margin-bottom:10px;">
-          <label>Viewer Scope Level</label>
+          <label id="editAssignScopeTitle">Viewer Scope Level</label>
           <select id="editAssignScopeLevel" class="form-control" onchange="handleEditAssignScopeLevelChange()">
             <option value="FLAT">Single Specific Flat (e.g. Flat 101)</option>
-            <option value="ALL">All Properties (Can view all properties & flats)</option>
+            <option value="ALL">All Properties (Can view all properties &amp; flats)</option>
             <option value="SELECTED">Selected Properties</option>
           </select>
         </div>
@@ -3187,6 +2977,11 @@
             <label>Assigned Flat <span class="req-star">*</span> (Select new flat number to change flat)</label>
             <select id="editAssignFlatDropdown" class="form-control"></select>
           </div>
+        </div>
+
+        <div id="editAssignSelectedPropsFields" style="display:none; margin-top:8px;">
+          <label style="font-size:0.78rem; font-weight:700; margin-bottom:6px; display:block;">Select Properties Allowed for This User:</label>
+          <div id="editAssignPropsCheckboxesContainer" style="display:flex; flex-direction:column; gap:6px; max-height:150px; overflow-y:auto; background:var(--bg-modal); padding:8px; border-radius:8px; border:1px solid var(--glass-border);"></div>
         </div>
       </div>
 
@@ -3339,8 +3134,8 @@
         </div>
         <div class="form-group">
           <label>Current Status (Unchanged on Edit)</label>
-          <select id="editLeftStatus" class="form-control" disabled style="opacity:0.85; cursor:not-allowed;">
           <input type="hidden" id="editLeftStatusDisplay">
+          <select id="editLeftStatus" class="form-control" disabled style="opacity:0.85; cursor:not-allowed;">
             <option value="Inactive">Left / Inactive (Remains Left)</option>
             <option value="Active">Active (Remains Active)</option>
           </select>
@@ -3781,9 +3576,9 @@
           <div style="display:flex; flex-direction:column; gap:12px;">
             <div style="background:var(--bg-input); padding:12px; border-radius:12px; border:1px solid var(--glass-border);">
               <label style="font-size:0.76rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-                <i class="fa-solid fa-right-to-bracket" style="color:#818cf8;"></i> 1. Logout / Login Home Page Background Link (URL)
+                <i class="fa-solid fa-right-to-bracket" style="color:#818cf8;"></i> 1. Logout / Login Home Page Background Link (URL or Upload)
               </label>
-              <div style="display:flex; gap:8px;">
+              <div style="display:flex; gap:8px; margin-bottom:8px;">
                 <input
                   type="url"
                   id="bgUrlLoginScreen"
@@ -3801,6 +3596,10 @@
                   <i class="fa-solid fa-trash-can"></i> Delete
                 </button>
               </div>
+              <div class="admin-only" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <label style="font-size:0.72rem; color:var(--text-muted); margin:0;"><i class="fa-solid fa-cloud-arrow-up" style="color:#818cf8;"></i> Or Upload Photo from Device:</label>
+                <input type="file" accept="image/*" class="form-control" style="padding:5px 8px; font-size:0.74rem; max-width:260px;" onchange="handleDirectBgUpload(this, 'login')">
+              </div>
               <div id="bgLoginStatusHint" style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">
                 Leave empty to retain the default theme background.
               </div>
@@ -3808,9 +3607,9 @@
 
             <div style="background:var(--bg-input); padding:12px; border-radius:12px; border:1px solid var(--glass-border);">
               <label style="font-size:0.76rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-                <i class="fa-solid fa-house" style="color:#ec4899;"></i> 2. Login Home Page (Dashboard) Background Link (URL)
+                <i class="fa-solid fa-house" style="color:#ec4899;"></i> 2. Login Home Page (Dashboard) Background Link (URL or Upload)
               </label>
-              <div style="display:flex; gap:8px;">
+              <div style="display:flex; gap:8px; margin-bottom:8px;">
                 <input
                   type="url"
                   id="bgUrlDashboardScreen"
@@ -3827,6 +3626,10 @@
                 >
                   <i class="fa-solid fa-trash-can"></i> Delete
                 </button>
+              </div>
+              <div class="admin-only" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <label style="font-size:0.72rem; color:var(--text-muted); margin:0;"><i class="fa-solid fa-cloud-arrow-up" style="color:#ec4899;"></i> Or Upload Photo from Device:</label>
+                <input type="file" accept="image/*" class="form-control" style="padding:5px 8px; font-size:0.74rem; max-width:260px;" onchange="handleDirectBgUpload(this, 'dashboard')">
               </div>
               <div id="bgDashboardStatusHint" style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">
                 Leave empty to retain the default theme background.
@@ -4386,6 +4189,16 @@
             <div class="form-group"><label>Join Date</label><input type="date" id="renterJoinDate" class="form-control"></div>
             <div class="form-group"><label>End Date</label><input type="date" id="renterEndDate" class="form-control"></div>
 
+            <!-- Upload Renter Photo & Aadhaar Card Photo Inputs (Saves to Google Drive "Home" Folder) -->
+            <div class="form-group admin-only" style="background:rgba(56, 189, 248, 0.08); border:1px dashed rgba(56, 189, 248, 0.45); border-radius:10px; padding:10px;">
+              <label style="font-size:0.76rem; color:#38bdf8; margin-bottom:4px;"><i class="fa-solid fa-camera-retro"></i> Upload Renter Profile Photo</label>
+              <input type="file" id="fileProfilePic" class="form-control" style="padding:6px; font-size:0.76rem;" accept="image/*" onchange="handleRenterDocumentUpload(this, 'profile')">
+            </div>
+            <div class="form-group admin-only" style="background:rgba(16, 185, 129, 0.08); border:1px dashed rgba(16, 185, 129, 0.45); border-radius:10px; padding:10px;">
+              <label style="font-size:0.76rem; color:#34d399; margin-bottom:4px;"><i class="fa-solid fa-id-card"></i> Upload Aadhaar Card Document Photo</label>
+              <input type="file" id="fileIdentityPic" class="form-control" style="padding:6px; font-size:0.76rem;" accept="image/*" onchange="handleRenterDocumentUpload(this, 'identity')">
+            </div>
+
             <button type="button" id="btnReactivateProfileTab" class="btn-ledger-action admin-only" style="display:none; width:100%; justify-content:center; margin-bottom:10px; padding:10px 14px; font-weight:800; color:var(--accent-green); border-color:rgba(16,185,129,0.55); background:rgba(16,185,129,0.1);" onclick="triggerReactivateFromProfileTab()">
               <i class="fa-solid fa-user-check"></i> Re-active Renter / Returning Renter (Choose Property &amp; Flat)
             </button>
@@ -4502,7 +4315,8 @@
 
         </div>
       </div>
-      <div  class="tab-content">
+      <!-- TAB 4: RENTER HISTORY -->
+      <div id="tabRenterHistory" class="tab-content">
         
 
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
@@ -4574,6 +4388,7 @@
      * ============================================================================
      */
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzHSSs7xN9tlcZmwO1hpfdwwc8zdhvwRyP1294-RC-SFlj6QvfqtSyFrJH1c8VacYFZWQ/exec";
+    const DEFAULT_PORTAL_BACKGROUND_IMAGE = "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=90";
 
     let DB = {
       properties: [],
@@ -4604,8 +4419,303 @@
     let syncTimer = null;
     let sideToastTimeout = null;
     let pendingConfirmCallback = null;
-
     let pendingReactivatingRenter = null;
+
+    function isRestrictedRole(role = activeRole) {
+      const r = String(role || "").trim();
+      return r === "Viewer" || r === "Renter";
+    }
+
+    // Requirement 4: Custom Backgrounds (Login & Dashboard) with 100% Clarity
+    function getCustomBackgrounds() {
+      const loginBg = localStorage.getItem("portal_custom_bg_login") || "";
+      const dashBg = localStorage.getItem("portal_custom_bg_dashboard") || "";
+      return { loginBg, dashBg };
+    }
+
+    function initCustomBgInputs() {
+      const { loginBg, dashBg } = getCustomBackgrounds();
+      const inputLogin = document.getElementById("bgUrlLoginScreen");
+      const inputDash = document.getElementById("bgUrlDashboardScreen");
+      const hintLogin = document.getElementById("bgLoginStatusHint");
+      const hintDash = document.getElementById("bgDashboardStatusHint");
+
+      if (inputLogin) inputLogin.value = loginBg;
+      if (inputDash) inputDash.value = dashBg;
+
+      if (hintLogin) {
+        hintLogin.innerText = loginBg
+          ? "Custom Logout/Login background active (100% clarity)."
+          : "Using default Logout/Login background image.";
+        hintLogin.style.color = loginBg ? "var(--accent-green)" : "var(--text-muted)";
+      }
+      if (hintDash) {
+        hintDash.innerText = dashBg
+          ? "Custom Dashboard background active (100% clarity)."
+          : "Using default Dashboard background image.";
+        hintDash.style.color = dashBg ? "var(--accent-green)" : "var(--text-muted)";
+      }
+    }
+
+    function applyCustomBackgrounds() {
+      const { loginBg, dashBg } = getCustomBackgrounds();
+      const loginScreenEl = document.getElementById("loginScreen");
+      const dashScreenEl = document.getElementById("dashboardScreen");
+      const bgCanvasEl = document.querySelector(".bg-canvas");
+
+      const effectiveLoginBg = (loginBg && loginBg.trim()) ? loginBg.trim() : DEFAULT_PORTAL_BACKGROUND_IMAGE;
+      const effectiveDashBg = (dashBg && dashBg.trim()) ? dashBg.trim() : DEFAULT_PORTAL_BACKGROUND_IMAGE;
+
+      if (loginScreenEl) {
+        loginScreenEl.style.setProperty("background-image", 'url("' + effectiveLoginBg + '")', "important");
+        loginScreenEl.style.backgroundSize = "cover";
+        loginScreenEl.style.backgroundPosition = "center";
+        loginScreenEl.style.backgroundRepeat = "no-repeat";
+        loginScreenEl.style.backgroundAttachment = "fixed";
+      }
+
+      if (dashScreenEl) {
+        dashScreenEl.style.setProperty("background-image", 'url("' + effectiveDashBg + '")', "important");
+        dashScreenEl.style.backgroundSize = "cover";
+        dashScreenEl.style.backgroundPosition = "center";
+        dashScreenEl.style.backgroundRepeat = "no-repeat";
+        dashScreenEl.style.backgroundAttachment = "fixed";
+      }
+
+      if (bgCanvasEl) {
+        bgCanvasEl.style.setProperty("background-image", 'url("' + effectiveDashBg + '")', "important");
+        bgCanvasEl.style.backgroundSize = "cover";
+        bgCanvasEl.style.backgroundPosition = "center";
+        bgCanvasEl.style.backgroundRepeat = "no-repeat";
+        bgCanvasEl.style.backgroundAttachment = "fixed";
+      }
+    }
+
+    function syncServerBackgroundsToLocal(globalConfig, userBgLogin, userBgDash) {
+      let updated = false;
+      const serverLoginBg = (userBgLogin && String(userBgLogin).trim()) || (globalConfig && globalConfig.bgLogin && String(globalConfig.bgLogin).trim()) || "";
+      const serverDashBg = (userBgDash && String(userBgDash).trim()) || (globalConfig && globalConfig.bgDashboard && String(globalConfig.bgDashboard).trim()) || "";
+      if (serverLoginBg && !localStorage.getItem("portal_custom_bg_login")) {
+        localStorage.setItem("portal_custom_bg_login", serverLoginBg);
+        updated = true;
+      }
+      if (serverDashBg && !localStorage.getItem("portal_custom_bg_dashboard")) {
+        localStorage.setItem("portal_custom_bg_dashboard", serverDashBg);
+        updated = true;
+      }
+      if (updated) {
+        applyCustomBackgrounds();
+        initCustomBgInputs();
+      }
+    }
+
+    async function saveCustomBackgrounds() {
+      const inputLogin = document.getElementById("bgUrlLoginScreen");
+      const inputDash = document.getElementById("bgUrlDashboardScreen");
+      const loginVal = inputLogin ? inputLogin.value.trim() : "";
+      const dashVal = inputDash ? inputDash.value.trim() : "";
+
+      if (loginVal) localStorage.setItem("portal_custom_bg_login", loginVal);
+      else localStorage.removeItem("portal_custom_bg_login");
+
+      if (dashVal) localStorage.setItem("portal_custom_bg_dashboard", dashVal);
+      else localStorage.removeItem("portal_custom_bg_dashboard");
+
+      applyCustomBackgrounds();
+      initCustomBgInputs();
+      triggerSideToast("Backgrounds Updated", "Custom background images applied with 100% clarity!", true);
+
+      if (activeUser) {
+        try {
+          await sendGasPost({
+            action: "saveBackgrounds",
+            username: activeUser,
+            bgLogin: loginVal,
+            bgDashboard: dashVal
+          });
+        } catch (e) {}
+      }
+    }
+
+    function deleteCustomBgImage(type) {
+      if (type === "login") {
+        localStorage.removeItem("portal_custom_bg_login");
+        const input = document.getElementById("bgUrlLoginScreen");
+        if (input) input.value = "";
+      } else if (type === "dashboard") {
+        localStorage.removeItem("portal_custom_bg_dashboard");
+        const input = document.getElementById("bgUrlDashboardScreen");
+        if (input) input.value = "";
+      }
+      applyCustomBackgrounds();
+      initCustomBgInputs();
+      triggerSideToast("Background Removed", `Default background restored for ${type === 'login' ? 'Logout/Login screen' : 'Dashboard'}.`, true);
+      if (activeUser) saveCustomBackgrounds();
+    }
+
+    async function handleDirectBgUpload(inputEl, type) {
+      if (String(activeRole || "").trim().toLowerCase() !== "admin") {
+        return triggerSideToast("Admin Only", "Only Administrators can change portal backgrounds.", false);
+      }
+      const file = inputEl.files && inputEl.files[0];
+      if (!file) return;
+      triggerSideToast("Uploading Background", `Uploading ${type === 'login' ? 'Lock Screen' : 'Home Page'} background to Google Drive ("Home" folder)...`, "warning");
+      try {
+        const compressedDataUrl = await compressImageFileToDataUrl(file, 1920, 0.88);
+        const res = await sendGasPost({
+          action: "uploadBackgroundPhoto",
+          type: type,
+          fileName: file.name,
+          mimeType: file.type || "image/jpeg",
+          base64Data: compressedDataUrl
+        });
+        const finalUrl = (res && res.status === "success" && res.imageUrl) ? res.imageUrl : compressedDataUrl;
+        if (type === "login") {
+          const el = document.getElementById("bgUrlLoginScreen");
+          if (el) el.value = finalUrl;
+          localStorage.setItem("portal_custom_bg_login", finalUrl);
+        } else {
+          const el = document.getElementById("bgUrlDashboardScreen");
+          if (el) el.value = finalUrl;
+          localStorage.setItem("portal_custom_bg_dashboard", finalUrl);
+        }
+        applyCustomBackgrounds();
+        initCustomBgInputs();
+        if (activeUser) saveCustomBackgrounds();
+        triggerSideToast("Background Uploaded", `${type === 'login' ? 'Lock Screen' : 'Home Page'} background uploaded to Drive and applied globally!`, true);
+      } catch (err) {
+        triggerSideToast("Upload Failed", "Could not upload background to Drive. Please verify connection.", false);
+      }
+    }
+
+    function resetDefaultBackgrounds() {
+      localStorage.removeItem("portal_custom_bg_login");
+      localStorage.removeItem("portal_custom_bg_dashboard");
+      const inputLogin = document.getElementById("bgUrlLoginScreen");
+      const inputDash = document.getElementById("bgUrlDashboardScreen");
+      if (inputLogin) inputLogin.value = "";
+      if (inputDash) inputDash.value = "";
+      applyCustomBackgrounds();
+      initCustomBgInputs();
+      triggerSideToast("Default Backgrounds Restored", "Both screens reverted to original backgrounds.", true);
+      if (activeUser) saveCustomBackgrounds();
+    }
+
+    // Requirement 5: Permanent Photo Storage & Cache so photos NEVER disappear across login/logout
+    function cachePermanentRenterPhoto(prop, flat, renterId, docType, url) {
+      if (!url || isPlaceholderImageUrl(url)) return;
+      try {
+        const map = JSON.parse(localStorage.getItem("portal_permanent_photos") || "{}");
+        const pClean = String(prop || "").trim().toLowerCase();
+        const fClean = String(flat || "").trim().toLowerCase();
+        const rIdClean = String(renterId || "").trim().toLowerCase();
+        const dClean = String(docType || "profile").trim().toLowerCase();
+        if (rIdClean) map[`${pClean}::${fClean}::${rIdClean}::${dClean}`] = url;
+        map[`${pClean}::${fClean}::active::${dClean}`] = url;
+        localStorage.setItem("portal_permanent_photos", JSON.stringify(map));
+      } catch (e) {}
+    }
+
+    function getPermanentRenterPhoto(prop, flat, renterId, docType) {
+      try {
+        const map = JSON.parse(localStorage.getItem("portal_permanent_photos") || "{}");
+        const pClean = String(prop || "").trim().toLowerCase();
+        const fClean = String(flat || "").trim().toLowerCase();
+        const rIdClean = String(renterId || "").trim().toLowerCase();
+        const dClean = String(docType || "profile").trim().toLowerCase();
+        if (rIdClean && map[`${pClean}::${fClean}::${rIdClean}::${dClean}`]) {
+          return map[`${pClean}::${fClean}::${rIdClean}::${dClean}`];
+        }
+        return map[`${pClean}::${fClean}::active::${dClean}`] || "";
+      } catch (e) {
+        return "";
+      }
+    }
+
+    function removePermanentRenterPhoto(prop, flat, renterId, docType) {
+      try {
+        const map = JSON.parse(localStorage.getItem("portal_permanent_photos") || "{}");
+        const pClean = String(prop || "").trim().toLowerCase();
+        const fClean = String(flat || "").trim().toLowerCase();
+        const rIdClean = String(renterId || "").trim().toLowerCase();
+        const dClean = String(docType || "profile").trim().toLowerCase();
+        if (rIdClean) delete map[`${pClean}::${fClean}::${rIdClean}::${dClean}`];
+        delete map[`${pClean}::${fClean}::active::${dClean}`];
+        localStorage.setItem("portal_permanent_photos", JSON.stringify(map));
+      } catch (e) {}
+    }
+
+    // User Block Management & Blocked Login Modal
+    async function toggleUserBlockStatus(targetUsername, newStatus) {
+      if (String(activeRole || "").trim().toLowerCase() !== "admin") {
+        return triggerSideToast("Admin Only", "Only an Administrator has authority to block or unblock users.", false);
+      }
+      const targetClean = String(targetUsername || "").trim().toLowerCase();
+      if (targetClean === String(activeUser || "").trim().toLowerCase()) {
+        return triggerSideToast("Action Blocked", "You cannot block your own active Admin account.", false);
+      }
+      const isBlocking = newStatus === "Blocked";
+      openCenteredConfirmModal(
+        isBlocking ? `Block User Account @${targetUsername}?` : `Unblock User Account @${targetUsername}?`,
+        isBlocking
+          ? `Are you sure you want to BLOCK @${targetUsername}? They will be immediately barred from logging in and a popup will notify them that their account has been blocked.`
+          : `Restore login access for @${targetUsername}?`,
+        async () => {
+          const targetU = (DB.users || []).find(u => String(u.Username || "").toLowerCase() === targetClean);
+          if (targetU) targetU.Status = newStatus;
+
+          let blockedList = [];
+          try {
+            blockedList = JSON.parse(localStorage.getItem("portal_blocked_users") || "[]");
+          } catch (e) {}
+          if (isBlocking) {
+            if (!blockedList.includes(targetClean)) blockedList.push(targetClean);
+          } else {
+            blockedList = blockedList.filter(u => u !== targetClean);
+          }
+          localStorage.setItem("portal_blocked_users", JSON.stringify(blockedList));
+
+          const authMap = getVerifiedAuthMap();
+          if (authMap[targetClean]) {
+            authMap[targetClean].status = newStatus;
+            localStorage.setItem("portal_verified_auth_map", JSON.stringify(authMap));
+          }
+
+          saveDbSnapshotToCache();
+          renderRegisteredUsersList();
+          renderAllDashboardUI();
+
+          triggerSideToast(
+            isBlocking ? "Account Blocked" : "Account Unblocked",
+            `User @${targetUsername} is now ${isBlocking ? 'Blocked from logging in' : 'Active and unblocked'}!`,
+            true
+          );
+
+          try {
+            await sendGasPost({
+              action: "toggleUserBlock",
+              requesterUsername: activeUser,
+              targetUsername: targetUsername,
+              newStatus: newStatus
+            });
+          } catch (err) {
+            console.warn("Cloud block sync warning:", err);
+          }
+        }
+      );
+    }
+
+    function showAccountBlockedModal(message) {
+      const msgEl = document.getElementById("accountBlockedMessage");
+      if (msgEl) {
+        msgEl.innerText = message || "Your account has been blocked by an administrator. Please contact your administrator for access.";
+      }
+      openModal("accountBlockedModal");
+    }
+
+    function closeAccountBlockedModal() {
+      closeModal("accountBlockedModal");
+    }
 
     function populateReactivateFlatsDropdown() {
       const propName = document.getElementById("reactivatePropertySelect")?.value;
@@ -5303,13 +5413,19 @@ function formatMonthLabel(rawVal) {
           border: 1px solid var(--glass-border);
           font-size: 0.77rem;
         }
-        /* Requirement 3: Viewer Account Strictly Restricted to Assigned Flat Only (Hides Everything Else) */
+        /* Requirement 3: Viewer & Renter Account Strictly Restricted to Assigned Scope */
         body.role-viewer #searchContainer,
         body.role-viewer .pnl-tracker,
         body.role-viewer .properties-bar,
         body.role-viewer button[onclick="openFdModal()"],
         body.role-viewer button[onclick="openKhetModal()"],
-        body.role-viewer button[onclick="openSettingsModal()"] {
+        body.role-viewer button[onclick="openSettingsModal()"],
+        body.role-renter #searchContainer,
+        body.role-renter .pnl-tracker,
+        body.role-renter .properties-bar,
+        body.role-renter button[onclick="openFdModal()"],
+        body.role-renter button[onclick="openKhetModal()"],
+        body.role-renter button[onclick="openSettingsModal()"] {
           display: none !important;
         }
         @media (max-width: 640px) {
@@ -5346,6 +5462,8 @@ function formatMonthLabel(rawVal) {
 
     document.addEventListener("DOMContentLoaded", () => {
       injectReceiptWhatsAppStyles();
+      applyCustomBackgrounds();
+      initCustomBgInputs();
 
       // Prevent mouse scroll wheel and up/down arrow keys from accidentally changing monetary values or meter readings
       document.addEventListener("wheel", (e) => {
@@ -5499,7 +5617,7 @@ function formatMonthLabel(rawVal) {
 
     let hasAutoOpenedViewerFlatOnce = false;
     function resolveViewerAssignedScope() {
-      if (activeRole !== "Viewer") return null;
+      if (!isRestrictedRole(activeRole)) return null;
       let prop = String(activeAssignedProperty || "").trim();
       let flat = String(activeAssignedFlat || "").trim();
       if (!prop && activeUser) {
@@ -5532,7 +5650,7 @@ function formatMonthLabel(rawVal) {
 
     function renderAllDashboardUI() {
       const viewerScope = resolveViewerAssignedScope();
-      if (activeRole === "Viewer") {
+      if (isRestrictedRole(activeRole)) {
         const flatsContainer = document.getElementById("flatsList");
         const propsBar = document.querySelector(".properties-bar");
         if (viewerScope && viewerScope.mode === "FLAT") {
@@ -5564,7 +5682,7 @@ function formatMonthLabel(rawVal) {
                 <div class="empty-flats-prompt">
                   <i class="fa-solid fa-door-closed"></i>
                   <h3>No Properties Found</h3>
-                  <p>No properties match your Viewer access scope yet.</p>
+                  <p>No properties match your ${activeRole} access scope yet.</p>
                 </div>
               `;
             }
@@ -5573,8 +5691,8 @@ function formatMonthLabel(rawVal) {
           flatsContainer.innerHTML = `
             <div class="empty-flats-prompt">
               <i class="fa-solid fa-door-closed"></i>
-              <h3>No Flat Assigned to This Viewer Account</h3>
-              <p>Please ask an Admin to assign a specific flat or property to your Viewer User ID.</p>
+              <h3>No Flat Assigned to This ${activeRole} Account</h3>
+              <p>Please ask an Admin to assign a specific flat or property to your ${activeRole} User ID.</p>
             </div>
           `;
         }
@@ -6007,15 +6125,18 @@ function formatMonthLabel(rawVal) {
         });
         const res = await response.json();
 
-        if (res && res.status === "success") {
+        if (res && res.status === "blocked") {
+          showAccountBlockedModal(res.message || "Your account has been blocked by an administrator.");
+        } else if (res && res.status === "success") {
           selectedProperty = null;
           sessionStorage.removeItem("active_selected_property");
           document.getElementById("loginPassword").value = "";
+          syncServerBackgroundsToLocal(res.globalConfig, res.bgLogin, res.bgDashboard);
           applyServerLoginPayload(res, pass, clientBackup);
           unlockDashboardInstant(true);
           triggerSideToast("Welcome Back", `Logged in as ${activeUserFullName}`, true);
         } else {
-          triggerSideToast("Login Failed", "Your Username or Password is wrong.", false);
+          triggerSideToast("Login Failed", (res && res.message) ? res.message : "Your Username or Password is wrong.", false);
         }
       } catch (err) {
         triggerSideToast("Connection Error", "Unable to reach Google Sheet server.", false);
@@ -6099,6 +6220,9 @@ function formatMonthLabel(rawVal) {
           rebindSelectedFlatAndRenterReferences();
           saveDbSnapshotToCache();
 
+          if (res.globalConfig) {
+            syncServerBackgroundsToLocal(res.globalConfig, "", "");
+          }
           if (res.userAssignedProperty !== undefined) {
             activeAssignedProperty = res.userAssignedProperty || "";
             sessionStorage.setItem("active_session_assigned_prop", activeAssignedProperty);
@@ -6112,8 +6236,8 @@ function formatMonthLabel(rawVal) {
           }
           if (res.userRole && res.userRole !== activeRole) {
             applyRolePermissions(res.userRole);
-          } else if (activeRole === "Viewer") {
-            applyRolePermissions("Viewer");
+          } else if (isRestrictedRole(activeRole)) {
+            applyRolePermissions(activeRole);
           }
           if (res.userFullName) {
             activeUserFullName = res.userFullName;
@@ -6334,7 +6458,7 @@ function formatMonthLabel(rawVal) {
       container.innerHTML = "";
       sortPropertiesAlphabetically(DB.properties);
       const viewerScope = resolveViewerAssignedScope();
-      const visibleProps = (activeRole === "Viewer" && viewerScope)
+      const visibleProps = (isRestrictedRole(activeRole) && viewerScope)
         ? DB.properties.filter(p => isPropertyAllowedForViewer(p.PropertyName, viewerScope))
         : DB.properties;
 
@@ -6365,7 +6489,7 @@ function formatMonthLabel(rawVal) {
       renderAllDashboardUI();
     }
 
-    // 4. Render Flat Cards Strictly Filtered by Selected Property Only (and Single Assigned Flat for Viewer Accounts)
+    // 4. Render Flat Cards Strictly Filtered by Selected Property Only (and Single Assigned Flat for Viewer/Renter Accounts)
     function renderFlatsGrid(propertyName) {
       const container = document.getElementById("flatsList");
       container.innerHTML = "";
@@ -6374,7 +6498,7 @@ function formatMonthLabel(rawVal) {
       const targetPropClean = String(effectivePropName || "").trim().toLowerCase();
 
       let flats = DB.flats.filter(f => String(f.PropertyName || "").trim().toLowerCase() === targetPropClean);
-      if (activeRole === "Viewer" && viewerScope) {
+      if (isRestrictedRole(activeRole) && viewerScope) {
         if (viewerScope.mode === "FLAT") {
           flats = flats.filter(f => isSamePropAndFlat(f.PropertyName, f.FlatName, viewerScope.prop, viewerScope.flat));
         } else {
@@ -6387,7 +6511,7 @@ function formatMonthLabel(rawVal) {
           <div class="empty-flats-prompt">
             <i class="fa-solid fa-door-closed"></i>
             <h3>No Flats in ${propertyName}</h3>
-            <p>${activeRole === "Viewer" ? "Your assigned flat could not be found." : `Click the (+) button in the header and select "Add Flat" to create flats for ${propertyName}.`}</p>
+            <p>${isRestrictedRole(activeRole) ? "Your assigned flat could not be found." : `Click the (+) button in the header and select "Add Flat" to create flats for ${propertyName}.`}</p>
           </div>
         `;
         return;
@@ -7131,13 +7255,15 @@ function formatMonthLabel(rawVal) {
       }).join("");
     }
 
-    // Requirement 4: Switch Other Sub-Options (Users, History, Edit Everything)
+    // Requirement 4: Switch Other Sub-Options (Users, History, ChangeBg, Edit Everything)
     function switchOtherSubOption(opt) {
       const usersPanel = document.getElementById("otherPanelUsers");
       const historyPanel = document.getElementById("otherPanelLoginHistory");
+      const changeBgPanel = document.getElementById("otherPanelChangeBg");
       const eePanel = document.getElementById("otherPanelEditEverything");
       const btnUsers = document.getElementById("btnOtherOptUsers");
       const btnHistory = document.getElementById("btnOtherOptLoginHistory");
+      const btnChangeBg = document.getElementById("btnOtherOptChangeBg");
       const btnEe = document.getElementById("btnOtherOptEditEverything");
       const isAdmin = String(activeRole || "").trim().toLowerCase() === "admin";
 
@@ -7146,8 +7272,9 @@ function formatMonthLabel(rawVal) {
         opt = "users";
       }
 
-      [usersPanel, historyPanel, eePanel].forEach(p => { if (p) p.style.display = "none"; });
+      [usersPanel, historyPanel, changeBgPanel, eePanel].forEach(p => { if (p) p.style.display = "none"; });
       if (btnUsers) btnUsers.className = "btn-ledger-action";
+      if (btnChangeBg) btnChangeBg.className = "btn-ledger-action";
       [btnHistory, btnEe].forEach(b => { if (b) b.className = "btn-ledger-action admin-only"; });
 
       if (opt === "history") {
@@ -7155,6 +7282,10 @@ function formatMonthLabel(rawVal) {
         if (btnHistory) btnHistory.className = "btn-primary admin-only";
         currentLoginHistoryPage = 1;
         renderLoginHistoryPage();
+      } else if (opt === "changeBg") {
+        if (changeBgPanel) changeBgPanel.style.display = "block";
+        if (btnChangeBg) btnChangeBg.className = "btn-primary";
+        initCustomBgInputs();
       } else if (opt === "editEverything") {
         if (eePanel) eePanel.style.display = "block";
         if (btnEe) btnEe.className = "btn-primary admin-only";
@@ -7373,30 +7504,55 @@ function formatMonthLabel(rawVal) {
       document.getElementById("editAssignFullName").value = u.FullName || u.Username || "";
       document.getElementById("editAssignRole").value = (u.Role === "Renter") ? "Renter" : ((u.Role === "Viewer") ? "Viewer" : "Admin");
 
-      // Scope fields
+      const rawAssignedProp = String(u.AssignedProperty || "").trim();
+      const rawAssignedFlat = String(u.AssignedFlat || "").trim();
+      const scopeLevelEl = document.getElementById("editAssignScopeLevel");
+      if (scopeLevelEl) {
+        if (rawAssignedProp.toUpperCase() === "ALL") {
+          scopeLevelEl.value = "ALL";
+        } else if (rawAssignedProp && (rawAssignedProp.includes(",") || !rawAssignedFlat)) {
+          scopeLevelEl.value = "SELECTED";
+        } else {
+          scopeLevelEl.value = "FLAT";
+        }
+      }
+
       const propSelect = document.getElementById("editAssignPropDropdown");
       if (propSelect) {
         propSelect.innerHTML = (DB.properties || []).map(p => '<option value="' + p.PropertyName + '">' + p.PropertyName + '</option>').join("");
-        if (u.AssignedProperty && u.AssignedProperty !== "ALL") {
-          propSelect.value = u.AssignedProperty;
+        if (rawAssignedProp && rawAssignedProp.toUpperCase() !== "ALL" && !rawAssignedProp.includes(",")) {
+          propSelect.value = rawAssignedProp;
         }
       }
       populateEditAssignFlatsDropdown();
-      if (u.AssignedFlat) {
+      if (rawAssignedFlat) {
         const flatSelect = document.getElementById("editAssignFlatDropdown");
-        if (flatSelect) flatSelect.value = u.AssignedFlat;
+        if (flatSelect) flatSelect.value = rawAssignedFlat;
       }
 
+      populateEditAssignPropsCheckboxes(rawAssignedProp);
       handleEditAssignRoleChange();
+      handleEditAssignScopeLevelChange();
       openModal("editUserAssignmentModal");
+    }
+
+    function populateEditAssignPropsCheckboxes(selectedCsv = "") {
+      const container = document.getElementById("editAssignPropsCheckboxesContainer");
+      if (!container) return;
+      const chosenSet = new Set(String(selectedCsv || "").split(",").map(s => s.trim().toLowerCase()).filter(Boolean));
+      container.innerHTML = (DB.properties || []).map(p => {
+        const isChecked = chosenSet.size === 0 || chosenSet.has(String(p.PropertyName || "").trim().toLowerCase());
+        return '<label style="display:flex; align-items:center; gap:8px; font-size:0.78rem; cursor:pointer;">' +
+               '<input type="checkbox" class="edit-assign-prop-cb" value="' + p.PropertyName + '" ' + (isChecked ? 'checked' : '') + '> ' + p.PropertyName + '</label>';
+      }).join("");
     }
 
     function handleEditAssignRoleChange() {
       const role = document.getElementById("editAssignRole")?.value;
       const scopeBox = document.getElementById("editAssignScopeBox");
       const scopeTitle = document.getElementById("editAssignScopeTitle");
-      const isRestrictedRole = (role === "Viewer" || role === "Renter");
-      if (scopeBox) scopeBox.style.display = isRestrictedRole ? "block" : "none";
+      const restricted = (role === "Viewer" || role === "Renter");
+      if (scopeBox) scopeBox.style.display = restricted ? "block" : "none";
       if (scopeTitle) {
         scopeTitle.innerText = role === "Renter" ? "Renter Viewing Scope Assignment" : "Viewer Scope Level";
       }
@@ -7405,7 +7561,9 @@ function formatMonthLabel(rawVal) {
     function handleEditAssignScopeLevelChange() {
       const level = document.getElementById("editAssignScopeLevel")?.value;
       const flatFields = document.getElementById("editAssignFlatSelectorFields");
+      const selectedPropsFields = document.getElementById("editAssignSelectedPropsFields");
       if (flatFields) flatFields.style.display = (level === "FLAT") ? "block" : "none";
+      if (selectedPropsFields) selectedPropsFields.style.display = (level === "SELECTED") ? "block" : "none";
     }
 
     function populateEditAssignFlatsDropdown() {
@@ -7432,6 +7590,13 @@ function formatMonthLabel(rawVal) {
         if (scopeLevel === "ALL") {
           assignedProp = "ALL";
           assignedFlat = "";
+        } else if (scopeLevel === "SELECTED") {
+          const selectedProps = Array.from(document.querySelectorAll(".edit-assign-prop-cb:checked")).map(cb => cb.value);
+          if (selectedProps.length === 0) {
+            return triggerSideToast("Select Properties", "Please select at least one property for Selected Properties scope.", false);
+          }
+          assignedProp = selectedProps.join(", ");
+          assignedFlat = "";
         } else {
           assignedProp = document.getElementById("editAssignPropDropdown")?.value || "";
           assignedFlat = document.getElementById("editAssignFlatDropdown")?.value || "";
@@ -7442,7 +7607,6 @@ function formatMonthLabel(rawVal) {
       u.AssignedProperty = assignedProp;
       u.AssignedFlat = assignedFlat;
 
-      // If editing current logged user, update active session
       if (String(activeUser || "").trim().toLowerCase() === targetUser.toLowerCase()) {
         activeRole = newRole;
         activeAssignedProperty = assignedProp;
@@ -7453,12 +7617,13 @@ function formatMonthLabel(rawVal) {
         applyRolePermissions(newRole);
       }
 
+      saveDbSnapshotToCache();
       closeModal("editUserAssignmentModal");
       renderRegisteredUsersList();
       renderAllDashboardUI();
       triggerSideToast(
         "User Updated",
-        "@" + targetUser + " assignment updated to " + (assignedFlat ? "Flat " + assignedFlat + " in " + assignedProp : (assignedProp === "ALL" ? "All Properties" : newRole)),
+        "@" + targetUser + " assignment updated to " + (assignedFlat ? "Flat " + assignedFlat + " in " + assignedProp : (assignedProp === "ALL" ? "All Properties" : (assignedProp || newRole))),
         true
       );
 
@@ -7472,7 +7637,7 @@ function formatMonthLabel(rawVal) {
       });
     }
 
-function renderRegisteredUsersList() {
+    function renderRegisteredUsersList() {
       const usersContainer = document.getElementById("otherUsersList");
       if (!usersContainer) return;
       const isAdmin = String(activeRole || "").trim().toLowerCase() === "admin";
@@ -7486,11 +7651,12 @@ function renderRegisteredUsersList() {
       usersContainer.innerHTML = list.map(u => {
         const uName = String(u.Username || "").trim();
         const safeUName = uName.replace(/'/g, "\\'");
-        const isTargetAdmin = String(u.Role || "Admin").trim().toLowerCase() === "admin";
-        const displayRoleLabel = isTargetAdmin ? "Admin" : "Regular User (Viewer)";
+        const roleStr = String(u.Role || "Admin").trim();
+        const isTargetAdmin = roleStr.toLowerCase() === "admin";
+        const displayRoleLabel = isTargetAdmin ? "Admin" : (roleStr === "Renter" ? "Renter" : "Regular User (Viewer)");
         const isCurrentLoggedUser = String(activeUser || "").trim().toLowerCase() === uName.toLowerCase();
-        const assignedInfo = (!isTargetAdmin && u.AssignedProperty && u.AssignedFlat)
-          ? `<div style="font-size:0.72rem; color:var(--primary); margin-top:2px;"><i class="fa-solid fa-door-open"></i> Assigned Flat: <strong>${u.AssignedProperty} - Flat ${u.AssignedFlat}</strong></div>`
+        const assignedInfo = (!isTargetAdmin && u.AssignedProperty)
+          ? `<div style="font-size:0.72rem; color:var(--primary); margin-top:2px;"><i class="fa-solid fa-door-open"></i> Assigned Scope: <strong>${u.AssignedFlat ? `${u.AssignedProperty} - Flat ${u.AssignedFlat}` : u.AssignedProperty}</strong></div>`
           : "";
 
         let adminControlsHtml = "";
@@ -8169,8 +8335,12 @@ function renderRegisteredUsersList() {
 
       const imgEl = document.getElementById("photoZoomModalImg");
       const titleEl = document.getElementById("photoZoomModalTitle");
+      const scaleLabelEl = document.getElementById("photoZoomScaleLabel");
       if (titleEl) {
         titleEl.innerHTML = `<i class="fa-solid fa-magnifying-glass-plus" style="color:#38bdf8;"></i> ${currentZoomedImageTitle}`;
+      }
+      if (scaleLabelEl) {
+        scaleLabelEl.innerText = "100%";
       }
       if (imgEl) {
         imgEl.src = imgSrc;
@@ -8186,6 +8356,10 @@ function renderRegisteredUsersList() {
     function adjustPhotoZoomLevel(delta) {
       currentZoomLevel = Math.min(3.5, Math.max(0.5, +(currentZoomLevel + delta).toFixed(2)));
       const imgEl = document.getElementById("photoZoomModalImg");
+      const scaleLabelEl = document.getElementById("photoZoomScaleLabel");
+      if (scaleLabelEl) {
+        scaleLabelEl.innerText = Math.round(currentZoomLevel * 100) + "%";
+      }
       if (imgEl) {
         imgEl.style.transform = `scale(${currentZoomLevel})`;
         imgEl.style.cursor = currentZoomLevel > 1.5 ? "zoom-out" : "zoom-in";
@@ -8195,6 +8369,10 @@ function renderRegisteredUsersList() {
     function resetPhotoZoomLevel() {
       currentZoomLevel = 1;
       const imgEl = document.getElementById("photoZoomModalImg");
+      const scaleLabelEl = document.getElementById("photoZoomScaleLabel");
+      if (scaleLabelEl) {
+        scaleLabelEl.innerText = "100%";
+      }
       if (imgEl) {
         imgEl.style.transform = "scale(1)";
       }
