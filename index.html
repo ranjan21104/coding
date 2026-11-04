@@ -2534,8 +2534,8 @@
           <i class="fa-solid fa-house-chimney house-main-icon"></i>
           <i class="fa-solid fa-heart heart-badge-icon"></i>
         </div>
-        <h1>Property Cloud</h1>
-        <p>Live Sheets Synchronized Portal</p>
+        <h1>Home</h1>
+        <p></p>
       </div>
 
       <form id="loginForm" onsubmit="handleLoginSubmit(event)">
@@ -2569,7 +2569,7 @@
     <!-- Top Header -->
     <header class="top-nav">
       <div class="nav-left">
-        <h2>Dashboard</h2>
+        <h2> HOME </h2>
         <div class="pulse-dot" title="Live Continuous Connection with Google Sheet"></div>
         <span id="headerRoleBadge" class="role-badge">Admin</span>
       </div>
@@ -2656,6 +2656,48 @@
     <main class="flats-container" id="flatsList">
       <!-- Rendered Only When Property Is Clicked -->
     </main>
+
+    <!-- Home Khet (Field) Portfolio Overview Section -->
+    <section id="homeKhetSection" class="home-khet-section" style="display:none;">
+      <div class="home-khet-shell">
+        <div class="home-khet-header">
+          <div class="home-khet-brand">
+            <div class="home-khet-icon-badge">
+              <i class="fa-solid fa-wheat-awn"></i>
+            </div>
+            <div>
+              <h2 style="margin:0; font-size:1.18rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px;">
+                Khet (Field) Portfolio Overview
+                <span style="font-size:0.72rem; padding:2px 8px; border-radius:12px; background:rgba(16,185,129,0.22); color:#34d399; border:1px solid rgba(52,211,153,0.4);">Active Holdings</span>
+              </h2>
+              <p style="margin:2px 0 0 0; font-size:0.78rem; color:var(--text-muted);">
+                Agricultural field portfolio, land size in Bigha, and tenant payment tracking
+              </p>
+            </div>
+          </div>
+          <div class="home-khet-stats-bar">
+            <div class="home-khet-stat-pill">
+              <i class="fa-solid fa-layer-group" style="color:#34d399;"></i>
+              <span>Fields: <strong id="homeKhetTotalCount">0</strong></span>
+            </div>
+            <div class="home-khet-stat-pill">
+              <i class="fa-solid fa-ruler-combined" style="color:#38bdf8;"></i>
+              <span>Total Size: <strong id="homeKhetTotalBigha">0 Bigha</strong></span>
+            </div>
+            <div class="home-khet-stat-pill">
+              <i class="fa-solid fa-indian-rupee-sign" style="color:#fbbf24;"></i>
+              <span>Total Paid: <strong id="homeKhetTotalPaid">₹0</strong></span>
+            </div>
+            <button type="button" class="btn-primary" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%); padding:7px 14px; font-size:0.78rem;" onclick="openKhetModal()">
+              <i class="fa-solid fa-plus-circle"></i> Add / Manage Khet
+            </button>
+          </div>
+        </div>
+        <div class="home-khet-grid" id="homeKhetCardsGrid">
+          <!-- Rendered dynamically by renderHomeKhetSection() -->
+        </div>
+      </div>
+    </section>
   </section>
 
   <!-- ==================== POPUP MODALS ==================== -->
@@ -2984,6 +3026,7 @@
         <div class="form-group">
           <label>Current Status (Unchanged on Edit)</label>
           <select id="editLeftStatus" class="form-control" disabled style="opacity:0.85; cursor:not-allowed;">
+          <input type="hidden" id="editLeftStatusDisplay">
             <option value="Inactive">Left / Inactive (Remains Left)</option>
             <option value="Active">Active (Remains Active)</option>
           </select>
@@ -3803,14 +3846,14 @@
                 <th>MONTH &amp; YEAR</th>
                 <th>TENANT NAME</th>
                 <th>RENT</th>
-                <th>ELECTRICITY (PREV | CURR | CONSUMED | RATE | TOTAL)</th>
-                <th>PNG GAS (PREV | CURR | CONSUMED | RATE | TOTAL)</th>
-                <th>WATER (PREV | CURR | CONSUMED | RATE | TOTAL)</th>
-                <th>CARRY BAL</th>
-                <th>TOTAL</th>
-                <th>PAID &amp; MODE</th>
-                <th>STATUS</th>
-                <th>ACTIONS</th>
+                <th> ELECTRICITY </th>
+                <th> PNG GAS </th>
+                <th> WATER </th>
+                <th> ADV/DUE</th>
+                <th> TOTAL</th>
+                <th> PAID &amp; MODE </th>
+                <th> STATUS </th>
+                <th> ACTIONS </th>
               </tr>
             </thead>
             <tbody id="ledgerTableBody">
@@ -4385,7 +4428,7 @@ function formatMonthLabel(rawVal) {
     /**
      * Requirement 10: Automatically sort properties alphabetically based on their first letter (A-Z)
      */
-    function sortPropertiesAlphabetically(propsArray) {
+    function sortPropertiesAlphabetically(propsArray = (window.DB && window.DB.properties) || (typeof DB !== "undefined" ? DB.properties : []) || []) {
       if (!Array.isArray(propsArray)) return [];
       propsArray.sort((a, b) => {
         const nameA = String(a?.PropertyName || "").trim();
@@ -4951,6 +4994,8 @@ function formatMonthLabel(rawVal) {
       );
       if (matchedActiveRenter) {
         activeFlatRenterObj = matchedActiveRenter;
+      } else {
+        activeFlatRenterObj = null;
       }
     }
 
@@ -8022,8 +8067,23 @@ function renderRegisteredUsersList() {
     // Requirement 6 Helpers: Clean YYYY-MM-DD formatter & Local Persistence Fallback for Utility Numbers + Join/End Dates
     function toInputDateValue(rawDate) {
       if (!rawDate) return "";
-      const formatted = formatDateOnly(rawDate);
-      return (!formatted || formatted === "--") ? "" : formatted;
+      const s = String(rawDate).trim().replace(/^'+/, "");
+      if (s === "Present" || s === "Departed" || s === "Active" || s === "Left" || s === "--") return "";
+      if (s.includes("T")) {
+        const part = s.split("T")[0];
+        if (/^\d{4}-\d{2}-\d{2}$/.test(part)) return part;
+      }
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+      if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0, 10);
+      const parsed = new Date(s);
+      if (!isNaN(parsed.getTime())) {
+        const y = parsed.getFullYear();
+        const m = String(parsed.getMonth() + 1).padStart(2, "0");
+        const d = String(parsed.getDate()).padStart(2, "0");
+        const res = y + "-" + m + "-" + d;
+        if (/^\d{4}-\d{2}-\d{2}$/.test(res)) return res;
+      }
+      return "";
     }
 
     function getLocalFlatUtilityMetaMap() {
@@ -11611,7 +11671,15 @@ function renderRegisteredUsersList() {
         UPIID: inheritedUpiId,
         ContractMobile: inheritedContract,
         JoinDate: new Date().toISOString().split('T')[0],
-        Status: "Active"
+        Status: "Active",
+        IdentityDocNumber: "",
+        ProfileImageURL: "",
+        IdentityImageURL: "",
+        MobileNumber: "",
+        AltMobileNumber: "",
+        Address: "",
+        TotalFamilyMembers: 1,
+        EndDate: ""
       });
 
       selectedProperty = targetProp;
