@@ -971,17 +971,22 @@
     }
     .prop-card:active {
       transform: scale(0.96);
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.48) 0%, rgba(99, 102, 241, 0.52) 100%) !important;
       border-color: #38bdf8 !important;
       box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.35) !important;
     }
+    body.theme-white .prop-card:active {
+      background: linear-gradient(135deg, #bae6fd 0%, #c7d2fe 100%) !important;
+      border-color: #0284c7 !important;
+    }
     .prop-card.active {
-      background: linear-gradient(135deg, rgba(79, 70, 229, 0.52) 0%, rgba(14, 165, 233, 0.28) 100%) !important;
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.58) 0%, rgba(14, 165, 233, 0.38) 100%) !important;
       border: 2px solid #38bdf8 !important;
       box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.32), 0 12px 28px rgba(79, 70, 229, 0.45) !important;
       transform: translateY(-3px);
     }
     body.theme-white .prop-card.active {
-      background: linear-gradient(135deg, #eef2ff 0%, #e0f2fe 100%) !important;
+      background: linear-gradient(135deg, #dbeafe 0%, #c7d2fe 100%) !important;
       border: 2.5px solid #4f46e5 !important;
       box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.22), 0 10px 24px rgba(79, 70, 229, 0.25) !important;
     }
@@ -991,27 +996,22 @@
       box-shadow: 0 4px 12px rgba(56, 189, 248, 0.45);
       transform: scale(1.06);
     }
-    .prop-select-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.65rem;
-      font-weight: 800;
-      padding: 2px 8px;
-      border-radius: 999px;
-      margin-top: 4px;
-      letter-spacing: 0.3px;
-      text-transform: uppercase;
-      background: rgba(148, 163, 184, 0.16);
-      color: var(--text-muted);
-      border: 1px solid rgba(148, 163, 184, 0.28);
-      transition: all 0.2s ease;
+    .flat-card-merged {
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+      -webkit-tap-highlight-color: transparent;
     }
-    .prop-card.active .prop-select-pill {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: #ffffff !important;
-      border-color: #34d399;
-      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+    .flat-card-merged:active,
+    .flat-card-merged.flat-card-touched {
+      transform: scale(0.975) !important;
+      filter: brightness(1.16);
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.45), 0 12px 28px rgba(0, 0, 0, 0.35) !important;
+      border-color: #38bdf8 !important;
+    }
+    body.theme-white .flat-card-merged:active,
+    body.theme-white .flat-card-merged.flat-card-touched {
+      filter: brightness(0.95);
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.32), 0 10px 24px rgba(15, 23, 42, 0.15) !important;
+      border-color: #4f46e5 !important;
     }
     .prop-icon {
       width: 42px;
@@ -3173,6 +3173,9 @@
     transform: translateY(-3px) !important;
     border-color: #818cf8 !important;
   }
+  #settingsModal .settings-nav-card.nav-chat {
+    border-top: 3.5px solid #06b6d4 !important;
+  }
   #settingsModal .settings-nav-card.nav-theme {
     border-top: 3.5px solid #38bdf8 !important;
   }
@@ -3206,6 +3209,10 @@
     font-size: 1.05rem !important;
     margin-bottom: 6px !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  }
+  #settingsModal .nav-chat .s-nav-icon {
+    background: linear-gradient(135deg, #06b6d4, #10b981) !important;
+    color: #ffffff !important;
   }
   #settingsModal .nav-theme .s-nav-icon {
     background: linear-gradient(135deg, #0284c7, #38bdf8) !important;
@@ -3406,6 +3413,175 @@
     background: linear-gradient(155deg, #fffbeb 0%, #fef3c7 100%);
     border: 2px solid #d97706 !important;
     box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.2), 0 10px 22px rgba(217, 119, 6, 0.18);
+  }
+
+  /* ==========================================================================
+     REQUIREMENTS 6, 7 & 8: MODULAR & MOVABLE AI ASSISTANT + PRIVATE LIVE CHAT
+     ========================================================================== */
+  .floating-corner-dock {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 8800;
+    display: none;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    pointer-events: none;
+  }
+  .floating-corner-dock.dock-left {
+    right: auto;
+    left: 20px;
+    align-items: flex-start;
+  }
+  .floating-corner-dock > * {
+    pointer-events: auto;
+  }
+  .fab-pill-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 11px 16px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #ffffff;
+    border: 1.5px solid rgba(255, 255, 255, 0.28);
+    cursor: pointer;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.38);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+    user-select: none;
+    backdrop-filter: blur(12px);
+  }
+  .fab-pill-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+  }
+  .fab-pill-btn:active {
+    transform: scale(0.96);
+  }
+  .fab-ai-btn {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
+    box-shadow: 0 10px 28px rgba(124, 58, 237, 0.45);
+  }
+  .fab-chat-btn {
+    background: linear-gradient(135deg, #059669 0%, #0d9488 55%, #0284c7 100%);
+    box-shadow: 0 10px 28px rgba(16, 185, 129, 0.42);
+  }
+  .fab-contact-btn {
+    background: linear-gradient(135deg, #ea580c 0%, #f59e0b 100%);
+    box-shadow: 0 10px 24px rgba(245, 158, 11, 0.4);
+  }
+  .modular-floating-widget {
+    position: fixed;
+    bottom: 84px;
+    right: 22px;
+    width: 395px;
+    max-width: calc(100vw - 24px);
+    height: 530px;
+    max-height: calc(100vh - 110px);
+    background: rgba(15, 23, 42, 0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.5px solid rgba(129, 140, 248, 0.45);
+    border-radius: 20px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 32px rgba(79, 70, 229, 0.25);
+    z-index: 8900;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    color: #f8fafc;
+    transition: box-shadow 0.2s ease;
+  }
+  body.theme-white .modular-floating-widget {
+    background: rgba(255, 255, 255, 0.98);
+    border-color: #a5b4fc;
+    color: #0f172a;
+    box-shadow: 0 22px 54px rgba(15, 23, 42, 0.22), 0 0 24px rgba(79, 70, 229, 0.14);
+  }
+  .modular-floating-widget.active {
+    display: flex;
+  }
+  .modular-floating-widget.minimized {
+    height: 58px !important;
+  }
+  .modular-widget-header {
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+    flex-shrink: 0;
+  }
+  .modular-widget-header:active {
+    cursor: grabbing;
+  }
+  .widget-ctrl-btn {
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.16s ease;
+  }
+  .widget-ctrl-btn:hover {
+    background: rgba(255, 255, 255, 0.32);
+    transform: translateY(-1px);
+  }
+  .ai-chip-btn {
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(129, 140, 248, 0.4);
+    color: #a5b4fc;
+    border-radius: 999px;
+    padding: 5px 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.16s ease;
+  }
+  body.theme-white .ai-chip-btn {
+    background: #eef2ff;
+    border-color: #a5b4fc;
+    color: #4338ca;
+  }
+  .ai-chip-btn:hover {
+    background: #4f46e5;
+    color: #ffffff;
+  }
+  .chat-msg-bubble {
+    max-width: 86%;
+    padding: 9px 12px;
+    border-radius: 14px;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    word-break: break-word;
+  }
+  .chat-msg-mine {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+  }
+  .chat-msg-other {
+    align-self: flex-start;
+    background: rgba(30, 41, 59, 0.9);
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    color: #f1f5f9;
+    border-bottom-left-radius: 4px;
+  }
+  body.theme-white .chat-msg-other {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #0f172a;
   }
   .kharch-scroller-track-wrapper {
     overflow: hidden;
@@ -4236,6 +4412,155 @@
     </main>
   </section>
 
+  <!-- ==================== REQUIREMENTS 6, 7 & 8: BOTTOM-RIGHT FLOATING DOCK, MODULAR AI ASSISTANT & PRIVATE LIVE CHAT ==================== -->
+  <div id="bottomRightFloatingDock" class="floating-corner-dock">
+    <!-- Dock Side Switch Button -->
+    <button type="button" onclick="toggleFloatingDockScreenSide()" title="Switch Floating Buttons Between Left & Right Corner" style="background:rgba(15,23,42,0.82); border:1px solid rgba(148,163,184,0.35); color:#cbd5e1; border-radius:999px; padding:4px 10px; font-size:0.68rem; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:5px;">
+      <i class="fa-solid fa-arrows-left-right"></i> Switch Side
+    </button>
+
+    <!-- ADMIN ONLY: Custom Website-Data AI Assistant Button (Strictly Hidden for Renter & Viewer) -->
+    <button type="button" id="fabAiAssistantBtn" class="fab-pill-btn fab-ai-btn admin-only" onclick="toggleModularAiWidget()">
+      <i class="fa-solid fa-robot" style="font-size:1rem;"></i>
+      <span>Website AI Assistant</span>
+    </button>
+
+    <!-- ALL ROLES: Private Secure Live Chat Button -->
+    <button type="button" id="fabLiveChatBtn" class="fab-pill-btn fab-chat-btn" onclick="openModularLiveChatWidget()">
+      <i class="fa-solid fa-comments" style="font-size:1rem;"></i>
+      <span id="fabLiveChatBtnLabel">Live Chat</span>
+      <span id="liveChatUnreadBadge" style="display:none; background:#ef4444; color:#ffffff; font-size:0.68rem; font-weight:900; padding:1px 7px; border-radius:999px;">0</span>
+    </button>
+
+    <!-- RENTER & VIEWER ONLY: Contact Us Button (Shown alongside Live Chat when non-Admin accesses the site) -->
+    <button type="button" id="fabContactUsBtn" class="fab-pill-btn fab-contact-btn" style="display:none;" onclick="openContactUsModal()">
+      <i class="fa-solid fa-headset" style="font-size:1rem;"></i>
+      <span>Contact Us</span>
+    </button>
+  </div>
+
+  <!-- MODULAR & MOVABLE WEBSITE-DATA AI ASSISTANT WIDGET (STRICTLY ADMIN ONLY) -->
+  <div id="modularAiWidget" class="modular-floating-widget admin-only">
+    <div id="modularAiWidgetHeader" class="modular-widget-header" style="background:linear-gradient(135deg, #4f46e5 0%, #7c3aed 55%, #ec4899 100%);">
+      <div style="display:flex; align-items:center; gap:9px; min-width:0;">
+        <div style="width:32px; height:32px; border-radius:10px; background:rgba(255,255,255,0.22); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.95rem; flex-shrink:0;">
+          <i class="fa-solid fa-brain"></i>
+        </div>
+        <div style="min-width:0;">
+          <div style="font-size:0.84rem; font-weight:900; color:#ffffff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+            Portal Data AI Assistant
+          </div>
+          <div style="font-size:0.65rem; color:rgba(255,255,255,0.88); font-weight:700;">
+            <i class="fa-solid fa-lock"></i> 100% Isolated to Website Data • Drag to Move
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:5px; flex-shrink:0;">
+        <button type="button" class="widget-ctrl-btn" onclick="switchWidgetScreenSide('modularAiWidget')" title="Switch Window Between Left & Right Side">
+          <i class="fa-solid fa-arrows-left-right"></i>
+        </button>
+        <button type="button" class="widget-ctrl-btn" onclick="toggleMinimizeFloatingWidget('modularAiWidget')" title="Minimize / Expand">
+          <i class="fa-solid fa-window-minimize"></i>
+        </button>
+        <button type="button" class="widget-ctrl-btn" onclick="closeModularAiWidget()" title="Close AI Assistant">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Admin Data Query Chips -->
+    <div style="padding:8px 10px; border-bottom:1px solid var(--glass-border); display:flex; gap:6px; overflow-x:auto; flex-shrink:0; scrollbar-width:thin;">
+      <button type="button" class="ai-chip-btn" onclick="runAdminWebsiteAiPrompt('Full website executive report')"><i class="fa-solid fa-chart-pie"></i> Full Report</button>
+      <button type="button" class="ai-chip-btn" onclick="runAdminWebsiteAiPrompt('Pending dues and defaulters report')"><i class="fa-solid fa-triangle-exclamation"></i> Pending Dues</button>
+      <button type="button" class="ai-chip-btn" onclick="runAdminWebsiteAiPrompt('Vacant and occupied flats list')"><i class="fa-solid fa-door-open"></i> Vacant vs Occupied</button>
+      <button type="button" class="ai-chip-btn" onclick="runAdminWebsiteAiPrompt('All active and past renters summary')"><i class="fa-solid fa-users"></i> Renters Report</button>
+      <button type="button" class="ai-chip-btn" onclick="runAdminWebsiteAiPrompt('Kharch expenses and extra balance report')"><i class="fa-solid fa-wallet"></i> Kharch &amp; Funds</button>
+      <button type="button" class="ai-chip-btn" onclick="runAdminWebsiteAiPrompt('FD and Khet farmland portfolio report')"><i class="fa-solid fa-building-columns"></i> FD &amp; Khet</button>
+    </div>
+
+    <!-- AI Messages Output Area -->
+    <div id="modularAiMessagesBox" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:10px;"></div>
+
+    <!-- AI Query Input Bar -->
+    <div style="padding:10px; border-top:1px solid var(--glass-border); display:flex; gap:8px; background:var(--bg-input); flex-shrink:0;">
+      <input type="text" id="modularAiQueryInput" class="form-control" style="padding:9px 12px; font-size:0.79rem;" placeholder="Ask about any property, flat, renter, bill, FD, Khet..." onkeydown="if(event.key==='Enter'){event.preventDefault(); submitAdminWebsiteAiQuery();}">
+      <button type="button" class="btn-primary" style="width:auto; padding:0 15px; border-radius:10px; background:linear-gradient(135deg, #4f46e5, #ec4899);" onclick="submitAdminWebsiteAiQuery()">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- MODULAR & MOVABLE PRIVATE LIVE CHAT WIDGET (1-ON-1 ISOLATED RENTER <-> ADMIN CHANNEL) -->
+  <div id="modularLiveChatWidget" class="modular-floating-widget" style="border-color:rgba(16, 185, 129, 0.5);">
+    <div id="modularLiveChatHeader" class="modular-widget-header" style="background:linear-gradient(135deg, #059669 0%, #0d9488 55%, #0284c7 100%);">
+      <div style="display:flex; align-items:center; gap:9px; min-width:0;">
+        <div style="width:32px; height:32px; border-radius:10px; background:rgba(255,255,255,0.22); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.95rem; flex-shrink:0;">
+          <i class="fa-solid fa-comments"></i>
+        </div>
+        <div style="min-width:0;">
+          <div id="modularLiveChatTitle" style="font-size:0.84rem; font-weight:900; color:#ffffff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+            Private Live Chat
+          </div>
+          <div id="modularLiveChatSubtitle" style="font-size:0.65rem; color:rgba(255,255,255,0.9); font-weight:700;">
+            <i class="fa-solid fa-shield-halved"></i> End-to-End Isolated Channel • Drag to Move
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:5px; flex-shrink:0;">
+        <button type="button" class="widget-ctrl-btn" onclick="switchWidgetScreenSide('modularLiveChatWidget')" title="Switch Window Between Left & Right Side">
+          <i class="fa-solid fa-arrows-left-right"></i>
+        </button>
+        <button type="button" class="widget-ctrl-btn" onclick="toggleMinimizeFloatingWidget('modularLiveChatWidget')" title="Minimize / Expand">
+          <i class="fa-solid fa-window-minimize"></i>
+        </button>
+        <button type="button" class="widget-ctrl-btn" onclick="closeModularLiveChatWidget()" title="Close Live Chat">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Admin-Only Private Channel Selector (Renters Never See Other Channels) -->
+    <div id="floatingChatAdminChannelBar" class="admin-only" style="padding:8px 10px; border-bottom:1px solid var(--glass-border); background:var(--bg-input); display:none; flex-shrink:0;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; margin-bottom:4px;">
+        <span style="font-size:0.7rem; font-weight:800; color:#10b981;"><i class="fa-solid fa-user-lock"></i> Select Private Renter Channel:</span>
+        <button type="button" class="btn-ledger-action" style="padding:2px 8px; font-size:0.66rem; color:var(--accent-red);" onclick="clearCurrentAdminChatChannel()" title="Clear messages in this channel">
+          <i class="fa-solid fa-trash-can"></i> Clear
+        </button>
+      </div>
+      <select id="floatingChatChannelSelect" class="form-control" style="padding:6px 10px; font-size:0.76rem;" onchange="selectActiveChatChannel(this.value)"></select>
+    </div>
+
+    <!-- Private Conversation Messages Area -->
+    <div id="floatingChatMessagesBox" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px;"></div>
+
+    <!-- Private Chat Input Bar -->
+    <div style="padding:10px; border-top:1px solid var(--glass-border); display:flex; gap:8px; background:var(--bg-input); flex-shrink:0;">
+      <input type="text" id="floatingChatInput" class="form-control" style="padding:9px 12px; font-size:0.79rem;" placeholder="Write a private message..." onkeydown="if(event.key==='Enter'){event.preventDefault(); sendLiveChatMessage('floating');}">
+      <button type="button" class="btn-primary" style="width:auto; padding:0 15px; border-radius:10px; background:linear-gradient(135deg, #059669, #0284c7);" onclick="sendLiveChatMessage('floating')">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTACT US MODAL FOR RENTER & VIEWER ROLES (Requirement 6) -->
+  <div id="contactUsModal" class="modal-overlay" style="z-index: 8950;" onclick="if(event.target===this) closeModal('contactUsModal')">
+    <div class="modal-window" style="max-width: 460px;">
+      <button class="modal-close-btn" onclick="closeModal('contactUsModal')"><i class="fa-solid fa-xmark"></i></button>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--glass-border); padding-right:32px;">
+        <div style="width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg, #ea580c, #f59e0b); display:flex; align-items:center; justify-content:center; color:#ffffff; font-size:1.25rem; flex-shrink:0;">
+          <i class="fa-solid fa-headset"></i>
+        </div>
+        <div>
+          <h3 style="margin:0; font-size:1.1rem; font-weight:800; color:var(--text-main);">Contact Property Admin</h3>
+          <p style="margin:2px 0 0 0; font-size:0.75rem; color:var(--text-muted);">
+            Direct support, phone, WhatsApp &amp; private live chat with the Administrator
+          </p>
+        </div>
+      </div>
+      <div id="contactUsDynamicBody" style="display:flex; flex-direction:column; gap:10px;"></div>
+    </div>
+  </div>
+
   <!-- ==================== POPUP MODALS ==================== -->
 
   <!-- EDIT ANY BILL POPUP MODAL (Requirement 4: Edit Everything) -->
@@ -4491,6 +4816,54 @@
         <button type="button" class="btn-confirm-cancel" onclick="closeModal('reactivateDestinationModal')">Cancel</button>
         <button type="button" class="btn-primary" style="background:var(--accent-green);" onclick="confirmReactivateRenterToDestination()">
           <i class="fa-solid fa-circle-check"></i> Reactivate Renter in Selected Flat
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- REQUIREMENT 2: SHIFT RENTER TO ANOTHER FLAT MODAL -->
+  <div id="shiftRenterModal" class="modal-overlay" style="z-index: 5300;">
+    <div class="modal-window" style="max-width: 490px;">
+      <button class="modal-close-btn" onclick="closeModal('shiftRenterModal')"><i class="fa-solid fa-xmark"></i></button>
+      <div style="margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--glass-border); padding-right:32px;">
+        <h3 style="margin:0; display:flex; align-items:center; gap:8px; font-size:1.1rem;">
+          <i class="fa-solid fa-people-arrows" style="color:#38bdf8;"></i> Shift Renter to Another Flat
+        </h3>
+        <p style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">
+          Select the target Property and Flat Number. The renter's entire profile, photos, Aadhaar document, and details will automatically transfer to the new flat.
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label>Current Renter &amp; Current Flat</label>
+        <input type="text" id="shiftCurrentRenterDisplay" class="form-control" readonly style="font-weight:800; color:#38bdf8;">
+      </div>
+
+      <div class="form-group">
+        <label>Select Target Property <span class="req-star">*</span></label>
+        <select id="shiftTargetPropSelect" class="form-control" onchange="populateShiftRenterFlatsDropdown()"></select>
+      </div>
+
+      <div class="form-group">
+        <label>Select Target Flat Number <span class="req-star">*</span></label>
+        <select id="shiftTargetFlatSelect" class="form-control" onchange="handleShiftTargetFlatChange()"></select>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+        <div class="form-group">
+          <label>Shift Date</label>
+          <input type="date" id="shiftEffectiveDate" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>New Flat Monthly Rent (₹)</label>
+          <input type="number" id="shiftTargetRentAmount" class="form-control" placeholder="0">
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:14px; padding-top:12px; border-top:1px solid var(--glass-border);">
+        <button type="button" class="btn-confirm-cancel" onclick="closeModal('shiftRenterModal')">Cancel</button>
+        <button type="button" class="btn-primary" style="background:linear-gradient(135deg, #0284c7, #4f46e5);" onclick="confirmShiftRenterToFlat()">
+          <i class="fa-solid fa-people-arrows"></i> Shift Profile &amp; All Details Now
         </button>
       </div>
     </div>
@@ -4834,27 +5207,65 @@
         </div>
       </div>
 
-      <!-- Colour-Coded 4-Card Navigation Grid -->
+      <!-- Colour-Coded 5-Card Navigation Grid (Live Chat right before Theme Mode) -->
       <div class="flat-nav-bar settings-nav-grid">
+        <div class="flat-nav-item settings-nav-card nav-chat" onclick="switchSettingsSubTab(event, 'setSubLiveChat')">
+          <div class="s-nav-icon"><i class="fa-solid fa-comments"></i></div>
+          <div class="s-nav-title">1. Live Chat</div>
+          <div class="s-nav-sub">Private Admin &amp; Renter Chat</div>
+        </div>
         <div class="flat-nav-item settings-nav-card nav-theme active" onclick="switchSettingsSubTab(event, 'setSubTheme')">
           <div class="s-nav-icon"><i class="fa-solid fa-palette"></i></div>
-          <div class="s-nav-title">1. Theme Mode</div>
+          <div class="s-nav-title">2. Theme Mode</div>
           <div class="s-nav-sub">Black, White &amp; OS Auto</div>
         </div>
         <div class="flat-nav-item settings-nav-card nav-create admin-only" onclick="switchSettingsSubTab(event, 'setSubCreateUser')">
           <div class="s-nav-icon"><i class="fa-solid fa-user-plus"></i></div>
-          <div class="s-nav-title">2. Create User ID</div>
+          <div class="s-nav-title">3. Create User ID</div>
           <div class="s-nav-sub">Admin, Viewer or Renter</div>
         </div>
         <div class="flat-nav-item settings-nav-card nav-delete admin-only" onclick="switchSettingsSubTab(event, 'setSubDeleteManage')">
           <div class="s-nav-icon"><i class="fa-solid fa-trash-can"></i></div>
-          <div class="s-nav-title">3. Delete Center</div>
+          <div class="s-nav-title">4. Delete Center</div>
           <div class="s-nav-sub">Delete Property or Flat</div>
         </div>
         <div class="flat-nav-item settings-nav-card nav-other" onclick="switchSettingsSubTab(event, 'setSubOther')">
           <div class="s-nav-icon"><i class="fa-solid fa-compass"></i></div>
-          <div class="s-nav-title">4. Control Hub</div>
+          <div class="s-nav-title">5. Control Hub</div>
           <div class="s-nav-sub">Users, Logins, Wallpaper, Edit</div>
+        </div>
+      </div>
+
+      <!-- Settings Tab 0 (Requirement 5): Live Chat Option Right Before Theme Settings -->
+      <div id="setSubLiveChat" class="tab-content">
+        <div style="background:linear-gradient(135deg, rgba(6, 182, 212, 0.14), rgba(16, 185, 129, 0.1)); border:1.5px solid rgba(6, 182, 212, 0.4); border-radius:14px; padding:12px 14px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <div style="font-size:0.86rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:7px;">
+              <i class="fa-solid fa-shield-halved" style="color:#10b981;"></i> Private &amp; Isolated Live Chat Channel
+            </div>
+            <div style="font-size:0.73rem; color:var(--text-muted); margin-top:2px;">
+              Strictly private 1-on-1 encrypted channel between each individual Renter and Admin. No other renter can ever view this conversation.
+            </div>
+          </div>
+          <button type="button" class="btn-primary" style="width:auto; padding:8px 14px; font-size:0.75rem; background:linear-gradient(135deg, #059669, #0284c7);" onclick="closeModal('settingsModal'); openModularLiveChatWidget();">
+            <i class="fa-solid fa-up-right-from-square"></i> Pop Out Movable Chat Widget
+          </button>
+        </div>
+
+        <div id="settingsChatAdminChannelBar" class="admin-only" style="margin-bottom:10px; display:none;">
+          <label style="font-size:0.74rem; font-weight:800; color:#38bdf8; display:block; margin-bottom:4px;">
+            <i class="fa-solid fa-user-lock"></i> Select Private Renter / User Conversation Channel:
+          </label>
+          <select id="settingsChatChannelSelect" class="form-control" onchange="selectActiveChatChannel(this.value)"></select>
+        </div>
+
+        <div id="settingsChatMessagesBox" style="height:250px; overflow-y:auto; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:14px; padding:12px; display:flex; flex-direction:column; gap:8px; margin-bottom:10px;"></div>
+
+        <div style="display:flex; gap:8px;">
+          <input type="text" id="settingsChatInput" class="form-control" placeholder="Type your private message here..." onkeydown="if(event.key==='Enter'){event.preventDefault(); sendLiveChatMessage('settings');}">
+          <button type="button" class="btn-primary" style="width:auto; padding:0 18px; background:linear-gradient(135deg, #10b981, #0284c7);" onclick="sendLiveChatMessage('settings')">
+            <i class="fa-solid fa-paper-plane"></i> Send
+          </button>
         </div>
       </div>
 
@@ -5146,6 +5557,14 @@
               </div>
               <div id="bgLoginStatusHint" style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">
                 Applies in crisp HD strictly to the Home Page after login (Logout/Login screen remains unchanged).
+              </div>
+              <!-- Requirement 10: Persistent Live Preview Box inside Background Photo Settings -->
+              <div id="bgActivePreviewContainer" style="margin-top:10px; padding:10px; border-radius:10px; background:rgba(15,23,42,0.35); border:1px dashed rgba(236,72,153,0.45); display:flex; align-items:center; gap:12px;">
+                <img id="bgActivePreviewImg" src="" alt="Home Background Preview" style="width:92px; height:56px; object-fit:cover; border-radius:8px; border:1.5px solid #ec4899; flex-shrink:0; background:#0f172a;">
+                <div style="font-size:0.73rem; line-height:1.35;">
+                  <div id="bgActivePreviewBadge" style="font-weight:800; color:#10b981;"><i class="fa-solid fa-circle-check"></i> Active Home Background Locked</div>
+                  <div style="color:var(--text-muted); font-size:0.69rem; margin-top:2px;">Protected from auto-sync overwrite — stays permanently active until you click Delete or Reset.</div>
+                </div>
               </div>
             </div>
 
@@ -5966,6 +6385,11 @@
             <div class="form-group"><label>Join Date</label><input type="date" id="renterJoinDate" class="form-control"></div>
             <div class="form-group"><label>End Date</label><input type="date" id="renterEndDate" class="form-control"></div>
 
+            <!-- Requirement 2: "Shift to another flat" button right under End Date -->
+            <button type="button" id="btnShiftToAnotherFlat" class="btn-ledger-action admin-only" style="width:100%; justify-content:center; margin-bottom:10px; padding:10px 14px; font-weight:800; color:#38bdf8; border:1.5px solid rgba(56,189,248,0.55); background:linear-gradient(135deg, rgba(56,189,248,0.16), rgba(99,102,241,0.14)); border-radius:12px;" onclick="openShiftRenterModal()">
+              <i class="fa-solid fa-people-arrows"></i> Shift to another flat
+            </button>
+
             <button type="button" id="btnReactivateProfileTab" class="btn-ledger-action admin-only" style="display:none; width:100%; justify-content:center; margin-bottom:10px; padding:10px 14px; font-weight:800; color:var(--accent-green); border-color:rgba(16,185,129,0.55); background:rgba(16,185,129,0.1);" onclick="triggerReactivateFromProfileTab()">
               <i class="fa-solid fa-user-check"></i> Re-active Renter / Returning Renter (Choose Property &amp; Flat)
             </button>
@@ -6041,6 +6465,24 @@
                 >
                   <i class="fa-solid fa-trash-can"></i> Delete
                 </button>
+              </div>
+            </div>
+
+            <!-- Requirement 3: Second Field / Indicator Right Under Aadhaar Card Photo (New Renter / Returning Renter / Shifted Renter) -->
+            <div id="renterTenureTypeIndicatorBox" style="background:var(--bg-input); border-radius:16px; padding:13px 14px; border:1.5px solid rgba(56, 189, 248, 0.42); box-shadow:0 4px 14px rgba(0,0,0,0.16); text-align:left;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px;">
+                <span style="font-size:0.74rem; font-weight:800; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-muted); display:flex; align-items:center; gap:6px;">
+                  <i class="fa-solid fa-fingerprint" style="color:#38bdf8;"></i> Aadhaar Renter Status Indicator
+                </span>
+                <span id="renterTenureBadgePill" style="font-size:0.7rem; font-weight:800; padding:3px 10px; border-radius:999px; background:rgba(16,185,129,0.18); color:#10b981; border:1px solid rgba(16,185,129,0.4);">
+                  New Renter
+                </span>
+              </div>
+              <div id="renterTenureStatusTitle" style="font-size:0.9rem; font-weight:900; color:var(--text-main);">
+                New Renter
+              </div>
+              <div id="renterTenureStatusSub" style="font-size:0.73rem; color:var(--text-muted); margin-top:3px; line-height:1.35;">
+                Automatically verified via Aadhaar Card number.
               </div>
             </div>
           </div>
