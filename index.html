@@ -6808,26 +6808,42 @@
       });
     }
 
-    // Requirement 6: Home Page ONLY Background Photo in Full HD Quality (Logout / Login screen NEVER changes background)
+    // Requirement 10: Home Page Background Photo Persistence (Never disappears on sync)
     function getCustomBackgrounds() {
-      const storedUrl = normalizeGoogleDriveBgUrl(localStorage.getItem("portal_custom_bg_dashboard") || localStorage.getItem("portal_custom_bg_login") || "");
       const hdCache = localStorage.getItem("portal_custom_bg_hd_cache") || "";
-      return { loginBg: storedUrl, dashBg: hdCache || storedUrl };
+      const storedUrl = normalizeGoogleDriveBgUrl(localStorage.getItem("portal_custom_bg_dashboard") || localStorage.getItem("portal_custom_bg_login") || "");
+      const sheetSafe = localStorage.getItem("portal_custom_bg_sheet_safe") || "";
+      const activeBg = hdCache || storedUrl || sheetSafe || "";
+      return { loginBg: storedUrl || activeBg, dashBg: activeBg };
     }
 
     function initCustomBgInputs() {
       const { loginBg, dashBg } = getCustomBackgrounds();
       const inputLogin = document.getElementById("bgUrlLoginScreen");
       const hintLogin = document.getElementById("bgLoginStatusHint");
+      const previewWrap = document.getElementById("bgActivePreviewContainer");
+      const previewImg = document.getElementById("bgActivePreviewImg");
 
+      const hasCustom = Boolean(dashBg && dashBg.trim());
       if (inputLogin) {
-        inputLogin.value = (loginBg && !loginBg.startsWith("data:image/")) ? loginBg : (dashBg ? "Full HD Photo Uploaded & Active (Home Page Only)" : "");
+        inputLogin.value = (loginBg && !loginBg.startsWith("data:image/"))
+          ? loginBg
+          : (hasCustom ? "Full HD Photo Uploaded & Active (Home Page Only)" : "");
+      }
+
+      if (previewWrap && previewImg) {
+        if (hasCustom) {
+          previewImg.src = normalizeGoogleDriveBgUrl(dashBg.trim());
+          previewWrap.style.display = "block";
+        } else {
+          previewImg.src = "";
+          previewWrap.style.display = "none";
+        }
       }
 
       if (hintLogin) {
-        const hasCustom = Boolean(dashBg && dashBg.trim());
         hintLogin.innerText = hasCustom
-          ? "Full HD custom background photo is active on the Home Page after login (Login/Logout screen remains unchanged)."
+          ? "Full HD custom background photo is locked & active on the Home Page after login (will never auto-disappear)."
           : "No custom photo set — automatically displaying default background photo on the Home Page.";
         hintLogin.style.color = hasCustom ? "var(--accent-green)" : "var(--text-muted)";
       }
@@ -6843,7 +6859,6 @@
         ? normalizeGoogleDriveBgUrl(dashBg.trim())
         : DEFAULT_PORTAL_BACKGROUND_IMAGE;
 
-      // Logout / Login Screen MUST ALWAYS keep the default background photo
       if (loginScreenEl) {
         loginScreenEl.style.setProperty("background-image", 'url("' + DEFAULT_PORTAL_BACKGROUND_IMAGE + '")', "important");
         loginScreenEl.style.backgroundSize = "cover";
@@ -6852,7 +6867,6 @@
         loginScreenEl.style.backgroundAttachment = "fixed";
       }
 
-      // Home Page (#dashboardScreen) displays the custom Full HD background photo
       if (dashScreenEl) {
         dashScreenEl.style.setProperty("background-image", 'url("' + effectiveHomeBg + '")', "important");
         dashScreenEl.style.backgroundSize = "cover";
@@ -6861,7 +6875,6 @@
         dashScreenEl.style.backgroundAttachment = "fixed";
       }
 
-      // .bg-canvas reflects Home Page HD background ONLY when logged in (#dashboardScreen is active)
       if (bgCanvasEl) {
         const isDashboardActive = dashScreenEl && dashScreenEl.classList.contains("active");
         const canvasBg = isDashboardActive ? effectiveHomeBg : DEFAULT_PORTAL_BACKGROUND_IMAGE;
@@ -6873,6 +6886,7 @@
       }
     }
 
+    // Requirement 10 Fix: Never wipe local custom background when periodic sync returns an empty serverDashBg
     function syncServerBackgroundsToLocal(globalConfig, userBgLogin, userBgDash, hasServerConfig = true) {
       let rawDashBg = "";
       if (globalConfig && typeof globalConfig === "object") {
@@ -6883,12 +6897,15 @@
       }
 
       const serverDashBg = normalizeGoogleDriveBgUrl(rawDashBg);
+      const localHdCache = localStorage.getItem("portal_custom_bg_hd_cache") || "";
+      const prevUrl = localStorage.getItem("portal_custom_bg_dashboard") || localStorage.getItem("portal_custom_bg_login") || "";
 
       let updated = false;
       if (serverDashBg) {
-        // Only overwrite URL reference; if user uploaded an HD cached photo in this browser, keep HD cache unless URL changed to a new external URL
-        const prevUrl = localStorage.getItem("portal_custom_bg_dashboard") || localStorage.getItem("portal_custom_bg_login") || "";
-        if (prevUrl !== serverDashBg) {
+        // If user has a local HD cached photo and server returned a compressed data:image fallback, keep the local HD cache
+        if (localHdCache && serverDashBg.startsWith("data:image/")) {
+          localStorage.setItem("portal_custom_bg_sheet_safe", serverDashBg);
+        } else if (prevUrl !== serverDashBg) {
           localStorage.setItem("portal_custom_bg_dashboard", serverDashBg);
           localStorage.setItem("portal_custom_bg_login", serverDashBg);
           if (!serverDashBg.startsWith("data:image/")) {
@@ -6896,12 +6913,8 @@
           }
           updated = true;
         }
-      } else if (hasServerConfig && (localStorage.getItem("portal_custom_bg_dashboard") || localStorage.getItem("portal_custom_bg_login"))) {
-        localStorage.removeItem("portal_custom_bg_dashboard");
-        localStorage.removeItem("portal_custom_bg_login");
-        localStorage.removeItem("portal_custom_bg_hd_cache");
-        updated = true;
       }
+      // IMPORTANT: Never auto-delete localStorage background when serverDashBg is empty during background polling
 
       if (updated) {
         applyCustomBackgrounds();
@@ -6917,7 +6930,7 @@
       const rawInputVal = inputLogin ? inputLogin.value.trim() : "";
       const isHdPlaceholderText = rawInputVal.startsWith("Full HD Photo Uploaded");
       const globalVal = isHdPlaceholderText
-        ? (localStorage.getItem("portal_custom_bg_dashboard") || localStorage.getItem("portal_custom_bg_login") || "")
+        ? (localStorage.getItem("portal_custom_bg_hd_cache") || localStorage.getItem("portal_custom_bg_dashboard") || localStorage.getItem("portal_custom_bg_login") || "")
         : normalizeGoogleDriveBgUrl(rawInputVal);
 
       if (!isHdPlaceholderText && inputLogin) {
@@ -6925,15 +6938,19 @@
       }
 
       if (globalVal) {
-        localStorage.setItem("portal_custom_bg_dashboard", globalVal);
-        localStorage.setItem("portal_custom_bg_login", globalVal);
+        try {
+          localStorage.setItem("portal_custom_bg_dashboard", globalVal);
+          localStorage.setItem("portal_custom_bg_login", globalVal);
+        } catch (e) {}
         if (!isHdPlaceholderText && !globalVal.startsWith("data:image/")) {
           localStorage.removeItem("portal_custom_bg_hd_cache");
+          localStorage.removeItem("portal_custom_bg_sheet_safe");
         }
       } else {
         localStorage.removeItem("portal_custom_bg_dashboard");
         localStorage.removeItem("portal_custom_bg_login");
         localStorage.removeItem("portal_custom_bg_hd_cache");
+        localStorage.removeItem("portal_custom_bg_sheet_safe");
       }
 
       applyCustomBackgrounds();
@@ -6941,18 +6958,24 @@
       triggerSideToast(
         globalVal ? "Home Page HD Background Saved" : "Default Background Restored",
         globalVal
-          ? "Full HD background photo applied to the Home Page after login (Logout screen unchanged)!"
+          ? "Full HD background photo locked & applied to the Home Page after login!"
           : "Custom background cleared — default background photo is now active.",
         true
       );
 
       if (activeUser) {
         try {
+          const sheetSafeCopy = localStorage.getItem("portal_custom_bg_sheet_safe") || "";
+          const serverSafePayload = (globalVal.startsWith("data:image/") && globalVal.length >= 47000)
+            ? sheetSafeCopy
+            : globalVal;
           await sendGasPost({
             action: "saveBackgrounds",
             username: activeUser,
             bgLogin: "",
-            bgDashboard: globalVal
+            bgDashboard: serverSafePayload,
+            sheetSafeBase64: sheetSafeCopy,
+            explicitClear: !globalVal
           });
         } catch (e) {}
       }
@@ -6965,6 +6988,7 @@
       localStorage.removeItem("portal_custom_bg_login");
       localStorage.removeItem("portal_custom_bg_dashboard");
       localStorage.removeItem("portal_custom_bg_hd_cache");
+      localStorage.removeItem("portal_custom_bg_sheet_safe");
       const input = document.getElementById("bgUrlLoginScreen");
       if (input) input.value = "";
       applyCustomBackgrounds();
@@ -6980,23 +7004,28 @@
       if (!file) return;
       triggerSideToast("Uploading Full HD Background", "Processing crystal-clear Full HD background photo for the Home Page...", "warning");
       try {
-        // Read in true Full HD (up to 2560px @ 0.95 quality, bypassing the 38KB sheet cell compressor)
         const hdDataUrl = await readHdBackgroundFileToDataUrl(file, 2560, 0.95);
         const driveUploadDataUrl = await readHdBackgroundFileToDataUrl(file, 1920, 0.92);
         const sheetSafeBase64 = await compressImageFileToDataUrl(file, 460, 0.7);
 
-        // Immediately cache & apply Full HD image to Home Page (#dashboardScreen)
         try {
+          localStorage.setItem("portal_custom_bg_sheet_safe", sheetSafeBase64);
           localStorage.setItem("portal_custom_bg_hd_cache", hdDataUrl);
           localStorage.setItem("portal_custom_bg_dashboard", hdDataUrl);
           localStorage.setItem("portal_custom_bg_login", hdDataUrl);
         } catch (storageErr) {
-          // If quota exceeded on 2560px, store 1920px Full HD version
           try {
+            localStorage.setItem("portal_custom_bg_sheet_safe", sheetSafeBase64);
             localStorage.setItem("portal_custom_bg_hd_cache", driveUploadDataUrl);
             localStorage.setItem("portal_custom_bg_dashboard", driveUploadDataUrl);
             localStorage.setItem("portal_custom_bg_login", driveUploadDataUrl);
-          } catch (e2) {}
+          } catch (e2) {
+            try {
+              localStorage.setItem("portal_custom_bg_hd_cache", sheetSafeBase64);
+              localStorage.setItem("portal_custom_bg_dashboard", sheetSafeBase64);
+              localStorage.setItem("portal_custom_bg_login", sheetSafeBase64);
+            } catch (e3) {}
+          }
         }
         applyCustomBackgrounds();
         initCustomBgInputs();
@@ -7010,16 +7039,20 @@
           base64Data: driveUploadDataUrl,
           sheetSafeBase64: sheetSafeBase64
         });
-        const rawUrl = (res && res.status === "success" && res.imageUrl && !res.imageUrl.startsWith("data:image/"))
+        const serverUrl = (res && res.status === "success" && res.imageUrl && !res.imageUrl.startsWith("data:image/"))
           ? normalizeGoogleDriveBgUrl(res.imageUrl)
-          : hdDataUrl;
+          : "";
         const el = document.getElementById("bgUrlLoginScreen");
-        if (el) el.value = rawUrl.startsWith("data:image/") ? "Full HD Photo Uploaded & Active (Home Page Only)" : rawUrl;
-        localStorage.setItem("portal_custom_bg_dashboard", rawUrl);
-        localStorage.setItem("portal_custom_bg_login", rawUrl);
+        if (serverUrl) {
+          if (el) el.value = serverUrl;
+          localStorage.setItem("portal_custom_bg_dashboard", serverUrl);
+          localStorage.setItem("portal_custom_bg_login", serverUrl);
+        } else {
+          if (el) el.value = "Full HD Photo Uploaded & Active (Home Page Only)";
+        }
         applyCustomBackgrounds();
         initCustomBgInputs();
-        triggerSideToast("Full HD Background Applied", "Crystal-clear HD background is now live on the Home Page (Logout screen unchanged)!", true);
+        triggerSideToast("Full HD Background Applied", "Crystal-clear HD background is now locked on the Home Page!", true);
       } catch (err) {
         triggerSideToast("Upload Failed", "Could not process background photo. Please try another image.", false);
       }
@@ -7196,6 +7229,220 @@
       }
     }
 
+    // Requirement 1, 2 & 3: Consolidate all historical details (photos, Aadhaar doc, mobile, altMobile, address, family) for any returning or shifted renter
+    function consolidateRenterHistoryDetailsByAadhaar(renterOrAadhaar) {
+      const baseObj = (typeof renterOrAadhaar === "object" && renterOrAadhaar !== null) ? { ...renterOrAadhaar } : {};
+      const rawDigits = String(
+        (typeof renterOrAadhaar === "object" && renterOrAadhaar !== null)
+          ? (renterOrAadhaar.IdentityDocNumber || "")
+          : (renterOrAadhaar || "")
+      ).replace(/\D/g, "").slice(0, 12);
+
+      const matchingStays = (DB.renters || []).filter(r => {
+        if (rawDigits.length === 12) {
+          return String(r.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12) === rawDigits;
+        }
+        if (baseObj.RenterID && String(r.RenterID || "").trim() === String(baseObj.RenterID).trim()) {
+          return true;
+        }
+        if (baseObj.RenterName && String(r.RenterName || "").trim().toLowerCase() === String(baseObj.RenterName).trim().toLowerCase()) {
+          return true;
+        }
+        return false;
+      });
+
+      const merged = { ...baseObj };
+      matchingStays.forEach(r => {
+        if (!merged.RenterName && r.RenterName) merged.RenterName = r.RenterName;
+        if (!merged.IdentityDocNumber && r.IdentityDocNumber) merged.IdentityDocNumber = formatAadhaarWithHyphens(r.IdentityDocNumber);
+        if ((!merged.MobileNumber || merged.MobileNumber === "+91") && r.MobileNumber) merged.MobileNumber = sanitizeContactPhoneDisplay(r.MobileNumber);
+        if (!merged.AltMobileNumber && r.AltMobileNumber) merged.AltMobileNumber = sanitizeContactPhoneDisplay(r.AltMobileNumber);
+        if (!merged.Address && r.Address) merged.Address = r.Address;
+        if ((!merged.TotalFamilyMembers || Number(merged.TotalFamilyMembers) <= 1) && Number(r.TotalFamilyMembers) > 1) {
+          merged.TotalFamilyMembers = r.TotalFamilyMembers;
+        }
+        if (isPlaceholderImageUrl(merged.ProfileImageURL) && !isPlaceholderImageUrl(r.ProfileImageURL)) {
+          merged.ProfileImageURL = normalizeGoogleDriveImageUrl(r.ProfileImageURL);
+        }
+        if (isPlaceholderImageUrl(merged.IdentityImageURL) && !isPlaceholderImageUrl(r.IdentityImageURL)) {
+          merged.IdentityImageURL = normalizeGoogleDriveImageUrl(r.IdentityImageURL);
+        }
+      });
+      if (rawDigits.length === 12) {
+        merged.IdentityDocNumber = formatAadhaarWithHyphens(rawDigits);
+      }
+      return { merged, matchingStays };
+    }
+
+    // Requirement 3: Track & Auto-Detect Renter Tenure Status ("New Renter", "Returning Renter", "Shifted Renter")
+    function getRenterTenureMetaMap() {
+      try {
+        return JSON.parse(localStorage.getItem("portal_renter_tenure_meta_v1") || "{}");
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveRenterTenureMeta(renterId, prop, flat, aadhaarDigits, type, detailText) {
+      try {
+        const map = getRenterTenureMetaMap();
+        const entry = { type, detailText: detailText || "", updatedAt: Date.now(), prop: prop || "", flat: flat || "" };
+        if (renterId) map["ID:" + String(renterId).trim()] = entry;
+        if (prop && flat) map["FLAT:" + String(prop).trim().toLowerCase() + "__" + String(flat).trim().toLowerCase()] = entry;
+        const cleanAadh = String(aadhaarDigits || "").replace(/\D/g, "").slice(0, 12);
+        if (cleanAadh.length === 12 && prop && flat) {
+          map["AADH:" + cleanAadh + "__" + String(prop).trim().toLowerCase() + "__" + String(flat).trim().toLowerCase()] = entry;
+        }
+        localStorage.setItem("portal_renter_tenure_meta_v1", JSON.stringify(map));
+      } catch (e) {}
+    }
+
+    function resolveRenterTenureStatus(renterObj, typedAadhaarRaw) {
+      const prop = renterObj?.PropertyName || selectedFlat?.PropertyName || "";
+      const flat = renterObj?.FlatName || selectedFlat?.FlatName || "";
+      const rId = String(renterObj?.RenterID || "").trim();
+      const rawAadhaar = String(typedAadhaarRaw !== undefined ? typedAadhaarRaw : (renterObj?.IdentityDocNumber || document.getElementById("renterIdentityNum")?.value || "")).replace(/\D/g, "").slice(0, 12);
+
+      const metaMap = getRenterTenureMetaMap();
+      const aadhKey = (rawAadhaar.length === 12 && prop && flat)
+        ? ("AADH:" + rawAadhaar + "__" + String(prop).trim().toLowerCase() + "__" + String(flat).trim().toLowerCase())
+        : "";
+      const idKey = rId ? ("ID:" + rId) : "";
+      const flatKey = (prop && flat) ? ("FLAT:" + String(prop).trim().toLowerCase() + "__" + String(flat).trim().toLowerCase()) : "";
+
+      const explicitMeta = (idKey && metaMap[idKey]) || (aadhKey && metaMap[aadhKey]);
+      if (explicitMeta && explicitMeta.type === "SHIFTED") {
+        return {
+          code: "SHIFTED",
+          badge: "SHIFTED RENTER",
+          title: "Shifted Renter (Moved from Another Flat)",
+          sub: explicitMeta.detailText || "Transferred directly from a previous flat with full profile & documents.",
+          borderColor: "rgba(56, 189, 248, 0.55)",
+          bgGradient: "linear-gradient(135deg, rgba(14, 165, 233, 0.16), rgba(99, 102, 241, 0.1))",
+          badgeBg: "rgba(14, 165, 233, 0.22)",
+          badgeColor: "#38bdf8",
+          icon: "fa-people-arrows"
+        };
+      }
+      if (explicitMeta && explicitMeta.type === "RETURNING") {
+        return {
+          code: "RETURNING",
+          badge: "RETURNING RENTER",
+          title: "Returning Renter (Previous Tenant Returned)",
+          sub: explicitMeta.detailText || "Matched existing Aadhaar history from a previous stay in the portal.",
+          borderColor: "rgba(245, 158, 11, 0.55)",
+          bgGradient: "linear-gradient(135deg, rgba(245, 158, 11, 0.16), rgba(16, 185, 129, 0.1))",
+          badgeBg: "rgba(245, 158, 11, 0.22)",
+          badgeColor: "#fbbf24",
+          icon: "fa-clock-rotate-left"
+        };
+      }
+
+      if (renterObj && String(renterObj.TenureType || "").toUpperCase() === "SHIFTED") {
+        return {
+          code: "SHIFTED",
+          badge: "SHIFTED RENTER",
+          title: "Shifted Renter (Moved from Another Flat)",
+          sub: renterObj.ShiftedFrom ? `Moved from ${renterObj.ShiftedFrom}` : "Transferred from another flat with complete profile.",
+          borderColor: "rgba(56, 189, 248, 0.55)",
+          bgGradient: "linear-gradient(135deg, rgba(14, 165, 233, 0.16), rgba(99, 102, 241, 0.1))",
+          badgeBg: "rgba(14, 165, 233, 0.22)",
+          badgeColor: "#38bdf8",
+          icon: "fa-people-arrows"
+        };
+      }
+
+      if (rawAadhaar.length === 12) {
+        const allMatching = (DB.renters || []).filter(r => String(r.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12) === rawAadhaar);
+        const otherRecords = allMatching.filter(r => {
+          if (rId && String(r.RenterID || "").trim() === rId) return false;
+          if (!rId && isSamePropAndFlat(r.PropertyName, r.FlatName, prop, flat) && String(r.Status || "").toLowerCase() === "active") return false;
+          return true;
+        });
+
+        if (otherRecords.length > 0) {
+          const myJoin = formatDateOnly(renterObj?.JoinDate || document.getElementById("renterJoinDate")?.value || "");
+          const shiftedMatch = otherRecords.find(r =>
+            !isSamePropAndFlat(r.PropertyName, r.FlatName, prop, flat) &&
+            (r.ShiftedTo || (myJoin && myJoin !== "--" && formatDateOnly(r.EndDate) === myJoin))
+          );
+          if (shiftedMatch) {
+            return {
+              code: "SHIFTED",
+              badge: "SHIFTED RENTER",
+              title: "Shifted Renter (Moved from Another Flat)",
+              sub: `Transferred from ${shiftedMatch.PropertyName || '--'} (Flat ${shiftedMatch.FlatName || '--'}) • Aadhaar ${formatAadhaarWithHyphens(rawAadhaar)}`,
+              borderColor: "rgba(56, 189, 248, 0.55)",
+              bgGradient: "linear-gradient(135deg, rgba(14, 165, 233, 0.16), rgba(99, 102, 241, 0.1))",
+              badgeBg: "rgba(14, 165, 233, 0.22)",
+              badgeColor: "#38bdf8",
+              icon: "fa-people-arrows"
+            };
+          }
+
+          const prevStay = otherRecords[0];
+          return {
+            code: "RETURNING",
+            badge: "RETURNING RENTER",
+            title: "Returning Renter (Previous Tenant Returned)",
+            sub: `Previously stayed in ${prevStay.PropertyName || '--'} (Flat ${prevStay.FlatName || '--'}) • Total Stays: ${allMatching.length}`,
+            borderColor: "rgba(245, 158, 11, 0.55)",
+            bgGradient: "linear-gradient(135deg, rgba(245, 158, 11, 0.16), rgba(16, 185, 129, 0.1))",
+            badgeBg: "rgba(245, 158, 11, 0.22)",
+            badgeColor: "#fbbf24",
+            icon: "fa-clock-rotate-left"
+          };
+        }
+      }
+
+      if (flatKey && metaMap[flatKey] && metaMap[flatKey].type === "SHIFTED" && renterObj) {
+        return {
+          code: "SHIFTED",
+          badge: "SHIFTED RENTER",
+          title: "Shifted Renter (Moved from Another Flat)",
+          sub: metaMap[flatKey].detailText || "Transferred from another flat.",
+          borderColor: "rgba(56, 189, 248, 0.55)",
+          bgGradient: "linear-gradient(135deg, rgba(14, 165, 233, 0.16), rgba(99, 102, 241, 0.1))",
+          badgeBg: "rgba(14, 165, 233, 0.22)",
+          badgeColor: "#38bdf8",
+          icon: "fa-people-arrows"
+        };
+      }
+
+      return {
+        code: "NEW",
+        badge: "NEW RENTER",
+        title: "New Renter (First-Time Tenant)",
+        sub: rawAadhaar.length === 12
+          ? `Aadhaar ${formatAadhaarWithHyphens(rawAadhaar)} has no prior stay records — verified as a New Renter.`
+          : "First-time tenant record in this flat.",
+        borderColor: "rgba(16, 185, 129, 0.45)",
+        bgGradient: "linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(56, 189, 248, 0.08))",
+        badgeBg: "rgba(16, 185, 129, 0.2)",
+        badgeColor: "#10b981",
+        icon: "fa-user-plus"
+      };
+    }
+
+    function updateRenterTenureStatusUI(renterObj, typedAadhaarRaw) {
+      const box = document.getElementById("renterTenureTypeIndicatorBox");
+      const badgeEl = document.getElementById("renterTenureBadgePill");
+      const titleEl = document.getElementById("renterTenureStatusTitle");
+      const subEl = document.getElementById("renterTenureStatusSub");
+      if (!box || !badgeEl || !titleEl || !subEl) return;
+
+      const info = resolveRenterTenureStatus(renterObj !== undefined ? renterObj : activeFlatRenterObj, typedAadhaarRaw);
+      box.style.borderColor = info.borderColor;
+      box.style.background = info.bgGradient;
+      badgeEl.style.background = info.badgeBg;
+      badgeEl.style.color = info.badgeColor;
+      badgeEl.style.border = `1px solid ${info.borderColor}`;
+      badgeEl.innerHTML = `<i class="fa-solid ${info.icon}"></i> ${info.badge}`;
+      titleEl.innerText = info.title;
+      titleEl.style.color = info.badgeColor;
+      subEl.innerText = info.sub;
+    }
+
     function reactivatePreviousRenterProfile(renterIdOrIdx) {
       if (activeRole === "Viewer") return;
 
@@ -7211,22 +7458,26 @@
         return triggerSideToast("Not Found", "Could not find the saved renter profile.", false);
       }
 
-      pendingReactivatingRenter = matchedRenter;
-      document.getElementById("reactivateTargetRenterId").value = matchedRenter.RenterID || "";
-      document.getElementById("reactivateTargetName").value = (matchedRenter.RenterName || "") + (matchedRenter.IdentityDocNumber ? " (Aadhaar: " + matchedRenter.IdentityDocNumber + ")" : "");
+      const { merged } = consolidateRenterHistoryDetailsByAadhaar(matchedRenter);
+      pendingReactivatingRenter = merged;
+      document.getElementById("reactivateTargetRenterId").value = merged.RenterID || "";
+      document.getElementById("reactivateTargetName").value = (merged.RenterName || "") + (merged.IdentityDocNumber ? " (Aadhaar: " + merged.IdentityDocNumber + ")" : "");
       document.getElementById("reactivateJoinDate").value = new Date().toISOString().split("T")[0];
-      document.getElementById("reactivateRentAmount").value = matchedRenter.RentAmount || selectedFlat?.RentAmount || 0;
+      document.getElementById("reactivateRentAmount").value = merged.RentAmount || selectedFlat?.RentAmount || 0;
 
-      // Requirement 4 & 10: Populate sorted Properties with an explicit prompt so it never auto-reactivates in the old flat without selection
       sortPropertiesAlphabetically(DB.properties);
       const propSelect = document.getElementById("reactivatePropertySelect");
       if (propSelect) {
         propSelect.innerHTML = ['<option value="">-- Select Property --</option>'].concat(
           (DB.properties || []).map(p => '<option value="' + p.PropertyName + '">' + p.PropertyName + '</option>')
         ).join("");
-        propSelect.value = "";
+        propSelect.value = selectedFlat?.PropertyName || selectedProperty || "";
       }
       populateReactivateFlatsDropdown();
+      if (selectedFlat && document.getElementById("reactivateFlatSelect")) {
+        document.getElementById("reactivateFlatSelect").value = selectedFlat.FlatName || "";
+        handleReactivateFlatChange();
+      }
 
       openModal("reactivateDestinationModal");
     }
@@ -7242,24 +7493,47 @@
         return triggerSideToast("Destination Required", "Please select both the Property and the Flat where this returning renter should be added.", false);
       }
 
-      // Requirement 10: Preserve the departed renter's historical record in the previous flat where they stayed before leaving,
-      // AND create a new Active record in the new destination flat with the same Aadhaar card!
-      const formattedAadhaar = formatAadhaarWithHyphens(pendingReactivatingRenter.IdentityDocNumber || "");
+      const { merged } = consolidateRenterHistoryDetailsByAadhaar(pendingReactivatingRenter);
+      const formattedAadhaar = formatAadhaarWithHyphens(merged.IdentityDocNumber || "");
       const newStayRenterId = "R-" + Date.now();
+      const prevStayLabel = `${pendingReactivatingRenter.PropertyName || '--'} (Flat ${pendingReactivatingRenter.FlatName || '--'})`;
+
+      (DB.renters || []).forEach(r => {
+        if (isSamePropAndFlat(r.PropertyName, r.FlatName, destProp, destFlat) && String(r.Status || "").trim().toLowerCase() === "active") {
+          r.Status = "Inactive";
+          if (!r.EndDate) r.EndDate = joinDate;
+        }
+      });
+
       const newActiveRenterRecord = {
-        ...pendingReactivatingRenter,
+        ...merged,
         RenterID: newStayRenterId,
         PropertyName: destProp,
         FlatName: destFlat,
         IdentityDocNumber: formattedAadhaar,
+        ProfileImageURL: merged.ProfileImageURL || "",
+        IdentityImageURL: merged.IdentityImageURL || "",
+        MobileNumber: merged.MobileNumber || "",
+        AltMobileNumber: merged.AltMobileNumber || "",
+        Address: merged.Address || "",
+        TotalFamilyMembers: merged.TotalFamilyMembers || 1,
         Status: "Active",
+        TenureType: "RETURNING",
         JoinDate: joinDate,
         EndDate: "",
         RentAmount: rentAmt
       };
 
-      // Keep the old flat's record intact in DB.renters as Inactive, and add the new stay record for the destination flat
       DB.renters.push(newActiveRenterRecord);
+
+      saveRenterTenureMeta(
+        newStayRenterId,
+        destProp,
+        destFlat,
+        formattedAadhaar,
+        "RETURNING",
+        `Returning Renter — Previously stayed in ${prevStayLabel} • Full profile, photos & documents auto-loaded.`
+      );
 
       saveLocalFlatUtilityAndDateMeta(destProp, destFlat, newStayRenterId, {
         JoinDate: joinDate,
@@ -7290,8 +7564,8 @@
       }
 
       triggerSideToast(
-        "Returning Renter Placed",
-        newActiveRenterRecord.RenterName + " is now Active in " + destProp + " - Flat " + destFlat + " (previous flat history preserved)!",
+        "Returning Renter Auto-Loaded",
+        `${newActiveRenterRecord.RenterName} and all their photos, Aadhaar documents & details are now loaded in ${destProp} - Flat ${destFlat}!`,
         true
       );
 
@@ -7313,6 +7587,247 @@
         rentAmount: rentAmt,
         profileImageUrl: newActiveRenterRecord.ProfileImageURL || "",
         identityImageUrl: newActiveRenterRecord.IdentityImageURL || ""
+      });
+    }
+
+    // Requirement 2: "Shift to another flat" Button & Full Profile Transfer Workflow
+    function openShiftRenterModal() {
+      if (activeRole === "Viewer" || activeRole === "Renter") {
+        return triggerSideToast("Admin Permission Required", "Only the Admin can shift a renter to another flat.", false);
+      }
+      if (!selectedFlat) {
+        return triggerSideToast("No Flat Open", "Please open a flat profile first.", false);
+      }
+      const rName = (document.getElementById("renterName")?.value || activeFlatRenterObj?.RenterName || "").trim();
+      if (!rName && !activeFlatRenterObj) {
+        return triggerSideToast("No Renter in Flat", "There is no active renter in this flat to shift.", false);
+      }
+
+      const todayStr = new Date().toISOString().split("T")[0];
+      const currentAadhaar = formatAadhaarWithHyphens(document.getElementById("renterIdentityNum")?.value || activeFlatRenterObj?.IdentityDocNumber || "");
+      const summaryEl = document.getElementById("shiftCurrentRenterSummary");
+      if (summaryEl) {
+        summaryEl.value = `${rName || 'Current Renter'}${currentAadhaar ? ' (Aadhaar: ' + currentAadhaar + ')' : ''} • From ${selectedFlat.PropertyName} - Flat ${selectedFlat.FlatName}`;
+      }
+      const dateEl = document.getElementById("shiftDateInput");
+      if (dateEl) dateEl.value = todayStr;
+      const rentEl = document.getElementById("shiftTargetRentAmount");
+      if (rentEl) rentEl.value = document.getElementById("profRent")?.value || selectedFlat.RentAmount || 0;
+
+      sortPropertiesAlphabetically(DB.properties);
+      const propSelect = document.getElementById("shiftTargetPropertySelect");
+      if (propSelect) {
+        propSelect.innerHTML = ['<option value="">-- Select Target Property --</option>'].concat(
+          (DB.properties || []).map(p => `<option value="${p.PropertyName}">${p.PropertyName}</option>`)
+        ).join("");
+        propSelect.value = selectedFlat.PropertyName || "";
+      }
+      populateShiftRenterFlatsDropdown();
+      openModal("shiftRenterModal");
+    }
+
+    function populateShiftRenterFlatsDropdown() {
+      const propName = document.getElementById("shiftTargetPropertySelect")?.value || "";
+      const flatSelect = document.getElementById("shiftTargetFlatSelect");
+      if (!flatSelect) return;
+      if (!propName) {
+        flatSelect.innerHTML = '<option value="">-- Select Target Property First --</option>';
+        return;
+      }
+      const matchingFlats = (DB.flats || []).filter(f =>
+        String(f.PropertyName || "").trim().toLowerCase() === String(propName).trim().toLowerCase() &&
+        !(selectedFlat && isSamePropAndFlat(f.PropertyName, f.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName))
+      );
+      if (matchingFlats.length === 0) {
+        flatSelect.innerHTML = '<option value="">No other flats available in this property</option>';
+        return;
+      }
+      flatSelect.innerHTML = ['<option value="">-- Select Target Flat Number --</option>'].concat(
+        matchingFlats.map(f => {
+          const activeOcc = (DB.renters || []).find(r =>
+            isSamePropAndFlat(r.PropertyName, r.FlatName, f.PropertyName, f.FlatName) &&
+            String(r.Status || "").trim().toLowerCase() === "active"
+          );
+          const statusTxt = activeOcc ? `Occupied by ${activeOcc.RenterName}` : "Vacant";
+          return `<option value="${f.FlatName}">Flat ${f.FlatName} (${statusTxt} • Rent: ₹${f.RentAmount || 0})</option>`;
+        })
+      ).join("");
+      handleShiftTargetFlatChange();
+    }
+
+    function handleShiftTargetFlatChange() {
+      const propName = document.getElementById("shiftTargetPropertySelect")?.value || "";
+      const flatName = document.getElementById("shiftTargetFlatSelect")?.value || "";
+      if (!propName || !flatName) return;
+      const targetFlatObj = findFlatObject(propName, flatName);
+      const rentEl = document.getElementById("shiftTargetRentAmount");
+      if (rentEl && targetFlatObj && targetFlatObj.RentAmount !== undefined && targetFlatObj.RentAmount !== "") {
+        rentEl.value = targetFlatObj.RentAmount;
+      }
+    }
+
+    async function confirmShiftRenterToFlat() {
+      if (!selectedFlat) return;
+      const destProp = (document.getElementById("shiftTargetPropertySelect")?.value || "").trim();
+      const destFlat = (document.getElementById("shiftTargetFlatSelect")?.value || "").trim();
+      const shiftDate = document.getElementById("shiftDateInput")?.value || new Date().toISOString().split("T")[0];
+      const newRentAmt = parseFloat(document.getElementById("shiftTargetRentAmount")?.value) || 0;
+
+      if (!destProp || !destFlat) {
+        return triggerSideToast("Target Flat Required", "Please select both Target Property and Target Flat Number.", false);
+      }
+      if (isSamePropAndFlat(selectedFlat.PropertyName, selectedFlat.FlatName, destProp, destFlat)) {
+        return triggerSideToast("Same Flat Selected", "Please choose a different flat to shift this renter into.", false);
+      }
+
+      const oldProp = selectedFlat.PropertyName;
+      const oldFlat = selectedFlat.FlatName;
+
+      const formRenterSnapshot = {
+        ...(activeFlatRenterObj || {}),
+        RenterName: (document.getElementById("renterName")?.value || activeFlatRenterObj?.RenterName || "Tenant").trim(),
+        IdentityDocNumber: formatAadhaarWithHyphens(document.getElementById("renterIdentityNum")?.value || activeFlatRenterObj?.IdentityDocNumber || ""),
+        MobileNumber: sanitizeContactPhoneDisplay(document.getElementById("renterMobile")?.value || activeFlatRenterObj?.MobileNumber || ""),
+        AltMobileNumber: sanitizeContactPhoneDisplay(document.getElementById("renterAltMobile")?.value || activeFlatRenterObj?.AltMobileNumber || ""),
+        Address: (document.getElementById("renterAddress")?.value || activeFlatRenterObj?.Address || "").trim(),
+        TotalFamilyMembers: document.getElementById("renterFamily")?.value || activeFlatRenterObj?.TotalFamilyMembers || 1,
+        ProfileImageURL: !isPlaceholderImageUrl(document.getElementById("profilePicturePreview")?.src)
+          ? document.getElementById("profilePicturePreview").src
+          : (activeFlatRenterObj?.ProfileImageURL || ""),
+        IdentityImageURL: !isPlaceholderImageUrl(document.getElementById("identityPicturePreview")?.src)
+          ? document.getElementById("identityPicturePreview").src
+          : (activeFlatRenterObj?.IdentityImageURL || "")
+      };
+
+      const { merged } = consolidateRenterHistoryDetailsByAadhaar(formRenterSnapshot);
+
+      let oldRenterRecord = (DB.renters || []).find(r =>
+        (activeFlatRenterObj?.RenterID && String(r.RenterID || "").trim() === String(activeFlatRenterObj.RenterID).trim()) ||
+        (isSamePropAndFlat(r.PropertyName, r.FlatName, oldProp, oldFlat) && String(r.Status || "").trim().toLowerCase() === "active")
+      );
+      if (oldRenterRecord) {
+        oldRenterRecord.Status = "Inactive";
+        oldRenterRecord.EndDate = shiftDate;
+        oldRenterRecord.ShiftedTo = `${destProp} - Flat ${destFlat}`;
+        saveLocalFlatUtilityAndDateMeta(oldProp, oldFlat, oldRenterRecord.RenterID, {
+          JoinDate: oldRenterRecord.JoinDate || "",
+          EndDate: shiftDate
+        });
+      }
+
+      (DB.renters || []).forEach(r => {
+        if (isSamePropAndFlat(r.PropertyName, r.FlatName, destProp, destFlat) && String(r.Status || "").trim().toLowerCase() === "active") {
+          r.Status = "Inactive";
+          if (!r.EndDate) r.EndDate = shiftDate;
+        }
+      });
+
+      const targetFlatObj = findFlatObject(destProp, destFlat);
+      const targetPropObj = findPropertyObject(destProp);
+      const newShiftedRenterId = "R-" + Date.now();
+      const shiftedRenterRecord = {
+        ...merged,
+        RenterID: newShiftedRenterId,
+        PropertyName: destProp,
+        FlatName: destFlat,
+        RenterName: merged.RenterName,
+        IdentityDocNumber: merged.IdentityDocNumber || "",
+        MobileNumber: merged.MobileNumber || "",
+        AltMobileNumber: merged.AltMobileNumber || "",
+        Address: merged.Address || "",
+        TotalFamilyMembers: merged.TotalFamilyMembers || 1,
+        ProfileImageURL: merged.ProfileImageURL || "",
+        IdentityImageURL: merged.IdentityImageURL || "",
+        JoinDate: shiftDate,
+        EndDate: "",
+        Status: "Active",
+        TenureType: "SHIFTED",
+        ShiftedFrom: `${oldProp} (Flat ${oldFlat})`,
+        RentAmount: newRentAmt,
+        ElecFixedRate: targetFlatObj?.ElecRate !== undefined ? targetFlatObj.ElecRate : (merged.ElecFixedRate || ""),
+        PNGFixedRate: targetFlatObj?.PNGRate !== undefined ? targetFlatObj.PNGRate : (merged.PNGFixedRate || ""),
+        WaterFixedRate: targetFlatObj?.WaterRate !== undefined ? targetFlatObj.WaterRate : (merged.WaterFixedRate || ""),
+        UPIName: targetPropObj?.UPIName || targetFlatObj?.UPIName || merged.UPIName || "",
+        UPIID: targetPropObj?.UPIID || targetFlatObj?.UPIID || merged.UPIID || "",
+        ContractMobile: targetPropObj?.ContractNumber || targetFlatObj?.ContractMobile || merged.ContractMobile || ""
+      };
+
+      DB.renters.push(shiftedRenterRecord);
+
+      if (targetFlatObj) {
+        targetFlatObj.RentAmount = newRentAmt;
+      }
+
+      saveRenterTenureMeta(
+        newShiftedRenterId,
+        destProp,
+        destFlat,
+        shiftedRenterRecord.IdentityDocNumber,
+        "SHIFTED",
+        `Shifted from ${oldProp} (Flat ${oldFlat}) on ${shiftDate} • Complete profile & documents transferred.`
+      );
+
+      saveLocalFlatUtilityAndDateMeta(destProp, destFlat, newShiftedRenterId, {
+        JoinDate: shiftDate,
+        EndDate: ""
+      });
+
+      closeModal("shiftRenterModal");
+      selectedProperty = destProp;
+      sessionStorage.setItem("active_selected_property", destProp);
+      saveDbSnapshotToCache();
+      renderAllDashboardUI();
+
+      if (targetFlatObj) {
+        openFlatDetailsModal(targetFlatObj, shiftedRenterRecord);
+        switchFlatTabToProfile();
+      }
+
+      triggerSideToast(
+        "Renter Shifted Successfully",
+        `${shiftedRenterRecord.RenterName} has been shifted from ${oldProp} (Flat ${oldFlat}) to ${destProp} (Flat ${destFlat}) with all photos & documents!`,
+        true
+      );
+
+      if (oldRenterRecord) {
+        await sendGasPost({
+          action: "updateRenterProfile",
+          renterId: oldRenterRecord.RenterID,
+          propertyName: oldProp,
+          flatName: oldFlat,
+          renterName: oldRenterRecord.RenterName,
+          identityDocNumber: oldRenterRecord.IdentityDocNumber || "",
+          mobileNumber: oldRenterRecord.MobileNumber || "",
+          altMobileNumber: oldRenterRecord.AltMobileNumber || "",
+          address: oldRenterRecord.Address || "",
+          familyMembers: oldRenterRecord.TotalFamilyMembers || 1,
+          renterStatus: "Inactive",
+          joinDate: oldRenterRecord.JoinDate || "",
+          endDate: shiftDate,
+          rentAmount: oldRenterRecord.RentAmount || 0,
+          profileImageUrl: oldRenterRecord.ProfileImageURL || "",
+          identityImageUrl: oldRenterRecord.IdentityImageURL || ""
+        });
+      }
+
+      await sendGasPost({
+        action: "updateRenterProfile",
+        createNewStayRecord: true,
+        renterId: newShiftedRenterId,
+        propertyName: destProp,
+        flatName: destFlat,
+        renterName: shiftedRenterRecord.RenterName,
+        identityDocNumber: shiftedRenterRecord.IdentityDocNumber || "",
+        mobileNumber: shiftedRenterRecord.MobileNumber || "",
+        altMobileNumber: shiftedRenterRecord.AltMobileNumber || "",
+        address: shiftedRenterRecord.Address || "",
+        familyMembers: shiftedRenterRecord.TotalFamilyMembers || 1,
+        renterStatus: "Active",
+        joinDate: shiftDate,
+        endDate: "",
+        rentAmount: newRentAmt,
+        profileImageUrl: shiftedRenterRecord.ProfileImageURL || "",
+        identityImageUrl: shiftedRenterRecord.IdentityImageURL || ""
       });
     }
 
@@ -8359,6 +8874,12 @@ function formatMonthLabel(rawVal) {
       document.getElementById("loginScreen").classList.remove("active");
       document.getElementById("dashboardScreen").classList.add("active");
       applyCustomBackgrounds();
+      if (typeof syncFloatingCornerButtonsByRole === "function") {
+        syncFloatingCornerButtonsByRole();
+      }
+      if (typeof initModularDraggableWidgets === "function") {
+        initModularDraggableWidgets();
+      }
 
       renderAllDashboardUI();
       if (!skipImmediateSync) {
@@ -8425,6 +8946,15 @@ function formatMonthLabel(rawVal) {
       document.body.classList.toggle("role-restricted", isRestricted);
       document.body.classList.toggle("role-viewer", activeRole === "Viewer");
       document.body.classList.toggle("role-renter", activeRole === "Renter");
+
+      const shiftBtn = document.getElementById("btnShiftToAnotherFlat");
+      if (shiftBtn) {
+        shiftBtn.style.display = activeRole === "Admin" ? "flex" : "none";
+      }
+
+      if (typeof syncFloatingCornerButtonsByRole === "function") {
+        syncFloatingCornerButtonsByRole();
+      }
 
       const badge = document.getElementById("headerRoleBadge");
       if (badge) {
@@ -8928,7 +9458,7 @@ function formatMonthLabel(rawVal) {
       document.getElementById("topTotalLoss").innerText = `₹${totalLoss.toLocaleString('en-IN')}`;
     }
 
-    // 3. Render Properties (Requirement 6 & 10: Sorted A-Z + Clear Visual Touch / Selected Feedback State)
+    // 3. Render Properties (Requirement 9: Sorted A-Z + Distinct Background Color Change on Click/Touch + No "Selected Property / Tap to Select" Text)
     function renderPropertiesRow() {
       const container = document.getElementById("propertiesList");
       container.innerHTML = "";
@@ -8952,11 +9482,7 @@ function formatMonthLabel(rawVal) {
           <div class="prop-icon"><i class="fa-solid ${isSelected ? 'fa-building-circle-check' : 'fa-hotel'}"></i></div>
           <div class="prop-info">
             <h4>${prop.PropertyName}</h4>
-            <span>UPI: ${prop.UPIID || 'Not set'} • ${propFlatsCount} Flat${propFlatsCount === 1 ? '' : 's'}</span>
-            <div class="prop-select-pill">
-              <i class="fa-solid ${isSelected ? 'fa-circle-check' : 'fa-hand-pointer'}"></i>
-              ${isSelected ? 'Selected Property' : 'Tap to Select'}
-            </div>
+            <span>UPI: ${prop.UPIID || 'Not set'} • <strong>${propFlatsCount} Flat${propFlatsCount === 1 ? '' : 's'}</strong></span>
           </div>
         `;
         container.appendChild(div);
@@ -9002,6 +9528,36 @@ function formatMonthLabel(rawVal) {
         `;
         return;
       }
+
+      // Requirement 9: Display a clean summary header above the flats showing the selected property and how many flats are inside it
+      let occupiedCount = 0;
+      flats.forEach(fl => {
+        const occ = (DB.renters || []).some(r =>
+          isSamePropAndFlat(r.PropertyName, r.FlatName, fl.PropertyName, fl.FlatName) &&
+          String(r.Status || "").trim().toLowerCase() === "active"
+        );
+        if (occ) occupiedCount++;
+      });
+      const vacantCount = Math.max(0, flats.length - occupiedCount);
+      const summaryBanner = document.createElement("div");
+      summaryBanner.style.cssText = "grid-column: 1 / -1; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; padding:10px 16px; border-radius:14px; background:linear-gradient(135deg, rgba(16, 185, 129, 0.16), rgba(99, 102, 241, 0.14)); border:1.5px solid rgba(16, 185, 129, 0.45); margin-bottom:2px;";
+      summaryBanner.innerHTML = `
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg, #10b981, #059669); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.95rem;">
+            <i class="fa-solid fa-building-circle-check"></i>
+          </div>
+          <div>
+            <div style="font-size:0.92rem; font-weight:900; color:var(--text-main);">${effectivePropName}</div>
+            <div style="font-size:0.74rem; color:var(--text-muted); font-weight:700;">Showing all flats inside this property</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <span class="badge-paid" style="font-size:0.75rem; padding:4px 11px;"><i class="fa-solid fa-door-open"></i> Total Flats: ${flats.length}</span>
+          <span style="font-size:0.73rem; font-weight:800; padding:4px 10px; border-radius:999px; background:rgba(56,189,248,0.16); color:#38bdf8; border:1px solid rgba(56,189,248,0.4);">Occupied: ${occupiedCount}</span>
+          <span style="font-size:0.73rem; font-weight:800; padding:4px 10px; border-radius:999px; background:rgba(245,158,11,0.16); color:#fbbf24; border:1px solid rgba(245,158,11,0.4);">Vacant: ${vacantCount}</span>
+        </div>
+      `;
+      container.appendChild(summaryBanner);
 
       flats.forEach(flat => {
         const renter = DB.renters.find(r => 
@@ -9050,9 +9606,14 @@ function formatMonthLabel(rawVal) {
           `;
         }
 
+        const isCurrentFlatActive = selectedFlat && isSamePropAndFlat(selectedFlat.PropertyName, selectedFlat.FlatName, flat.PropertyName, flat.FlatName);
         const card = document.createElement("div");
-        card.className = `flat-card-merged ${statusClass}`;
-        card.onclick = () => openFlatDetailsModal(flat, renter);
+        card.className = `flat-card-merged ${statusClass} ${isCurrentFlatActive ? 'flat-selected-touch' : ''}`;
+        card.onclick = () => {
+          document.querySelectorAll(".flat-card-merged").forEach(el => el.classList.remove("flat-selected-touch"));
+          card.classList.add("flat-selected-touch");
+          openFlatDetailsModal(flat, renter);
+        };
 
         const dispElec = resolveExactRateValue(flat.ElecRate, renter?.ElecFixedRate);
         const dispPng = resolveExactRateValue(flat.PNGRate, renter?.PNGFixedRate);
@@ -10417,6 +10978,10 @@ function formatMonthLabel(rawVal) {
       populateCreateUserFlatsDropdown();
       populateRenterQuickSelectDropdowns();
       handleCreateUserRoleChange();
+      initCustomBgInputs();
+      if (typeof renderLiveChatChannelsAndMessages === "function") {
+        renderLiveChatChannelsAndMessages();
+      }
 
       if (!isAdmin) {
         if (btnLoginHist) btnLoginHist.style.display = "none";
@@ -10443,13 +11008,18 @@ function formatMonthLabel(rawVal) {
       const parent = document.getElementById("settingsModal");
       parent.querySelectorAll(".flat-nav-item").forEach(el => el.classList.remove("active"));
       parent.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
-      evt.currentTarget.classList.add("active");
-      document.getElementById(subTabId).classList.add("active");
-      if (subTabId === "setSubCreateUser") {
+      if (evt && evt.currentTarget) evt.currentTarget.classList.add("active");
+      document.getElementById(subTabId)?.classList.add("active");
+      if (subTabId === "setSubLiveChat") {
+        if (typeof renderLiveChatChannelsAndMessages === "function") {
+          renderLiveChatChannelsAndMessages();
+        }
+      } else if (subTabId === "setSubCreateUser") {
         populateCreateUserFlatsDropdown();
         populateRenterQuickSelectDropdowns();
         handleCreateUserRoleChange();
       } else if (subTabId === "setSubOther") {
+        initCustomBgInputs();
         renderRegisteredUsersList();
       }
     }
@@ -11775,7 +12345,37 @@ function formatMonthLabel(rawVal) {
       return { rent: r, elec: e, water: w, png: p, total: tot };
     }
 
-    // FIRST GRAPH: Total Breakdown for Rent, Electricity, Water, and PNG Gas (Theme-Adaptive)
+    // Requirement 4: Dynamic Graph Scale & Visual Height Computation (No Fixed Upper Limit — Scales cleanly to ₹10k, ₹20k, ₹50k, ₹1L+ or higher)
+    function computeDynamicGraphScale(rawMaxVal, baseMinHeight = 230) {
+      const actualMax = Math.max(0, Number(rawMaxVal) || 0);
+      let niceMax = 1000;
+      if (actualMax > 0) {
+        const padded = actualMax * 1.12;
+        const magnitude = Math.pow(10, Math.floor(Math.log10(Math.max(100, padded))));
+        const normalized = padded / magnitude;
+        let niceStep = 1;
+        if (normalized <= 1.2) niceStep = 1.2;
+        else if (normalized <= 1.5) niceStep = 1.5;
+        else if (normalized <= 2) niceStep = 2;
+        else if (normalized <= 2.5) niceStep = 2.5;
+        else if (normalized <= 3) niceStep = 3;
+        else if (normalized <= 4) niceStep = 4;
+        else if (normalized <= 5) niceStep = 5;
+        else if (normalized <= 6) niceStep = 6;
+        else if (normalized <= 8) niceStep = 8;
+        else niceStep = 10;
+        niceMax = Math.ceil(niceStep * magnitude);
+      }
+      // Dynamically expand the visual height of the graph based on the highest recorded rupee amount
+      let extraHeight = 0;
+      if (actualMax > 5000) {
+        extraHeight = Math.min(180, Math.round(Math.log10(actualMax / 5000 + 1) * 95));
+      }
+      const dynamicHeight = baseMinHeight + extraHeight;
+      return { niceMax, dynamicHeight, actualMax };
+    }
+
+    // FIRST GRAPH: Total Breakdown for Rent, Electricity, Water, and PNG Gas (Theme-Adaptive & Dynamic Height/Scale)
     function buildFirstExpenseBreakdownGraphHtml(allFlatBills, prop, flat) {
       const isLightTheme = document.body.classList.contains("theme-white");
       const svgTextPrimary = isLightTheme ? "#0f172a" : "#e2e8f0";
@@ -11811,17 +12411,19 @@ function formatMonthLabel(rawVal) {
       const enabledExpenses = FLAT_EXPENSE_SERIES.filter(s => flatGraph1ExpenseFilters[s.key]);
       const grandTotalAllFour = totals.rent + totals.elec + totals.water + totals.png;
 
-      let maxBarVal = 1000;
+      let rawHighestVal = 0;
       enabledExpenses.forEach(s => {
-        if (totals[s.key] > maxBarVal) maxBarVal = totals[s.key];
+        if (totals[s.key] > rawHighestVal) rawHighestVal = totals[s.key];
       });
+      const scaleMeta1 = computeDynamicGraphScale(rawHighestVal, 235);
+      const maxBarVal = scaleMeta1.niceMax;
 
       const chartWidth = 680;
-      const chartHeight = 220;
-      const padLeft = 64;
+      const chartHeight = scaleMeta1.dynamicHeight;
+      const padLeft = 72;
       const padRight = 32;
-      const padTop = 32;
-      const padBottom = 42;
+      const padTop = 34;
+      const padBottom = 44;
       const usableW = chartWidth - padLeft - padRight;
       const usableH = chartHeight - padTop - padBottom;
 
@@ -11920,14 +12522,17 @@ function formatMonthLabel(rawVal) {
           </div>
 
           <!-- SVG Total Breakdown Bar Chart (Click to Open Fullscreen HD Zoom Layout) -->
-          <div onclick="openFlatGraphZoomModal('graph1')" title="Click anywhere on this graph to open the larger display with HD Zoom In & Zoom Out" style="overflow-x:auto; -webkit-overflow-scrolling:touch; cursor:zoom-in; border-radius:12px; padding:6px; border:${chartBoxBorder}; background:${chartBoxBg};">
-            <svg viewBox="0 0 ${chartWidth} ${chartHeight}" style="width:100%; min-width:500px; height:auto; overflow:visible;">
-              <line x1="${padLeft}" y1="${padTop}" x2="${chartWidth - padRight}" y2="${padTop}" stroke="${svgGridStroke}" stroke-dasharray="3,3" />
-              <line x1="${padLeft}" y1="${padTop + (usableH / 2)}" x2="${chartWidth - padRight}" y2="${padTop + (usableH / 2)}" stroke="${svgGridStroke}" stroke-dasharray="3,3" />
-              <line x1="${padLeft}" y1="${padTop + usableH}" x2="${chartWidth - padRight}" y2="${padTop + usableH}" stroke="${svgAxisStroke}" />
-              <text x="${padLeft - 8}" y="${padTop + 4}" font-size="9.5" font-weight="700" fill="${svgTextMuted}" text-anchor="end">₹${Math.round(maxBarVal).toLocaleString('en-IN')}</text>
-              <text x="${padLeft - 8}" y="${padTop + (usableH / 2) + 3}" font-size="9.5" font-weight="700" fill="${svgTextMuted}" text-anchor="end">₹${Math.round(maxBarVal / 2).toLocaleString('en-IN')}</text>
-              <text x="${padLeft - 8}" y="${padTop + usableH}" font-size="9.5" font-weight="700" fill="${svgTextMuted}" text-anchor="end">₹0</text>
+          <div onclick="openFlatGraphZoomModal('graph1')" title="Click anywhere on this graph to open the larger display with HD Zoom In & Zoom Out" style="overflow-x:auto; -webkit-overflow-scrolling:touch; cursor:zoom-in; border-radius:12px; padding:8px; border:${chartBoxBorder}; background:${chartBoxBg}; transition:height 0.25s ease;">
+            <svg viewBox="0 0 ${chartWidth} ${chartHeight}" style="width:100%; min-width:500px; height:${chartHeight}px; overflow:visible;">
+              ${[0, 0.2, 0.4, 0.6, 0.8, 1].map(step => {
+                const yLine = padTop + usableH * step;
+                const valLine = Math.round(maxBarVal * (1 - step));
+                const isBase = step === 1;
+                return `
+                  <line x1="${padLeft}" y1="${yLine.toFixed(1)}" x2="${chartWidth - padRight}" y2="${yLine.toFixed(1)}" stroke="${isBase ? svgAxisStroke : svgGridStroke}" ${isBase ? '' : 'stroke-dasharray="3,3"'} />
+                  <text x="${padLeft - 8}" y="${(yLine + 3.5).toFixed(1)}" font-size="9.5" font-weight="700" fill="${svgTextMuted}" text-anchor="end">₹${valLine.toLocaleString('en-IN')}</text>
+                `;
+              }).join("")}
               ${barsSvg}
             </svg>
           </div>
@@ -12022,7 +12627,7 @@ function formatMonthLabel(rawVal) {
       const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       const yearMonthlyTotals = {};
       const yearAnnualTotals = {};
-      let maxVal = 1000;
+      let rawHighestMonthly = 0;
 
       activeYearsConfig.forEach(yc => {
         yearMonthlyTotals[yc.year] = [];
@@ -12037,18 +12642,21 @@ function formatMonthLabel(rawVal) {
           });
           yearMonthlyTotals[yc.year].push(mSum);
           yearAnnualTotals[yc.year] += mSum;
-          if (mSum > maxVal) {
-            maxVal = mSum;
+          if (mSum > rawHighestMonthly) {
+            rawHighestMonthly = mSum;
           }
         }
       });
 
+      const scaleMeta2 = computeDynamicGraphScale(rawHighestMonthly, 245);
+      const maxVal = scaleMeta2.niceMax;
+
       const chartWidth = 720;
-      const chartHeight = 230;
-      const padLeft = 58;
+      const chartHeight = scaleMeta2.dynamicHeight;
+      const padLeft = 68;
       const padRight = 24;
-      const padTop = 26;
-      const padBottom = 36;
+      const padTop = 28;
+      const padBottom = 38;
       const usableW = chartWidth - padLeft - padRight;
       const usableH = chartHeight - padTop - padBottom;
 
@@ -12092,13 +12700,13 @@ function formatMonthLabel(rawVal) {
         });
       });
 
-      // Grid lines
+      // Grid lines (6 dynamic steps for any monetary ceiling)
       let gridSvg = "";
-      for (let s = 0; s <= 4; s++) {
-        const yVal = padTop + (usableH * (s / 4));
-        const numVal = Math.round(maxVal * (1 - (s / 4)));
-        gridSvg += `<line x1="${padLeft}" y1="${yVal}" x2="${chartWidth - padRight}" y2="${yVal}" stroke="${svgGridStroke}" stroke-dasharray="3 3"/>`;
-        gridSvg += `<text x="${padLeft - 8}" y="${yVal + 3.5}" font-size="9.5" font-weight="700" fill="${svgTextMuted}" text-anchor="end">₹${numVal.toLocaleString('en-IN')}</text>`;
+      for (let s = 0; s <= 5; s++) {
+        const yVal = padTop + (usableH * (s / 5));
+        const numVal = Math.round(maxVal * (1 - (s / 5)));
+        gridSvg += `<line x1="${padLeft}" y1="${yVal.toFixed(1)}" x2="${chartWidth - padRight}" y2="${yVal.toFixed(1)}" stroke="${svgGridStroke}" stroke-dasharray="3 3"/>`;
+        gridSvg += `<text x="${padLeft - 8}" y="${(yVal + 3.5).toFixed(1)}" font-size="9.5" font-weight="700" fill="${svgTextMuted}" text-anchor="end">₹${numVal.toLocaleString('en-IN')}</text>`;
       }
 
       // Dynamic year buttons bar with horizontal scroll
@@ -12161,8 +12769,8 @@ function formatMonthLabel(rawVal) {
           </div>
 
           <!-- SVG Chart Area (Click to Open Fullscreen HD Zoom Layout) -->
-          <div onclick="openFlatGraphZoomModal('graph2')" title="Click anywhere on this graph to open the larger display with HD Zoom In & Zoom Out" style="overflow-x:auto; -webkit-overflow-scrolling:touch; width:100%; cursor:zoom-in; border-radius:12px; padding:6px; border:${chartBoxBorder}; background:${chartBoxBg};">
-            <svg viewBox="0 0 ${chartWidth} ${chartHeight}" style="width:100%; min-width:580px; height:auto; overflow:visible;">
+          <div onclick="openFlatGraphZoomModal('graph2')" title="Click anywhere on this graph to open the larger display with HD Zoom In & Zoom Out" style="overflow-x:auto; -webkit-overflow-scrolling:touch; width:100%; cursor:zoom-in; border-radius:12px; padding:8px; border:${chartBoxBorder}; background:${chartBoxBg}; transition:height 0.25s ease;">
+            <svg viewBox="0 0 ${chartWidth} ${chartHeight}" style="width:100%; min-width:580px; height:${chartHeight}px; overflow:visible;">
               ${gridSvg}
               ${barsSvg}
               ${linesSvg}
@@ -12307,8 +12915,10 @@ function formatMonthLabel(rawVal) {
 
         const enabledExpenses = FLAT_EXPENSE_SERIES.filter(s => flatGraph1ExpenseFilters[s.key]);
         const grandTotalAllFour = totals.rent + totals.elec + totals.water + totals.png;
-        let maxBarVal = 1000;
-        enabledExpenses.forEach(s => { if (totals[s.key] > maxBarVal) maxBarVal = totals[s.key]; });
+        let rawZoomMax1 = 0;
+        enabledExpenses.forEach(s => { if (totals[s.key] > rawZoomMax1) rawZoomMax1 = totals[s.key]; });
+        const zoomScale1 = computeDynamicGraphScale(rawZoomMax1, 380);
+        const maxBarVal = zoomScale1.niceMax;
 
         if (filtersBar) {
           const scopeBtns = [
@@ -12414,7 +13024,7 @@ function formatMonthLabel(rawVal) {
 
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const yearMonthlyTotals = {};
-        let maxVal = 1000;
+        let rawZoomMax2 = 0;
         activeYearsConfig.forEach(yc => {
           yearMonthlyTotals[yc.year] = [];
           for (let m = 1; m <= 12; m++) {
@@ -12423,12 +13033,14 @@ function formatMonthLabel(rawVal) {
             let mSum = 0;
             monthBills.forEach(b => { mSum += extractBillExpenseParts(b).total; });
             yearMonthlyTotals[yc.year].push(mSum);
-            if (mSum > maxVal) maxVal = mSum;
+            if (mSum > rawZoomMax2) rawZoomMax2 = mSum;
           }
         });
+        const zoomScale2 = computeDynamicGraphScale(rawZoomMax2, 400);
+        const maxVal = zoomScale2.niceMax;
 
         const baseW = 1040;
-        const baseH = 400;
+        const baseH = zoomScale2.dynamicHeight;
         const scaledW = Math.round(baseW * z);
         const scaledH = Math.round(baseH * z);
         const padLeft = 88;
@@ -12586,6 +13198,7 @@ function formatMonthLabel(rawVal) {
       document.getElementById("renterEndDate").value = resolvedMeta.endDate;
       updateRenterImageSlotUI("profile", targetRenter.ProfileImageURL);
       updateRenterImageSlotUI("identity", targetRenter.IdentityImageURL);
+      updateRenterTenureStatusUI(targetRenter, targetRenter.IdentityDocNumber);
       syncProfileReactivateButtonVisibility();
 
       switchFlatTabToProfile();
@@ -12650,6 +13263,16 @@ function formatMonthLabel(rawVal) {
       }
 
       if (renter) {
+        // Requirement 1: If this renter is a returning/shifted renter with an Aadhaar number, ensure any missing profile/Aadhaar photos or details from their previous flat stays are consolidated automatically
+        const consolidated = consolidateRenterHistoryDetailsByAadhaar(renter);
+        if (consolidated) {
+          if (!renter.ProfileImageURL && consolidated.ProfileImageURL) renter.ProfileImageURL = consolidated.ProfileImageURL;
+          if (!renter.IdentityImageURL && consolidated.IdentityImageURL) renter.IdentityImageURL = consolidated.IdentityImageURL;
+          if (!renter.MobileNumber && consolidated.MobileNumber) renter.MobileNumber = consolidated.MobileNumber;
+          if (!renter.AltMobileNumber && consolidated.AltMobileNumber) renter.AltMobileNumber = consolidated.AltMobileNumber;
+          if (!renter.Address && consolidated.Address) renter.Address = consolidated.Address;
+          if (!renter.TotalFamilyMembers && consolidated.TotalFamilyMembers) renter.TotalFamilyMembers = consolidated.TotalFamilyMembers;
+        }
         document.getElementById("renterName").value = renter.RenterName || "";
         document.getElementById("renterIdentityNum").value = formatAadhaarWithHyphens(renter.IdentityDocNumber || "");
         document.getElementById("renterMobile").value = sanitizeContactPhoneDisplay(renter.MobileNumber) || "";
@@ -12665,6 +13288,7 @@ function formatMonthLabel(rawVal) {
         if (!renter.IdentityImageURL && resolvedIdentityPic) renter.IdentityImageURL = resolvedIdentityPic;
         updateRenterImageSlotUI("profile", resolvedProfilePic);
         updateRenterImageSlotUI("identity", resolvedIdentityPic);
+        updateRenterTenureStatusUI(renter, renter.IdentityDocNumber);
         syncProfileReactivateButtonVisibility();
       } else {
         clearRenterRightForm();
@@ -16852,6 +17476,9 @@ function formatMonthLabel(rawVal) {
       if (!promptEl) return;
 
       const cleanAadhaar = normalizeAadhaarString(rawVal);
+      // Requirement 3: Live update the Renter Origin / Tenure Status Indicator under the Aadhaar Card photo as user types
+      updateRenterTenureStatusUI(activeFlatRenterObj, cleanAadhaar);
+
       if (!cleanAadhaar || cleanAadhaar.length < 4) {
         lastAutoPromptedReturningAadhaar = "";
         promptEl.style.display = "none";
@@ -17202,6 +17829,8 @@ function formatMonthLabel(rawVal) {
         }
         document.getElementById("renterJoinDate").value = payload.joinDate;
         document.getElementById("renterEndDate").value = payload.endDate;
+        updateRenterTenureStatusUI(activeFlatRenterObj, payload.identityDocNumber);
+        syncProfileReactivateButtonVisibility();
         triggerSideToast("Profile & Utility Details Saved", "Renter profile, dates & utility meter numbers saved and displayed!", true);
       }
 
@@ -17237,6 +17866,7 @@ function formatMonthLabel(rawVal) {
       }
       updateRenterImageSlotUI("profile", "");
       updateRenterImageSlotUI("identity", "");
+      updateRenterTenureStatusUI(null, "");
       syncProfileReactivateButtonVisibility();
     }
 
@@ -17422,23 +18052,39 @@ function formatMonthLabel(rawVal) {
         return bScore - aScore;
       });
 
-      const best = matchingRecords[0];
+      const best = consolidateRenterHistoryDetailsByAadhaar(matchingRecords[0]) || matchingRecords[0];
       addRenterModalMatchedRecord = best;
       addRenterModalIsReactivating = true;
 
-      // Requirement 3: Automatically fill Name and Mobile Number immediately when a previous renter's Aadhaar matches!
-      // Only leave Location (Property) and Flat Name open for the user to select where to assign them.
+      // Requirement 1 & 3: Automatically fill Name, Mobile, Alternate Mobile, Address, Family Members, and Photos immediately when a previous renter's Aadhaar matches!
       const nameEl = document.getElementById("addRenterNameInput");
       const mobEl = document.getElementById("addRenterMobileInput");
+      const altMobEl = document.getElementById("addRenterAltMobileInput");
+      const addrEl = document.getElementById("addRenterAddressInput");
+      const famEl = document.getElementById("addRenterFamilyInput");
+      const profImg = document.getElementById("addRenterProfPreview");
+      const idImg = document.getElementById("addRenterIdPreview");
+
       if (nameEl && best.RenterName) {
         nameEl.value = best.RenterName;
       }
       if (mobEl && best.MobileNumber) {
         mobEl.value = formatIndianMobilePlus91(best.MobileNumber);
       }
+      if (altMobEl && best.AltMobileNumber) {
+        altMobEl.value = best.AltMobileNumber;
+      }
+      if (addrEl && best.Address) {
+        addrEl.value = best.Address;
+      }
+      if (famEl && best.TotalFamilyMembers) {
+        famEl.value = best.TotalFamilyMembers;
+      }
 
       addRenterModalProfUrl = (!isPlaceholderImageUrl(best.ProfileImageURL)) ? best.ProfileImageURL : "";
       addRenterModalIdUrl = (!isPlaceholderImageUrl(best.IdentityImageURL)) ? best.IdentityImageURL : "";
+      if (profImg) profImg.src = addRenterModalProfUrl ? normalizeGoogleDriveImageUrl(addRenterModalProfUrl) : EMPTY_PROFILE_PLACEHOLDER;
+      if (idImg) idImg.src = addRenterModalIdUrl ? normalizeGoogleDriveImageUrl(addRenterModalIdUrl) : EMPTY_IDENTITY_PLACEHOLDER;
 
       const isCurrentlyActive = String(best.Status || "").trim().toLowerCase() === "active";
       const statusBadgeHtml = isCurrentlyActive
@@ -17463,7 +18109,7 @@ function formatMonthLabel(rawVal) {
                 ${statusBadgeHtml}
               </div>
               <div style="font-size:0.74rem; color:#10b981; font-weight:800; margin-top:2px;">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Name &amp; Mobile Auto-Filled! Choose Location &amp; Vacant Flat above to activate.
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Full Profile, Photos &amp; Documents Auto-Loaded! Choose Location &amp; Vacant Flat above to assign.
               </div>
             </div>
           </div>
@@ -17481,14 +18127,16 @@ function formatMonthLabel(rawVal) {
           <div><span style="color:var(--text-muted);">Auto-Filled Name:</span> <strong style="color:var(--text-main);">${best.RenterName || '--'}</strong></div>
           <div><span style="color:var(--text-muted);">Auto-Filled Mobile:</span> <strong style="color:#10b981;">${best.MobileNumber || '--'}</strong></div>
           <div><span style="color:var(--text-muted);">Aadhaar No.:</span> <strong style="color:#38bdf8;">${formatAadhaarWithHyphens(best.IdentityDocNumber || digits)}</strong></div>
+          <div><span style="color:var(--text-muted);">Photos &amp; Docs:</span> <strong style="color:#10b981;">${(addRenterModalProfUrl || addRenterModalIdUrl) ? 'Loaded Automatically' : 'Standard'}</strong></div>
           <div><span style="color:var(--text-muted);">Previous Stays:</span> <strong style="color:#a78bfa;">${allStaysText}</strong></div>
         </div>
       `;
     }
 
     function activateInPageRenterDetailsFromAadhaar() {
-      const rec = addRenterModalMatchedRecord;
+      const rec = consolidateRenterHistoryDetailsByAadhaar(addRenterModalMatchedRecord) || addRenterModalMatchedRecord;
       if (!rec) return;
+      addRenterModalMatchedRecord = rec;
       addRenterModalIsReactivating = true;
 
       const nameEl = document.getElementById("addRenterNameInput");
@@ -17578,32 +18226,34 @@ function formatMonthLabel(rawVal) {
       const expBox = document.getElementById("addRenterExpandedDetailsBox");
       const isExpandedVisible = expBox && expBox.style.display !== "none";
 
+      const consolidatedRec = consolidateRenterHistoryDetailsByAadhaar(addRenterModalMatchedRecord || { IdentityDocNumber: rawAadhaar }) || addRenterModalMatchedRecord;
+
       const altMob = isExpandedVisible
         ? (document.getElementById("addRenterAltMobileInput")?.value || "").trim()
-        : (addRenterModalMatchedRecord?.AltMobileNumber || "");
+        : (consolidatedRec?.AltMobileNumber || "");
       const addr = isExpandedVisible
         ? (document.getElementById("addRenterAddressInput")?.value || "").trim()
-        : (addRenterModalMatchedRecord?.Address || "");
+        : (consolidatedRec?.Address || "");
       const famCount = isExpandedVisible
         ? (parseInt(document.getElementById("addRenterFamilyInput")?.value || "1", 10) || 1)
-        : (parseInt(addRenterModalMatchedRecord?.TotalFamilyMembers || "1", 10) || 1);
+        : (parseInt(consolidatedRec?.TotalFamilyMembers || "1", 10) || 1);
       const joinDate = (isExpandedVisible && document.getElementById("addRenterJoinDateInput")?.value)
         ? document.getElementById("addRenterJoinDateInput").value
         : new Date().toISOString().split("T")[0];
       const statusVal = "Active";
 
-      const profUrl = addRenterModalProfUrl || (addRenterModalMatchedRecord && !isPlaceholderImageUrl(addRenterModalMatchedRecord.ProfileImageURL) ? addRenterModalMatchedRecord.ProfileImageURL : "");
-      const idUrl = addRenterModalIdUrl || (addRenterModalMatchedRecord && !isPlaceholderImageUrl(addRenterModalMatchedRecord.IdentityImageURL) ? addRenterModalMatchedRecord.IdentityImageURL : "");
+      const profUrl = addRenterModalProfUrl || (consolidatedRec && !isPlaceholderImageUrl(consolidatedRec.ProfileImageURL) ? consolidatedRec.ProfileImageURL : "");
+      const idUrl = addRenterModalIdUrl || (consolidatedRec && !isPlaceholderImageUrl(consolidatedRec.IdentityImageURL) ? consolidatedRec.IdentityImageURL : "");
 
       const flatObj = findFlatObject(targetProp, targetFlat);
       const propObj = findPropertyObject(targetProp);
-      const inheritedRent = flatObj?.RentAmount || 0;
-      const inheritedElec = flatObj?.ElecRate !== undefined ? flatObj.ElecRate : "";
-      const inheritedPng = flatObj?.PNGRate !== undefined ? flatObj.PNGRate : "";
-      const inheritedWater = flatObj?.WaterRate !== undefined ? flatObj.WaterRate : "";
-      const inheritedUpiName = propObj?.UPIName || flatObj?.UPIName || "";
-      const inheritedUpiId = propObj?.UPIID || flatObj?.UPIID || "";
-      const inheritedContract = propObj?.ContractNumber || flatObj?.ContractMobile || "";
+      const inheritedRent = flatObj?.RentAmount || consolidatedRec?.RentAmount || 0;
+      const inheritedElec = flatObj?.ElecRate !== undefined && flatObj?.ElecRate !== "" ? flatObj.ElecRate : (consolidatedRec?.ElecFixedRate !== undefined ? consolidatedRec.ElecFixedRate : "");
+      const inheritedPng = flatObj?.PNGRate !== undefined && flatObj?.PNGRate !== "" ? flatObj.PNGRate : (consolidatedRec?.PNGFixedRate !== undefined ? consolidatedRec.PNGFixedRate : "");
+      const inheritedWater = flatObj?.WaterRate !== undefined && flatObj?.WaterRate !== "" ? flatObj.WaterRate : (consolidatedRec?.WaterFixedRate !== undefined ? consolidatedRec.WaterFixedRate : "");
+      const inheritedUpiName = propObj?.UPIName || flatObj?.UPIName || consolidatedRec?.UPIName || "";
+      const inheritedUpiId = propObj?.UPIID || flatObj?.UPIID || consolidatedRec?.UPIID || "";
+      const inheritedContract = propObj?.ContractNumber || flatObj?.ContractMobile || consolidatedRec?.ContractMobile || "";
 
       // If another renter is currently Active in this target flat, mark them Inactive so history is preserved
       (DB.renters || []).forEach(r => {
@@ -17614,6 +18264,7 @@ function formatMonthLabel(rawVal) {
       });
 
       const newRenterId = "R-" + Date.now();
+      const isReturningMatch = Boolean(addRenterModalIsReactivating || (rawAadhaar.length === 12 && (DB.renters || []).some(r => normalizeAadhaarString(r.IdentityDocNumber) === rawAadhaar)));
       const newRenterObj = {
         RenterID: newRenterId,
         PropertyName: targetProp,
@@ -17631,12 +18282,23 @@ function formatMonthLabel(rawVal) {
         IdentityDocNumber: formattedAadhaar,
         ProfileImageURL: profUrl,
         IdentityImageURL: idUrl,
-        MobileNumber: formattedMob,
+        MobileNumber: formattedMob || (consolidatedRec?.MobileNumber ? formatIndianMobilePlus91(consolidatedRec.MobileNumber) : ""),
         AltMobileNumber: altMob,
         Address: addr,
         TotalFamilyMembers: famCount,
-        EndDate: ""
+        EndDate: "",
+        TenureType: isReturningMatch ? "RETURNING" : "NEW"
       };
+
+      if (profUrl) savePermanentRenterPhoto(targetProp, targetFlat, newRenterId, "profile", profUrl);
+      if (idUrl) savePermanentRenterPhoto(targetProp, targetFlat, newRenterId, "identity", idUrl);
+      saveRenterTenureMeta(newRenterId, rawAadhaar, isReturningMatch ? "RETURNING" : "NEW", {
+        fromProp: consolidatedRec?.PropertyName || "",
+        fromFlat: consolidatedRec?.FlatName || "",
+        toProp: targetProp,
+        toFlat: targetFlat,
+        date: joinDate
+      });
 
       DB.renters.push(newRenterObj);
 
@@ -17647,7 +18309,7 @@ function formatMonthLabel(rawVal) {
           if (rAadh === rawAadhaar) {
             r.RenterName = rName;
             r.IdentityDocNumber = formattedAadhaar;
-            if (formattedMob) r.MobileNumber = formattedMob;
+            if (newRenterObj.MobileNumber) r.MobileNumber = newRenterObj.MobileNumber;
             if (altMob) r.AltMobileNumber = altMob;
             if (addr) r.Address = addr;
             if (profUrl) r.ProfileImageURL = profUrl;
@@ -17978,6 +18640,12 @@ function formatMonthLabel(rawVal) {
       document.getElementById("dashboardScreen").classList.remove("active");
       document.getElementById("loginScreen").classList.add("active");
       document.querySelectorAll(".modal-overlay").forEach(m => m.classList.remove("active"));
+      const dockEl = document.getElementById("bottomRightFloatingDock");
+      if (dockEl) dockEl.style.display = "none";
+      const aiWidgetEl = document.getElementById("modularAiWidget");
+      if (aiWidgetEl) aiWidgetEl.style.display = "none";
+      const chatWidgetEl = document.getElementById("modularLiveChatWidget");
+      if (chatWidgetEl) chatWidgetEl.style.display = "none";
       applyCustomBackgrounds();
 
       // Requirement 9: Slide in "Logged out successfully" notification on the logout/login page
@@ -18303,6 +18971,691 @@ function formatMonthLabel(rawVal) {
         pendingWriteCount = Math.max(0, pendingWriteCount - 1);
         lastWriteCompletedAt = Date.now();
       }
+    }
+
+    /* ============================================================================
+       REQUIREMENTS 5, 6, 7 & 8:
+       - Role-Based Floating Corner Dock (Admin: Website-Data AI + Live Chat | Renter/Viewer: Live Chat + Contact Us)
+       - Modular, Draggable & Left/Right Side-Switchable Windows
+       - Strictly Isolated Website-Data AI Assistant (Admin Only)
+       - Strictly Private 1-on-1 Live Chat Between Each Individual Renter and Admin
+       ============================================================================ */
+    const PRIVATE_CHAT_STORAGE_KEY = "elite_estate_isolated_1on1_chats_v1";
+    let activeSelectedChatChannelId = "";
+    let floatingDockSide = localStorage.getItem("elite_floating_dock_side") || "right";
+
+    function syncFloatingCornerButtonsByRole() {
+      const dock = document.getElementById("bottomRightFloatingDock");
+      const btnAi = document.getElementById("fabAiAssistantBtn");
+      const btnChat = document.getElementById("fabLiveChatBtn");
+      const btnContact = document.getElementById("fabContactUsBtn");
+      const aiWidget = document.getElementById("modularAiWidget");
+
+      const isDashboardActive = document.getElementById("dashboardScreen")?.classList.contains("active");
+      if (!dock) return;
+
+      if (!isDashboardActive || !activeUser) {
+        dock.style.display = "none";
+        if (aiWidget) aiWidget.style.display = "none";
+        return;
+      }
+
+      dock.style.display = "flex";
+      dock.classList.toggle("dock-left", floatingDockSide === "left");
+
+      const isAdmin = activeRole === "Admin";
+      if (btnAi) {
+        // Requirement 6: Admin sees AI Assistant; Renter/Viewer MUST NOT see the AI Assistant at all
+        btnAi.style.display = isAdmin ? "inline-flex" : "none";
+      }
+      if (!isAdmin && aiWidget) {
+        aiWidget.style.display = "none";
+      }
+      if (btnChat) {
+        btnChat.style.display = "inline-flex";
+      }
+      if (btnContact) {
+        // Requirement 6: For Renter/Viewer, show Live Chat & Contact Us in bottom-right corner
+        btnContact.style.display = isAdmin ? "none" : "inline-flex";
+      }
+
+      initModularDraggableWidgets();
+      updateLiveChatUnreadBadge();
+    }
+
+    function toggleFloatingDockScreenSide() {
+      floatingDockSide = floatingDockSide === "left" ? "right" : "left";
+      localStorage.setItem("elite_floating_dock_side", floatingDockSide);
+      const dock = document.getElementById("bottomRightFloatingDock");
+      if (dock) {
+        dock.classList.toggle("dock-left", floatingDockSide === "left");
+      }
+      ["modularAiWidget", "modularLiveChatWidget"].forEach(wId => {
+        const w = document.getElementById(wId);
+        if (w && !w.dataset.customDragged) {
+          w.classList.toggle("docked-left", floatingDockSide === "left");
+        }
+      });
+    }
+
+    function switchWidgetScreenSide(widgetId) {
+      const w = document.getElementById(widgetId);
+      if (!w) return;
+      delete w.dataset.customDragged;
+      w.style.top = "";
+      const isLeft = w.classList.toggle("docked-left");
+      if (isLeft) {
+        w.style.left = "22px";
+        w.style.right = "auto";
+      } else {
+        w.style.right = "22px";
+        w.style.left = "auto";
+      }
+    }
+
+    function toggleMinimizeFloatingWidget(widgetId) {
+      const w = document.getElementById(widgetId);
+      if (!w) return;
+      w.classList.toggle("minimized");
+    }
+
+    function initModularDraggableWidgets() {
+      ["modularAiWidget", "modularLiveChatWidget"].forEach(widgetId => {
+        const widget = document.getElementById(widgetId);
+        const header = document.getElementById(widgetId + "Header");
+        if (!widget || !header || header.dataset.dragBound === "true") return;
+        header.dataset.dragBound = "true";
+
+        let isDragging = false;
+        let startX = 0;
+        let startY = 0;
+        let origLeft = 0;
+        let origTop = 0;
+
+        const onPointerDown = (e) => {
+          if (e.target.closest("button")) return;
+          isDragging = true;
+          const rect = widget.getBoundingClientRect();
+          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+          startX = clientX;
+          startY = clientY;
+          origLeft = rect.left;
+          origTop = rect.top;
+          widget.dataset.customDragged = "true";
+          widget.style.bottom = "auto";
+          widget.style.right = "auto";
+          widget.style.left = origLeft + "px";
+          widget.style.top = origTop + "px";
+          document.body.style.userSelect = "none";
+        };
+
+        const onPointerMove = (e) => {
+          if (!isDragging) return;
+          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+          const dx = clientX - startX;
+          const dy = clientY - startY;
+          const maxLeft = Math.max(10, window.innerWidth - widget.offsetWidth - 10);
+          const maxTop = Math.max(10, window.innerHeight - 60);
+          const nextLeft = Math.min(maxLeft, Math.max(8, origLeft + dx));
+          const nextTop = Math.min(maxTop, Math.max(8, origTop + dy));
+          widget.style.left = nextLeft + "px";
+          widget.style.top = nextTop + "px";
+        };
+
+        const onPointerUp = () => {
+          if (!isDragging) return;
+          isDragging = false;
+          document.body.style.userSelect = "";
+        };
+
+        header.addEventListener("mousedown", onPointerDown);
+        window.addEventListener("mousemove", onPointerMove);
+        window.addEventListener("mouseup", onPointerUp);
+
+        header.addEventListener("touchstart", onPointerDown, { passive: true });
+        window.addEventListener("touchmove", onPointerMove, { passive: true });
+        window.addEventListener("touchend", onPointerUp);
+      });
+    }
+
+    // Requirement 6: Contact Us Popup for Renter & Viewer
+    function openContactUsModal() {
+      const propName = selectedProperty || (DB.properties && DB.properties[0]?.PropertyName) || "Property Management";
+      const propObj = findPropertyObject(propName);
+      const anyFlatWithContact = (DB.flats || []).find(f => f.ContractMobile || f.UPIID || f.UPIName);
+
+      const phone = propObj?.ContractNumber || anyFlatWithContact?.ContractMobile || "+91 9876543210";
+      const upiName = propObj?.UPIName || anyFlatWithContact?.UPIName || "Property Admin";
+      const upiId = propObj?.UPIID || anyFlatWithContact?.UPIID || "Contact Admin via Live Chat";
+
+      const propEl = document.getElementById("contactUsPropName");
+      const phoneEl = document.getElementById("contactUsPhoneDisplay");
+      const callLink = document.getElementById("contactUsCallLink");
+      const upiEl = document.getElementById("contactUsUpiDisplay");
+
+      if (propEl) propEl.innerText = `${propName} (${upiName})`;
+      if (phoneEl) phoneEl.innerText = phone;
+      if (callLink) callLink.href = "tel:" + String(phone).replace(/\s+/g, "");
+      if (upiEl) upiEl.innerText = upiId ? `${upiName} • ${upiId}` : upiName;
+
+      openModal("contactUsModal");
+    }
+
+    // Requirement 6: Strictly Isolated Website-Data AI Assistant (Admin Only)
+    function toggleModularAiWidget() {
+      if (activeRole !== "Admin") {
+        return triggerSideToast("Admin Exclusive Tool", "The Website Data AI Assistant is strictly restricted to Administrators.", false);
+      }
+      const w = document.getElementById("modularAiWidget");
+      if (!w) return;
+      const isVisible = w.style.display === "flex";
+      if (isVisible) {
+        w.style.display = "none";
+      } else {
+        w.classList.remove("minimized");
+        w.style.display = "flex";
+        setTimeout(() => {
+          document.getElementById("aiWidgetInput")?.focus();
+        }, 60);
+      }
+    }
+
+    function closeModularAiWidget() {
+      const w = document.getElementById("modularAiWidget");
+      if (w) w.style.display = "none";
+    }
+
+    function runAdminWebsiteAiPrompt(promptText) {
+      const inputEl = document.getElementById("aiWidgetInput");
+      if (inputEl) inputEl.value = promptText;
+      submitAdminWebsiteAiQuery();
+    }
+
+    function submitAdminWebsiteAiQuery() {
+      if (activeRole !== "Admin") return;
+      const inputEl = document.getElementById("aiWidgetInput");
+      const msgArea = document.getElementById("aiWidgetMessagesArea");
+      if (!inputEl || !msgArea) return;
+
+      const query = inputEl.value.trim();
+      if (!query) return;
+      inputEl.value = "";
+
+      const nowStr = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      const safeUserHtml = query.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      msgArea.insertAdjacentHTML("beforeend", `
+        <div class="chat-msg-bubble sent">
+          <div>${safeUserHtml}</div>
+          <span class="chat-msg-meta">Admin • ${nowStr}</span>
+        </div>
+      `);
+
+      const answerHtml = generateIsolatedWebsiteDataAiResponse(query);
+      msgArea.insertAdjacentHTML("beforeend", `
+        <div class="chat-msg-bubble received" style="max-width:95%;">
+          <div style="font-size:0.7rem; font-weight:900; color:#818cf8; margin-bottom:5px; text-transform:uppercase; letter-spacing:0.04em;">
+            <i class="fa-solid fa-database"></i> Website Internal Data Report
+          </div>
+          <div>${answerHtml}</div>
+          <span class="chat-msg-meta">Website Data AI • ${nowStr} • 100% Local Portal Records</span>
+        </div>
+      `);
+      msgArea.scrollTop = msgArea.scrollHeight;
+    }
+
+    function generateIsolatedWebsiteDataAiResponse(rawQuery) {
+      const q = String(rawQuery || "").toLowerCase().trim();
+      const props = DB.properties || [];
+      const flats = DB.flats || [];
+      const renters = DB.renters || [];
+      const bills = DB.bills || [];
+      const fds = DB.fdRecords || [];
+      const khets = DB.khetRecords || [];
+      const kharch = DB.kharchRecords || [];
+
+      const activeRenters = renters.filter(r => String(r.Status || "").trim().toLowerCase() === "active");
+      const departedRenters = renters.filter(r => String(r.Status || "").trim().toLowerCase() !== "active");
+
+      const occupiedFlats = flats.filter(f =>
+        activeRenters.some(r => isSamePropAndFlat(r.PropertyName, r.FlatName, f.PropertyName, f.FlatName))
+      );
+      const vacantFlats = flats.filter(f =>
+        !activeRenters.some(r => isSamePropAndFlat(r.PropertyName, r.FlatName, f.PropertyName, f.FlatName))
+      );
+
+      let totalBilled = 0;
+      let totalCollected = 0;
+      let totalPendingDue = 0;
+      bills.forEach(b => {
+        const tot = Number(b.TotalAmount || 0);
+        const paid = Number(b.PaidAmount || 0);
+        const due = b.DueAmount !== undefined && b.DueAmount !== "" ? Number(b.DueAmount) : Math.max(0, tot - paid);
+        totalBilled += tot;
+        totalCollected += paid;
+        if (due > 0) totalPendingDue += due;
+      });
+
+      const totalKharch = kharch.reduce((acc, k) => acc + (Number(k.Amount) || 0), 0);
+      const totalFdPrincipal = fds.reduce((acc, f) => acc + (Number(f.PrincipalAmount || f.Amount) || 0), 0);
+      const totalKhetAmount = khets.reduce((acc, k) => acc + (Number(k.TotalAmount || k.Amount) || 0), 0);
+
+      // 1. Check if asking about a specific flat or renter name
+      const matchedRenter = renters.find(r => r.RenterName && q.includes(String(r.RenterName).toLowerCase()));
+      if (matchedRenter && !q.includes("summary") && !q.includes("all")) {
+        const tenure = resolveRenterTenureStatus(matchedRenter, matchedRenter.IdentityDocNumber);
+        const rBills = getBillsForSpecificRenter(matchedRenter.PropertyName, matchedRenter.FlatName, matchedRenter);
+        const rPaid = rBills.reduce((s, b) => s + (Number(b.PaidAmount) || 0), 0);
+        const rDue = rBills.reduce((s, b) => s + (Number(b.DueAmount) || 0), 0);
+        return `
+          <div style="line-height:1.5;">
+            <div><strong>Renter Record Found:</strong> ${matchedRenter.RenterName} (${matchedRenter.Status || 'Active'})</div>
+            <div>• <strong>Location:</strong> ${matchedRenter.PropertyName} — Flat ${matchedRenter.FlatName}</div>
+            <div>• <strong>Origin Status:</strong> ${tenure.badgeText} (${tenure.titleText})</div>
+            <div>• <strong>Aadhaar:</strong> ${formatAadhaarWithHyphens(matchedRenter.IdentityDocNumber) || 'Not Recorded'}</div>
+            <div>• <strong>Mobile:</strong> ${matchedRenter.MobileNumber || 'Not Recorded'}</div>
+            <div>• <strong>Stay Period:</strong> ${formatDateOnly(matchedRenter.JoinDate)} to ${formatDateOnly(matchedRenter.EndDate) || 'Present'}</div>
+            <div>• <strong>Billing Summary:</strong> ${rBills.length} bills | Paid: <span style="color:#10b981;font-weight:800;">₹${rPaid.toLocaleString('en-IN')}</span> | Pending Due: <span style="color:#f43f5e;font-weight:800;">₹${rDue.toLocaleString('en-IN')}</span></div>
+          </div>
+        `;
+      }
+
+      // 2. Vacant vs Occupied Flats Query
+      if (q.includes("vacant") || q.includes("occupied") || q.includes("empty") || q.includes("flat")) {
+        const byPropHtml = props.map(p => {
+          const pFlats = flats.filter(f => String(f.PropertyName || "").trim().toLowerCase() === String(p.PropertyName || "").trim().toLowerCase());
+          const pVac = pFlats.filter(f => !activeRenters.some(r => isSamePropAndFlat(r.PropertyName, r.FlatName, f.PropertyName, f.FlatName)));
+          const vacNames = pVac.map(f => f.FlatName).join(", ") || "None (100% Occupied)";
+          return `<div style="margin-top:4px;">• <strong>${p.PropertyName}:</strong> ${pFlats.length} Total (${pFlats.length - pVac.length} Occupied, <span style="color:#10b981;font-weight:800;">${pVac.length} Vacant</span> — Vacant Flats: ${vacNames})</div>`;
+        }).join("");
+
+        return `
+          <div style="line-height:1.5;">
+            <div><strong>Website Occupancy Report:</strong></div>
+            <div>• Total Properties: <strong>${props.length}</strong> | Total Flats: <strong>${flats.length}</strong></div>
+            <div>• Occupied Flats: <strong style="color:#38bdf8;">${occupiedFlats.length}</strong> | Vacant Flats: <strong style="color:#10b981;">${vacantFlats.length}</strong></div>
+            <div style="margin-top:6px; border-top:1px dashed var(--glass-border); padding-top:6px;">${byPropHtml || 'No properties added yet.'}</div>
+          </div>
+        `;
+      }
+
+      // 3. Pending Dues / Unpaid Bills Query
+      if (q.includes("due") || q.includes("unpaid") || q.includes("pending") || q.includes("arrears")) {
+        const unpaidList = bills.filter(b => Number(b.DueAmount || 0) > 0).slice(0, 8);
+        const rowsHtml = unpaidList.map(b =>
+          `<div>• <strong>${b.PropertyName} (Flat ${b.FlatName})</strong> — ${b.TenantName || 'Renter'} (${b.MonthYear}): <span style="color:#f43f5e;font-weight:800;">₹${Number(b.DueAmount).toLocaleString('en-IN')} Due</span></div>`
+        ).join("");
+        return `
+          <div style="line-height:1.5;">
+            <div><strong>Pending Dues Report (From Website Bills):</strong></div>
+            <div>• Total Outstanding Dues: <strong style="color:#f43f5e;">₹${totalPendingDue.toLocaleString('en-IN')}</strong> across ${bills.filter(b => Number(b.DueAmount || 0) > 0).length} bill records</div>
+            <div>• Total Collected So Far: <strong style="color:#10b981;">₹${totalCollected.toLocaleString('en-IN')}</strong></div>
+            <div style="margin-top:6px; border-top:1px dashed var(--glass-border); padding-top:6px;">
+              ${rowsHtml || '<span style="color:#10b981;font-weight:800;">All recorded bills are 100% paid! Zero pending dues.</span>'}
+            </div>
+          </div>
+        `;
+      }
+
+      // 4. Returning / Shifted / Renter History Query
+      if (q.includes("renter") || q.includes("tenant") || q.includes("returning") || q.includes("shifted") || q.includes("aadhaar")) {
+        const returningOrShifted = activeRenters.filter(r => {
+          const t = resolveRenterTenureStatus(r, r.IdentityDocNumber);
+          return t.type === "RETURNING" || t.type === "SHIFTED";
+        });
+        const listHtml = returningOrShifted.map(r => {
+          const t = resolveRenterTenureStatus(r, r.IdentityDocNumber);
+          return `<div>• <strong>${r.RenterName}</strong> (${r.PropertyName} - Flat ${r.FlatName}): <span style="font-weight:800; color:#f59e0b;">${t.badgeText}</span></div>`;
+        }).join("");
+        return `
+          <div style="line-height:1.5;">
+            <div><strong>Renter &amp; Tenure Analytics:</strong></div>
+            <div>• Active Renters: <strong style="color:#10b981;">${activeRenters.length}</strong> | Past/Departed Records: <strong>${departedRenters.length}</strong></div>
+            <div>• Returning / Shifted Active Renters: <strong>${returningOrShifted.length}</strong></div>
+            <div style="margin-top:6px; border-top:1px dashed var(--glass-border); padding-top:6px;">
+              ${listHtml || 'All currently active renters are in their first recorded flat stay (New Renters).'}
+            </div>
+          </div>
+        `;
+      }
+
+      // 5. Expense / Kharch / FD / Khet Query
+      if (q.includes("expense") || q.includes("kharch") || q.includes("fd") || q.includes("khet") || q.includes("fund")) {
+        return `
+          <div style="line-height:1.5;">
+            <div><strong>Expense (Kharch), FD &amp; Khet Summary:</strong></div>
+            <div>• <strong>Property Expenses (Kharch):</strong> ${kharch.length} entries | Total Spent: <strong style="color:#f43f5e;">₹${totalKharch.toLocaleString('en-IN')}</strong></div>
+            <div>• <strong>Fixed Deposits (FD):</strong> ${fds.length} records | Principal Total: <strong style="color:#38bdf8;">₹${totalFdPrincipal.toLocaleString('en-IN')}</strong></div>
+            <div>• <strong>Farmland (Khet):</strong> ${khets.length} records | Total Recorded: <strong style="color:#10b981;">₹${totalKhetAmount.toLocaleString('en-IN')}</strong></div>
+          </div>
+        `;
+      }
+
+      // Default: Complete Full Website Executive Report
+      return `
+        <div style="line-height:1.55;">
+          <div><strong>Complete Website Data Executive Summary:</strong></div>
+          <div>• <strong>Properties &amp; Flats:</strong> ${props.length} Properties | ${flats.length} Total Flats (${occupiedFlats.length} Occupied, ${vacantFlats.length} Vacant)</div>
+          <div>• <strong>Renters:</strong> ${activeRenters.length} Active Tenants | ${departedRenters.length} Historical/Departed Records</div>
+          <div>• <strong>Rent &amp; Utility Billing:</strong> ${bills.length} Bills | Total Billed: <strong>₹${totalBilled.toLocaleString('en-IN')}</strong> | Collected: <strong style="color:#10b981;">₹${totalCollected.toLocaleString('en-IN')}</strong> | Pending Due: <strong style="color:#f43f5e;">₹${totalPendingDue.toLocaleString('en-IN')}</strong></div>
+          <div>• <strong>Kharch (Expenses):</strong> ₹${totalKharch.toLocaleString('en-IN')} (${kharch.length} items) | <strong>FD:</strong> ${fds.length} records | <strong>Khet:</strong> ${khets.length} records</div>
+          <div style="margin-top:6px; font-size:0.72rem; color:var(--text-muted);">
+            <em>Tip: Ask about a specific renter by name, "Vacant vs Occupied Flats", "Pending Dues", or "Expenses &amp; FD". (Strictly isolated to this portal's internal data).</em>
+          </div>
+        </div>
+      `;
+    }
+
+    // Requirement 5 & 7: Strictly Private, Isolated 1-on-1 Live Chat Between Each Individual Renter and Admin
+    function getPrivateChatStore() {
+      try {
+        const raw = localStorage.getItem(PRIVATE_CHAT_STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === "object") return parsed;
+        }
+      } catch (e) {}
+      return {};
+    }
+
+    function savePrivateChatStore(store) {
+      try {
+        localStorage.setItem(PRIVATE_CHAT_STORAGE_KEY, JSON.stringify(store || {}));
+      } catch (e) {}
+    }
+
+    function getMyPrivateChatChannelId() {
+      // Each non-admin user (Renter/Viewer) gets their own strictly isolated channel key based on their unique login/Aadhaar
+      const cleanUser = String(activeUser || "guest").trim().toLowerCase();
+      return "channel_" + cleanUser.replace(/[^a-z0-9_-]/g, "_");
+    }
+
+    function getAllAvailablePrivateChatChannelsForAdmin() {
+      const store = getPrivateChatStore();
+      const channelsMap = new Map();
+
+      // Include all saved channels in store
+      Object.keys(store).forEach(chId => {
+        const ch = store[chId];
+        if (ch && chId) {
+          channelsMap.set(chId, {
+            channelId: chId,
+            displayName: ch.displayName || chId.replace(/^channel_/, ""),
+            flatLabel: ch.flatLabel || "Renter / User",
+            unreadAdmin: Number(ch.unreadAdmin || 0),
+            lastTimestamp: ch.lastTimestamp || 0
+          });
+        }
+      });
+
+      // Also include all active renters and portal users so Admin can initiate a private 1-on-1 message anytime
+      (DB.renters || []).forEach(r => {
+        if (String(r.Status || "").trim().toLowerCase() !== "active") return;
+        const aadh = normalizeAadhaarString(r.IdentityDocNumber);
+        const keyBase = aadh || String(r.RenterID || r.RenterName || "").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+        if (!keyBase) return;
+        const chId = "channel_" + keyBase;
+        if (!channelsMap.has(chId)) {
+          channelsMap.set(chId, {
+            channelId: chId,
+            displayName: r.RenterName || "Renter",
+            flatLabel: `${r.PropertyName || ''} • Flat ${r.FlatName || ''}`,
+            unreadAdmin: 0,
+            lastTimestamp: 0
+          });
+        } else {
+          const existing = channelsMap.get(chId);
+          if (r.RenterName) existing.displayName = r.RenterName;
+          if (r.PropertyName && r.FlatName) existing.flatLabel = `${r.PropertyName} • Flat ${r.FlatName}`;
+        }
+      });
+
+      (DB.users || []).forEach(u => {
+        const role = String(u.Role || "").trim();
+        if (role.toLowerCase() === "admin") return;
+        const uname = String(u.Username || "").trim().toLowerCase();
+        if (!uname) return;
+        const chId = "channel_" + uname.replace(/[^a-z0-9_-]/g, "_");
+        if (!channelsMap.has(chId)) {
+          channelsMap.set(chId, {
+            channelId: chId,
+            displayName: u.FullName || u.Username,
+            flatLabel: `${role}${u.AssignedFlat ? ' • Flat ' + u.AssignedFlat : ''}`,
+            unreadAdmin: 0,
+            lastTimestamp: 0
+          });
+        }
+      });
+
+      return Array.from(channelsMap.values()).sort((a, b) => (b.lastTimestamp || 0) - (a.lastTimestamp || 0));
+    }
+
+    function selectActiveChatChannel(channelId, source) {
+      if (activeRole !== "Admin") return;
+      activeSelectedChatChannelId = String(channelId || "").trim();
+      const store = getPrivateChatStore();
+      if (store[activeSelectedChatChannelId]) {
+        store[activeSelectedChatChannelId].unreadAdmin = 0;
+        savePrivateChatStore(store);
+      }
+      renderLiveChatChannelsAndMessages();
+      updateLiveChatUnreadBadge();
+    }
+
+    function renderLiveChatChannelsAndMessages() {
+      const isAdmin = activeRole === "Admin";
+      const store = getPrivateChatStore();
+
+      const widgetAdminBar = document.getElementById("chatWidgetAdminChannelBar");
+      const settingsAdminBar = document.getElementById("settingsLiveChatAdminChannelBar");
+      const widgetSel = document.getElementById("chatWidgetChannelSelect");
+      const settingsSel = document.getElementById("settingsChatChannelSelect");
+      const subTitleEl = document.getElementById("liveChatWidgetSubTitle");
+      const badgeEl = document.getElementById("settingsLiveChatEncryptionBadge");
+
+      let currentChannelId = "";
+      let currentPartnerLabel = "Admin Support";
+
+      if (isAdmin) {
+        if (widgetAdminBar) widgetAdminBar.style.display = "block";
+        if (settingsAdminBar) settingsAdminBar.style.display = "block";
+        const channels = getAllAvailablePrivateChatChannelsForAdmin();
+        if (!activeSelectedChatChannelId && channels.length > 0) {
+          activeSelectedChatChannelId = channels[0].channelId;
+        }
+        currentChannelId = activeSelectedChatChannelId;
+
+        const optionsHtml = channels.length > 0
+          ? channels.map(c => {
+              const unreadTag = c.unreadAdmin > 0 ? ` (${c.unreadAdmin} new)` : "";
+              return `<option value="${c.channelId}" ${c.channelId === currentChannelId ? "selected" : ""}>🔒 ${c.displayName} — ${c.flatLabel}${unreadTag}</option>`;
+            }).join("")
+          : `<option value="">No Renter Channels Yet</option>`;
+
+        if (widgetSel) widgetSel.innerHTML = optionsHtml;
+        if (settingsSel) settingsSel.innerHTML = optionsHtml;
+
+        const chosen = channels.find(c => c.channelId === currentChannelId);
+        currentPartnerLabel = chosen ? `${chosen.displayName} (${chosen.flatLabel})` : "Select a Renter";
+        if (subTitleEl) subTitleEl.innerText = `Admin 1-on-1 with: ${currentPartnerLabel}`;
+        if (badgeEl) badgeEl.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Isolated Channel: ${currentPartnerLabel}`;
+      } else {
+        // Strictly force non-admin user to their own private 1-on-1 channel ONLY
+        if (widgetAdminBar) widgetAdminBar.style.display = "none";
+        if (settingsAdminBar) settingsAdminBar.style.display = "none";
+        currentChannelId = getMyPrivateChatChannelId();
+        const myName = sessionStorage.getItem("active_session_fullname") || activeUser || "Renter";
+        if (subTitleEl) subTitleEl.innerText = `Private 1-on-1 Chat with Admin (${myName})`;
+        if (badgeEl) badgeEl.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Private 1-on-1 with Admin`;
+      }
+
+      const channelObj = store[currentChannelId] || { messages: [] };
+      const msgs = Array.isArray(channelObj.messages) ? channelObj.messages : [];
+
+      if (!isAdmin && store[currentChannelId] && store[currentChannelId].unreadRenter > 0) {
+        store[currentChannelId].unreadRenter = 0;
+        savePrivateChatStore(store);
+      }
+
+      const renderMessagesHtml = () => {
+        if (msgs.length === 0) {
+          return `
+            <div style="text-align:center; padding:26px 14px; color:var(--text-muted); font-size:0.8rem;">
+              <i class="fa-solid fa-lock" style="font-size:1.5rem; color:#10b981; margin-bottom:8px; display:block;"></i>
+              <strong style="color:var(--text-main); display:block; margin-bottom:4px;">Private 1-on-1 Encrypted Conversation</strong>
+              ${isAdmin
+                ? `Send a direct message to <strong>${currentPartnerLabel}</strong>. Only this renter and Admin can ever view this chat.`
+                : `Send a message directly to the Property Admin. Your conversation is strictly private and never visible to any other renter.`}
+            </div>
+          `;
+        }
+        return msgs.map(m => {
+          const isMine = (isAdmin && m.senderRole === "Admin") || (!isAdmin && m.senderRole !== "Admin");
+          const safeText = String(m.text || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          return `
+            <div class="chat-msg-bubble ${isMine ? 'sent' : 'received'}">
+              <div>${safeText}</div>
+              <span class="chat-msg-meta">${m.senderName || m.senderRole} • ${m.timeStr || ''}</span>
+            </div>
+          `;
+        }).join("");
+      };
+
+      const htmlContent = renderMessagesHtml();
+      const widgetMsgBox = document.getElementById("chatWidgetMessagesArea");
+      const settingsMsgBox = document.getElementById("settingsChatMessagesArea");
+
+      if (widgetMsgBox) {
+        widgetMsgBox.innerHTML = htmlContent;
+        widgetMsgBox.scrollTop = widgetMsgBox.scrollHeight;
+      }
+      if (settingsMsgBox) {
+        settingsMsgBox.innerHTML = htmlContent;
+        settingsMsgBox.scrollTop = settingsMsgBox.scrollHeight;
+      }
+    }
+
+    function sendLiveChatMessage(source = "widget") {
+      const inputId = source === "settings" ? "settingsChatInput" : "chatWidgetInput";
+      const inputEl = document.getElementById(inputId);
+      if (!inputEl) return;
+      const text = inputEl.value.trim();
+      if (!text) return;
+
+      const isAdmin = activeRole === "Admin";
+      const store = getPrivateChatStore();
+      let targetChannelId = "";
+
+      if (isAdmin) {
+        if (!activeSelectedChatChannelId) {
+          const channels = getAllAvailablePrivateChatChannelsForAdmin();
+          if (channels.length > 0) activeSelectedChatChannelId = channels[0].channelId;
+        }
+        targetChannelId = activeSelectedChatChannelId;
+        if (!targetChannelId) {
+          return triggerSideToast("Select a Renter", "Please select a renter channel to send a private message.", false);
+        }
+      } else {
+        targetChannelId = getMyPrivateChatChannelId();
+      }
+
+      if (!store[targetChannelId]) {
+        const myFullName = sessionStorage.getItem("active_session_fullname") || activeUser || "Renter";
+        let flatInfo = activeRole;
+        if (activeRole === "Renter") {
+          const myProfiles = getRenterProfilesForLoggedInAadhaar();
+          if (myProfiles.length > 0) {
+            flatInfo = `${myProfiles[0].PropertyName} • Flat ${myProfiles[0].FlatName}`;
+          }
+        }
+        store[targetChannelId] = {
+          channelId: targetChannelId,
+          displayName: isAdmin ? targetChannelId.replace(/^channel_/, "") : myFullName,
+          flatLabel: flatInfo,
+          unreadAdmin: 0,
+          unreadRenter: 0,
+          lastTimestamp: Date.now(),
+          messages: []
+        };
+      }
+
+      const senderName = isAdmin
+        ? "Property Admin"
+        : (sessionStorage.getItem("active_session_fullname") || activeUser || "Renter");
+      const nowStr = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+      store[targetChannelId].messages.push({
+        id: "msg_" + Date.now(),
+        senderRole: isAdmin ? "Admin" : activeRole,
+        senderName: senderName,
+        text: text,
+        timeStr: nowStr,
+        timestamp: Date.now()
+      });
+      store[targetChannelId].lastTimestamp = Date.now();
+
+      if (isAdmin) {
+        store[targetChannelId].unreadRenter = Number(store[targetChannelId].unreadRenter || 0) + 1;
+      } else {
+        store[targetChannelId].unreadAdmin = Number(store[targetChannelId].unreadAdmin || 0) + 1;
+      }
+
+      savePrivateChatStore(store);
+      inputEl.value = "";
+      renderLiveChatChannelsAndMessages();
+      updateLiveChatUnreadBadge();
+    }
+
+    function clearCurrentAdminChatChannel() {
+      if (activeRole !== "Admin" || !activeSelectedChatChannelId) return;
+      const store = getPrivateChatStore();
+      if (store[activeSelectedChatChannelId]) {
+        store[activeSelectedChatChannelId].messages = [];
+        store[activeSelectedChatChannelId].unreadAdmin = 0;
+        store[activeSelectedChatChannelId].unreadRenter = 0;
+        savePrivateChatStore(store);
+        renderLiveChatChannelsAndMessages();
+        updateLiveChatUnreadBadge();
+        triggerSideToast("Chat History Cleared", "Cleared conversation messages for this private channel.", true);
+      }
+    }
+
+    function updateLiveChatUnreadBadge() {
+      const badge = document.getElementById("fabLiveChatBadge");
+      if (!badge) return;
+      const store = getPrivateChatStore();
+      let unreadCount = 0;
+      if (activeRole === "Admin") {
+        Object.values(store).forEach(ch => {
+          unreadCount += Number(ch?.unreadAdmin || 0);
+        });
+      } else {
+        const myCh = store[getMyPrivateChatChannelId()];
+        unreadCount = Number(myCh?.unreadRenter || 0);
+      }
+      if (unreadCount > 0) {
+        badge.style.display = "inline-flex";
+        badge.innerText = unreadCount > 99 ? "99+" : String(unreadCount);
+      } else {
+        badge.style.display = "none";
+      }
+    }
+
+    function openModularLiveChatWidget() {
+      const w = document.getElementById("modularLiveChatWidget");
+      if (!w) return;
+      w.classList.remove("minimized");
+      w.style.display = "flex";
+      renderLiveChatChannelsAndMessages();
+      setTimeout(() => {
+        document.getElementById("chatWidgetInput")?.focus();
+      }, 60);
+    }
+
+    function closeModularLiveChatWidget() {
+      const w = document.getElementById("modularLiveChatWidget");
+      if (w) w.style.display = "none";
     }
   </script>
 </body>
