@@ -3565,18 +3565,43 @@
     line-height: 1.45;
     word-break: break-word;
   }
-  .chat-msg-mine {
+  .chat-msg-bubble.sent, .chat-msg-mine {
     align-self: flex-end;
-    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    background: linear-gradient(135deg, #059669, #0d9488);
     color: #ffffff;
     border-bottom-right-radius: 4px;
   }
-  .chat-msg-other {
+  .chat-msg-bubble.received, .chat-msg-other {
     align-self: flex-start;
-    background: rgba(30, 41, 59, 0.9);
-    border: 1px solid rgba(148, 163, 184, 0.28);
-    color: #f1f5f9;
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    color: var(--text-main);
     border-bottom-left-radius: 4px;
+  }
+  .chat-msg-meta {
+    display: block;
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.78);
+    margin-top: 3px;
+  }
+  .chat-msg-bubble.received .chat-msg-meta {
+    color: var(--text-muted);
+  }
+  .chat-roster-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .chat-roster-item:hover, .chat-roster-item:active {
+    background: rgba(16, 185, 129, 0.14);
+    border-color: rgba(16, 185, 129, 0.45);
+    transform: translateY(-1px);
   }
   body.theme-white .chat-msg-other {
     background: #f1f5f9;
@@ -4519,26 +4544,53 @@
       </div>
     </div>
 
-    <!-- Admin-Only Private Channel Selector (Renters Never See Other Channels) -->
-    <div id="floatingChatAdminChannelBar" class="admin-only" style="padding:8px 10px; border-bottom:1px solid var(--glass-border); background:var(--bg-input); display:none; flex-shrink:0;">
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; margin-bottom:4px;">
-        <span style="font-size:0.7rem; font-weight:800; color:#10b981;"><i class="fa-solid fa-user-lock"></i> Select Private Renter Channel:</span>
-        <button type="button" class="btn-ledger-action" style="padding:2px 8px; font-size:0.66rem; color:var(--accent-red);" onclick="clearCurrentAdminChatChannel()" title="Clear messages in this channel">
-          <i class="fa-solid fa-trash-can"></i> Clear
-        </button>
+    <!-- VIEW 1: DIRECTORY / ROSTER VIEW (Lists all renters/users for Admin; strictly Admin only for Renters) -->
+    <div id="chatDirectoryView" style="display:flex; flex-direction:column; flex:1; min-height:0;">
+      <!-- Directory Search Bar -->
+      <div style="padding:10px 12px; border-bottom:1px solid var(--glass-border); background:var(--bg-input); flex-shrink:0;">
+        <div style="position:relative;">
+          <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:0.75rem;"></i>
+          <input type="text" id="chatSearchInput" class="form-control" style="padding:7px 12px 7px 32px; font-size:0.76rem;" placeholder="Search renters or registered users..." oninput="filterChatDirectory(this.value)">
+        </div>
       </div>
-      <select id="floatingChatChannelSelect" class="form-control" style="padding:6px 10px; font-size:0.76rem;" onchange="selectActiveChatChannel(this.value)"></select>
+      <!-- Directory Roster Items List -->
+      <div id="chatRosterList" style="flex:1; overflow-y:auto; padding:10px; display:flex; flex-direction:column; gap:8px;"></div>
     </div>
 
-    <!-- Private Conversation Messages Area -->
-    <div id="floatingChatMessagesBox" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px;"></div>
+    <!-- VIEW 2: 1-ON-1 ISOLATED CONVERSATION VIEW -->
+    <div id="chatConversationView" style="display:none; flex-direction:column; flex:1; min-height:0;">
+      <!-- Conversation Header Bar with [← Back to List] and Active Partner Info -->
+      <div style="padding:8px 12px; border-bottom:1px solid var(--glass-border); background:var(--bg-input); display:flex; align-items:center; justify-content:space-between; gap:8px; flex-shrink:0;">
+        <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+          <button type="button" class="btn-ledger-action" style="padding:5px 9px; font-size:0.72rem; color:var(--accent-cyan); display:flex; align-items:center; gap:5px; flex-shrink:0; border:1px solid rgba(6,182,212,0.4); border-radius:8px;" onclick="returnToChatDirectory()" title="Return to users list">
+            <i class="fa-solid fa-arrow-left"></i> <span>All Users</span>
+          </button>
+          <div style="min-width:0;">
+            <div id="activeChatPartnerName" style="font-size:0.8rem; font-weight:800; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+              Select a conversation
+            </div>
+            <div id="activeChatPartnerSub" style="font-size:0.66rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+              1-on-1 Encrypted Channel
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
+          <button type="button" class="btn-ledger-action admin-only" style="padding:4px 8px; font-size:0.68rem; color:var(--accent-red);" onclick="clearCurrentAdminChatChannel()" title="Clear this chat history">
+            <i class="fa-solid fa-trash-can"></i> Clear
+          </button>
+        </div>
+      </div>
 
-    <!-- Private Chat Input Bar -->
-    <div style="padding:10px; border-top:1px solid var(--glass-border); display:flex; gap:8px; background:var(--bg-input); flex-shrink:0;">
-      <input type="text" id="floatingChatInput" class="form-control" style="padding:9px 12px; font-size:0.79rem;" placeholder="Write a private message..." onkeydown="if(event.key==='Enter'){event.preventDefault(); sendLiveChatMessage('floating');}">
-      <button type="button" class="btn-primary" style="width:auto; padding:0 15px; border-radius:10px; background:linear-gradient(135deg, #059669, #0284c7);" onclick="sendLiveChatMessage('floating')">
-        <i class="fa-solid fa-paper-plane"></i>
-      </button>
+      <!-- Private Conversation Messages Area -->
+      <div id="floatingChatMessagesBox" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px;"></div>
+
+      <!-- Private Chat Input Bar -->
+      <div style="padding:10px; border-top:1px solid var(--glass-border); display:flex; gap:8px; background:var(--bg-input); flex-shrink:0;">
+        <input type="text" id="floatingChatInput" class="form-control" style="padding:9px 12px; font-size:0.79rem;" placeholder="Write a private message..." onkeydown="if(event.key==='Enter'){event.preventDefault(); sendLiveChatMessage('floating');}">
+        <button type="button" class="btn-primary" style="width:auto; padding:0 15px; border-radius:10px; background:linear-gradient(135deg, #059669, #0284c7);" onclick="sendLiveChatMessage('floating')">
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -5207,103 +5259,27 @@
         </div>
       </div>
 
-      <!-- Colour-Coded 5-Card Navigation Grid (Live Chat right before Theme Mode) -->
+      <!-- Colour-Coded 3-Card Navigation Grid (Theme moved to Profile, Live Chat isolated to bottom-right widget) -->
       <div class="flat-nav-bar settings-nav-grid">
-        <div class="flat-nav-item settings-nav-card nav-chat" onclick="switchSettingsSubTab(event, 'setSubLiveChat')">
-          <div class="s-nav-icon"><i class="fa-solid fa-comments"></i></div>
-          <div class="s-nav-title">1. Live Chat</div>
-          <div class="s-nav-sub">Private Admin &amp; Renter Chat</div>
-        </div>
-        <div class="flat-nav-item settings-nav-card nav-theme active" onclick="switchSettingsSubTab(event, 'setSubTheme')">
-          <div class="s-nav-icon"><i class="fa-solid fa-palette"></i></div>
-          <div class="s-nav-title">2. Theme Mode</div>
-          <div class="s-nav-sub">Black, White &amp; OS Auto</div>
-        </div>
-        <div class="flat-nav-item settings-nav-card nav-create admin-only" onclick="switchSettingsSubTab(event, 'setSubCreateUser')">
+        <div class="flat-nav-item settings-nav-card nav-create admin-only active" onclick="switchSettingsSubTab(event, 'setSubCreateUser')">
           <div class="s-nav-icon"><i class="fa-solid fa-user-plus"></i></div>
-          <div class="s-nav-title">3. Create User ID</div>
+          <div class="s-nav-title">1. Create User ID</div>
           <div class="s-nav-sub">Admin, Viewer or Renter</div>
         </div>
         <div class="flat-nav-item settings-nav-card nav-delete admin-only" onclick="switchSettingsSubTab(event, 'setSubDeleteManage')">
           <div class="s-nav-icon"><i class="fa-solid fa-trash-can"></i></div>
-          <div class="s-nav-title">4. Delete Center</div>
+          <div class="s-nav-title">2. Delete Center</div>
           <div class="s-nav-sub">Delete Property or Flat</div>
         </div>
         <div class="flat-nav-item settings-nav-card nav-other" onclick="switchSettingsSubTab(event, 'setSubOther')">
           <div class="s-nav-icon"><i class="fa-solid fa-compass"></i></div>
-          <div class="s-nav-title">5. Control Hub</div>
+          <div class="s-nav-title">3. Control Hub</div>
           <div class="s-nav-sub">Users, Logins, Wallpaper, Edit</div>
         </div>
       </div>
 
-      <!-- Settings Tab 0 (Requirement 5): Live Chat Option Right Before Theme Settings -->
-      <div id="setSubLiveChat" class="tab-content">
-        <div style="background:linear-gradient(135deg, rgba(6, 182, 212, 0.14), rgba(16, 185, 129, 0.1)); border:1.5px solid rgba(6, 182, 212, 0.4); border-radius:14px; padding:12px 14px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-          <div>
-            <div style="font-size:0.86rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:7px;">
-              <i class="fa-solid fa-shield-halved" style="color:#10b981;"></i> Private &amp; Isolated Live Chat Channel
-            </div>
-            <div style="font-size:0.73rem; color:var(--text-muted); margin-top:2px;">
-              Strictly private 1-on-1 encrypted channel between each individual Renter and Admin. No other renter can ever view this conversation.
-            </div>
-          </div>
-          <button type="button" class="btn-primary" style="width:auto; padding:8px 14px; font-size:0.75rem; background:linear-gradient(135deg, #059669, #0284c7);" onclick="closeModal('settingsModal'); openModularLiveChatWidget();">
-            <i class="fa-solid fa-up-right-from-square"></i> Pop Out Movable Chat Widget
-          </button>
-        </div>
-
-        <div id="settingsChatAdminChannelBar" class="admin-only" style="margin-bottom:10px; display:none;">
-          <label style="font-size:0.74rem; font-weight:800; color:#38bdf8; display:block; margin-bottom:4px;">
-            <i class="fa-solid fa-user-lock"></i> Select Private Renter / User Conversation Channel:
-          </label>
-          <select id="settingsChatChannelSelect" class="form-control" onchange="selectActiveChatChannel(this.value)"></select>
-        </div>
-
-        <div id="settingsChatMessagesBox" style="height:250px; overflow-y:auto; background:var(--bg-input); border:1px solid var(--glass-border); border-radius:14px; padding:12px; display:flex; flex-direction:column; gap:8px; margin-bottom:10px;"></div>
-
-        <div style="display:flex; gap:8px;">
-          <input type="text" id="settingsChatInput" class="form-control" placeholder="Type your private message here..." onkeydown="if(event.key==='Enter'){event.preventDefault(); sendLiveChatMessage('settings');}">
-          <button type="button" class="btn-primary" style="width:auto; padding:0 18px; background:linear-gradient(135deg, #10b981, #0284c7);" onclick="sendLiveChatMessage('settings')">
-            <i class="fa-solid fa-paper-plane"></i> Send
-          </button>
-        </div>
-      </div>
-
-      <!-- Settings Tab 1: Change Theme -->
-      <div id="setSubTheme" class="tab-content active">
-        <div style="background:rgba(56,189,248,0.1); border:1.5px solid rgba(56,189,248,0.35); border-radius:12px; padding:10px 14px; margin-bottom:12px; font-size:0.8rem; color:var(--text-main);">
-          <i class="fa-solid fa-sparkles" style="color:#38bdf8; margin-right:6px;"></i>
-          <strong>Visual Theme Selector:</strong> Choose how your dashboard looks. Syncs automatically to your Google Sheets profile!
-        </div>
-        <div class="theme-grid">
-          <div class="theme-card" id="themeCardBlack" style="border-left: 4px solid #38bdf8;" onclick="selectAndSaveTheme('black')">
-            <div>
-              <strong style="color:#38bdf8;"><i class="fa-solid fa-moon" style="margin-right:6px;"></i>Black Glass Theme</strong>
-              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top:2px;">Deep obsidian glass panels with crisp white typography</div>
-            </div>
-            <i class="fa-solid fa-moon" style="font-size: 1.35rem; color:#38bdf8;"></i>
-          </div>
-
-          <div class="theme-card" id="themeCardWhite" style="border-left: 4px solid #f59e0b;" onclick="selectAndSaveTheme('white')">
-            <div>
-              <strong style="color:#f59e0b;"><i class="fa-solid fa-sun" style="margin-right:6px;"></i>White Daylight Theme</strong>
-              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top:2px;">Bright frosted ivory cards with high-contrast dark text</div>
-            </div>
-            <i class="fa-solid fa-sun" style="color: #f59e0b; font-size: 1.35rem;"></i>
-          </div>
-
-          <div class="theme-card" id="themeCardSystem" style="border-left: 4px solid #a855f7;" onclick="selectAndSaveTheme('system')">
-            <div>
-              <strong style="color:#a855f7;"><i class="fa-solid fa-desktop" style="margin-right:6px;"></i>System Auto Theme</strong>
-              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top:2px;">Automatically adapts to your phone or laptop dark/light mode</div>
-            </div>
-            <i class="fa-solid fa-desktop" style="color: #a855f7; font-size: 1.35rem;"></i>
-          </div>
-        </div>
-      </div>
-
-      <!-- Settings Tab 2: Create a New User ID -->
-      <div id="setSubCreateUser" class="tab-content">
+      <!-- Settings Tab 1: Create a New User ID -->
+      <div id="setSubCreateUser" class="tab-content active">
         <div style="background:rgba(16,185,129,0.1); border:1.5px solid rgba(16,185,129,0.35); border-radius:12px; padding:10px 14px; margin-bottom:14px; font-size:0.8rem;">
           <i class="fa-solid fa-id-badge" style="color:#10b981; margin-right:6px;"></i>
           <strong>Create New Login ID:</strong> Add an <strong>Admin</strong> (full control), <strong>Viewer</strong> (read-only), or <strong>Renter</strong> (restricted to their flat/property).
@@ -5498,6 +5474,16 @@
             <div class="tool-top" style="color:#c084fc;"><i class="fa-solid fa-pen-ruler"></i> 4. Edit Everything</div>
             <div class="tool-desc">Search, modify or delete any historical bill across all flats</div>
           </button>
+          <button
+            type="button"
+            id="btnOtherOptContactSettings"
+            class="btn-ledger-action admin-only other-tool-card"
+            style="border-color: rgba(245, 158, 11, 0.5) !important; background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.08));"
+            onclick="switchOtherSubOption('contactSettings')"
+          >
+            <div class="tool-top" style="color:#f59e0b;"><i class="fa-solid fa-address-book"></i> 5. Contact Info</div>
+            <div class="tool-desc">Admin Only: Set WhatsApp, phone, email &amp; address for Contact Us popup</div>
+          </button>
         </div>
 
         <!-- Option 1 Panel: Registered User (Admin can Delete Users, Demote Admin to Regular User, or Promote Regular User to Admin) -->
@@ -5643,6 +5629,51 @@
               onclick="changeLoginHistoryPage(1)"
             >
               Next Page <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Option 5 Panel: Contact Info Configuration (Requirement 12) -->
+        <div id="otherPanelContactSettings" class="stat-pill admin-only" style="text-align: left; display: none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--glass-border);">
+            <div>
+              <span style="font-weight:800; font-size:0.88rem; color:#f59e0b;">
+                <i class="fa-solid fa-address-book"></i> Contact Us Details &amp; WhatsApp Support Configuration
+              </span>
+              <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">
+                Configure the phone numbers, WhatsApp chat link, email, and address that Renters and Viewers see when they click the "Contact Us" button.
+              </div>
+            </div>
+            <span style="font-size:0.7rem; color:#f59e0b; font-weight:700; background:rgba(245,158,11,0.15); padding:3px 8px; border-radius:12px;">
+              <i class="fa-solid fa-headset"></i> Live Support Sync
+            </span>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Support Phone Number <span class="req-star">*</span></label>
+              <input type="tel" id="cfgContactPhone" class="form-control" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>WhatsApp Support Mobile Number <span class="req-star">*</span></label>
+              <input type="tel" id="cfgContactWhatsapp" class="form-control" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Support Email Address</label>
+              <input type="email" id="cfgContactEmail" class="form-control" placeholder="support@apnaflat.com">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Office / Property Address</label>
+              <input type="text" id="cfgContactAddress" class="form-control" placeholder="Management Office, Main Gate">
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:8px;">
+            <button type="button" class="btn-primary" style="width:auto; padding:8px 20px; font-size:0.78rem; font-weight:700; background:linear-gradient(135deg, #f59e0b, #d97706);" onclick="saveAdminContactSettings()">
+              <i class="fa-solid fa-floppy-disk"></i> Save Contact Details
             </button>
           </div>
         </div>
@@ -10395,21 +10426,23 @@ function formatMonthLabel(rawVal) {
       const historyPanel = document.getElementById("otherPanelLoginHistory");
       const changeBgPanel = document.getElementById("otherPanelChangeBg");
       const eePanel = document.getElementById("otherPanelEditEverything");
+      const contactPanel = document.getElementById("otherPanelContactSettings");
       const btnUsers = document.getElementById("btnOtherOptUsers");
       const btnHistory = document.getElementById("btnOtherOptLoginHistory");
       const btnChangeBg = document.getElementById("btnOtherOptChangeBg");
       const btnEe = document.getElementById("btnOtherOptEditEverything");
+      const btnContact = document.getElementById("btnOtherOptContactSettings");
       const isAdmin = String(activeRole || "").trim().toLowerCase() === "admin";
 
-      if ((opt === "history" || opt === "editEverything" || opt === "changeBg") && !isAdmin) {
+      if ((opt === "history" || opt === "editEverything" || opt === "changeBg" || opt === "contactSettings") && !isAdmin) {
         triggerSideToast("Admin Permission Required", "Only the Admin has authority to access this section.", false);
         opt = "users";
       }
 
-      [usersPanel, historyPanel, changeBgPanel, eePanel].forEach(p => { if (p) p.style.display = "none"; });
+      [usersPanel, historyPanel, changeBgPanel, eePanel, contactPanel].forEach(p => { if (p) p.style.display = "none"; });
       if (btnUsers) btnUsers.className = "btn-ledger-action other-tool-card";
       if (btnChangeBg) btnChangeBg.className = "btn-ledger-action admin-only other-tool-card";
-      [btnHistory, btnEe].forEach(b => { if (b) b.className = "btn-ledger-action admin-only other-tool-card"; });
+      [btnHistory, btnEe, btnContact].forEach(b => { if (b) b.className = "btn-ledger-action admin-only other-tool-card"; });
 
       if (opt === "history") {
         if (historyPanel) historyPanel.style.display = "block";
@@ -10424,6 +10457,10 @@ function formatMonthLabel(rawVal) {
         if (eePanel) eePanel.style.display = "block";
         if (btnEe) btnEe.className = "btn-primary admin-only other-tool-card";
         renderEditEverythingBillsList();
+      } else if (opt === "contactSettings") {
+        if (contactPanel) contactPanel.style.display = "block";
+        if (btnContact) btnContact.className = "btn-primary admin-only other-tool-card";
+        initAdminContactSettingsInputs();
       } else {
         if (usersPanel) usersPanel.style.display = "block";
         if (btnUsers) btnUsers.className = "btn-primary other-tool-card";
@@ -10973,12 +11010,15 @@ function formatMonthLabel(rawVal) {
       const panelEditEvery = document.getElementById("otherPanelEditEverything");
       const btnChangeBg = document.getElementById("btnOtherOptChangeBg");
       const panelChangeBg = document.getElementById("otherPanelChangeBg");
+      const btnContact = document.getElementById("btnOtherOptContactSettings");
+      const panelContact = document.getElementById("otherPanelContactSettings");
       const btnGrid = document.getElementById("otherOptionsBtnGrid");
 
       populateCreateUserFlatsDropdown();
       populateRenterQuickSelectDropdowns();
       handleCreateUserRoleChange();
       initCustomBgInputs();
+      initAdminContactSettingsInputs();
       if (typeof renderLiveChatChannelsAndMessages === "function") {
         renderLiveChatChannelsAndMessages();
       }
@@ -10990,13 +11030,16 @@ function formatMonthLabel(rawVal) {
         if (panelEditEvery) panelEditEvery.style.display = "none";
         if (btnChangeBg) btnChangeBg.style.display = "none";
         if (panelChangeBg) panelChangeBg.style.display = "none";
+        if (btnContact) btnContact.style.display = "none";
+        if (panelContact) panelContact.style.display = "none";
         if (btnGrid) btnGrid.style.gridTemplateColumns = "1fr";
         switchOtherSubOption("users");
       } else {
         if (btnLoginHist) btnLoginHist.style.display = "flex";
         if (btnEditEvery) btnEditEvery.style.display = "flex";
         if (btnChangeBg) btnChangeBg.style.display = "flex";
-        if (btnGrid) btnGrid.style.gridTemplateColumns = "repeat(2, 1fr)";
+        if (btnContact) btnContact.style.display = "flex";
+        if (btnGrid) btnGrid.style.gridTemplateColumns = "repeat(auto-fit, minmax(180px, 1fr))";
         renderLoginHistoryPage();
       }
 
@@ -11010,11 +11053,7 @@ function formatMonthLabel(rawVal) {
       parent.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
       if (evt && evt.currentTarget) evt.currentTarget.classList.add("active");
       document.getElementById(subTabId)?.classList.add("active");
-      if (subTabId === "setSubLiveChat") {
-        if (typeof renderLiveChatChannelsAndMessages === "function") {
-          renderLiveChatChannelsAndMessages();
-        }
-      } else if (subTabId === "setSubCreateUser") {
+      if (subTabId === "setSubCreateUser") {
         populateCreateUserFlatsDropdown();
         populateRenterQuickSelectDropdowns();
         handleCreateUserRoleChange();
@@ -19120,25 +19159,94 @@ function formatMonthLabel(rawVal) {
       });
     }
 
-    // Requirement 6: Contact Us Popup for Renter & Viewer
+    // Requirement 12: Admin-Configured Contact Details & WhatsApp Direct Chat
+    function getAdminContactSettings() {
+      try {
+        const raw = localStorage.getItem("portal_admin_contact_cfg");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === "object") return parsed;
+        }
+      } catch (e) {}
+      const anyFlat = (DB.flats || []).find(f => f.ContractMobile || f.ContractNumber);
+      const anyProp = (DB.properties || [])[0];
+      const fallbackPhone = anyFlat?.ContractMobile || anyFlat?.ContractNumber || anyProp?.ContractNumber || "+91 9876543210";
+      return {
+        phone: fallbackPhone,
+        whatsapp: fallbackPhone,
+        email: "support@apnaflat.com",
+        address: "Property Management Office"
+      };
+    }
+
+    function saveAdminContactSettings() {
+      const phone = document.getElementById("cfgContactPhone")?.value.trim() || "";
+      const whatsapp = document.getElementById("cfgContactWhatsapp")?.value.trim() || "";
+      const email = document.getElementById("cfgContactEmail")?.value.trim() || "";
+      const address = document.getElementById("cfgContactAddress")?.value.trim() || "";
+      const cfg = { phone, whatsapp, email, address };
+      localStorage.setItem("portal_admin_contact_cfg", JSON.stringify(cfg));
+      triggerSideToast("Contact Info Saved", "Contact details and WhatsApp support updated successfully.", true);
+    }
+
+    function initAdminContactSettingsInputs() {
+      const cfg = getAdminContactSettings();
+      if (document.getElementById("cfgContactPhone")) document.getElementById("cfgContactPhone").value = cfg.phone || "";
+      if (document.getElementById("cfgContactWhatsapp")) document.getElementById("cfgContactWhatsapp").value = cfg.whatsapp || "";
+      if (document.getElementById("cfgContactEmail")) document.getElementById("cfgContactEmail").value = cfg.email || "";
+      if (document.getElementById("cfgContactAddress")) document.getElementById("cfgContactAddress").value = cfg.address || "";
+    }
+
     function openContactUsModal() {
-      const propName = selectedProperty || (DB.properties && DB.properties[0]?.PropertyName) || "Property Management";
-      const propObj = findPropertyObject(propName);
-      const anyFlatWithContact = (DB.flats || []).find(f => f.ContractMobile || f.UPIID || f.UPIName);
+      const cfg = getAdminContactSettings();
+      const body = document.getElementById("contactUsDynamicBody");
+      if (!body) return;
 
-      const phone = propObj?.ContractNumber || anyFlatWithContact?.ContractMobile || "+91 9876543210";
-      const upiName = propObj?.UPIName || anyFlatWithContact?.UPIName || "Property Admin";
-      const upiId = propObj?.UPIID || anyFlatWithContact?.UPIID || "Contact Admin via Live Chat";
+      const rawWa = String(cfg.whatsapp || cfg.phone || "").replace(/[^0-9]/g, "");
+      const waNumber = rawWa.length === 10 ? "91" + rawWa : rawWa;
+      const waUrl = waNumber ? `https://wa.me/${waNumber}?text=Hello%20Property%20Admin%2C%20I%20need%20assistance%20regarding%20my%20flat.` : "";
 
-      const propEl = document.getElementById("contactUsPropName");
-      const phoneEl = document.getElementById("contactUsPhoneDisplay");
-      const callLink = document.getElementById("contactUsCallLink");
-      const upiEl = document.getElementById("contactUsUpiDisplay");
+      body.innerHTML = `
+        <div style="background:var(--bg-input); border:1px solid var(--glass-border); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:12px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+            <div>
+              <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Phone Support</div>
+              <div style="font-size:0.95rem; font-weight:800; color:var(--text-main);">${cfg.phone || 'Not Specified'}</div>
+            </div>
+            ${cfg.phone ? `<a href="tel:${String(cfg.phone).replace(/\s+/g, '')}" class="btn-primary" style="width:auto; padding:7px 15px; font-size:0.75rem; text-decoration:none;"><i class="fa-solid fa-phone"></i> Call</a>` : ''}
+          </div>
 
-      if (propEl) propEl.innerText = `${propName} (${upiName})`;
-      if (phoneEl) phoneEl.innerText = phone;
-      if (callLink) callLink.href = "tel:" + String(phone).replace(/\s+/g, "");
-      if (upiEl) upiEl.innerText = upiId ? `${upiName} • ${upiId}` : upiName;
+          ${waUrl ? `
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding-top:10px; border-top:1px dashed var(--glass-border);">
+            <div>
+              <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">WhatsApp Direct Chat</div>
+              <div style="font-size:0.92rem; font-weight:800; color:#22c55e;"><i class="fa-brands fa-whatsapp"></i> ${cfg.whatsapp || cfg.phone}</div>
+            </div>
+            <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary" style="width:auto; padding:7px 15px; font-size:0.75rem; text-decoration:none; background:linear-gradient(135deg, #16a34a, #22c55e);"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+          </div>
+          ` : ''}
+
+          ${cfg.email ? `
+          <div style="padding-top:10px; border-top:1px dashed var(--glass-border);">
+            <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Email Support</div>
+            <div style="font-size:0.86rem; font-weight:700; color:var(--accent-cyan);"><i class="fa-solid fa-envelope"></i> ${cfg.email}</div>
+          </div>
+          ` : ''}
+
+          ${cfg.address ? `
+          <div style="padding-top:10px; border-top:1px dashed var(--glass-border);">
+            <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Management Office Address</div>
+            <div style="font-size:0.84rem; color:var(--text-main);"><i class="fa-solid fa-location-dot" style="color:#ef4444;"></i> ${cfg.address}</div>
+          </div>
+          ` : ''}
+        </div>
+
+        <div style="text-align:center; margin-top:4px;">
+          <button type="button" class="btn-ledger-action" style="padding:7px 16px; font-size:0.78rem;" onclick="closeModal('contactUsModal'); openModularLiveChatWidget();">
+            <i class="fa-solid fa-comments" style="color:#10b981;"></i> Or Open Private Live Chat
+          </button>
+        </div>
+      `;
 
       openModal("contactUsModal");
     }
@@ -19157,7 +19265,7 @@ function formatMonthLabel(rawVal) {
         w.classList.remove("minimized");
         w.style.display = "flex";
         setTimeout(() => {
-          document.getElementById("aiWidgetInput")?.focus();
+          (document.getElementById("modularAiQueryInput") || document.getElementById("aiWidgetInput"))?.focus();
         }, 60);
       }
     }
@@ -19168,15 +19276,15 @@ function formatMonthLabel(rawVal) {
     }
 
     function runAdminWebsiteAiPrompt(promptText) {
-      const inputEl = document.getElementById("aiWidgetInput");
+      const inputEl = document.getElementById("modularAiQueryInput") || document.getElementById("aiWidgetInput");
       if (inputEl) inputEl.value = promptText;
       submitAdminWebsiteAiQuery();
     }
 
     function submitAdminWebsiteAiQuery() {
       if (activeRole !== "Admin") return;
-      const inputEl = document.getElementById("aiWidgetInput");
-      const msgArea = document.getElementById("aiWidgetMessagesArea");
+      const inputEl = document.getElementById("modularAiQueryInput") || document.getElementById("aiWidgetInput");
+      const msgArea = document.getElementById("modularAiMessagesBox") || document.getElementById("aiWidgetMessagesArea");
       if (!inputEl || !msgArea) return;
 
       const query = inputEl.value.trim();
@@ -19431,114 +19539,195 @@ function formatMonthLabel(rawVal) {
       return Array.from(channelsMap.values()).sort((a, b) => (b.lastTimestamp || 0) - (a.lastTimestamp || 0));
     }
 
-    function selectActiveChatChannel(channelId, source) {
-      if (activeRole !== "Admin") return;
-      activeSelectedChatChannelId = String(channelId || "").trim();
-      const store = getPrivateChatStore();
-      if (store[activeSelectedChatChannelId]) {
-        store[activeSelectedChatChannelId].unreadAdmin = 0;
-        savePrivateChatStore(store);
-      }
-      renderLiveChatChannelsAndMessages();
-      updateLiveChatUnreadBadge();
-    }
+    // Live Chat State & Navigation (Requirements 7, 8 & 14)
+    let activeSelectedChatChannelId = "";
+    let activeChatDirectoryFilter = "";
 
     function renderLiveChatChannelsAndMessages() {
+      renderChatDirectoryRoster();
+      renderCurrentChatMessages();
+    }
+
+    function filterChatDirectory(query) {
+      activeChatDirectoryFilter = String(query || "").trim().toLowerCase();
+      renderChatDirectoryRoster();
+    }
+
+    function renderChatDirectoryRoster() {
+      const rosterEl = document.getElementById("chatRosterList");
+      if (!rosterEl) return;
       const isAdmin = activeRole === "Admin";
       const store = getPrivateChatStore();
 
-      const widgetAdminBar = document.getElementById("chatWidgetAdminChannelBar");
-      const settingsAdminBar = document.getElementById("settingsLiveChatAdminChannelBar");
-      const widgetSel = document.getElementById("chatWidgetChannelSelect");
-      const settingsSel = document.getElementById("settingsChatChannelSelect");
-      const subTitleEl = document.getElementById("liveChatWidgetSubTitle");
-      const badgeEl = document.getElementById("settingsLiveChatEncryptionBadge");
-
-      let currentChannelId = "";
-      let currentPartnerLabel = "Admin Support";
-
       if (isAdmin) {
-        if (widgetAdminBar) widgetAdminBar.style.display = "block";
-        if (settingsAdminBar) settingsAdminBar.style.display = "block";
-        const channels = getAllAvailablePrivateChatChannelsForAdmin();
-        if (!activeSelectedChatChannelId && channels.length > 0) {
-          activeSelectedChatChannelId = channels[0].channelId;
+        let channels = getAllAvailablePrivateChatChannelsForAdmin();
+        if (activeChatDirectoryFilter) {
+          const q = activeChatDirectoryFilter;
+          channels = channels.filter(c =>
+            (c.displayName && c.displayName.toLowerCase().includes(q)) ||
+            (c.flatLabel && c.flatLabel.toLowerCase().includes(q)) ||
+            (c.channelId && c.channelId.toLowerCase().includes(q))
+          );
         }
-        currentChannelId = activeSelectedChatChannelId;
 
-        const optionsHtml = channels.length > 0
-          ? channels.map(c => {
-              const unreadTag = c.unreadAdmin > 0 ? ` (${c.unreadAdmin} new)` : "";
-              return `<option value="${c.channelId}" ${c.channelId === currentChannelId ? "selected" : ""}>🔒 ${c.displayName} — ${c.flatLabel}${unreadTag}</option>`;
-            }).join("")
-          : `<option value="">No Renter Channels Yet</option>`;
-
-        if (widgetSel) widgetSel.innerHTML = optionsHtml;
-        if (settingsSel) settingsSel.innerHTML = optionsHtml;
-
-        const chosen = channels.find(c => c.channelId === currentChannelId);
-        currentPartnerLabel = chosen ? `${chosen.displayName} (${chosen.flatLabel})` : "Select a Renter";
-        if (subTitleEl) subTitleEl.innerText = `Admin 1-on-1 with: ${currentPartnerLabel}`;
-        if (badgeEl) badgeEl.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Isolated Channel: ${currentPartnerLabel}`;
-      } else {
-        // Strictly force non-admin user to their own private 1-on-1 channel ONLY
-        if (widgetAdminBar) widgetAdminBar.style.display = "none";
-        if (settingsAdminBar) settingsAdminBar.style.display = "none";
-        currentChannelId = getMyPrivateChatChannelId();
-        const myName = sessionStorage.getItem("active_session_fullname") || activeUser || "Renter";
-        if (subTitleEl) subTitleEl.innerText = `Private 1-on-1 Chat with Admin (${myName})`;
-        if (badgeEl) badgeEl.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Private 1-on-1 with Admin`;
-      }
-
-      const channelObj = store[currentChannelId] || { messages: [] };
-      const msgs = Array.isArray(channelObj.messages) ? channelObj.messages : [];
-
-      if (!isAdmin && store[currentChannelId] && store[currentChannelId].unreadRenter > 0) {
-        store[currentChannelId].unreadRenter = 0;
-        savePrivateChatStore(store);
-      }
-
-      const renderMessagesHtml = () => {
-        if (msgs.length === 0) {
-          return `
-            <div style="text-align:center; padding:26px 14px; color:var(--text-muted); font-size:0.8rem;">
-              <i class="fa-solid fa-lock" style="font-size:1.5rem; color:#10b981; margin-bottom:8px; display:block;"></i>
-              <strong style="color:var(--text-main); display:block; margin-bottom:4px;">Private 1-on-1 Encrypted Conversation</strong>
-              ${isAdmin
-                ? `Send a direct message to <strong>${currentPartnerLabel}</strong>. Only this renter and Admin can ever view this chat.`
-                : `Send a message directly to the Property Admin. Your conversation is strictly private and never visible to any other renter.`}
+        if (channels.length === 0) {
+          rosterEl.innerHTML = `
+            <div style="text-align:center; padding:32px 14px; color:var(--text-muted); font-size:0.8rem;">
+              <i class="fa-solid fa-users-slash" style="font-size:1.6rem; color:var(--text-muted); margin-bottom:8px; display:block;"></i>
+              No renters or registered user IDs found.
             </div>
           `;
+          return;
         }
-        return msgs.map(m => {
-          const isMine = (isAdmin && m.senderRole === "Admin") || (!isAdmin && m.senderRole !== "Admin");
-          const safeText = String(m.text || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+        rosterEl.innerHTML = channels.map(c => {
+          const unread = Number(c.unreadAdmin || 0);
+          const initials = (c.displayName || "R").trim().substring(0, 2).toUpperCase();
+          const safeName = String(c.displayName || "Renter").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          const safeLabel = String(c.flatLabel || "User").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          const lastMsg = (store[c.channelId]?.messages || []).slice(-1)[0];
+          const snippet = lastMsg ? String(lastMsg.text || "").slice(0, 32) : "Click to open private 1-on-1 chat...";
+
           return `
-            <div class="chat-msg-bubble ${isMine ? 'sent' : 'received'}">
-              <div>${safeText}</div>
-              <span class="chat-msg-meta">${m.senderName || m.senderRole} • ${m.timeStr || ''}</span>
+            <div class="chat-roster-item" onclick="openChatWithChannel('${c.channelId}', '${encodeURIComponent(c.displayName)}', '${encodeURIComponent(c.flatLabel)}')">
+              <div style="width:38px; height:38px; border-radius:12px; background:linear-gradient(135deg, #059669, #0284c7); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.82rem; flex-shrink:0;">
+                ${initials}
+              </div>
+              <div style="flex:1; min-width:0;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+                  <span style="font-size:0.82rem; font-weight:800; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                    ${safeName}
+                  </span>
+                  ${unread > 0 ? `<span style="background:#ef4444; color:#fff; font-size:0.65rem; font-weight:900; padding:1px 6px; border-radius:999px;">${unread}</span>` : ''}
+                </div>
+                <div style="font-size:0.69rem; color:#10b981; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                  <i class="fa-solid fa-location-dot"></i> ${safeLabel}
+                </div>
+                <div style="font-size:0.66rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">
+                  ${snippet}
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-right" style="color:var(--text-muted); font-size:0.75rem; flex-shrink:0;"></i>
             </div>
           `;
         }).join("");
-      };
+      } else {
+        // STRICT ISOLATION FOR RENTERS / VIEWERS (Requirement 8):
+        // Only Property Admin appears in their roster. Never any other renter!
+        const myChannelId = getMyPrivateChatChannelId();
+        const unread = Number(store[myChannelId]?.unreadRenter || 0);
+        const lastMsg = (store[myChannelId]?.messages || []).slice(-1)[0];
+        const snippet = lastMsg ? String(lastMsg.text || "").slice(0, 36) : "Click to chat directly with Property Admin...";
 
-      const htmlContent = renderMessagesHtml();
-      const widgetMsgBox = document.getElementById("chatWidgetMessagesArea");
-      const settingsMsgBox = document.getElementById("settingsChatMessagesArea");
-
-      if (widgetMsgBox) {
-        widgetMsgBox.innerHTML = htmlContent;
-        widgetMsgBox.scrollTop = widgetMsgBox.scrollHeight;
-      }
-      if (settingsMsgBox) {
-        settingsMsgBox.innerHTML = htmlContent;
-        settingsMsgBox.scrollTop = settingsMsgBox.scrollHeight;
+        rosterEl.innerHTML = `
+          <div class="chat-roster-item" onclick="openChatWithChannel('${myChannelId}', 'Property Admin', 'Official Support')">
+            <div style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, #059669, #0d9488); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;">
+              <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <div style="flex:1; min-width:0;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+                <span style="font-size:0.84rem; font-weight:800; color:var(--text-main);">
+                  Property Admin (Support Desk)
+                </span>
+                ${unread > 0 ? `<span style="background:#ef4444; color:#fff; font-size:0.65rem; font-weight:900; padding:1px 6px; border-radius:999px;">${unread}</span>` : ''}
+              </div>
+              <div style="font-size:0.69rem; color:#0284c7; font-weight:700;">
+                <i class="fa-solid fa-shield-halved"></i> Official 1-on-1 Support Desk
+              </div>
+              <div style="font-size:0.66rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">
+                ${snippet}
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="color:var(--text-muted); font-size:0.75rem; flex-shrink:0;"></i>
+          </div>
+          <div style="margin-top:14px; padding:12px; border-radius:12px; background:rgba(16,185,129,0.08); border:1px dashed rgba(16,185,129,0.3); font-size:0.72rem; color:var(--text-muted); line-height:1.45; text-align:center;">
+            <i class="fa-solid fa-lock" style="color:#10b981; margin-right:4px;"></i>
+            <strong>End-to-End Privacy Protected:</strong> You are communicating directly with the property management. Other tenants cannot view your messages.
+          </div>
+        `;
       }
     }
 
-    function sendLiveChatMessage(source = "widget") {
-      const inputId = source === "settings" ? "settingsChatInput" : "chatWidgetInput";
-      const inputEl = document.getElementById(inputId);
+    function openChatWithChannel(channelId, encodedName, encodedSub) {
+      activeSelectedChatChannelId = channelId;
+      const name = decodeURIComponent(encodedName || "Chat Partner");
+      const sub = decodeURIComponent(encodedSub || "1-on-1 Channel");
+
+      const dirView = document.getElementById("chatDirectoryView");
+      const convView = document.getElementById("chatConversationView");
+      if (dirView) dirView.style.display = "none";
+      if (convView) convView.style.display = "flex";
+
+      const nameEl = document.getElementById("activeChatPartnerName");
+      const subEl = document.getElementById("activeChatPartnerSub");
+      if (nameEl) nameEl.innerText = name;
+      if (subEl) subEl.innerText = sub;
+
+      const isAdmin = activeRole === "Admin";
+      const store = getPrivateChatStore();
+      if (store[channelId]) {
+        if (isAdmin) store[channelId].unreadAdmin = 0;
+        else store[channelId].unreadRenter = 0;
+        savePrivateChatStore(store);
+      }
+
+      renderCurrentChatMessages();
+      updateLiveChatUnreadBadge();
+
+      setTimeout(() => {
+        document.getElementById("floatingChatInput")?.focus();
+      }, 60);
+    }
+
+    function returnToChatDirectory() {
+      const dirView = document.getElementById("chatDirectoryView");
+      const convView = document.getElementById("chatConversationView");
+      if (dirView) dirView.style.display = "flex";
+      if (convView) convView.style.display = "none";
+      renderChatDirectoryRoster();
+      updateLiveChatUnreadBadge();
+    }
+
+    function renderCurrentChatMessages() {
+      const box = document.getElementById("floatingChatMessagesBox") || document.getElementById("chatWidgetMessagesArea");
+      if (!box) return;
+      const channelId = activeSelectedChatChannelId || (activeRole === "Admin" ? "" : getMyPrivateChatChannelId());
+      if (!channelId) {
+        box.innerHTML = `<div style="text-align:center; padding:30px 14px; color:var(--text-muted); font-size:0.8rem;">Select a renter or user to view messages.</div>`;
+        return;
+      }
+      const store = getPrivateChatStore();
+      const channelObj = store[channelId] || { messages: [] };
+      const msgs = Array.isArray(channelObj.messages) ? channelObj.messages : [];
+      const isAdmin = activeRole === "Admin";
+
+      if (msgs.length === 0) {
+        box.innerHTML = `
+          <div style="text-align:center; padding:30px 14px; color:var(--text-muted); font-size:0.8rem;">
+            <i class="fa-solid fa-lock" style="font-size:1.5rem; color:#10b981; margin-bottom:8px; display:block;"></i>
+            <strong style="color:var(--text-main); display:block; margin-bottom:4px;">Private 1-on-1 Conversation</strong>
+            Send a message to begin chatting. This channel is completely isolated and end-to-end private.
+          </div>
+        `;
+        return;
+      }
+
+      box.innerHTML = msgs.map(m => {
+        const isMine = (isAdmin && m.senderRole === "Admin") || (!isAdmin && m.senderRole !== "Admin");
+        const safeText = String(m.text || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        return `
+          <div class="chat-msg-bubble ${isMine ? 'sent' : 'received'}">
+            <div>${safeText}</div>
+            <span class="chat-msg-meta">${m.senderName || m.senderRole} • ${m.timeStr || ''}</span>
+          </div>
+        `;
+      }).join("");
+
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function sendLiveChatMessage(source = "floating") {
+      const inputEl = document.getElementById("floatingChatInput") || document.getElementById("chatWidgetInput") || document.getElementById("settingsChatInput");
       if (!inputEl) return;
       const text = inputEl.value.trim();
       if (!text) return;
@@ -19548,13 +19737,9 @@ function formatMonthLabel(rawVal) {
       let targetChannelId = "";
 
       if (isAdmin) {
-        if (!activeSelectedChatChannelId) {
-          const channels = getAllAvailablePrivateChatChannelsForAdmin();
-          if (channels.length > 0) activeSelectedChatChannelId = channels[0].channelId;
-        }
         targetChannelId = activeSelectedChatChannelId;
         if (!targetChannelId) {
-          return triggerSideToast("Select a Renter", "Please select a renter channel to send a private message.", false);
+          return triggerSideToast("Select a User", "Please select a user from the directory list first.", false);
         }
       } else {
         targetChannelId = getMyPrivateChatChannelId();
@@ -19603,7 +19788,7 @@ function formatMonthLabel(rawVal) {
 
       savePrivateChatStore(store);
       inputEl.value = "";
-      renderLiveChatChannelsAndMessages();
+      renderCurrentChatMessages();
       updateLiveChatUnreadBadge();
     }
 
@@ -19615,14 +19800,14 @@ function formatMonthLabel(rawVal) {
         store[activeSelectedChatChannelId].unreadAdmin = 0;
         store[activeSelectedChatChannelId].unreadRenter = 0;
         savePrivateChatStore(store);
-        renderLiveChatChannelsAndMessages();
+        renderCurrentChatMessages();
         updateLiveChatUnreadBadge();
         triggerSideToast("Chat History Cleared", "Cleared conversation messages for this private channel.", true);
       }
     }
 
     function updateLiveChatUnreadBadge() {
-      const badge = document.getElementById("fabLiveChatBadge");
+      const badge = document.getElementById("liveChatUnreadBadge") || document.getElementById("fabLiveChatBadge");
       if (!badge) return;
       const store = getPrivateChatStore();
       let unreadCount = 0;
@@ -19647,10 +19832,17 @@ function formatMonthLabel(rawVal) {
       if (!w) return;
       w.classList.remove("minimized");
       w.style.display = "flex";
-      renderLiveChatChannelsAndMessages();
-      setTimeout(() => {
-        document.getElementById("chatWidgetInput")?.focus();
-      }, 60);
+
+      // If no conversation was actively selected, always show Directory View
+      if (!activeSelectedChatChannelId && activeRole === "Admin") {
+        returnToChatDirectory();
+      } else if (activeRole !== "Admin") {
+        // Non-admin opens directory showing Admin contact (or opens direct conversation)
+        returnToChatDirectory();
+      } else {
+        renderCurrentChatMessages();
+      }
+      updateLiveChatUnreadBadge();
     }
 
     function closeModularLiveChatWidget() {
