@@ -655,33 +655,81 @@
       border: 1px solid var(--glass-border);
     }
 
-    /* Search Bar & Instant Search Results Dropdown Below Search Bar */
+    /* Requirement 8: High-Prominence Search Bar & Highlighted Search Icon Badge */
     .nav-center {
       position: relative;
       flex: 1;
-      max-width: 340px;
-      min-width: 160px;
+      max-width: 420px;
+      min-width: 200px;
       z-index: 950;
     }
     .search-input {
       width: 100%;
-      height: 38px;
-      border-radius: 20px;
-      background: var(--bg-input);
-      border: 1px solid var(--glass-border);
+      height: 44px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.88) 100%);
+      border: 2px solid rgba(99, 102, 241, 0.72);
       color: var(--text-main);
-      padding: 0 14px 0 38px;
+      padding: 0 38px 0 48px;
       outline: none;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.15px;
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .search-input::placeholder {
+      color: #cbd5e1;
+      font-weight: 600;
+      opacity: 0.9;
+    }
+    .search-input:hover {
+      border-color: #38bdf8;
+      box-shadow: 0 8px 24px rgba(56, 189, 248, 0.32);
+    }
+    .search-input:focus {
+      border-color: #38bdf8;
+      background: rgba(15, 23, 42, 0.98);
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.25), 0 10px 28px rgba(79, 70, 229, 0.4);
+      transform: translateY(-1px);
+    }
+    body.theme-white .search-input {
+      background: #ffffff !important;
+      border: 2px solid #4f46e5 !important;
+      color: #0f172a !important;
+      box-shadow: 0 6px 18px rgba(79, 70, 229, 0.18), 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+    }
+    body.theme-white .search-input::placeholder {
+      color: #475569 !important;
+      opacity: 1;
+    }
+    body.theme-white .search-input:focus {
+      border-color: #0284c7 !important;
+      box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.22), 0 8px 24px rgba(79, 70, 229, 0.22) !important;
     }
     .search-icon {
       position: absolute;
-      left: 13px;
-      top: 19px;
+      left: 7px;
+      top: 50%;
       transform: translateY(-50%);
-      color: var(--text-muted);
-      font-size: 0.85rem;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+      color: #ffffff !important;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       pointer-events: none;
+      box-shadow: 0 3px 10px rgba(79, 70, 229, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .nav-center:focus-within .search-icon {
+      background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+      transform: translateY(-50%) scale(1.08);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.75);
     }
     .search-results-dropdown {
       display: none;
@@ -897,51 +945,103 @@
       -webkit-overflow-scrolling: touch;
     }
     .prop-card {
-      min-width: 205px;
+      min-width: 225px;
       flex-shrink: 0;
       padding: 14px 16px;
       background: var(--bg-card);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      border: 1.5px solid var(--glass-border);
-      border-radius: var(--radius-md);
+      border: 2px solid var(--glass-border);
+      border-radius: 16px;
       display: flex;
       align-items: center;
       gap: 12px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
       user-select: none;
       color: var(--text-main);
+      position: relative;
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
     }
     .prop-card:hover {
       border-color: var(--primary);
       transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.22);
+    }
+    .prop-card:active {
+      transform: scale(0.96);
+      border-color: #38bdf8 !important;
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.35) !important;
     }
     .prop-card.active {
-      background: linear-gradient(135deg, rgba(79, 70, 229, 0.42) 0%, var(--bg-card) 100%);
-      border-color: #818cf8;
-      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.52) 0%, rgba(14, 165, 233, 0.28) 100%) !important;
+      border: 2px solid #38bdf8 !important;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.32), 0 12px 28px rgba(79, 70, 229, 0.45) !important;
+      transform: translateY(-3px);
+    }
+    body.theme-white .prop-card.active {
+      background: linear-gradient(135deg, #eef2ff 0%, #e0f2fe 100%) !important;
+      border: 2.5px solid #4f46e5 !important;
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.22), 0 10px 24px rgba(79, 70, 229, 0.25) !important;
+    }
+    .prop-card.active .prop-icon {
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.45);
+      transform: scale(1.06);
+    }
+    .prop-select-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-top: 4px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      background: rgba(148, 163, 184, 0.16);
+      color: var(--text-muted);
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      transition: all 0.2s ease;
+    }
+    .prop-card.active .prop-select-pill {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #ffffff !important;
+      border-color: #34d399;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
     }
     .prop-icon {
-      width: 38px;
-      height: 38px;
+      width: 42px;
+      height: 42px;
       background: rgba(79, 70, 229, 0.22);
       color: #818cf8;
-      border-radius: 10px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
+      font-size: 1.05rem;
       flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+    .prop-info {
+      flex: 1;
+      min-width: 0;
     }
     .prop-info h4 {
       font-size: 0.95rem;
       font-weight: 800;
       color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .prop-info span {
       font-size: 0.72rem;
       color: var(--text-muted);
+      display: block;
     }
 
     /* 3-Units Merged Wide Flat Cards with Full Green / Red Status Design */
@@ -3021,22 +3121,112 @@
     border-color: #10b981 !important;
   }
 
-  /* Settings Cards, Panels & Buttons in White & Black Themes */
+  /* Requirement 4: Ultra-Stylish, Modern, Visually Engaging Settings Interface */
+  #settingsModal .modal-window {
+    background: linear-gradient(160deg, rgba(15, 23, 42, 0.97) 0%, rgba(17, 24, 39, 0.98) 100%) !important;
+    border: 2px solid rgba(99, 102, 241, 0.45) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.65), 0 0 40px rgba(79, 70, 229, 0.18) !important;
+    padding: 22px !important;
+  }
+  body.theme-white #settingsModal .modal-window {
+    background: linear-gradient(160deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 2px solid #a5b4fc !important;
+    box-shadow: 0 25px 60px rgba(15, 23, 42, 0.18), 0 0 0 4px rgba(99, 102, 241, 0.08) !important;
+  }
+  #settingsModal .settings-feature-banner {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.28) 0%, rgba(236, 72, 153, 0.22) 50%, rgba(14, 165, 233, 0.22) 100%) !important;
+    border: 1.5px solid rgba(129, 140, 248, 0.55) !important;
+    border-radius: 18px !important;
+    padding: 16px 18px !important;
+    box-shadow: 0 10px 26px rgba(79, 70, 229, 0.18) !important;
+    position: relative;
+    overflow: hidden;
+  }
+  body.theme-white #settingsModal .settings-feature-banner {
+    background: linear-gradient(135deg, #eef2ff 0%, #fdf2f8 50%, #e0f2fe 100%) !important;
+    border: 1.5px solid #818cf8 !important;
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.1) !important;
+  }
+  #settingsModal .settings-nav-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)) !important;
+    gap: 12px !important;
+    margin-bottom: 18px !important;
+  }
   #settingsModal .settings-nav-card {
-    background: #111827 !important;
-    border: 1.5px solid #334155 !important;
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.95)) !important;
+    border: 1.5px solid rgba(148, 163, 184, 0.28) !important;
+    border-radius: 16px !important;
+    padding: 14px 12px !important;
+    transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22) !important;
   }
   body.theme-white #settingsModal .settings-nav-card {
-    background: #f8fafc !important;
+    background: linear-gradient(145deg, #ffffff, #f1f5f9) !important;
     border: 1.5px solid #cbd5e1 !important;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06) !important;
+  }
+  #settingsModal .settings-nav-card:hover {
+    transform: translateY(-3px) !important;
+    border-color: #818cf8 !important;
+  }
+  #settingsModal .settings-nav-card.nav-theme {
+    border-top: 3.5px solid #38bdf8 !important;
+  }
+  #settingsModal .settings-nav-card.nav-create {
+    border-top: 3.5px solid #10b981 !important;
+  }
+  #settingsModal .settings-nav-card.nav-delete {
+    border-top: 3.5px solid #f43f5e !important;
+  }
+  #settingsModal .settings-nav-card.nav-other {
+    border-top: 3.5px solid #a855f7 !important;
   }
   #settingsModal .settings-nav-card.active {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.32) 0%, rgba(14, 165, 233, 0.2) 100%) !important;
     border-color: #6366f1 !important;
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.35) !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.32), 0 10px 24px rgba(79, 70, 229, 0.3) !important;
+    transform: translateY(-2px) !important;
+  }
+  body.theme-white #settingsModal .settings-nav-card.active {
+    background: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%) !important;
+    border-color: #4f46e5 !important;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.22), 0 8px 20px rgba(79, 70, 229, 0.16) !important;
+  }
+  #settingsModal .s-nav-icon {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 12px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.05rem !important;
+    margin-bottom: 6px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  }
+  #settingsModal .nav-theme .s-nav-icon {
+    background: linear-gradient(135deg, #0284c7, #38bdf8) !important;
+    color: #ffffff !important;
+  }
+  #settingsModal .nav-create .s-nav-icon {
+    background: linear-gradient(135deg, #059669, #10b981) !important;
+    color: #ffffff !important;
+  }
+  #settingsModal .nav-delete .s-nav-icon {
+    background: linear-gradient(135deg, #e11d48, #f43f5e) !important;
+    color: #ffffff !important;
+  }
+  #settingsModal .nav-other .s-nav-icon {
+    background: linear-gradient(135deg, #7c3aed, #ec4899) !important;
+    color: #ffffff !important;
   }
   #settingsModal .s-nav-title {
     color: #ffffff !important;
     font-weight: 800 !important;
+    font-size: 0.86rem !important;
   }
   body.theme-white #settingsModal .s-nav-title {
     color: #0f172a !important;
@@ -3044,25 +3234,40 @@
   #settingsModal .s-nav-sub {
     color: #cbd5e1 !important;
     font-weight: 600 !important;
+    font-size: 0.7rem !important;
   }
   body.theme-white #settingsModal .s-nav-sub {
     color: #475569 !important;
   }
-  #settingsModal .settings-feature-banner {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(236, 72, 153, 0.2) 50%, rgba(16, 185, 129, 0.2) 100%) !important;
-    border: 1.5px solid rgba(129, 140, 248, 0.5) !important;
+  #settingsModal .theme-card {
+    border-radius: 16px !important;
+    padding: 15px 18px !important;
+    transition: all 0.22s ease !important;
+    border: 1.5px solid var(--glass-border) !important;
   }
-  body.theme-white #settingsModal .settings-feature-banner {
-    background: linear-gradient(135deg, #eef2ff 0%, #fdf2f8 50%, #ecfdf5 100%) !important;
-    border: 1.5px solid #a5b4fc !important;
+  #settingsModal .theme-card:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2) !important;
+  }
+  #settingsModal .theme-card.active {
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.3), 0 10px 24px rgba(0, 0, 0, 0.25) !important;
   }
   #settingsModal .other-tool-card {
-    background: #111827 !important;
+    background: linear-gradient(145deg, #111827, #1e293b) !important;
     color: #f8fafc !important;
+    border-radius: 16px !important;
+    padding: 14px !important;
+    transition: all 0.22s ease !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22) !important;
+  }
+  #settingsModal .other-tool-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 10px 24px rgba(79, 70, 229, 0.28) !important;
   }
   body.theme-white #settingsModal .other-tool-card {
-    background: #f8fafc !important;
+    background: linear-gradient(145deg, #ffffff, #f8fafc) !important;
     color: #0f172a !important;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.07) !important;
   }
   #settingsModal .other-tool-card .tool-desc {
     color: #cbd5e1 !important;
@@ -3078,6 +3283,27 @@
   body.theme-white #settingsModal #createRenterAadhaarBox div,
   body.theme-white #settingsModal #createRenterAadhaarBox label {
     color: #1e293b !important;
+  }
+
+  /* Requirement 5: Theme-Adaptive Flat Graph Zoom Modal in Light Mode */
+  body.theme-white #flatGraphZoomModal {
+    background: rgba(15, 23, 42, 0.55) !important;
+  }
+  body.theme-white #flatGraphZoomModal .modal-window {
+    background: linear-gradient(160deg, #ffffff, #f8fafc) !important;
+    border: 2px solid #6366f1 !important;
+    color: #0f172a !important;
+    box-shadow: 0 28px 80px rgba(15, 23, 42, 0.28) !important;
+  }
+  body.theme-white #flatGraphZoomModal #flatGraphZoomModalTitle {
+    color: #0f172a !important;
+  }
+  body.theme-white #flatGraphZoomModal #flatGraphZoomModalSubtitle {
+    color: #475569 !important;
+  }
+  body.theme-white #flatGraphZoomModal #flatGraphZoomViewport {
+    background: #f8fafc !important;
+    border: 1.5px solid #cbd5e1 !important;
   }
 
   /* Universal Top-Level 2-Tab Navigation Bar for FD, Khet & Kharch Modals */
@@ -3129,29 +3355,57 @@
     border-color: #4f46e5 !important;
     box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
   }
-  .kharch-prop-pill {
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.78rem;
-    font-weight: 700;
+
+  /* Requirement 7: Squared Property Cards in Kharch (Expenses) Section */
+  .kharch-prop-squares-scroller {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 6px 2px 10px 2px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .kharch-prop-square-card {
+    width: 196px;
+    min-width: 196px;
+    min-height: 182px;
+    border-radius: 18px;
+    padding: 13px;
+    background: linear-gradient(155deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.88) 100%);
+    border: 2px solid rgba(148, 163, 184, 0.28);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     cursor: pointer;
-    background: var(--bg-input);
-    color: var(--text-muted);
-    border: 1.5px solid var(--glass-border);
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
+    position: relative;
+    flex-shrink: 0;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
   }
-  .kharch-prop-pill:hover {
-    color: var(--text-main);
+  body.theme-white .kharch-prop-square-card {
+    background: linear-gradient(155deg, #ffffff 0%, #f8fafc 100%);
+    border: 2px solid #cbd5e1;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.07);
+  }
+  .kharch-prop-square-card:hover {
     border-color: #f59e0b;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(245, 158, 11, 0.22);
   }
-  .kharch-prop-pill.active {
-    background: #f59e0b;
-    color: #ffffff;
-    border-color: #d97706;
-    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35);
+  .kharch-prop-square-card:active {
+    transform: scale(0.97);
+  }
+  .kharch-prop-square-card.active {
+    background: linear-gradient(155deg, rgba(245, 158, 11, 0.22) 0%, rgba(15, 23, 42, 0.95) 100%);
+    border: 2px solid #f59e0b !important;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.28), 0 12px 26px rgba(245, 158, 11, 0.3);
+    transform: translateY(-3px);
+  }
+  body.theme-white .kharch-prop-square-card.active {
+    background: linear-gradient(155deg, #fffbeb 0%, #fef3c7 100%);
+    border: 2px solid #d97706 !important;
+    box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.2), 0 10px 22px rgba(217, 119, 6, 0.18);
   }
   .kharch-scroller-track-wrapper {
     overflow: hidden;
@@ -3592,7 +3846,7 @@
               </div>
               <div class="form-group" style="margin-bottom:0;">
                 <label><i class="fa-solid fa-id-card" style="color:#0284c7;"></i> Partner Aadhaar No.</label>
-                <input type="text" id="khetPartnerAadhaar" class="form-control" maxlength="14" placeholder="12-digit Aadhaar Number">
+                <input type="text" id="khetPartnerAadhaar" class="form-control" maxlength="14" placeholder="XXXX-XXXX-XXXX" oninput="this.value = formatAadhaarWithHyphens(this.value)">
               </div>
               <div class="form-group" style="margin-bottom:0;">
                 <label><i class="fa-solid fa-phone" style="color:#10b981;"></i> Partner Mobile No.</label>
@@ -3708,27 +3962,14 @@
 
       <!-- TAB 1: ADD & CALCULATION EXPENSE -->
       <div id="kharchTabCalcContent" style="display:block;">
-        <!-- Step 1: Display All Available Properties -->
-        <div style="margin-bottom:14px; background:var(--bg-input); padding:12px 14px; border-radius:14px; border:1px solid rgba(245,158,11,0.35);">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
-            <label style="font-size:0.74rem; font-weight:800; color:#d97706; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:6px; margin:0;">
-              <i class="fa-solid fa-building"></i> Select Property for Utility Calculation:
-            </label>
-            <span style="font-size:0.7rem; color:var(--text-muted);"><i class="fa-solid fa-circle-info"></i> Click a property to filter utilities below</span>
-          </div>
-          <div id="kharchPropertyPills" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-            <!-- Populated dynamically via renderKharchPropertyPills() -->
-          </div>
-        </div>
-
-        <!-- Step 2: Auto-Scrolling Right-to-Left Ticker (Strictly Excluding Rent) -->
-        <div style="margin-bottom:14px; background:var(--bg-input); border:1.5px solid rgba(245,158,11,0.35); border-radius:14px; padding:12px 14px; overflow:hidden;">
+        <!-- Step 1: Auto-Scrolling Right-to-Left Ticker & Utility Calculation Section (Strictly Excluding Rent) -->
+        <div style="margin-bottom:12px; background:var(--bg-input); border:1.5px solid rgba(245,158,11,0.35); border-radius:14px; padding:12px 14px; overflow:hidden;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
             <div style="font-size:0.74rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:6px;">
-              <i class="fa-solid fa-angles-left" style="color:#f59e0b;"></i> Auto-Scrolling Flat Utilities (Right &rarr; Left Ticker)
+              <i class="fa-solid fa-angles-left" style="color:#f59e0b;"></i> Auto-Scrolling Flat Utilities Calculation (Right &rarr; Left Ticker)
             </div>
             <div style="font-size:0.7rem; font-weight:800; color:#10b981; background:rgba(16,185,129,0.12); padding:3px 10px; border-radius:20px; border:1px solid rgba(16,185,129,0.3); display:flex; align-items:center; gap:5px;">
-              <i class="fa-solid fa-lock"></i> Rent Amount Strictly Excluded
+              <i class="fa-solid fa-lock"></i> Regular Rent Amount Strictly Excluded
             </div>
           </div>
           <div class="kharch-scroller-track-wrapper">
@@ -3738,7 +3979,7 @@
           </div>
         </div>
 
-        <!-- Step 3: Calculation & Total Summary (Electricity + PNG + Water + Extra Charges Only) -->
+        <!-- Step 2: Calculation & Total Summary (Electricity + PNG + Water + Extra Charges Only) -->
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:12px;">
           <div style="background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.35); border-radius:12px; padding:10px; text-align:center;">
             <span style="font-size:0.7rem; font-weight:800; color:#d97706; display:block; margin-bottom:2px;">⚡ Electricity</span>
@@ -3757,7 +3998,7 @@
             <strong id="kharchCalcTotalExtra" style="font-size:1.05rem; color:var(--text-main);">₹0</strong>
           </div>
           <div style="background:linear-gradient(135deg, rgba(245,158,11,0.22), rgba(217,119,6,0.22)); border:1.5px solid #f59e0b; border-radius:12px; padding:10px; text-align:center; box-shadow:0 4px 14px rgba(245,158,11,0.2);">
-            <span style="font-size:0.7rem; font-weight:900; color:#d97706; display:block; margin-bottom:2px; text-transform:uppercase;">Total Utility Expense</span>
+            <span style="font-size:0.7rem; font-weight:900; color:#d97706; display:block; margin-bottom:2px; text-transform:uppercase;">Total Non-Rent Funds</span>
             <strong id="kharchCalcGrandTotal" style="font-size:1.25rem; color:var(--text-main);">₹0</strong>
           </div>
         </div>
@@ -3766,6 +4007,19 @@
           <button type="button" class="btn-ledger-action" style="padding:8px 16px; font-size:0.78rem; background:linear-gradient(135deg, #f59e0b, #d97706); color:#fff; font-weight:800; border-radius:10px; border:none; cursor:pointer;" onclick="applyCalculatedKharchToForm()">
             <i class="fa-solid fa-wand-magic-sparkles"></i> Copy Calculated Amount (₹<span id="kharchCopyBtnAmt">0</span>) into Form
           </button>
+        </div>
+
+        <!-- Step 3 (Requirement 7): Squared Property Cards Left-to-Right Right Below the Calculation Section -->
+        <div style="margin-bottom:16px; background:var(--bg-input); padding:14px; border-radius:16px; border:1.5px solid rgba(245,158,11,0.4);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+            <label style="font-size:0.76rem; font-weight:800; color:#d97706; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:6px; margin:0;">
+              <i class="fa-solid fa-table-cells-large"></i> Properties &amp; Extra / Non-Rent Funds Balance (Left &rarr; Right Squared Cards):
+            </label>
+            <span style="font-size:0.7rem; color:var(--text-muted); font-weight:600;"><i class="fa-solid fa-hand-pointer"></i> Click any squared property card to select &amp; link expense</span>
+          </div>
+          <div id="kharchPropertyPills" class="kharch-prop-squares-scroller">
+            <!-- Populated dynamically with squared property cards via renderKharchPropertyPills() -->
+          </div>
         </div>
 
         <!-- Step 4: Expense Entry Form Below -->
@@ -3798,9 +4052,9 @@
               <input type="number" step="0.01" id="kharchAmount" class="form-control" placeholder="e.g. 2500">
             </div>
             <div class="form-group" style="margin-bottom:0;">
-              <label>Place / Property</label>
-              <select id="kharchPropertyName" class="form-control">
-                <option value="General / All">General / All</option>
+              <label>Select Property (Spent On / Deduct From) <span class="req-star">*</span></label>
+              <select id="kharchPropertyName" class="form-control" required onchange="if(this.value) selectKharchCalcProperty(this.value)">
+                <option value="">-- Select Property (*) --</option>
               </select>
             </div>
             <div class="form-group" style="margin-bottom:0;">
@@ -3980,76 +4234,6 @@
     <main class="flats-container" id="flatsList">
       <!-- Rendered Only When Property Is Clicked -->
     </main>
-
-    <!-- Stylish Home Page Khet (Farmland Registry, Partner KYC & Settlement) Section -->
-    <section id="homeKhetSection" class="home-khet-section" style="display:none;">
-      <div class="home-khet-shell">
-        <div class="home-khet-header">
-          <div class="home-khet-brand">
-            <div class="home-khet-icon-badge">
-              <i class="fa-solid fa-seedling"></i>
-            </div>
-            <div>
-              <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:var(--text-main);">Khet (Farmland) Registry &amp; Farming Partner Ledger</h3>
-              <p style="margin:2px 0 0 0; font-size:0.78rem; color:var(--text-muted);">Complete land records (Registered Name, Khata, Keshra, Decimal, Survey Decimal, Katha, Rate/Katha), Partner KYC &amp; Paid/Adjusted Accounts</p>
-            </div>
-          </div>
-          <div class="home-khet-stats-bar">
-            <div class="home-khet-stat-pill">
-              <i class="fa-solid fa-layer-group" style="color:#34d399;"></i>
-              <span>Plots: <strong id="homeKhetTotalCount">0</strong></span>
-            </div>
-            <div class="home-khet-stat-pill">
-              <i class="fa-solid fa-compass-drafting" style="color:#94a3b8;"></i>
-              <span>Decimal (Orig / Survey): <strong id="homeKhetTotalDecimal">0 / 0</strong></span>
-            </div>
-            <div class="home-khet-stat-pill">
-              <i class="fa-solid fa-ruler-combined" style="color:#38bdf8;"></i>
-              <span>Total Katha: <strong id="homeKhetTotalBigha">0 Katha</strong></span>
-            </div>
-            <div class="home-khet-stat-pill">
-              <i class="fa-solid fa-sack-dollar" style="color:#fbbf24;"></i>
-              <span>Land Value: <strong id="homeKhetTotalValuation">₹0</strong></span>
-            </div>
-            <div class="home-khet-stat-pill">
-              <i class="fa-solid fa-indian-rupee-sign" style="color:#34d399;"></i>
-              <span>Paid: <strong id="homeKhetTotalPaid">₹0</strong></span>
-            </div>
-            <div class="home-khet-stat-pill">
-              <i class="fa-solid fa-sliders" style="color:#38bdf8;"></i>
-              <span>Adjusted: <strong id="homeKhetTotalAdjusted">₹0</strong></span>
-            </div>
-            <button type="button" class="btn-primary admin-only" style="width:auto; padding:8px 15px; font-size:0.78rem;" onclick="openKhetModal()">
-              <i class="fa-solid fa-plus-circle"></i> Add / Manage Khet &amp; Partners
-            </button>
-          </div>
-        </div>
-
-        <!-- Home Khet All-in-One Filter & View Controls -->
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px; background:rgba(15,23,42,0.52); padding:10px 14px; border-radius:14px; border:1px solid rgba(52,211,153,0.28);">
-          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:1;">
-            <span style="font-size:0.76rem; font-weight:800; color:#34d399;"><i class="fa-solid fa-user-check"></i> Filter by Farming Partner:</span>
-            <select id="homeKhetPartnerFilter" class="form-control" style="width:auto; min-width:210px; padding:6px 10px; font-size:0.78rem;" onchange="setKhetPartnerFilter(this.value)">
-              <option value="ALL">All Partners (Complete View)</option>
-            </select>
-            <input type="text" id="homeKhetSearchInput" class="form-control" style="width:auto; min-width:200px; padding:6px 10px; font-size:0.78rem;" placeholder="Search Place, Khata, Keshra, Reg Name..." oninput="setKhetSearchQuery(this.value)">
-          </div>
-          <div style="display:flex; align-items:center; gap:6px;">
-            <button type="button" id="btnHomeKhetViewCards" class="btn-ledger-action" style="padding:6px 12px; font-size:0.74rem; background:#10b981; color:#fff;" onclick="setKhetViewMode('cards')">
-              <i class="fa-solid fa-grip"></i> Detailed Cards
-            </button>
-            <button type="button" id="btnHomeKhetViewTable" class="btn-ledger-action" style="padding:6px 12px; font-size:0.74rem;" onclick="setKhetViewMode('table')">
-              <i class="fa-solid fa-table-list"></i> All-in-One Master Table
-            </button>
-          </div>
-        </div>
-
-        <!-- Selected Partner KYC & Account Summary Banner on Dashboard -->
-        <div id="homeKhetPartnerSummaryBanner" style="display:none; margin-bottom:14px;"></div>
-
-        <div id="homeKhetCardsGrid" class="home-khet-grid"></div>
-      </div>
-    </section>
   </section>
 
   <!-- ==================== POPUP MODALS ==================== -->
@@ -4780,7 +4964,7 @@
             </div>
             <div class="form-group" style="margin-bottom:4px;">
               <label style="font-size:0.74rem; color:#e9d5ff;">Renter's 12-Digit Aadhaar Card Number <span class="req-star">*</span></label>
-              <input type="text" id="createUserAssignedAadhaar" class="form-control" maxlength="12" placeholder="Enter 12-digit Aadhaar Number (e.g. 987654321012)" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 12)">
+              <input type="text" id="createUserAssignedAadhaar" class="form-control" maxlength="14" placeholder="XXXX-XXXX-XXXX (e.g. 9876-5432-1012)" oninput="this.value = formatAadhaarWithHyphens(this.value)">
             </div>
             <div style="font-size:0.7rem; color:#e9d5ff; opacity:0.9; line-height:1.35; margin-top:4px;">
               <i class="fa-solid fa-lock"></i> Based on this Aadhaar card, this Renter will strictly only have access to their own profile and their own historical receipts linked to this Aadhaar card, and nothing else.
@@ -8254,7 +8438,7 @@ function formatMonthLabel(rawVal) {
       const paidPct = Math.min(100, Math.max(paramPaid > 0 ? 8 : 2, Math.round((paramPaid / maxVal) * 100)));
 
       return `
-        <div class="flat-3param-graph-box" ${isModalView ? 'style="margin-top:0; background:rgba(15,23,42,0.55);"' : ''}>
+        <div class="flat-3param-graph-box" ${isModalView ? 'style="margin-top:0; background:var(--bg-input);"' : ''}>
           <div class="flat-3param-graph-header">
             <span><i class="fa-solid fa-chart-simple"></i> 3-Parameter Flat Graph</span>
             <span>${periodLabel}</span>
@@ -8302,7 +8486,7 @@ function formatMonthLabel(rawVal) {
       document.getElementById("topTotalLoss").innerText = `₹${totalLoss.toLocaleString('en-IN')}`;
     }
 
-    // 3. Render Properties (Requirement 10: Always sorted alphabetically A-Z by first letter)
+    // 3. Render Properties (Requirement 6 & 10: Sorted A-Z + Clear Visual Touch / Selected Feedback State)
     function renderPropertiesRow() {
       const container = document.getElementById("propertiesList");
       container.innerHTML = "";
@@ -8313,14 +8497,24 @@ function formatMonthLabel(rawVal) {
         : DB.properties;
 
       visibleProps.forEach(prop => {
+        const isSelected = selectedProperty === prop.PropertyName;
+        const propFlatsCount = (DB.flats || []).filter(f =>
+          String(f.PropertyName || "").trim().toLowerCase() === String(prop.PropertyName || "").trim().toLowerCase()
+        ).length;
         const div = document.createElement("div");
-        div.className = `prop-card ${selectedProperty === prop.PropertyName ? 'active' : ''}`;
+        div.className = `prop-card ${isSelected ? 'active' : ''}`;
+        div.setAttribute("role", "button");
+        div.setAttribute("aria-pressed", isSelected ? "true" : "false");
         div.onclick = () => selectProperty(prop.PropertyName);
         div.innerHTML = `
-          <div class="prop-icon"><i class="fa-solid fa-hotel"></i></div>
+          <div class="prop-icon"><i class="fa-solid ${isSelected ? 'fa-building-circle-check' : 'fa-hotel'}"></i></div>
           <div class="prop-info">
             <h4>${prop.PropertyName}</h4>
-            <span>UPI: ${prop.UPIID || 'Not set'}</span>
+            <span>UPI: ${prop.UPIID || 'Not set'} • ${propFlatsCount} Flat${propFlatsCount === 1 ? '' : 's'}</span>
+            <div class="prop-select-pill">
+              <i class="fa-solid ${isSelected ? 'fa-circle-check' : 'fa-hand-pointer'}"></i>
+              ${isSelected ? 'Selected Property' : 'Tap to Select'}
+            </div>
           </div>
         `;
         container.appendChild(div);
@@ -9834,7 +10028,13 @@ function formatMonthLabel(rawVal) {
       document.getElementById("themeCardBlack")?.classList.toggle("active", activeThemePref === "black");
       document.getElementById("themeCardWhite")?.classList.toggle("active", activeThemePref === "white");
       document.getElementById("themeCardSystem")?.classList.toggle("active", activeThemePref === "system");
-      // Profile theme cards removed as requested
+      // Dynamically re-render flat analytics graphs so their SVG theme colors adapt immediately
+      if (typeof refreshAllAnalyticsGraphs === "function") {
+        refreshAllAnalyticsGraphs();
+      }
+      if (document.getElementById("flatGraphZoomModal")?.classList.contains("active") && typeof renderZoomedFlatGraphCanvas === "function") {
+        renderZoomedFlatGraphCanvas();
+      }
     }
 
     async function selectAndSaveTheme(themePref) {
@@ -11133,8 +11333,21 @@ function formatMonthLabel(rawVal) {
       return { rent: r, elec: e, water: w, png: p, total: tot };
     }
 
-    // FIRST GRAPH: Total Breakdown for Rent, Electricity, Water, and PNG Gas
+    // FIRST GRAPH: Total Breakdown for Rent, Electricity, Water, and PNG Gas (Theme-Adaptive)
     function buildFirstExpenseBreakdownGraphHtml(allFlatBills, prop, flat) {
+      const isLightTheme = document.body.classList.contains("theme-white");
+      const svgTextPrimary = isLightTheme ? "#0f172a" : "#e2e8f0";
+      const svgTextMuted = isLightTheme ? "#475569" : "#94a3b8";
+      const svgGridStroke = isLightTheme ? "rgba(15, 23, 42, 0.12)" : "rgba(255, 255, 255, 0.08)";
+      const svgAxisStroke = isLightTheme ? "rgba(15, 23, 42, 0.28)" : "rgba(255, 255, 255, 0.2)";
+      const chartBoxBg = isLightTheme ? "linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%)" : "rgba(15, 23, 42, 0.28)";
+      const chartBoxBorder = isLightTheme ? "1.5px dashed rgba(79, 70, 229, 0.35)" : "1px dashed rgba(56, 189, 248, 0.28)";
+      const pillOnText = isLightTheme ? "#0f172a" : "#ffffff";
+      const pillOffBg = isLightTheme ? "#f1f5f9" : "rgba(255, 255, 255, 0.03)";
+      const enlargeBtnStyle = isLightTheme
+        ? "background:linear-gradient(135deg, #e0f2fe, #e0e7ff); border:1.5px solid #0284c7; color:#0369a1;"
+        : "background:linear-gradient(135deg, rgba(56,189,248,0.22), rgba(99,102,241,0.22)); border:1px solid #38bdf8; color:#38bdf8;";
+
       const currentYear = new Date().getFullYear();
       const threeYears = [currentYear, currentYear - 1, currentYear - 2];
 
@@ -11188,8 +11401,8 @@ function formatMonthLabel(rawVal) {
               <title>${s.label}: ₹${val.toLocaleString('en-IN')} (${pct}%)</title>
             </rect>
             <text x="${centerX.toFixed(1)}" y="${Math.max(16, barY - 8).toFixed(1)}" font-size="11" font-weight="800" fill="${s.color}" text-anchor="middle">₹${val.toLocaleString('en-IN')}</text>
-            <text x="${centerX.toFixed(1)}" y="${chartHeight - 16}" font-size="11.5" font-weight="800" fill="#e2e8f0" text-anchor="middle">${s.label}</text>
-            <text x="${centerX.toFixed(1)}" y="${chartHeight - 3}" font-size="9.5" font-weight="700" fill="#94a3b8" text-anchor="middle">(${pct}%)</text>
+            <text x="${centerX.toFixed(1)}" y="${chartHeight - 16}" font-size="11.5" font-weight="800" fill="${svgTextPrimary}" text-anchor="middle">${s.label}</text>
+            <text x="${centerX.toFixed(1)}" y="${chartHeight - 3}" font-size="9.5" font-weight="700" fill="${svgTextMuted}" text-anchor="middle">(${pct}%)</text>
           </g>
         `;
       });
@@ -11208,7 +11421,7 @@ function formatMonthLabel(rawVal) {
           <button
             type="button"
             onclick="toggleFlatGraph1Expense('${s.key}')"
-            style="display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:999px; font-size:0.73rem; font-weight:800; cursor:pointer; transition:all 0.18s ease; border:1.5px solid ${isOn ? s.color : 'var(--glass-border)'}; background:${isOn ? s.bg : 'rgba(255,255,255,0.03)'}; color:${isOn ? '#ffffff' : 'var(--text-muted)'}; opacity:${isOn ? '1' : '0.55'};"
+            style="display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:999px; font-size:0.73rem; font-weight:800; cursor:pointer; transition:all 0.18s ease; border:1.5px solid ${isOn ? s.color : 'var(--glass-border)'}; background:${isOn ? s.bg : pillOffBg}; color:${isOn ? pillOnText : 'var(--text-muted)'}; opacity:${isOn ? '1' : '0.65'};"
           >
             <span style="width:9px; height:9px; border-radius:50%; background:${s.color}; display:inline-block; box-shadow:0 0 6px ${s.color};"></span>
             <span>${s.label}</span>
@@ -11224,7 +11437,7 @@ function formatMonthLabel(rawVal) {
         return `
           <div
             onclick="toggleFlatGraph1Expense('${s.key}')"
-            style="display:flex; align-items:center; gap:9px; padding:7px 13px; border-radius:10px; background:rgba(255,255,255,0.03); border:1.5px solid ${isOn ? s.color : 'var(--glass-border)'}; cursor:pointer; opacity:${isOn ? '1' : '0.5'};"
+            style="display:flex; align-items:center; gap:9px; padding:7px 13px; border-radius:10px; background:${pillOffBg}; border:1.5px solid ${isOn ? s.color : 'var(--glass-border)'}; cursor:pointer; opacity:${isOn ? '1' : '0.55'};"
             title="Click to toggle ${s.label}"
           >
             <span style="width:14px; height:14px; border-radius:4px; background:${s.color}; display:inline-block; flex-shrink:0; box-shadow:0 0 8px ${s.color};"></span>
@@ -11237,12 +11450,12 @@ function formatMonthLabel(rawVal) {
       }).join("");
 
       return `
-        <div style="background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:16px; padding:16px; margin-bottom:18px; box-shadow:0 10px 28px rgba(0,0,0,0.22); transition:transform 0.18s ease, border-color 0.18s ease;">
+        <div style="background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:16px; padding:16px; margin-bottom:18px; box-shadow:0 10px 28px rgba(0,0,0,${isLightTheme ? '0.07' : '0.22'}); transition:transform 0.18s ease, border-color 0.18s ease;">
           <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;">
             <div>
               <h4 style="font-size:0.98rem; font-weight:800; color:var(--text-main); margin:0; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                 <span><i class="fa-solid fa-chart-pie" style="color:#10b981;"></i> 1. Total Expense Breakdown — Rent, Electricity, Water &amp; PNG Gas (Active Users Only)</span>
-                <button type="button" onclick="openFlatGraphZoomModal('graph1')" style="display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:999px; font-size:0.7rem; font-weight:800; background:linear-gradient(135deg, rgba(56,189,248,0.22), rgba(99,102,241,0.22)); border:1px solid #38bdf8; color:#38bdf8; cursor:pointer;">
+                <button type="button" onclick="openFlatGraphZoomModal('graph1')" style="display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:999px; font-size:0.7rem; font-weight:800; ${enlargeBtnStyle} cursor:pointer;">
                   <i class="fa-solid fa-expand"></i> Click to Enlarge &amp; Zoom (HD)
                 </button>
               </h4>
@@ -11265,14 +11478,14 @@ function formatMonthLabel(rawVal) {
           </div>
 
           <!-- SVG Total Breakdown Bar Chart (Click to Open Fullscreen HD Zoom Layout) -->
-          <div onclick="openFlatGraphZoomModal('graph1')" title="Click anywhere on this graph to open the larger display with HD Zoom In & Zoom Out" style="overflow-x:auto; -webkit-overflow-scrolling:touch; cursor:zoom-in; border-radius:12px; padding:6px; border:1px dashed rgba(56,189,248,0.28); background:rgba(15,23,42,0.25);">
+          <div onclick="openFlatGraphZoomModal('graph1')" title="Click anywhere on this graph to open the larger display with HD Zoom In & Zoom Out" style="overflow-x:auto; -webkit-overflow-scrolling:touch; cursor:zoom-in; border-radius:12px; padding:6px; border:${chartBoxBorder}; background:${chartBoxBg};">
             <svg viewBox="0 0 ${chartWidth} ${chartHeight}" style="width:100%; min-width:500px; height:auto; overflow:visible;">
-              <line x1="${padLeft}" y1="${padTop}" x2="${chartWidth - padRight}" y2="${padTop}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,3" />
-              <line x1="${padLeft}" y1="${padTop + (usableH / 2)}" x2="${chartWidth - padRight}" y2="${padTop + (usableH / 2)}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,3" />
-              <line x1="${padLeft}" y1="${padTop + usableH}" x2="${chartWidth - padRight}" y2="${padTop + usableH}" stroke="rgba(255,255,255,0.2)" />
-              <text x="${padLeft - 8}" y="${padTop + 4}" font-size="9.5" fill="#94a3b8" text-anchor="end">₹${Math.round(maxBarVal).toLocaleString('en-IN')}</text>
-              <text x="${padLeft - 8}" y="${padTop + (usableH / 2) + 3}" font-size="9.5" fill="#94a3b8" text-anchor="end">₹${Math.round(maxBarVal / 2).toLocaleString('en-IN')}</text>
-              <text x="${padLeft - 8}" y="${padTop + usableH}" font-size="9.5" fill="#94a3b8" text-anchor="end">₹0</text>
+              <line x1="${padLeft}" y1="${padTop}" x2="${chartWidth - padRight}" y2="${padTop}" stroke="${svgGridStroke}" stroke-dasharray="3,3" />
+              <line x1="${padLeft}" y1="${padTop + (usableH / 2)}" x2="${chartWidth - padRight}" y2="${padTop + (usableH / 2)}" stroke="${svgGridStroke}" stroke-dasharray="3,3" />
+              <line x1="${padLeft}" y1="${padTop + usableH}" x2="${chartWidth - padRight}" y2="${padTop + usableH}" stroke="${svgAxisStroke}" />
+              <text x="${padLeft - 8}" y="${padTop + 4}" font-size="9.5" font-weight="700" fill="${svgTextMuted}" text-anchor="end">₹${Math.round(maxBarVal).toLocaleString('en-IN')}</text>
+              <text x="${padLeft - 8}" y="${padTop + (usableH / 2) + 3}" font-size="9.5" font-weight="700" fill="${svgTextMuted}" text-anchor="end">₹${Math.round(maxBarVal / 2).toLocaleString('en-IN')}</text>
+              <text x="${padLeft - 8}" y="${padTop + usableH}" font-size="9.5" font-weight="700" fill="${svgTextMuted}" text-anchor="end">₹0</text>
               ${barsSvg}
             </svg>
           </div>
@@ -11303,10 +11516,19 @@ function formatMonthLabel(rawVal) {
       }
     }
 
-    // Requirement 7: Second Graph (Consolidated Graph) with Dynamic Year Scrolling & Filter
-    // Automatically adds upcoming years as time passes while older years scroll backward.
-    // Default: Last 3 Years. If a specific year is checked/selected, filters to display ONLY that 1 year.
+    // Requirement 5 & 7: Second Graph (Consolidated Graph) with Dynamic Year Scrolling & Theme Adaptation
     function buildSecondThreeYearConsolidatedGraphHtml(allFlatBills, prop, flat) {
+      const isLightTheme = document.body.classList.contains("theme-white");
+      const svgTextMuted = isLightTheme ? "#334155" : "#94a3b8";
+      const svgGridStroke = isLightTheme ? "rgba(15, 23, 42, 0.12)" : "rgba(255, 255, 255, 0.08)";
+      const circleStroke = isLightTheme ? "#ffffff" : "#0f172a";
+      const chartBoxBg = isLightTheme ? "linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%)" : "rgba(15, 23, 42, 0.28)";
+      const chartBoxBorder = isLightTheme ? "1.5px dashed rgba(79, 70, 229, 0.35)" : "1px dashed rgba(99, 102, 241, 0.28)";
+      const inactiveBtnBg = isLightTheme ? "#f1f5f9" : "rgba(255, 255, 255, 0.06)";
+      const enlargeBtnStyle2 = isLightTheme
+        ? "background:linear-gradient(135deg, #e0e7ff, #d1fae5); border:1.5px solid #4f46e5; color:#4338ca;"
+        : "background:linear-gradient(135deg, rgba(99,102,241,0.22), rgba(16,185,129,0.22)); border:1px solid #818cf8; color:#818cf8;";
+
       const currentYear = new Date().getFullYear();
 
       // Dynamically extract all available years from records + currentYear & past 2 years
@@ -11394,7 +11616,7 @@ function formatMonthLabel(rawVal) {
 
       months.forEach((mLabel, mIdx) => {
         const centerX = padLeft + (mIdx * (usableW / 11));
-        labelsSvg += `<text x="${centerX.toFixed(1)}" y="${chartHeight - 10}" font-size="10.5" font-weight="700" fill="#94a3b8" text-anchor="middle">${mLabel}</text>`;
+        labelsSvg += `<text x="${centerX.toFixed(1)}" y="${chartHeight - 10}" font-size="10.5" font-weight="700" fill="${svgTextMuted}" text-anchor="middle">${mLabel}</text>`;
 
         const count = activeYearsConfig.length;
         const barW = Math.max(6, Math.min(18, Math.floor(36 / Math.max(1, count))));
@@ -11424,7 +11646,7 @@ function formatMonthLabel(rawVal) {
 
         linesSvg += `<path d="${pathD}" fill="none" stroke="${yc.color}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />`;
         pts.forEach(pt => {
-          linesSvg += `<circle cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="4.2" fill="${yc.color}" stroke="#0f172a" stroke-width="1.8"><title>${pt.mLabel} ${yc.year}: ₹${pt.val.toLocaleString('en-IN')}</title></circle>`;
+          linesSvg += `<circle cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="4.2" fill="${yc.color}" stroke="${circleStroke}" stroke-width="1.8"><title>${pt.mLabel} ${yc.year}: ₹${pt.val.toLocaleString('en-IN')}</title></circle>`;
         });
       });
 
@@ -11433,14 +11655,14 @@ function formatMonthLabel(rawVal) {
       for (let s = 0; s <= 4; s++) {
         const yVal = padTop + (usableH * (s / 4));
         const numVal = Math.round(maxVal * (1 - (s / 4)));
-        gridSvg += `<line x1="${padLeft}" y1="${yVal}" x2="${chartWidth - padRight}" y2="${yVal}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3 3"/>`;
-        gridSvg += `<text x="${padLeft - 8}" y="${yVal + 3.5}" font-size="9.5" fill="#94a3b8" text-anchor="end">₹${numVal.toLocaleString('en-IN')}</text>`;
+        gridSvg += `<line x1="${padLeft}" y1="${yVal}" x2="${chartWidth - padRight}" y2="${yVal}" stroke="${svgGridStroke}" stroke-dasharray="3 3"/>`;
+        gridSvg += `<text x="${padLeft - 8}" y="${yVal + 3.5}" font-size="9.5" font-weight="700" fill="${svgTextMuted}" text-anchor="end">₹${numVal.toLocaleString('en-IN')}</text>`;
       }
 
       // Dynamic year buttons bar with horizontal scroll
       const isAll3 = flatGraph2SelectedMode === "LAST_3_YEARS";
       let yearFilterButtons = `
-        <button type="button" class="btn-ledger-action" style="padding:4px 11px; font-size:0.72rem; font-weight:800; border-radius:20px; white-space:nowrap; ${isAll3 ? 'background:#6366f1; color:#fff; border-color:#6366f1;' : 'background:rgba(255,255,255,0.06); color:var(--text-main);'}" onclick="selectFlatGraph2Mode('LAST_3_YEARS')" title="Compare last 3 years together">
+        <button type="button" class="btn-ledger-action" style="padding:4px 11px; font-size:0.72rem; font-weight:800; border-radius:20px; white-space:nowrap; ${isAll3 ? 'background:#6366f1; color:#fff; border-color:#6366f1;' : `background:${inactiveBtnBg}; color:var(--text-main);`}" onclick="selectFlatGraph2Mode('LAST_3_YEARS')" title="Compare last 3 years together">
           <i class="fa-solid fa-layer-group"></i> Last 3 Years (Default)
         </button>
       `;
@@ -11448,7 +11670,7 @@ function formatMonthLabel(rawVal) {
       allAvailableYears.forEach(yr => {
         const isSel = String(flatGraph2SelectedMode) === String(yr);
         yearFilterButtons += `
-          <button type="button" class="btn-ledger-action" style="padding:4px 11px; font-size:0.72rem; font-weight:800; border-radius:20px; white-space:nowrap; ${isSel ? 'background:#10b981; color:#fff; border-color:#10b981;' : 'background:rgba(255,255,255,0.06); color:var(--text-main);'}" onclick="selectFlatGraph2Mode(${yr})" title="Show only year ${yr}">
+          <button type="button" class="btn-ledger-action" style="padding:4px 11px; font-size:0.72rem; font-weight:800; border-radius:20px; white-space:nowrap; ${isSel ? 'background:#10b981; color:#fff; border-color:#10b981;' : `background:${inactiveBtnBg}; color:var(--text-main);`}" onclick="selectFlatGraph2Mode(${yr})" title="Show only year ${yr}">
             ${yr}
           </button>
         `;
@@ -11471,13 +11693,13 @@ function formatMonthLabel(rawVal) {
       }).join("");
 
       return `
-        <div class="stat-pill" style="margin-top:16px; padding:16px; border-radius:18px; background:var(--bg-card); border:1px solid var(--glass-border); box-shadow:0 8px 24px rgba(0,0,0,0.25);">
+        <div class="stat-pill" style="margin-top:16px; padding:16px; border-radius:18px; background:var(--bg-card); border:1px solid var(--glass-border); box-shadow:0 8px 24px rgba(0,0,0,${isLightTheme ? '0.07' : '0.25'});">
           <!-- Header and Year Selector Controls -->
           <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
             <div>
               <h4 style="margin:0; font-size:0.95rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                 <span><i class="fa-solid fa-chart-line" style="color:#6366f1;"></i> 2. Consolidated Annual &amp; Monthly Graph (${isSpecificYear ? flatGraph2SelectedMode : 'Last 3 Years'})</span>
-                <button type="button" onclick="openFlatGraphZoomModal('graph2')" style="display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:999px; font-size:0.7rem; font-weight:800; background:linear-gradient(135deg, rgba(99,102,241,0.22), rgba(16,185,129,0.22)); border:1px solid #818cf8; color:#818cf8; cursor:pointer;">
+                <button type="button" onclick="openFlatGraphZoomModal('graph2')" style="display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:999px; font-size:0.7rem; font-weight:800; ${enlargeBtnStyle2} cursor:pointer;">
                   <i class="fa-solid fa-expand"></i> Click to Enlarge &amp; Zoom (HD)
                 </button>
               </h4>
@@ -11497,7 +11719,7 @@ function formatMonthLabel(rawVal) {
           </div>
 
           <!-- SVG Chart Area (Click to Open Fullscreen HD Zoom Layout) -->
-          <div onclick="openFlatGraphZoomModal('graph2')" title="Click anywhere on this graph to open the larger display with HD Zoom In & Zoom Out" style="overflow-x:auto; -webkit-overflow-scrolling:touch; width:100%; cursor:zoom-in; border-radius:12px; padding:6px; border:1px dashed rgba(99,102,241,0.28); background:rgba(15,23,42,0.25);">
+          <div onclick="openFlatGraphZoomModal('graph2')" title="Click anywhere on this graph to open the larger display with HD Zoom In & Zoom Out" style="overflow-x:auto; -webkit-overflow-scrolling:touch; width:100%; cursor:zoom-in; border-radius:12px; padding:6px; border:${chartBoxBorder}; background:${chartBoxBg};">
             <svg viewBox="0 0 ${chartWidth} ${chartHeight}" style="width:100%; min-width:580px; height:auto; overflow:visible;">
               ${gridSvg}
               ${barsSvg}
@@ -11563,14 +11785,22 @@ function formatMonthLabel(rawVal) {
       const btn2 = document.getElementById("btnZoomSwitchGraph2");
       if (!host) return;
 
+      const isLightTheme = document.body.classList.contains("theme-white");
+      const svgTextMain = isLightTheme ? "#0f172a" : "#ffffff";
+      const svgTextSub = isLightTheme ? "#334155" : "#e2e8f0";
+      const svgTextMuted = isLightTheme ? "#475569" : "#cbd5e1";
+      const svgGridLine = isLightTheme ? "rgba(15, 23, 42, 0.14)" : "rgba(148, 163, 184, 0.16)";
+      const svgBaseLine = isLightTheme ? "rgba(15, 23, 42, 0.35)" : "rgba(255, 255, 255, 0.35)";
+      const circleStroke = isLightTheme ? "#ffffff" : "#0f172a";
+
       if (badge) badge.innerText = Math.round(flatGraphCurrentZoom * 100) + "%";
       if (btn1) {
         btn1.style.background = flatGraphActiveZoomTarget === "graph1" ? "#10b981" : "transparent";
-        btn1.style.color = flatGraphActiveZoomTarget === "graph1" ? "#ffffff" : "#94a3b8";
+        btn1.style.color = flatGraphActiveZoomTarget === "graph1" ? "#ffffff" : (isLightTheme ? "#334155" : "#94a3b8");
       }
       if (btn2) {
         btn2.style.background = flatGraphActiveZoomTarget === "graph2" ? "#6366f1" : "transparent";
-        btn2.style.color = flatGraphActiveZoomTarget === "graph2" ? "#ffffff" : "#94a3b8";
+        btn2.style.color = flatGraphActiveZoomTarget === "graph2" ? "#ffffff" : (isLightTheme ? "#334155" : "#94a3b8");
       }
 
       const prop = selectedFlat?.PropertyName || selectedProperty || "";
@@ -11645,7 +11875,7 @@ function formatMonthLabel(rawVal) {
           ].join("");
           const expBtns = FLAT_EXPENSE_SERIES.map(s => {
             const isOn = Boolean(flatGraph1ExpenseFilters[s.key]);
-            return `<button type="button" onclick="toggleFlatGraph1Expense('${s.key}'); renderZoomedFlatGraphCanvas();" style="display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:999px; font-size:0.74rem; font-weight:800; cursor:pointer; border:1.5px solid ${isOn ? s.color : 'rgba(255,255,255,0.2)'}; background:${isOn ? s.bg : 'transparent'}; color:${isOn ? '#fff' : '#94a3b8'};"><span style="width:9px; height:9px; border-radius:50%; background:${s.color};"></span>${s.label}</button>`;
+            return `<button type="button" onclick="toggleFlatGraph1Expense('${s.key}'); renderZoomedFlatGraphCanvas();" style="display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:999px; font-size:0.74rem; font-weight:800; cursor:pointer; border:1.5px solid ${isOn ? s.color : 'var(--glass-border)'}; background:${isOn ? s.bg : 'transparent'}; color:${isOn ? svgTextMain : svgTextMuted};"><span style="width:9px; height:9px; border-radius:50%; background:${s.color};"></span>${s.label}</button>`;
           }).join("");
           filtersBar.innerHTML = `<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">${expBtns}</div><div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">${scopeBtns}</div>`;
         }
@@ -11666,8 +11896,8 @@ function formatMonthLabel(rawVal) {
         for (let i = 0; i <= gridSteps; i++) {
           const yPos = padTop + (usableH * (i / gridSteps));
           const valAtLine = Math.round(maxBarVal * (1 - (i / gridSteps)));
-          gridSvg += `<line x1="${padLeft}" y1="${yPos.toFixed(1)}" x2="${baseW - padRight}" y2="${yPos.toFixed(1)}" stroke="${i === gridSteps ? 'rgba(255,255,255,0.35)' : 'rgba(148,163,184,0.16)'}" stroke-dasharray="${i === gridSteps ? '' : '4,4'}" />`;
-          gridSvg += `<text x="${padLeft - 12}" y="${(yPos + 4).toFixed(1)}" font-size="11" font-weight="700" fill="#cbd5e1" text-anchor="end">₹${valAtLine.toLocaleString('en-IN')}</text>`;
+          gridSvg += `<line x1="${padLeft}" y1="${yPos.toFixed(1)}" x2="${baseW - padRight}" y2="${yPos.toFixed(1)}" stroke="${i === gridSteps ? svgBaseLine : svgGridLine}" stroke-dasharray="${i === gridSteps ? '' : '4,4'}" />`;
+          gridSvg += `<text x="${padLeft - 12}" y="${(yPos + 4).toFixed(1)}" font-size="11" font-weight="700" fill="${svgTextMuted}" text-anchor="end">₹${valAtLine.toLocaleString('en-IN')}</text>`;
         }
 
         const slotW = usableW / Math.max(1, enabledExpenses.length);
@@ -11684,11 +11914,11 @@ function formatMonthLabel(rawVal) {
 
           barsSvg += `
             <g>
-              <rect x="${barX.toFixed(1)}" y="${barY.toFixed(1)}" width="${barW.toFixed(1)}" height="${Math.max(5, barH).toFixed(1)}" rx="10" fill="${s.color}" fill-opacity="0.9" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.5" />
+              <rect x="${barX.toFixed(1)}" y="${barY.toFixed(1)}" width="${barW.toFixed(1)}" height="${Math.max(5, barH).toFixed(1)}" rx="10" fill="${s.color}" fill-opacity="0.9" stroke="${s.color}" stroke-opacity="0.65" stroke-width="1.5" />
               <text x="${centerX.toFixed(1)}" y="${Math.max(20, barY - (isHighDetail ? 22 : 10)).toFixed(1)}" font-size="13.5" font-weight="900" fill="${s.color}" text-anchor="middle">₹${val.toLocaleString('en-IN')}</text>
-              ${isHighDetail ? `<text x="${centerX.toFixed(1)}" y="${Math.max(34, barY - 7).toFixed(1)}" font-size="10.5" font-weight="700" fill="#e2e8f0" text-anchor="middle">${pct}% Share • ${counts[s.key]} Bills (Avg ₹${avgPerBill.toLocaleString('en-IN')})</text>` : ''}
-              <text x="${centerX.toFixed(1)}" y="${baseH - 36}" font-size="13" font-weight="900" fill="#ffffff" text-anchor="middle">${s.label}</text>
-              <text x="${centerX.toFixed(1)}" y="${baseH - 18}" font-size="11" font-weight="700" fill="#94a3b8" text-anchor="middle">Share: ${pct}% of ₹${grandTotalAllFour.toLocaleString('en-IN')}</text>
+              ${isHighDetail ? `<text x="${centerX.toFixed(1)}" y="${Math.max(34, barY - 7).toFixed(1)}" font-size="10.5" font-weight="700" fill="${svgTextSub}" text-anchor="middle">${pct}% Share • ${counts[s.key]} Bills (Avg ₹${avgPerBill.toLocaleString('en-IN')})</text>` : ''}
+              <text x="${centerX.toFixed(1)}" y="${baseH - 36}" font-size="13" font-weight="900" fill="${svgTextMain}" text-anchor="middle">${s.label}</text>
+              <text x="${centerX.toFixed(1)}" y="${baseH - 18}" font-size="11" font-weight="700" fill="${svgTextMuted}" text-anchor="middle">Share: ${pct}% of ₹${grandTotalAllFour.toLocaleString('en-IN')}</text>
             </g>
           `;
         });
@@ -11737,7 +11967,7 @@ function formatMonthLabel(rawVal) {
             const isSel = String(flatGraph2SelectedMode) === String(yr);
             yrBtns += `<button type="button" class="btn-ledger-action" style="padding:5px 12px; font-size:0.74rem; font-weight:800; border-radius:20px; ${isSel ? 'background:#10b981; color:#fff;' : ''}" onclick="selectFlatGraph2Mode(${yr})">${yr}</button>`;
           });
-          filtersBar.innerHTML = `<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">${yrBtns}</div><div style="font-size:0.76rem; color:#38bdf8; font-weight:700;"><i class="fa-solid fa-wand-magic-sparkles"></i> Zoom in to reveal exact ₹ amounts &amp; 10-step micro-gridlines on every month</div>`;
+          filtersBar.innerHTML = `<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">${yrBtns}</div><div style="font-size:0.76rem; color:${isLightTheme ? '#0284c7' : '#38bdf8'}; font-weight:700;"><i class="fa-solid fa-wand-magic-sparkles"></i> Zoom in to reveal exact ₹ amounts &amp; 10-step micro-gridlines on every month</div>`;
         }
 
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -11771,8 +12001,8 @@ function formatMonthLabel(rawVal) {
         for (let s = 0; s <= gridSteps; s++) {
           const yVal = padTop + (usableH * (s / gridSteps));
           const numVal = Math.round(maxVal * (1 - (s / gridSteps)));
-          gridSvg += `<line x1="${padLeft}" y1="${yVal.toFixed(1)}" x2="${baseW - padRight}" y2="${yVal.toFixed(1)}" stroke="${s === gridSteps ? 'rgba(255,255,255,0.35)' : 'rgba(148,163,184,0.15)'}" stroke-dasharray="${s === gridSteps ? '' : '4,4'}"/>`;
-          gridSvg += `<text x="${padLeft - 12}" y="${(yVal + 4).toFixed(1)}" font-size="10.5" font-weight="700" fill="#cbd5e1" text-anchor="end">₹${numVal.toLocaleString('en-IN')}</text>`;
+          gridSvg += `<line x1="${padLeft}" y1="${yVal.toFixed(1)}" x2="${baseW - padRight}" y2="${yVal.toFixed(1)}" stroke="${s === gridSteps ? svgBaseLine : svgGridLine}" stroke-dasharray="${s === gridSteps ? '' : '4,4'}"/>`;
+          gridSvg += `<text x="${padLeft - 12}" y="${(yVal + 4).toFixed(1)}" font-size="10.5" font-weight="700" fill="${svgTextMuted}" text-anchor="end">₹${numVal.toLocaleString('en-IN')}</text>`;
         }
 
         let barsSvg = "";
@@ -11781,8 +12011,8 @@ function formatMonthLabel(rawVal) {
 
         months.forEach((mLabel, mIdx) => {
           const centerX = padLeft + (mIdx * (usableW / 11));
-          labelsSvg += `<line x1="${centerX.toFixed(1)}" y1="${padTop}" x2="${centerX.toFixed(1)}" y2="${padTop + usableH}" stroke="rgba(148,163,184,0.08)" />`;
-          labelsSvg += `<text x="${centerX.toFixed(1)}" y="${baseH - 22}" font-size="12" font-weight="800" fill="#e2e8f0" text-anchor="middle">${mLabel}</text>`;
+          labelsSvg += `<line x1="${centerX.toFixed(1)}" y1="${padTop}" x2="${centerX.toFixed(1)}" y2="${padTop + usableH}" stroke="${svgGridLine}" />`;
+          labelsSvg += `<text x="${centerX.toFixed(1)}" y="${baseH - 22}" font-size="12" font-weight="800" fill="${svgTextSub}" text-anchor="middle">${mLabel}</text>`;
 
           const count = activeYearsConfig.length;
           const barW = Math.max(10, Math.min(26, Math.floor(54 / Math.max(1, count))));
@@ -11808,7 +12038,7 @@ function formatMonthLabel(rawVal) {
           const pathD = pts.reduce((acc, pt, idx) => idx === 0 ? `M ${pt.x.toFixed(1)} ${pt.y.toFixed(1)}` : `${acc} L ${pt.x.toFixed(1)} ${pt.y.toFixed(1)}`, "");
           linesSvg += `<path d="${pathD}" fill="none" stroke="${yc.color}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />`;
           pts.forEach(pt => {
-            linesSvg += `<circle cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="5.5" fill="${yc.color}" stroke="#0f172a" stroke-width="2"><title>${pt.mLabel} ${yc.year}: ₹${pt.val.toLocaleString('en-IN')}</title></circle>`;
+            linesSvg += `<circle cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="5.5" fill="${yc.color}" stroke="${circleStroke}" stroke-width="2"><title>${pt.mLabel} ${yc.year}: ₹${pt.val.toLocaleString('en-IN')}</title></circle>`;
             if (pt.val > 0 && (isHighDetail || activeYearsConfig.length === 1)) {
               const yOffset = pt.y - 10 - (yIdx * 13);
               linesSvg += `<text x="${pt.x.toFixed(1)}" y="${Math.max(16, yOffset).toFixed(1)}" font-size="10.5" font-weight="800" fill="${yc.color}" text-anchor="middle">₹${pt.val.toLocaleString('en-IN')}</text>`;
@@ -14671,25 +14901,111 @@ function formatMonthLabel(rawVal) {
       }
     }
 
+    // Helper: Calculate Non-Rent Extra Funds, Pending/Outstanding Non-Rent Balance, Deducted Expenses, and Remaining Balance for a Property (or ALL)
+    function computeKharchPropertyNonRentBalances(propNameFilter) {
+      const isAll = !propNameFilter || propNameFilter === "ALL";
+      const targetKey = String(propNameFilter || "").trim().toLowerCase();
+
+      let initialNonRentTotal = 0;
+      let outstandingNonRentPending = 0;
+
+      const matchingBills = (DB.bills || []).filter(b => {
+        if (isAll) return true;
+        return String(b.PropertyName || "").trim().toLowerCase() === targetKey;
+      });
+
+      matchingBills.forEach(b => {
+        const elec = parseFloat(b.ElecTotal) || 0;
+        const png = parseFloat(b.PNGTotal) || 0;
+        const water = parseFloat(b.WaterTotal) || 0;
+        const extra = parseFloat(b.AdditionalAmount) || 0;
+        const nonRentCharge = elec + png + water + extra;
+        initialNonRentTotal += nonRentCharge;
+
+        // Calculate unpaid/outstanding non-rent portion (excluding base rent)
+        const baseRent = parseFloat(b.BaseRent) || 0;
+        const paid = parseFloat(b.PaidAmount) || 0;
+        const paidAfterRent = Math.max(0, paid - baseRent);
+        const nonRentUnpaid = Math.max(0, nonRentCharge - paidAfterRent);
+        outstandingNonRentPending += nonRentUnpaid;
+      });
+
+      let deductedExpenses = 0;
+      const allKharch = getStoredKharchRecords();
+      allKharch.forEach(k => {
+        const kProp = String(k.propertyName || k.PropertyName || "").trim().toLowerCase();
+        const kAmt = parseFloat(k.amount !== undefined ? k.amount : (k.Amount || 0)) || 0;
+        if (isAll) {
+          deductedExpenses += kAmt;
+        } else if (kProp === targetKey) {
+          deductedExpenses += kAmt;
+        }
+      });
+
+      const remainingBalance = initialNonRentTotal - deductedExpenses;
+      return {
+        initialNonRentTotal: Math.round(initialNonRentTotal),
+        outstandingNonRentPending: Math.round(outstandingNonRentPending),
+        deductedExpenses: Math.round(deductedExpenses),
+        remainingBalance: Math.round(remainingBalance)
+      };
+    }
+
     function renderKharchPropertyPills() {
       const container = document.getElementById("kharchPropertyPills");
       if (!container) return;
       const props = sortPropertiesAlphabetically(DB.properties || []);
-      const pills = [];
-      pills.push(
-        '<button type="button" class="kharch-prop-pill ' + (selectedKharchCalcProperty === "ALL" ? "active" : "") + '" onclick="selectKharchCalcProperty(\'ALL\')">' +
-        '<i class="fa-solid fa-layer-group"></i> All Properties' +
-        '</button>'
-      );
+      const cards = [];
+
+      const buildSquareCardHtml = (propKey, displayTitle, iconClass) => {
+        const isSel = selectedKharchCalcProperty === propKey;
+        const stats = computeKharchPropertyNonRentBalances(propKey);
+        const safeKey = String(propKey).replace(/'/g, "\\'");
+        const remColor = stats.remainingBalance >= 0 ? "#10b981" : "#ef4444";
+
+        return `
+          <div class="kharch-prop-square-card ${isSel ? 'active' : ''}" onclick="selectKharchCalcProperty('${safeKey}')">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:6px; margin-bottom:8px;">
+                <div style="width:32px; height:32px; border-radius:10px; background:${isSel ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'rgba(245,158,11,0.16)'}; color:${isSel ? '#ffffff' : '#f59e0b'}; display:flex; align-items:center; justify-content:center; font-size:0.9rem; flex-shrink:0;">
+                  <i class="fa-solid ${iconClass}"></i>
+                </div>
+                <span style="font-size:0.62rem; font-weight:800; padding:2px 7px; border-radius:999px; background:${isSel ? '#10b981' : 'rgba(148,163,184,0.16)'}; color:${isSel ? '#ffffff' : 'var(--text-muted)'}; text-transform:uppercase;">
+                  ${isSel ? '✓ Selected' : 'Select'}
+                </span>
+              </div>
+              <div style="font-size:0.86rem; font-weight:900; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:6px;" title="${displayTitle}">
+                ${displayTitle}
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:4px; font-size:0.7rem; border-top:1px dashed var(--glass-border); padding-top:6px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:var(--text-muted);">Extra/Non-Rent:</span>
+                <strong style="color:#0284c7;">₹${stats.initialNonRentTotal.toLocaleString('en-IN')}</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:var(--text-muted);">Outstanding Due:</span>
+                <strong style="color:#d97706;">₹${stats.outstandingNonRentPending.toLocaleString('en-IN')}</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:var(--text-muted);">Deducted Kharch:</span>
+                <strong style="color:#ef4444;">-₹${stats.deductedExpenses.toLocaleString('en-IN')}</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--glass-border); padding-top:4px; margin-top:2px;">
+                <span style="font-weight:800; color:var(--text-main);">Remaining:</span>
+                <strong style="font-size:0.78rem; font-weight:900; color:${remColor};">₹${stats.remainingBalance.toLocaleString('en-IN')}</strong>
+              </div>
+            </div>
+          </div>
+        `;
+      };
+
+      cards.push(buildSquareCardHtml("ALL", "All Properties", "fa-layer-group"));
       props.forEach(p => {
-        const pName = p.PropertyName;
-        pills.push(
-          '<button type="button" class="kharch-prop-pill ' + (selectedKharchCalcProperty === pName ? "active" : "") + '" onclick="selectKharchCalcProperty(\'' + pName.replace(/'/g, "\\'") + '\')">' +
-          '<i class="fa-solid fa-building"></i> ' + pName +
-          '</button>'
-        );
+        cards.push(buildSquareCardHtml(p.PropertyName, p.PropertyName, "fa-building"));
       });
-      container.innerHTML = pills.join("");
+      container.innerHTML = cards.join("");
     }
 
     function selectKharchCalcProperty(propName) {
@@ -14822,14 +15138,18 @@ function formatMonthLabel(rawVal) {
     }
 
     function openKharchModal() {
-      cancelKharchEdit();
       const propSel = document.getElementById("kharchPropertyName");
       if (propSel) {
-        const opts = ['<option value="General / All">General / All Properties</option>'];
+        const opts = ['<option value="">-- Select Property (*) --</option>'];
         sortPropertiesAlphabetically(DB.properties).forEach(p => {
           opts.push(`<option value="${p.PropertyName}">${p.PropertyName}</option>`);
         });
         propSel.innerHTML = opts.join("");
+      }
+      cancelKharchEdit();
+      if (selectedProperty && propSel) {
+        propSel.value = selectedProperty;
+        selectedKharchCalcProperty = selectedProperty;
       }
       // Initialize tabs & calculation ticker
       switchKharchSectionTab("calc");
@@ -14851,7 +15171,7 @@ function formatMonthLabel(rawVal) {
       if (tEl) tEl.value = "";
       if (cEl) cEl.value = "Maintenance & Repair";
       if (aEl) aEl.value = "";
-      if (pEl) pEl.value = "General / All";
+      if (pEl) pEl.value = (selectedKharchCalcProperty && selectedKharchCalcProperty !== "ALL") ? selectedKharchCalcProperty : "";
       if (mEl) mEl.value = "Cash";
       if (dEl) dEl.value = new Date().toISOString().split("T")[0];
       if (nEl) nEl.value = "";
@@ -14873,7 +15193,17 @@ function formatMonthLabel(rawVal) {
       document.getElementById("kharchTitle").value = target.title || target.Title || "";
       document.getElementById("kharchCategory").value = target.category || target.Category || "Maintenance & Repair";
       document.getElementById("kharchAmount").value = target.amount !== undefined ? target.amount : (target.Amount || "");
-      document.getElementById("kharchPropertyName").value = target.propertyName || target.PropertyName || "General / All";
+      const recProp = target.propertyName || target.PropertyName || "";
+      const propSel = document.getElementById("kharchPropertyName");
+      if (propSel) {
+        if (recProp && !Array.from(propSel.options).some(o => o.value === recProp)) {
+          const opt = document.createElement("option");
+          opt.value = recProp;
+          opt.textContent = recProp;
+          propSel.appendChild(opt);
+        }
+        propSel.value = recProp;
+      }
       document.getElementById("kharchPaymentMode").value = target.paymentMode || target.PaymentMode || "Cash";
       document.getElementById("kharchExpenseDate").value = toInputDateValue(target.expenseDate || target.ExpenseDate) || new Date().toISOString().split("T")[0];
       document.getElementById("kharchNotes").value = target.notes || target.Notes || "";
@@ -14891,7 +15221,7 @@ function formatMonthLabel(rawVal) {
       const title = document.getElementById("kharchTitle")?.value.trim() || "";
       const category = document.getElementById("kharchCategory")?.value || "Other Kharch";
       const amount = parseFloat(document.getElementById("kharchAmount")?.value) || 0;
-      const propertyName = document.getElementById("kharchPropertyName")?.value || "General / All";
+      const propertyName = (document.getElementById("kharchPropertyName")?.value || "").trim();
       const paymentMode = document.getElementById("kharchPaymentMode")?.value || "Cash";
       const expenseDate = document.getElementById("kharchExpenseDate")?.value || new Date().toISOString().split("T")[0];
       const notes = document.getElementById("kharchNotes")?.value.trim() || "";
@@ -14901,6 +15231,9 @@ function formatMonthLabel(rawVal) {
       }
       if (amount <= 0) {
         return triggerSideToast("Amount Required", "Please enter a valid Expense Amount greater than 0.", false);
+      }
+      if (!propertyName) {
+        return triggerSideToast("Property Required", "Please select which specific Property this expense is spent on (*).", false);
       }
 
       const list = [...getStoredKharchRecords()];
@@ -14938,12 +15271,15 @@ function formatMonthLabel(rawVal) {
       }
 
       DB.kharchRecords = list;
+      selectedKharchCalcProperty = propertyName;
       saveDbSnapshotToCache();
       cancelKharchEdit();
+      renderKharchPropertyPills();
+      renderKharchUtilityCalculation();
       renderKharchRecordsList();
       triggerSideToast(
-        isEditing ? "Kharch Updated" : "Kharch Saved",
-        `${title} (₹${amount.toLocaleString('en-IN')}) saved to Google Sheet!`,
+        isEditing ? "Kharch Updated" : "Kharch Deducted & Saved",
+        `${title} (₹${amount.toLocaleString('en-IN')}) deducted from ${propertyName} & saved!`,
         true
       );
 
@@ -14965,8 +15301,10 @@ function formatMonthLabel(rawVal) {
       if (activeRole === "Viewer" || activeRole === "Renter") return;
       DB.kharchRecords = getStoredKharchRecords().filter(item => String(item.id || item.KharchID) !== String(id));
       saveDbSnapshotToCache();
+      renderKharchPropertyPills();
+      renderKharchUtilityCalculation();
       renderKharchRecordsList();
-      triggerSideToast("Kharch Deleted", "Expense entry removed from Google Sheet.", "warning");
+      triggerSideToast("Kharch Deleted", "Expense entry removed and property balance updated.", "warning");
       await sendGasPost({
         action: "deleteKharchRecord",
         id: id
@@ -15769,73 +16107,11 @@ function formatMonthLabel(rawVal) {
       `;
     }
 
+    // Requirement 1: Farmland section at the bottom of the home page is removed (Farmland button in top dashboard & modal remain intact)
     function renderHomeKhetSection() {
       const sectionEl = document.getElementById("homeKhetSection");
-      const gridEl = document.getElementById("homeKhetCardsGrid");
-      const countEl = document.getElementById("homeKhetTotalCount");
-      const decEl = document.getElementById("homeKhetTotalDecimal");
-      const bighaEl = document.getElementById("homeKhetTotalBigha");
-      const valEl = document.getElementById("homeKhetTotalValuation");
-      const paidEl = document.getElementById("homeKhetTotalPaid");
-      const adjEl = document.getElementById("homeKhetTotalAdjusted");
-      const bannerEl = document.getElementById("homeKhetPartnerSummaryBanner");
-      if (!gridEl) return;
-
-      if (activeRole === "Viewer") {
-        if (sectionEl) sectionEl.style.display = "none";
-        return;
-      }
-      if (sectionEl) sectionEl.style.display = "block";
-
+      if (sectionEl) sectionEl.style.display = "none";
       populateKhetPartnerFilterAndQuickFill();
-      const filteredList = getFilteredKhetList();
-
-      let totalDecimalNum = 0;
-      let totalSurveyDecimalNum = 0;
-      let totalKathaNum = 0;
-      let totalValuationNum = 0;
-      let totalPaidNum = 0;
-      let totalAdjustedNum = 0;
-
-      filteredList.forEach(item => {
-        const f = extractKhetDisplayFields(item);
-        totalDecimalNum += f.decimalArea;
-        totalSurveyDecimalNum += f.newDecimalSurvey;
-        totalKathaNum += f.katha;
-        totalValuationNum += f.totalLandValue;
-        totalPaidNum += f.amountPaid;
-        totalAdjustedNum += f.adjustedAmount;
-      });
-
-      if (countEl) countEl.innerText = String(filteredList.length);
-      if (decEl) decEl.innerText = `${Number(totalDecimalNum.toFixed(2))} / ${Number(totalSurveyDecimalNum.toFixed(2))}`;
-      if (bighaEl) bighaEl.innerText = `${Number(totalKathaNum.toFixed(2))} Katha`;
-      if (valEl) valEl.innerText = `₹${totalValuationNum.toLocaleString("en-IN")}`;
-      if (paidEl) paidEl.innerText = `₹${totalPaidNum.toLocaleString("en-IN")}`;
-      if (adjEl) adjEl.innerText = `₹${totalAdjustedNum.toLocaleString("en-IN")}`;
-
-      if (bannerEl) {
-        const bHtml = buildKhetPartnerBannerHtml(filteredList);
-        bannerEl.innerHTML = bHtml;
-        bannerEl.style.display = bHtml ? "block" : "none";
-      }
-
-      if (filteredList.length === 0) {
-        gridEl.innerHTML = `
-          <div style="grid-column: 1 / -1; text-align:center; padding:26px 16px; background:var(--bg-input); border:1px dashed rgba(52,211,153,0.4); border-radius:16px; color:var(--text-muted);">
-            <i class="fa-solid fa-wheat-awn" style="font-size:1.8rem; color:#10b981; margin-bottom:8px; display:block;"></i>
-            <strong style="color:var(--text-main); font-size:0.95rem;">No Khet (Farmland) Records Match Current Filter</strong>
-            <p style="font-size:0.78rem; margin-top:4px;">Click "Add / Manage Khet &amp; Partners" to enter Registered Name, Partner KYC, Place, Khata No, Keshra No, Decimal, Survey Decimal, Katha, Rate/Katha, Paid &amp; Adjusted amounts.</p>
-          </div>
-        `;
-        return;
-      }
-
-      if (activeKhetViewMode === "table") {
-        gridEl.innerHTML = buildKhetMasterTableHtml(filteredList);
-      } else {
-        gridEl.innerHTML = filteredList.map(item => buildKhetDetailedCardHtml(item)).join("");
-      }
     }
 
     function renderKhetRecordsList() {
@@ -16624,6 +16900,7 @@ function formatMonthLabel(rawVal) {
       openModal("addRenterModal");
     }
 
+    // Requirement 2: Inside "Add Renter" under Plus (+), ONLY display flats that are currently VACANT
     function populateAddRenterFlatsDropdown() {
       const propName = document.getElementById("addRenterPropDropdown")?.value || "";
       const flatSelect = document.getElementById("addRenterFlatDropdown");
@@ -16639,23 +16916,32 @@ function formatMonthLabel(rawVal) {
         flatSelect.innerHTML = '<option value="">No flats found in this location (Add Flat first)</option>';
         return;
       }
-      flatSelect.innerHTML = ['<option value="">-- Select Flat Name / Number (*) --</option>'].concat(
-        matchingFlats.map(f => {
-          const activeOcc = (DB.renters || []).find(r =>
-            isSamePropAndFlat(r.PropertyName, r.FlatName, f.PropertyName, f.FlatName) &&
-            String(r.Status || "").trim().toLowerCase() === "active"
-          );
-          const statusNote = activeOcc ? `Occupied (${activeOcc.RenterName || 'Active'})` : "Vacant";
-          return `<option value="${f.FlatName}">${f.FlatName} — ${statusNote}</option>`;
-        })
+      // Strictly exclude any flat that already has an Active renter
+      const vacantFlats = matchingFlats.filter(f => {
+        const activeOcc = (DB.renters || []).find(r =>
+          isSamePropAndFlat(r.PropertyName, r.FlatName, f.PropertyName, f.FlatName) &&
+          String(r.Status || "").trim().toLowerCase() === "active"
+        );
+        return !activeOcc;
+      });
+
+      if (vacantFlats.length === 0) {
+        flatSelect.innerHTML = `<option value="">No vacant flats in ${propName} (All ${matchingFlats.length} occupied)</option>`;
+        return;
+      }
+
+      flatSelect.innerHTML = ['<option value="">-- Select Vacant Flat Name / Number (*) --</option>'].concat(
+        vacantFlats.map(f => `<option value="${f.FlatName}">${f.FlatName} — Vacant</option>`)
       ).join("");
     }
 
+    // Requirement 3: Auto-hyphenate Aadhaar (XXXX-XXXX-XXXX) & Auto-Fill Name + Mobile Number when a previous renter's Aadhaar is entered
     function handleAddRenterModalAadhaarLookup(rawVal) {
       const aadhInput = document.getElementById("addRenterAadhaarInput");
       const digits = String(rawVal !== undefined ? rawVal : (aadhInput ? aadhInput.value : "")).replace(/\D/g, "").slice(0, 12);
-      if (aadhInput && aadhInput.value !== digits) {
-        aadhInput.value = digits;
+      const formattedHyphenAadhaar = formatAadhaarWithHyphens(digits);
+      if (aadhInput && aadhInput.value !== formattedHyphenAadhaar) {
+        aadhInput.value = formattedHyphenAadhaar;
       }
 
       const matchBox = document.getElementById("addRenterAadhaarMatchBox");
@@ -16663,12 +16949,13 @@ function formatMonthLabel(rawVal) {
 
       if (digits.length < 4) {
         addRenterModalMatchedRecord = null;
+        addRenterModalIsReactivating = false;
         matchBox.style.display = "none";
         matchBox.innerHTML = "";
         return;
       }
 
-      // Find all renter records matching this Aadhaar number (both Active and Inactive/Left)
+      // Find all renter records matching this Aadhaar number (prioritizing previous / departed renters, or active renters)
       const matchingRecords = (DB.renters || []).filter(r => {
         const rAadhaar = String(r.IdentityDocNumber || "").replace(/\D/g, "");
         if (!rAadhaar) return false;
@@ -16677,6 +16964,7 @@ function formatMonthLabel(rawVal) {
 
       if (matchingRecords.length === 0) {
         addRenterModalMatchedRecord = null;
+        addRenterModalIsReactivating = false;
         matchBox.style.display = "none";
         matchBox.innerHTML = "";
         return;
@@ -16694,11 +16982,26 @@ function formatMonthLabel(rawVal) {
 
       const best = matchingRecords[0];
       addRenterModalMatchedRecord = best;
+      addRenterModalIsReactivating = true;
+
+      // Requirement 3: Automatically fill Name and Mobile Number immediately when a previous renter's Aadhaar matches!
+      // Only leave Location (Property) and Flat Name open for the user to select where to assign them.
+      const nameEl = document.getElementById("addRenterNameInput");
+      const mobEl = document.getElementById("addRenterMobileInput");
+      if (nameEl && best.RenterName) {
+        nameEl.value = best.RenterName;
+      }
+      if (mobEl && best.MobileNumber) {
+        mobEl.value = formatIndianMobilePlus91(best.MobileNumber);
+      }
+
+      addRenterModalProfUrl = (!isPlaceholderImageUrl(best.ProfileImageURL)) ? best.ProfileImageURL : "";
+      addRenterModalIdUrl = (!isPlaceholderImageUrl(best.IdentityImageURL)) ? best.IdentityImageURL : "";
 
       const isCurrentlyActive = String(best.Status || "").trim().toLowerCase() === "active";
       const statusBadgeHtml = isCurrentlyActive
         ? `<span class="badge-paid" style="font-size:0.68rem; padding:3px 9px;"><i class="fa-solid fa-circle-check"></i> Currently Active</span>`
-        : `<span class="badge-unpaid" style="font-size:0.68rem; padding:3px 9px;"><i class="fa-solid fa-clock-rotate-left"></i> Past / Left Renter</span>`;
+        : `<span class="badge-unpaid" style="font-size:0.68rem; padding:3px 9px;"><i class="fa-solid fa-clock-rotate-left"></i> Past / Returning Renter</span>`;
 
       const allStaysText = matchingRecords
         .map(r => `${r.PropertyName || '--'} (Flat ${r.FlatName || '--'} • ${String(r.Status || 'Active')})`)
@@ -16706,7 +17009,6 @@ function formatMonthLabel(rawVal) {
         .join(" | ");
 
       const profSrc = (!isPlaceholderImageUrl(best.ProfileImageURL)) ? normalizeGoogleDriveImageUrl(best.ProfileImageURL) : EMPTY_PROFILE_PLACEHOLDER;
-      const idSrc = (!isPlaceholderImageUrl(best.IdentityImageURL)) ? normalizeGoogleDriveImageUrl(best.IdentityImageURL) : EMPTY_IDENTITY_PLACEHOLDER;
 
       matchBox.style.display = "block";
       matchBox.innerHTML = `
@@ -16718,30 +17020,26 @@ function formatMonthLabel(rawVal) {
                 <strong style="font-size:0.95rem; color:var(--text-main);">${best.RenterName || 'Saved Renter'}</strong>
                 ${statusBadgeHtml}
               </div>
-              <div style="font-size:0.74rem; color:#38bdf8; font-weight:700; margin-top:2px;">
-                <i class="fa-solid fa-id-card"></i> Aadhaar: ${best.IdentityDocNumber || digits}
+              <div style="font-size:0.74rem; color:#10b981; font-weight:800; margin-top:2px;">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Name &amp; Mobile Auto-Filled! Choose Location &amp; Vacant Flat above to activate.
               </div>
             </div>
           </div>
           <button
             type="button"
             class="btn-primary"
-            style="width:auto; padding:8px 14px; font-size:0.78rem; font-weight:800; background:linear-gradient(135deg, #10b981, #059669); border-radius:10px; box-shadow:0 6px 16px rgba(16,185,129,0.3);"
+            style="width:auto; padding:7px 12px; font-size:0.74rem; font-weight:800; background:linear-gradient(135deg, #10b981, #059669); border-radius:10px;"
             onclick="activateInPageRenterDetailsFromAadhaar()"
           >
-            <i class="fa-solid fa-bolt"></i> Reactivate &amp; Fill Complete Details Here
+            <i class="fa-solid fa-sliders"></i> View / Edit Full Details
           </button>
         </div>
 
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(155px, 1fr)); gap:8px; font-size:0.76rem; background:rgba(15,23,42,0.5); padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.08);">
-          <div><span style="color:var(--text-muted);">Name:</span> <strong style="color:var(--text-main);">${best.RenterName || '--'}</strong></div>
-          <div><span style="color:var(--text-muted);">Mobile:</span> <strong style="color:#34d399;">${best.MobileNumber || '--'}</strong></div>
-          <div><span style="color:var(--text-muted);">Alt Mobile:</span> <strong style="color:var(--text-main);">${best.AltMobileNumber || '--'}</strong></div>
-          <div><span style="color:var(--text-muted);">Family Members:</span> <strong style="color:var(--text-main);">${best.TotalFamilyMembers || '1'}</strong></div>
-          <div><span style="color:var(--text-muted);">Join Date:</span> <strong style="color:var(--text-main);">${formatDateOnly(best.JoinDate)}</strong></div>
-          <div><span style="color:var(--text-muted);">Leave Date:</span> <strong style="color:var(--text-main);">${best.EndDate ? formatDateOnly(best.EndDate) : 'Active / Present'}</strong></div>
-          <div style="grid-column:1 / -1;"><span style="color:var(--text-muted);">Permanent Address:</span> <strong style="color:var(--text-main);">${best.Address || '--'}</strong></div>
-          <div style="grid-column:1 / -1;"><span style="color:var(--text-muted);">Recorded Flat History:</span> <strong style="color:#a78bfa;">${allStaysText}</strong></div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(155px, 1fr)); gap:8px; font-size:0.76rem; background:var(--bg-input); padding:10px; border-radius:10px; border:1px solid var(--glass-border);">
+          <div><span style="color:var(--text-muted);">Auto-Filled Name:</span> <strong style="color:var(--text-main);">${best.RenterName || '--'}</strong></div>
+          <div><span style="color:var(--text-muted);">Auto-Filled Mobile:</span> <strong style="color:#10b981;">${best.MobileNumber || '--'}</strong></div>
+          <div><span style="color:var(--text-muted);">Aadhaar No.:</span> <strong style="color:#38bdf8;">${formatAadhaarWithHyphens(best.IdentityDocNumber || digits)}</strong></div>
+          <div><span style="color:var(--text-muted);">Previous Stays:</span> <strong style="color:#a78bfa;">${allStaysText}</strong></div>
         </div>
       `;
     }
@@ -16765,7 +17063,7 @@ function formatMonthLabel(rawVal) {
 
       if (nameEl) nameEl.value = rec.RenterName || "";
       if (mobEl) mobEl.value = rec.MobileNumber ? formatIndianMobilePlus91(rec.MobileNumber) : "+91";
-      if (aadhEl && rec.IdentityDocNumber) aadhEl.value = String(rec.IdentityDocNumber).replace(/\D/g, "").slice(0, 12);
+      if (aadhEl && rec.IdentityDocNumber) aadhEl.value = formatAadhaarWithHyphens(rec.IdentityDocNumber);
       if (altMobEl) altMobEl.value = rec.AltMobileNumber || "";
       if (addrEl) addrEl.value = rec.Address || "";
       if (famEl) famEl.value = rec.TotalFamilyMembers || 1;
@@ -16782,7 +17080,7 @@ function formatMonthLabel(rawVal) {
         expBox.style.display = "block";
         expBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
-      triggerSideToast("Renter Details Loaded", "Complete profile & photos loaded right here on the Add Renter page. Select Location & Flat and click Save!", true);
+      triggerSideToast("Renter Details Loaded", "Complete profile & photos loaded right here on the Add Renter page. Select Location & Vacant Flat and click Save!", true);
     }
 
     async function handleAddRenterModalPhotoSelect(inputEl, docType) {
@@ -16811,13 +17109,14 @@ function formatMonthLabel(rawVal) {
       const rName = (document.getElementById("addRenterNameInput")?.value || "").trim();
       const rawMob = (document.getElementById("addRenterMobileInput")?.value || "").trim();
       const rawAadhaar = (document.getElementById("addRenterAadhaarInput")?.value || "").replace(/\D/g, "").slice(0, 12);
+      const formattedAadhaar = rawAadhaar.length === 12 ? formatAadhaarWithHyphens(rawAadhaar) : "";
 
       // Compulsory validation: ONLY Location, Flat Name, and Renter Name are compulsory
       if (!targetProp) {
         return triggerSideToast("Location Required", "Please select a Location / Property (*).", false);
       }
       if (!targetFlat) {
-        return triggerSideToast("Flat Required", "Please select a Flat Name / Number (*).", false);
+        return triggerSideToast("Vacant Flat Required", "Please select a Vacant Flat Name / Number (*).", false);
       }
       if (!rName) {
         return triggerSideToast("Renter Name Required", "Renter Name (*) is compulsory.", false);
@@ -16831,7 +17130,7 @@ function formatMonthLabel(rawVal) {
       const formattedMob = mobDigits.length === 10 ? ("+91 " + mobDigits) : "";
 
       if (rawAadhaar.length > 0 && rawAadhaar.length !== 12) {
-        return triggerSideToast("Invalid Aadhaar Number", "If entering an Aadhaar number, please enter all 12 digits.", false);
+        return triggerSideToast("Invalid Aadhaar Number", "If entering an Aadhaar number, please enter all 12 digits (XXXX-XXXX-XXXX).", false);
       }
 
       const expBox = document.getElementById("addRenterExpandedDetailsBox");
@@ -16849,9 +17148,7 @@ function formatMonthLabel(rawVal) {
       const joinDate = (isExpandedVisible && document.getElementById("addRenterJoinDateInput")?.value)
         ? document.getElementById("addRenterJoinDateInput").value
         : new Date().toISOString().split("T")[0];
-      const statusVal = (isExpandedVisible && document.getElementById("addRenterStatusInput")?.value)
-        ? document.getElementById("addRenterStatusInput").value
-        : "Active";
+      const statusVal = "Active";
 
       const profUrl = addRenterModalProfUrl || (addRenterModalMatchedRecord && !isPlaceholderImageUrl(addRenterModalMatchedRecord.ProfileImageURL) ? addRenterModalMatchedRecord.ProfileImageURL : "");
       const idUrl = addRenterModalIdUrl || (addRenterModalMatchedRecord && !isPlaceholderImageUrl(addRenterModalMatchedRecord.IdentityImageURL) ? addRenterModalMatchedRecord.IdentityImageURL : "");
@@ -16889,7 +17186,7 @@ function formatMonthLabel(rawVal) {
         ContractMobile: inheritedContract,
         JoinDate: joinDate,
         Status: statusVal,
-        IdentityDocNumber: rawAadhaar,
+        IdentityDocNumber: formattedAadhaar,
         ProfileImageURL: profUrl,
         IdentityImageURL: idUrl,
         MobileNumber: formattedMob,
@@ -16907,6 +17204,7 @@ function formatMonthLabel(rawVal) {
           const rAadh = String(r.IdentityDocNumber || "").replace(/\D/g, "");
           if (rAadh === rawAadhaar) {
             r.RenterName = rName;
+            r.IdentityDocNumber = formattedAadhaar;
             if (formattedMob) r.MobileNumber = formattedMob;
             if (altMob) r.AltMobileNumber = altMob;
             if (addr) r.Address = addr;
