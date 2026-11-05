@@ -3935,18 +3935,21 @@
           </button>
           <!-- 4. Dynamic Plus (+) Add Box Button -->
           <div class="dropdown-anchor admin-only">
-            <button type="button" class="nav-btn plus-icon-box-btn" onclick="toggleActionMenu()" title="Add Property or Flat">
+            <button type="button" class="nav-btn plus-icon-box-btn" onclick="toggleActionMenu()" title="Add Property, Flat or Renter">
               <i class="fa-solid fa-plus" style="color:#38bdf8; font-size:1.05rem; font-weight:900;"></i>
             </button>
             <div id="actionMenu" class="action-menu">
               <div class="menu-item" onclick="openModal('addPropertyModal')">
                 <i class="fa-solid fa-building"></i> Add Property
               </div>
-              <div class="menu-item" onclick="openModal('editPropertyModal')">
-                <i class="fa-solid fa-pen-to-square"></i> Edit Property Name
+              <div class="menu-item" onclick="syncPropertyDropdowns(); openModal('editPropertyModal')">
+                <i class="fa-solid fa-pen-to-square"></i> Edit Property
               </div>
               <div class="menu-item" onclick="openAddFlatModal()">
                 <i class="fa-solid fa-door-open"></i> Add Flat
+              </div>
+              <div class="menu-item" onclick="openAddRenterModal()">
+                <i class="fa-solid fa-user-plus"></i> Add Renter
               </div>
             </div>
           </div>
@@ -4719,8 +4722,26 @@
           <input type="tel" id="createUserMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)">
         </div>
         <div class="form-group">
-          <label>Desired Username (User ID) <span class="req-star">*</span></label>
-          <input type="text" id="createUserLoginId" class="form-control" placeholder="e.g. manager_01">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:4px;">
+            <label style="margin-bottom:0;">Desired Username (User ID) <span class="req-star">*</span></label>
+            <span id="createUsernameAvailabilityBadge" style="display:none; font-size:0.75rem; font-weight:800; padding:2px 9px; border-radius:999px;"></span>
+          </div>
+          <div style="position:relative; display:flex; align-items:center;">
+            <input
+              type="text"
+              id="createUserLoginId"
+              class="form-control"
+              placeholder="e.g. manager_01"
+              style="padding-right:42px;"
+               autocomplete="off"
+              oninput="checkCreateUsernameAvailabilityLive(this.value)"
+              onchange="checkCreateUsernameAvailabilityLive(this.value)"
+            >
+            <span
+              id="createUsernameInlineIcon"
+              style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:1.1rem; display:none; pointer-events:none;"
+            ></span>
+          </div>
         </div>
         <div class="form-group">
           <label>Set Password <span class="req-star">*</span></label>
@@ -4896,33 +4917,33 @@
         </div>
 
         
-        <!-- Option: Change Background Photo (Requirement 3: Single Login Home Page Background Link for Entire Platform) -->
+        <!-- Option: Change Background Photo (Home Page Only in Full HD Quality — Login/Logout Screen Unchanged) -->
         <div id="otherPanelChangeBg" class="stat-pill admin-only" style="text-align: left; display: none;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--glass-border);">
             <div>
               <span style="font-weight:800; font-size:0.88rem; color:#ec4899;">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Login Home Page Background Wallpaper (Global Admin Control)
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Home Page HD Background Wallpaper (Dashboard Only)
               </span>
               <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">
-                Upload a photo or insert an image link below. This background is displayed everywhere across the entire platform for Admin, Viewers, and Renters. If deleted or left empty, the default photo is automatically displayed.
+                Upload a photo in Full HD quality or paste an image link below. This background applies <strong>only to the Home Page after logging in</strong> (the Logout / Login screen keeps its default background).
               </div>
             </div>
             <span style="font-size:0.7rem; color:#10b981; font-weight:700; background:rgba(16,185,129,0.15); padding:3px 8px; border-radius:12px;">
-              <i class="fa-solid fa-circle-check"></i> Global Sync
+              <i class="fa-solid fa-high-definition"></i> Full HD • Home Page Only
             </span>
           </div>
 
           <div style="display:flex; flex-direction:column; gap:12px;">
             <div style="background:var(--bg-input); padding:12px; border-radius:12px; border:1px solid var(--glass-border);">
               <label style="font-size:0.76rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-                <i class="fa-solid fa-house" style="color:#ec4899;"></i> Login Home Page Background Link (URL or Upload Photo)
+                <i class="fa-solid fa-house" style="color:#ec4899;"></i> Home Page Background Link (URL or Upload HD Photo)
               </label>
               <div style="display:flex; gap:8px; margin-bottom:8px;">
                 <input
                   type="url"
                   id="bgUrlLoginScreen"
                   class="form-control"
-                  placeholder="Paste image link for Login / Home Page background (e.g. https://...)"
+                  placeholder="Paste HD image link for Home Page background (e.g. https://...)"
                   style="font-size:0.78rem;"
                 >
                 <button
@@ -4930,17 +4951,17 @@
                   class="btn-ledger-action"
                   style="padding:6px 12px; color:var(--accent-red); border-color:rgba(239,68,68,0.4); flex-shrink:0; font-size:0.75rem; font-weight:700;"
                   onclick="deleteCustomBgImage()"
-                  title="Delete custom image and revert entire platform to default photo"
+                  title="Delete custom image and revert Home Page to default photo"
                 >
                   <i class="fa-solid fa-trash-can"></i> Delete
                 </button>
               </div>
               <div class="admin-only" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <label style="font-size:0.72rem; color:var(--text-muted); margin:0;"><i class="fa-solid fa-cloud-arrow-up" style="color:#ec4899;"></i> Or Upload Photo from Device:</label>
+                <label style="font-size:0.72rem; color:var(--text-muted); margin:0;"><i class="fa-solid fa-cloud-arrow-up" style="color:#ec4899;"></i> Or Upload HD Photo from Device:</label>
                 <input type="file" accept="image/*" class="form-control" style="padding:5px 8px; font-size:0.74rem; max-width:260px;" onchange="handleDirectBgUpload(this)">
               </div>
               <div id="bgLoginStatusHint" style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">
-                Leave empty to automatically display the default background photo across the entire platform.
+                Applies in crisp HD strictly to the Home Page after login (Logout/Login screen remains unchanged).
               </div>
             </div>
 
@@ -4959,7 +4980,7 @@
                 style="width:auto; padding:8px 20px; font-size:0.78rem; font-weight:700; background:linear-gradient(135deg, #ec4899 0%, #db2777 100%);"
                 onclick="saveCustomBackgrounds()"
               >
-                <i class="fa-solid fa-floppy-disk"></i> Save &amp; Apply Background Everywhere
+                <i class="fa-solid fa-floppy-disk"></i> Save &amp; Apply HD Home Background
               </button>
             </div>
           </div>
@@ -5074,11 +5095,11 @@
     </div>
   </div>
 
-  <!-- Edit Property Name Modal -->
+  <!-- Edit Property Modal (Requirement 7: Includes Select Property, Current Name, New Name, UPI Name, UPI ID & Contact Mobile Number) -->
   <div id="editPropertyModal" class="modal-overlay">
     <div class="modal-window">
       <button class="modal-close-btn" onclick="closeModal('editPropertyModal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 20px;">Edit Property Name</h3>
+      <h3 style="margin-bottom: 18px;"><i class="fa-solid fa-pen-to-square" style="color:var(--primary);"></i> Edit Property Details</h3>
       <div class="form-group">
         <label>Select Property</label>
         <select id="editPropDropdown" class="form-control" onchange="syncEditPropDisplay()"></select>
@@ -5088,10 +5109,31 @@
         <input type="text" id="editPropCurrentName" class="form-control" readonly>
       </div>
       <div class="form-group">
-        <label>New Property Name <span class="req-star">*</span></label>
-        <input type="text" id="editPropNewName" class="form-control" placeholder="Enter updated name">
+        <label>New Name <span class="req-star">*</span></label>
+        <input type="text" id="editPropNewName" class="form-control" placeholder="Enter updated property name">
       </div>
-      <button class="btn-primary admin-only" onclick="submitEditProperty()">Update Name</button>
+      <div class="form-group">
+        <label>UPI Name</label>
+        <input type="text" id="editPropUpiName" class="form-control" placeholder="Account Holder / Payee Name">
+      </div>
+      <div class="form-group">
+        <label>UPI ID</label>
+        <input type="text" id="editPropUpiId" class="form-control" placeholder="e.g. name@okhdfcbank">
+      </div>
+      <div class="form-group">
+        <label>Contact Mobile Number (+91 &amp; 10 Digits)</label>
+        <input
+          type="tel"
+          id="editPropContractMobile"
+          class="form-control"
+          maxlength="14"
+          inputmode="tel"
+          placeholder="+91 9876543210"
+          onfocus="ensurePlus91Prefix(this)"
+          oninput="this.value = formatIndianMobilePlus91(this.value)"
+        >
+      </div>
+      <button class="btn-primary admin-only" onclick="submitEditProperty()">Update Property Details</button>
     </div>
   </div>
 
@@ -5107,46 +5149,151 @@
         <label>Select Property</label>
         <select id="deletePropDropdown" class="form-control"></select>
       </div>
-      <button class="btn-primary admin-only" style="background: var(--accent-red);" onclick="triggerDeletePropertyCheck()">Delete Property & All Records</button>
+      <button class="btn-primary admin-only" style="background: var(--accent-red);" onclick="triggerDeletePropertyCheck()">Delete Property &amp; All Records</button>
     </div>
   </div>
 
-  <!-- Add Flat Modal -->
+  <!-- Add Flat Modal (Requirement 1: Strictly ONLY Property Section * and Flat Name * compulsory fields) -->
   <div id="addFlatModal" class="modal-overlay">
     <div class="modal-window">
       <button class="modal-close-btn" onclick="closeModal('addFlatModal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 20px;">Add New Flat</h3>
+      <h3 style="margin-bottom: 20px;"><i class="fa-solid fa-door-open" style="color:var(--primary);"></i> Add New Flat</h3>
       <div class="form-group">
-        <label>Property Selection <span class="req-star">*</span></label>
+        <label>Property Section <span class="req-star">*</span></label>
         <select id="addFlatPropDropdown" class="form-control" required></select>
       </div>
       <div class="form-group">
-        <label>Flat Name/Number <span class="req-star">*</span></label>
+        <label>Flat Name <span class="req-star">*</span></label>
         <input type="text" id="addFlatNumber" class="form-control" placeholder="e.g. 101 or 3B" required>
       </div>
-      <div class="form-group">
-        <label>Renter Name (Optional)</label>
-        <input type="text" id="addFlatRenter" class="form-control" placeholder="Enter primary tenant full name (optional)">
-      </div>
-      <div class="form-group">
-        <label>Monthly Rent Bill Amount (₹)</label>
-        <input type="number" id="addFlatRent" class="form-control" placeholder="12000">
-      </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-        <div class="form-group">
-          <label>Elec. Rate</label>
-          <input type="number" id="addFlatElecRate" class="form-control" placeholder="0">
-        </div>
-        <div class="form-group">
-          <label>PNG Rate</label>
-          <input type="number" id="addFlatPngRate" class="form-control" placeholder="0">
-        </div>
-        <div class="form-group">
-          <label>Water Rate</label>
-          <input type="number" id="addFlatWaterRate" class="form-control" placeholder="0">
-        </div>
-      </div>
       <button class="btn-primary admin-only" onclick="submitAddFlat()">Add Flat</button>
+    </div>
+  </div>
+
+  <!-- Add Renter Modal (Requirement 2 & 3: Location *, Flat Name *, Renter Name *, optional Mobile & Aadhaar + Live Aadhaar Lookup & In-Page Reactivation/Details) -->
+  <div id="addRenterModal" class="modal-overlay">
+    <div class="modal-window" style="max-width: 560px; max-height: 90vh; overflow-y: auto;">
+      <button class="modal-close-btn" onclick="closeModal('addRenterModal')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 6px; display:flex; align-items:center; gap:8px;">
+        <i class="fa-solid fa-user-plus" style="color:#10b981;"></i> Add Renter
+      </h3>
+      <p style="font-size:0.76rem; color:var(--text-muted); margin-bottom:16px;">
+        Select the Property Location and Flat Name, then enter the Renter's Name. Only Location, Flat Name, and Renter Name (<span class="req-star">*</span>) are compulsory.
+      </p>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+        <div class="form-group">
+          <label>Location (Property) <span class="req-star">*</span></label>
+          <select id="addRenterPropDropdown" class="form-control" onchange="populateAddRenterFlatsDropdown()" required></select>
+        </div>
+        <div class="form-group">
+          <label>Flat Name / Number <span class="req-star">*</span></label>
+          <select id="addRenterFlatDropdown" class="form-control" required></select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Renter Name <span class="req-star">*</span></label>
+        <input type="text" id="addRenterNameInput" class="form-control" placeholder="Enter Renter Full Name" required>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+        <div class="form-group">
+          <label>Mobile Number (Optional)</label>
+          <input
+            type="tel"
+            id="addRenterMobileInput"
+            class="form-control"
+            maxlength="14"
+            inputmode="tel"
+            placeholder="+91 9876543210"
+            onfocus="ensurePlus91Prefix(this)"
+            oninput="this.value = formatIndianMobilePlus91(this.value)"
+          >
+        </div>
+        <div class="form-group">
+          <label>Aadhaar Number (Optional)</label>
+          <input
+            type="text"
+            id="addRenterAadhaarInput"
+            class="form-control"
+            maxlength="14"
+            inputmode="numeric"
+            placeholder="XXXX-XXXX-XXXX"
+            oninput="this.value = formatAadhaarWithHyphens(this.value); handleAddRenterModalAadhaarLookup(this.value)"
+            onchange="this.value = formatAadhaarWithHyphens(this.value); handleAddRenterModalAadhaarLookup(this.value)"
+          >
+        </div>
+      </div>
+
+      <!-- Requirement 3: Live Aadhaar Match Display & Reactivate Button Right Inside Add Renter Modal -->
+      <div id="addRenterAadhaarMatchBox" style="display:none; margin-bottom:14px;"></div>
+
+      <!-- Requirement 3: In-Page Complete Details Form (Appears when Reactivate is clicked on the Add Renter page itself) -->
+      <div id="addRenterExpandedDetailsBox" style="display:none; background:var(--bg-input); border:1.5px solid var(--accent-green); border-radius:14px; padding:14px; margin-bottom:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--glass-border);">
+          <span style="font-size:0.8rem; font-weight:800; color:var(--accent-green); display:flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-id-card-clip"></i> Complete Renter Details (Reactivate / Edit Here)
+          </span>
+          <span class="badge-paid" style="font-size:0.66rem;">Active Placement</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div class="form-group" style="margin-bottom:8px;">
+            <label style="font-size:0.74rem;">Alternate Mobile Number</label>
+            <input
+              type="tel"
+              id="addRenterAltMobileInput"
+              class="form-control"
+              maxlength="14"
+              inputmode="tel"
+              placeholder="+91 9876543210"
+              onfocus="ensurePlus91Prefix(this)"
+              oninput="this.value = formatIndianMobilePlus91(this.value)"
+            >
+          </div>
+          <div class="form-group" style="margin-bottom:8px;">
+            <label style="font-size:0.74rem;">Total Family Members</label>
+            <input type="number" id="addRenterFamilyInput" class="form-control" value="1" min="1">
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:8px;">
+          <label style="font-size:0.74rem;">Permanent Address</label>
+          <input type="text" id="addRenterAddressInput" class="form-control" placeholder="Enter complete permanent address">
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div class="form-group" style="margin-bottom:8px;">
+            <label style="font-size:0.74rem;">Join Date</label>
+            <input type="date" id="addRenterJoinDateInput" class="form-control">
+          </div>
+          <div class="form-group" style="margin-bottom:8px;">
+            <label style="font-size:0.74rem;">Renter Status</label>
+            <select id="addRenterStatusInput" class="form-control">
+              <option value="Active" selected>Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:4px;">
+          <div style="background:rgba(56,189,248,0.08); border:1px dashed rgba(56,189,248,0.4); border-radius:10px; padding:8px; text-align:center;">
+            <div style="font-size:0.7rem; font-weight:800; color:#38bdf8; margin-bottom:4px;"><i class="fa-solid fa-user"></i> Renter Profile Photo</div>
+            <img id="addRenterProfilePicPreview" src="https://via.placeholder.com/150?text=No+Photo" alt="Profile" style="width:64px; height:64px; object-fit:cover; border-radius:10px; margin-bottom:6px; border:1px solid var(--glass-border);">
+            <input type="file" id="addRenterProfilePicFile" accept="image/*" class="form-control" style="font-size:0.68rem; padding:4px;" onchange="handleAddRenterModalPhotoSelect(this, 'profile')">
+          </div>
+          <div style="background:rgba(16,185,129,0.08); border:1px dashed rgba(16,185,129,0.4); border-radius:10px; padding:8px; text-align:center;">
+            <div style="font-size:0.7rem; font-weight:800; color:#10b981; margin-bottom:4px;"><i class="fa-solid fa-id-card"></i> Aadhaar Card Photo</div>
+            <img id="addRenterIdentityPicPreview" src="https://via.placeholder.com/300x150?text=No+Aadhaar" alt="Aadhaar" style="width:96px; height:64px; object-fit:cover; border-radius:10px; margin-bottom:6px; border:1px solid var(--glass-border);">
+            <input type="file" id="addRenterIdentityPicFile" accept="image/*" class="form-control" style="font-size:0.68rem; padding:4px;" onchange="handleAddRenterModalPhotoSelect(this, 'identity')">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary admin-only" style="background:linear-gradient(135deg, #059669, #10b981);" onclick="submitAddRenterModal()">
+        <i class="fa-solid fa-user-check"></i> Save &amp; Add Renter
+      </button>
     </div>
   </div>
 
@@ -5166,7 +5313,7 @@
         <label>Select Flat</label>
         <select id="deleteFlatTargetDropdown" class="form-control"></select>
       </div>
-      <button class="btn-primary admin-only" style="background: var(--accent-red);" onclick="triggerDeleteFlatCheck()">Delete Flat & Associated Bills</button>
+      <button class="btn-primary admin-only" style="background: var(--accent-red);" onclick="triggerDeleteFlatCheck()">Delete Flat &amp; Associated Bills</button>
     </div>
   </div>
 
@@ -5590,11 +5737,37 @@
             <div class="col-title"><i class="fa-solid fa-address-card" style="color:#34d399;"></i> 1. Renter Profile Details</div>
             
             <div class="form-group"><label>Renter Name <span class="req-star">*</span></label><input type="text" id="renterName" class="form-control"></div>
+
+            <!-- Requirement 8: Upload Renter Profile Photo placed right below Renter Name -->
+            <div class="form-group admin-only" style="background:rgba(56, 189, 248, 0.08); border:1px dashed rgba(56, 189, 248, 0.45); border-radius:10px; padding:10px;">
+              <label style="font-size:0.76rem; color:#38bdf8; margin-bottom:4px;"><i class="fa-solid fa-camera-retro"></i> Upload Renter Profile Photo (or Paste Drive Link)</label>
+              <input type="file" id="fileProfilePic" class="form-control" style="padding:6px; font-size:0.76rem; margin-bottom:6px;" accept="image/*" onchange="handleRenterDocumentUpload(this, 'profile')">
+              <div style="display:flex; gap:6px; align-items:center;">
+                <input type="url" id="inputProfilePicUrl" class="form-control" style="padding:6px 8px; font-size:0.74rem; flex:1;" placeholder="Or paste Google Drive / Image URL here...">
+                <button type="button" class="btn-ledger-action" style="padding:6px 10px; font-size:0.72rem; color:#38bdf8; border-color:rgba(56,189,248,0.45); white-space:nowrap;" onclick="applyRenterDocumentLink('profile')">
+                  <i class="fa-solid fa-link"></i> Apply Link
+                </button>
+              </div>
+            </div>
+
             <div class="form-group">
               <label>Aadhaar Card Number (12 Digits: XXXX-XXXX-XXXX)</label>
               <input type="text" id="renterIdentityNum" class="form-control" maxlength="14" inputmode="numeric" placeholder="XXXX-XXXX-XXXX" oninput="this.value = formatAadhaarWithHyphens(this.value); handleAadhaarLookupInput(this.value)" onchange="this.value = formatAadhaarWithHyphens(this.value); handleAadhaarLookupInput(this.value)">
               <div id="aadhaarPreviousRenterPrompt" style="display:none; margin-top:8px;"></div>
             </div>
+
+            <!-- Requirement 8: Upload Aadhaar Card Photo placed right below Aadhaar Card Number -->
+            <div class="form-group admin-only" style="background:rgba(16, 185, 129, 0.08); border:1px dashed rgba(16, 185, 129, 0.45); border-radius:10px; padding:10px;">
+              <label style="font-size:0.76rem; color:#34d399; margin-bottom:4px;"><i class="fa-solid fa-id-card"></i> Upload Aadhaar Card Photo (or Paste Drive Link)</label>
+              <input type="file" id="fileIdentityPic" class="form-control" style="padding:6px; font-size:0.76rem; margin-bottom:6px;" accept="image/*" onchange="handleRenterDocumentUpload(this, 'identity')">
+              <div style="display:flex; gap:6px; align-items:center;">
+                <input type="url" id="inputIdentityPicUrl" class="form-control" style="padding:6px 8px; font-size:0.74rem; flex:1;" placeholder="Or paste Google Drive / Image URL here...">
+                <button type="button" class="btn-ledger-action" style="padding:6px 10px; font-size:0.72rem; color:#34d399; border-color:rgba(16,185,129,0.45); white-space:nowrap;" onclick="applyRenterDocumentLink('identity')">
+                  <i class="fa-solid fa-link"></i> Apply Link
+                </button>
+              </div>
+            </div>
+
             <div class="form-group"><label>Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
             <div class="form-group"><label>Alternative Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterAltMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
             <div class="form-group"><label>Address</label><input type="text" id="renterAddress" class="form-control"></div>
@@ -5608,28 +5781,6 @@
             </div>
             <div class="form-group"><label>Join Date</label><input type="date" id="renterJoinDate" class="form-control"></div>
             <div class="form-group"><label>End Date</label><input type="date" id="renterEndDate" class="form-control"></div>
-
-            <!-- Upload Renter Photo & Aadhaar Card Photo Inputs + Google Drive Link Support (Syncs Across All Devices) -->
-            <div class="form-group admin-only" style="background:rgba(56, 189, 248, 0.08); border:1px dashed rgba(56, 189, 248, 0.45); border-radius:10px; padding:10px;">
-              <label style="font-size:0.76rem; color:#38bdf8; margin-bottom:4px;"><i class="fa-solid fa-camera-retro"></i> Upload Renter Profile Photo (or Paste Drive Link)</label>
-              <input type="file" id="fileProfilePic" class="form-control" style="padding:6px; font-size:0.76rem; margin-bottom:6px;" accept="image/*" onchange="handleRenterDocumentUpload(this, 'profile')">
-              <div style="display:flex; gap:6px; align-items:center;">
-                <input type="url" id="inputProfilePicUrl" class="form-control" style="padding:6px 8px; font-size:0.74rem; flex:1;" placeholder="Or paste Google Drive / Image URL here...">
-                <button type="button" class="btn-ledger-action" style="padding:6px 10px; font-size:0.72rem; color:#38bdf8; border-color:rgba(56,189,248,0.45); white-space:nowrap;" onclick="applyRenterDocumentLink('profile')">
-                  <i class="fa-solid fa-link"></i> Apply Link
-                </button>
-              </div>
-            </div>
-            <div class="form-group admin-only" style="background:rgba(16, 185, 129, 0.08); border:1px dashed rgba(16, 185, 129, 0.45); border-radius:10px; padding:10px;">
-              <label style="font-size:0.76rem; color:#34d399; margin-bottom:4px;"><i class="fa-solid fa-id-card"></i> Upload Aadhaar Card Photo (or Paste Drive Link)</label>
-              <input type="file" id="fileIdentityPic" class="form-control" style="padding:6px; font-size:0.76rem; margin-bottom:6px;" accept="image/*" onchange="handleRenterDocumentUpload(this, 'identity')">
-              <div style="display:flex; gap:6px; align-items:center;">
-                <input type="url" id="inputIdentityPicUrl" class="form-control" style="padding:6px 8px; font-size:0.74rem; flex:1;" placeholder="Or paste Google Drive / Image URL here...">
-                <button type="button" class="btn-ledger-action" style="padding:6px 10px; font-size:0.72rem; color:#34d399; border-color:rgba(16,185,129,0.45); white-space:nowrap;" onclick="applyRenterDocumentLink('identity')">
-                  <i class="fa-solid fa-link"></i> Apply Link
-                </button>
-              </div>
-            </div>
 
             <button type="button" id="btnReactivateProfileTab" class="btn-ledger-action admin-only" style="display:none; width:100%; justify-content:center; margin-bottom:10px; padding:10px 14px; font-weight:800; color:var(--accent-green); border-color:rgba(16,185,129,0.55); background:rgba(16,185,129,0.1);" onclick="triggerReactivateFromProfileTab()">
               <i class="fa-solid fa-user-check"></i> Re-active Renter / Returning Renter (Choose Property &amp; Flat)
@@ -5844,6 +5995,60 @@
       </button>
     </div>
   </div>
+
+  <!-- REQUIREMENT 9: FLAT ANALYTICS GRAPH FULLSCREEN / LARGE DISPLAY & HIGH-RESOLUTION ZOOM MODAL -->
+  <div id="flatGraphZoomModal" class="modal-overlay" style="z-index: 99985; background: rgba(2, 6, 23, 0.92); backdrop-filter: blur(18px);">
+    <div class="modal-window" style="max-width: 96vw; width: 1380px; max-height: 94vh; display: flex; flex-direction: column; padding: 20px 24px; border-radius: 24px; border: 2px solid rgba(99, 102, 241, 0.55); background: linear-gradient(160deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.96)); box-shadow: 0 28px 80px rgba(0, 0, 0, 0.7);">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.14);">
+        <div>
+          <h3 id="flatGraphZoomModalTitle" style="margin: 0; font-size: 1.15rem; font-weight: 900; color: #ffffff; display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-magnifying-glass-chart" style="color: #38bdf8;"></i> High-Definition Interactive Analytics Graph
+          </h3>
+          <p id="flatGraphZoomModalSubtitle" style="margin: 4px 0 0 0; font-size: 0.78rem; color: #94a3b8;">
+            Use Zoom In (+) / Zoom Out (-) or Ctrl + Mouse Wheel to inspect exact monthly values, micro-gridlines, and detailed breakdowns in crystal-clear vector HD.
+          </p>
+        </div>
+
+        <!-- Graph Switcher + Zoom Controls Toolbar -->
+        <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <div style="display: inline-flex; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 12px; padding: 3px; gap: 4px;">
+            <button type="button" id="btnZoomSwitchGraph1" class="btn-ledger-action" style="padding: 6px 12px; font-size: 0.76rem; font-weight: 800; border-radius: 9px;" onclick="switchFlatGraphZoomTarget('graph1')">
+              <i class="fa-solid fa-chart-pie"></i> 1. Expense Breakdown
+            </button>
+            <button type="button" id="btnZoomSwitchGraph2" class="btn-ledger-action" style="padding: 6px 12px; font-size: 0.76rem; font-weight: 800; border-radius: 9px;" onclick="switchFlatGraphZoomTarget('graph2')">
+              <i class="fa-solid fa-chart-line"></i> 2. Consolidated Annual Graph
+            </button>
+          </div>
+
+          <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(15, 23, 42, 0.9); border: 1.5px solid rgba(56, 189, 248, 0.45); border-radius: 12px; padding: 5px 10px;">
+            <button type="button" class="btn-ledger-action" style="padding: 5px 10px; font-size: 0.82rem; font-weight: 900;" onclick="adjustFlatGraphZoom(-0.25)" title="Zoom Out">
+              <i class="fa-solid fa-magnifying-glass-minus"></i> Zoom Out
+            </button>
+            <input type="range" id="flatGraphZoomSlider" min="0.75" max="3.5" step="0.25" value="1.5" style="width: 110px; accent-color: #38bdf8; cursor: pointer;" oninput="setFlatGraphZoom(this.value)" />
+            <span id="flatGraphZoomPctBadge" style="min-width: 54px; text-align: center; font-size: 0.8rem; font-weight: 900; color: #38bdf8; background: rgba(56, 189, 248, 0.14); padding: 3px 8px; border-radius: 8px;">150%</span>
+            <button type="button" class="btn-ledger-action" style="padding: 5px 10px; font-size: 0.82rem; font-weight: 900;" onclick="adjustFlatGraphZoom(0.25)" title="Zoom In">
+              <i class="fa-solid fa-magnifying-glass-plus"></i> Zoom In
+            </button>
+            <button type="button" class="btn-ledger-action" style="padding: 5px 9px; font-size: 0.74rem; font-weight: 800;" onclick="setFlatGraphZoom(1.25)" title="Reset Zoom">
+              Reset
+            </button>
+          </div>
+
+          <button type="button" class="modal-close" style="position: static; width: 38px; height: 38px;" onclick="closeModal('flatGraphZoomModal')" title="Close Large Graph View">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Interactive Filter Toolbar Inside Zoom Modal -->
+      <div id="flatGraphZoomFiltersBar" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 10px 0;"></div>
+
+      <!-- Scrollable High-Resolution Vector Viewport -->
+      <div id="flatGraphZoomViewport" style="flex: 1; overflow: auto; background: rgba(2, 6, 23, 0.72); border: 1.5px solid rgba(148, 163, 184, 0.24); border-radius: 16px; padding: 18px; position: relative; min-height: 420px; -webkit-overflow-scrolling: touch;">
+        <div id="flatGraphZoomCanvasHost" style="min-width: 100%; min-height: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start;"></div>
+      </div>
+    </div>
+  </div>
 <script>
     /**
      * ============================================================================
@@ -5918,72 +6123,157 @@
       if (str.includes("/folders/")) return str;
       const driveId = extractGoogleDriveFileId(str);
       if (driveId) {
-        return "https://lh3.googleusercontent.com/d/" + driveId + "=w1200";
+        return "https://lh3.googleusercontent.com/d/" + driveId + "=w1600";
       }
       return str;
     }
 
-    // Requirement 3: Single Admin-Controlled Global Background Photo Across Entire Platform (Fallback to Default When Deleted/Empty)
+    // Full HD Google Drive Background URL Converter (=s0 preserves original 4K/1080p Full HD clarity)
+    function normalizeGoogleDriveBgUrl(rawUrl) {
+      if (!rawUrl) return "";
+      const str = String(rawUrl).trim();
+      if (!str || str.startsWith("data:image/")) return str;
+      if (str.includes("/folders/")) return str;
+      const driveId = extractGoogleDriveFileId(str);
+      if (driveId) {
+        return "https://lh3.googleusercontent.com/d/" + driveId + "=s0";
+      }
+      return str;
+    }
+
+    // High-Definition (Full HD 2560px @ 0.95 quality) reader for background photos — NEVER shrinks to 38KB
+    function readHdBackgroundFileToDataUrl(file, maxDimension = 2560, quality = 0.95) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const rawDataUrl = e.target.result;
+          const img = new Image();
+          img.onload = () => {
+            let width = img.naturalWidth || img.width;
+            let height = img.naturalHeight || img.height;
+            // If image is already within Full HD bounds and reasonably sized, keep lossless original data URL
+            if (width <= maxDimension && height <= maxDimension && rawDataUrl.length <= 3200000) {
+              resolve(rawDataUrl);
+              return;
+            }
+            if (width > maxDimension || height > maxDimension) {
+              if (width >= height) {
+                height = Math.round((height * maxDimension) / width);
+                width = maxDimension;
+              } else {
+                width = Math.round((width * maxDimension) / height);
+                height = maxDimension;
+              }
+            }
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.max(1, width);
+            canvas.height = Math.max(1, height);
+            const ctx = canvas.getContext("2d");
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = "high";
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL("image/jpeg", quality));
+          };
+          img.onerror = () => resolve(rawDataUrl);
+          img.src = rawDataUrl;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Requirement 6: Home Page ONLY Background Photo in Full HD Quality (Logout / Login screen NEVER changes background)
     function getCustomBackgrounds() {
-      const globalBg = normalizeGoogleDriveImageUrl(localStorage.getItem("portal_custom_bg_login") || "");
-      return { loginBg: globalBg, dashBg: globalBg };
+      const storedUrl = normalizeGoogleDriveBgUrl(localStorage.getItem("portal_custom_bg_dashboard") || localStorage.getItem("portal_custom_bg_login") || "");
+      const hdCache = localStorage.getItem("portal_custom_bg_hd_cache") || "";
+      return { loginBg: storedUrl, dashBg: hdCache || storedUrl };
     }
 
     function initCustomBgInputs() {
-      const { loginBg } = getCustomBackgrounds();
+      const { loginBg, dashBg } = getCustomBackgrounds();
       const inputLogin = document.getElementById("bgUrlLoginScreen");
       const hintLogin = document.getElementById("bgLoginStatusHint");
 
-      if (inputLogin) inputLogin.value = loginBg;
+      if (inputLogin) {
+        inputLogin.value = (loginBg && !loginBg.startsWith("data:image/")) ? loginBg : (dashBg ? "Full HD Photo Uploaded & Active (Home Page Only)" : "");
+      }
 
       if (hintLogin) {
-        hintLogin.innerText = loginBg
-          ? "Custom global background photo is active across the entire platform for all users."
-          : "No custom photo set — automatically displaying default background photo across the entire platform.";
-        hintLogin.style.color = loginBg ? "var(--accent-green)" : "var(--text-muted)";
+        const hasCustom = Boolean(dashBg && dashBg.trim());
+        hintLogin.innerText = hasCustom
+          ? "Full HD custom background photo is active on the Home Page after login (Login/Logout screen remains unchanged)."
+          : "No custom photo set — automatically displaying default background photo on the Home Page.";
+        hintLogin.style.color = hasCustom ? "var(--accent-green)" : "var(--text-muted)";
       }
     }
 
     function applyCustomBackgrounds() {
-      const { loginBg } = getCustomBackgrounds();
+      const { dashBg } = getCustomBackgrounds();
       const loginScreenEl = document.getElementById("loginScreen");
       const dashScreenEl = document.getElementById("dashboardScreen");
       const bgCanvasEl = document.querySelector(".bg-canvas");
 
-      const effectiveGlobalBg = (loginBg && loginBg.trim())
-        ? normalizeGoogleDriveImageUrl(loginBg.trim())
+      const effectiveHomeBg = (dashBg && dashBg.trim())
+        ? normalizeGoogleDriveBgUrl(dashBg.trim())
         : DEFAULT_PORTAL_BACKGROUND_IMAGE;
 
-      [loginScreenEl, dashScreenEl, bgCanvasEl].forEach(el => {
-        if (!el) return;
-        el.style.setProperty("background-image", 'url("' + effectiveGlobalBg + '")', "important");
-        el.style.backgroundSize = "cover";
-        el.style.backgroundPosition = "center";
-        el.style.backgroundRepeat = "no-repeat";
-        el.style.backgroundAttachment = "fixed";
-      });
+      // Logout / Login Screen MUST ALWAYS keep the default background photo
+      if (loginScreenEl) {
+        loginScreenEl.style.setProperty("background-image", 'url("' + DEFAULT_PORTAL_BACKGROUND_IMAGE + '")', "important");
+        loginScreenEl.style.backgroundSize = "cover";
+        loginScreenEl.style.backgroundPosition = "center";
+        loginScreenEl.style.backgroundRepeat = "no-repeat";
+        loginScreenEl.style.backgroundAttachment = "fixed";
+      }
+
+      // Home Page (#dashboardScreen) displays the custom Full HD background photo
+      if (dashScreenEl) {
+        dashScreenEl.style.setProperty("background-image", 'url("' + effectiveHomeBg + '")', "important");
+        dashScreenEl.style.backgroundSize = "cover";
+        dashScreenEl.style.backgroundPosition = "center";
+        dashScreenEl.style.backgroundRepeat = "no-repeat";
+        dashScreenEl.style.backgroundAttachment = "fixed";
+      }
+
+      // .bg-canvas reflects Home Page HD background ONLY when logged in (#dashboardScreen is active)
+      if (bgCanvasEl) {
+        const isDashboardActive = dashScreenEl && dashScreenEl.classList.contains("active");
+        const canvasBg = isDashboardActive ? effectiveHomeBg : DEFAULT_PORTAL_BACKGROUND_IMAGE;
+        bgCanvasEl.style.setProperty("background-image", 'url("' + canvasBg + '")', "important");
+        bgCanvasEl.style.backgroundSize = "cover";
+        bgCanvasEl.style.backgroundPosition = "center";
+        bgCanvasEl.style.backgroundRepeat = "no-repeat";
+        bgCanvasEl.style.backgroundAttachment = "fixed";
+      }
     }
 
     function syncServerBackgroundsToLocal(globalConfig, userBgLogin, userBgDash, hasServerConfig = true) {
-      let rawGlobalBg = "";
+      let rawDashBg = "";
       if (globalConfig && typeof globalConfig === "object") {
-        const cfgBg = String(globalConfig.bgLoginUrl || globalConfig.bgLogin || globalConfig.bgDashboardUrl || globalConfig.bgDashboard || globalConfig.backgroundUrl || "").trim();
-        rawGlobalBg = cfgBg;
+        const cfgBg = String(globalConfig.bgDashboardUrl || globalConfig.bgDashboard || globalConfig.bgLoginUrl || globalConfig.bgLogin || globalConfig.backgroundUrl || "").trim();
+        rawDashBg = cfgBg;
       } else if (!hasServerConfig) {
-        rawGlobalBg = String(userBgLogin || userBgDash || "").trim();
+        rawDashBg = String(userBgDash || userBgLogin || "").trim();
       }
 
-      const serverGlobalBg = normalizeGoogleDriveImageUrl(rawGlobalBg);
-      localStorage.removeItem("portal_custom_bg_dashboard");
+      const serverDashBg = normalizeGoogleDriveBgUrl(rawDashBg);
 
       let updated = false;
-      if (serverGlobalBg) {
-        if (localStorage.getItem("portal_custom_bg_login") !== serverGlobalBg) {
-          localStorage.setItem("portal_custom_bg_login", serverGlobalBg);
+      if (serverDashBg) {
+        // Only overwrite URL reference; if user uploaded an HD cached photo in this browser, keep HD cache unless URL changed to a new external URL
+        const prevUrl = localStorage.getItem("portal_custom_bg_dashboard") || localStorage.getItem("portal_custom_bg_login") || "";
+        if (prevUrl !== serverDashBg) {
+          localStorage.setItem("portal_custom_bg_dashboard", serverDashBg);
+          localStorage.setItem("portal_custom_bg_login", serverDashBg);
+          if (!serverDashBg.startsWith("data:image/")) {
+            localStorage.removeItem("portal_custom_bg_hd_cache");
+          }
           updated = true;
         }
-      } else if (hasServerConfig && localStorage.getItem("portal_custom_bg_login")) {
+      } else if (hasServerConfig && (localStorage.getItem("portal_custom_bg_dashboard") || localStorage.getItem("portal_custom_bg_login"))) {
+        localStorage.removeItem("portal_custom_bg_dashboard");
         localStorage.removeItem("portal_custom_bg_login");
+        localStorage.removeItem("portal_custom_bg_hd_cache");
         updated = true;
       }
 
@@ -5998,24 +6288,35 @@
         return triggerSideToast("Admin Permission Required", "Only the Admin has authority to change the background photo.", false);
       }
       const inputLogin = document.getElementById("bgUrlLoginScreen");
-      const globalVal = normalizeGoogleDriveImageUrl(inputLogin ? inputLogin.value.trim() : "");
+      const rawInputVal = inputLogin ? inputLogin.value.trim() : "";
+      const isHdPlaceholderText = rawInputVal.startsWith("Full HD Photo Uploaded");
+      const globalVal = isHdPlaceholderText
+        ? (localStorage.getItem("portal_custom_bg_dashboard") || localStorage.getItem("portal_custom_bg_login") || "")
+        : normalizeGoogleDriveBgUrl(rawInputVal);
 
-      if (inputLogin) inputLogin.value = globalVal;
+      if (!isHdPlaceholderText && inputLogin) {
+        inputLogin.value = globalVal;
+      }
 
-      localStorage.removeItem("portal_custom_bg_dashboard");
       if (globalVal) {
+        localStorage.setItem("portal_custom_bg_dashboard", globalVal);
         localStorage.setItem("portal_custom_bg_login", globalVal);
+        if (!isHdPlaceholderText && !globalVal.startsWith("data:image/")) {
+          localStorage.removeItem("portal_custom_bg_hd_cache");
+        }
       } else {
+        localStorage.removeItem("portal_custom_bg_dashboard");
         localStorage.removeItem("portal_custom_bg_login");
+        localStorage.removeItem("portal_custom_bg_hd_cache");
       }
 
       applyCustomBackgrounds();
       initCustomBgInputs();
       triggerSideToast(
-        globalVal ? "Global Background Saved" : "Default Background Restored",
+        globalVal ? "Home Page HD Background Saved" : "Default Background Restored",
         globalVal
-          ? "Background photo applied everywhere for Admin, Viewers, and Renters!"
-          : "Custom background cleared — default background photo is now active across the entire platform.",
+          ? "Full HD background photo applied to the Home Page after login (Logout screen unchanged)!"
+          : "Custom background cleared — default background photo is now active.",
         true
       );
 
@@ -6024,7 +6325,7 @@
           await sendGasPost({
             action: "saveBackgrounds",
             username: activeUser,
-            bgLogin: globalVal,
+            bgLogin: "",
             bgDashboard: globalVal
           });
         } catch (e) {}
@@ -6037,6 +6338,7 @@
       }
       localStorage.removeItem("portal_custom_bg_login");
       localStorage.removeItem("portal_custom_bg_dashboard");
+      localStorage.removeItem("portal_custom_bg_hd_cache");
       const input = document.getElementById("bgUrlLoginScreen");
       if (input) input.value = "";
       applyCustomBackgrounds();
@@ -6050,30 +6352,50 @@
       }
       const file = inputEl.files && inputEl.files[0];
       if (!file) return;
-      triggerSideToast("Uploading Background", "Uploading global background photo to Google Drive...", "warning");
+      triggerSideToast("Uploading Full HD Background", "Processing crystal-clear Full HD background photo for the Home Page...", "warning");
       try {
-        const compressedDataUrl = await compressImageFileToDataUrl(file, 1600, 0.85);
+        // Read in true Full HD (up to 2560px @ 0.95 quality, bypassing the 38KB sheet cell compressor)
+        const hdDataUrl = await readHdBackgroundFileToDataUrl(file, 2560, 0.95);
+        const driveUploadDataUrl = await readHdBackgroundFileToDataUrl(file, 1920, 0.92);
         const sheetSafeBase64 = await compressImageFileToDataUrl(file, 460, 0.7);
+
+        // Immediately cache & apply Full HD image to Home Page (#dashboardScreen)
+        try {
+          localStorage.setItem("portal_custom_bg_hd_cache", hdDataUrl);
+          localStorage.setItem("portal_custom_bg_dashboard", hdDataUrl);
+          localStorage.setItem("portal_custom_bg_login", hdDataUrl);
+        } catch (storageErr) {
+          // If quota exceeded on 2560px, store 1920px Full HD version
+          try {
+            localStorage.setItem("portal_custom_bg_hd_cache", driveUploadDataUrl);
+            localStorage.setItem("portal_custom_bg_dashboard", driveUploadDataUrl);
+            localStorage.setItem("portal_custom_bg_login", driveUploadDataUrl);
+          } catch (e2) {}
+        }
+        applyCustomBackgrounds();
+        initCustomBgInputs();
+
         const res = await sendGasPost({
           action: "uploadBackgroundPhoto",
           username: activeUser || "admin",
-          type: "login",
+          type: "dashboard",
           fileName: file.name,
           mimeType: "image/jpeg",
-          base64Data: compressedDataUrl,
+          base64Data: driveUploadDataUrl,
           sheetSafeBase64: sheetSafeBase64
         });
-        const rawUrl = (res && res.status === "success" && res.imageUrl) ? res.imageUrl : sheetSafeBase64;
-        const finalUrl = normalizeGoogleDriveImageUrl(rawUrl);
+        const rawUrl = (res && res.status === "success" && res.imageUrl && !res.imageUrl.startsWith("data:image/"))
+          ? normalizeGoogleDriveBgUrl(res.imageUrl)
+          : hdDataUrl;
         const el = document.getElementById("bgUrlLoginScreen");
-        if (el) el.value = finalUrl;
-        localStorage.setItem("portal_custom_bg_login", finalUrl);
-        localStorage.removeItem("portal_custom_bg_dashboard");
+        if (el) el.value = rawUrl.startsWith("data:image/") ? "Full HD Photo Uploaded & Active (Home Page Only)" : rawUrl;
+        localStorage.setItem("portal_custom_bg_dashboard", rawUrl);
+        localStorage.setItem("portal_custom_bg_login", rawUrl);
         applyCustomBackgrounds();
         initCustomBgInputs();
-        if (activeUser) saveCustomBackgrounds();
+        triggerSideToast("Full HD Background Applied", "Crystal-clear HD background is now live on the Home Page (Logout screen unchanged)!", true);
       } catch (err) {
-        triggerSideToast("Upload Failed", "Could not upload background to Drive. Please verify connection.", false);
+        triggerSideToast("Upload Failed", "Could not process background photo. Please try another image.", false);
       }
     }
 
@@ -6102,7 +6424,7 @@
       try { localStorage.removeItem("portal_permanent_photos"); } catch (e) {}
     }
 
-    // User Block Management & Blocked Login Modal
+    // Requirement 5: User Block Management & Blocked Login Modal ("Yes, Block" button text instead of "Yes, Delete All")
     async function toggleUserBlockStatus(targetUsername, newStatus) {
       if (String(activeRole || "").trim().toLowerCase() !== "admin") {
         return triggerSideToast("Admin Only", "Only an Administrator has authority to block or unblock users.", false);
@@ -6115,8 +6437,8 @@
       openCenteredConfirmModal(
         isBlocking ? `Block User Account @${targetUsername}?` : `Unblock User Account @${targetUsername}?`,
         isBlocking
-          ? `Are you sure you want to BLOCK @${targetUsername}? They will be immediately barred from logging in and a popup will notify them that their account has been blocked.`
-          : `Restore login access for @${targetUsername}?`,
+          ? `Are you sure you want to block ${targetUsername}? They will be immediately barred from logging in and a popup will notify them that their account has been blocked.`
+          : `Are you sure you want to unblock ${targetUsername} and restore their login access?`,
         async () => {
           const targetU = (DB.users || []).find(u => String(u.Username || "").toLowerCase() === targetClean);
           if (targetU) targetU.Status = newStatus;
@@ -6158,6 +6480,11 @@
           } catch (err) {
             console.warn("Cloud block sync warning:", err);
           }
+        },
+        {
+          yesText: isBlocking ? "Yes, Block" : "Yes, Unblock",
+          noText: "No, Cancel",
+          iconClass: isBlocking ? "fa-solid fa-ban" : "fa-solid fa-unlock"
         }
       );
     }
@@ -7395,6 +7722,7 @@ function formatMonthLabel(rawVal) {
       if (conflictModal) conflictModal.classList.remove("active");
       document.getElementById("dashboardScreen")?.classList.remove("active");
       document.getElementById("loginScreen")?.classList.add("active");
+      applyCustomBackgrounds();
       const uIn = document.getElementById("loginUsername");
       const pIn = document.getElementById("loginPassword");
       if (pIn) pIn.value = "";
@@ -7404,6 +7732,7 @@ function formatMonthLabel(rawVal) {
     function unlockDashboardInstant(skipImmediateSync = false) {
       document.getElementById("loginScreen").classList.remove("active");
       document.getElementById("dashboardScreen").classList.add("active");
+      applyCustomBackgrounds();
 
       renderAllDashboardUI();
       if (!skipImmediateSync) {
@@ -10908,11 +11237,14 @@ function formatMonthLabel(rawVal) {
       }).join("");
 
       return `
-        <div style="background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:16px; padding:16px; margin-bottom:18px; box-shadow:0 10px 28px rgba(0,0,0,0.22);">
+        <div style="background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:16px; padding:16px; margin-bottom:18px; box-shadow:0 10px 28px rgba(0,0,0,0.22); transition:transform 0.18s ease, border-color 0.18s ease;">
           <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;">
             <div>
-              <h4 style="font-size:0.98rem; font-weight:800; color:var(--text-main); margin:0; display:flex; align-items:center; gap:8px;">
-                <i class="fa-solid fa-chart-pie" style="color:#10b981;"></i> 1. Total Expense Breakdown — Rent, Electricity, Water & PNG Gas (Active Users Only)
+              <h4 style="font-size:0.98rem; font-weight:800; color:var(--text-main); margin:0; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <span><i class="fa-solid fa-chart-pie" style="color:#10b981;"></i> 1. Total Expense Breakdown — Rent, Electricity, Water &amp; PNG Gas (Active Users Only)</span>
+                <button type="button" onclick="openFlatGraphZoomModal('graph1')" style="display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:999px; font-size:0.7rem; font-weight:800; background:linear-gradient(135deg, rgba(56,189,248,0.22), rgba(99,102,241,0.22)); border:1px solid #38bdf8; color:#38bdf8; cursor:pointer;">
+                  <i class="fa-solid fa-expand"></i> Click to Enlarge &amp; Zoom (HD)
+                </button>
               </h4>
               <p style="font-size:0.74rem; color:var(--text-muted); margin:3px 0 0 0;">
                 ${prop} — Flat ${flat} • <span style="color:var(--accent-green); font-weight:800;">Active Users Only</span> (${flatGraph1SelectedScope === 'ALL' ? 'All Active User Bills' : 'Year ' + flatGraph1SelectedScope}) • Combined Total: <strong style="color:var(--text-main);">₹${grandTotalAllFour.toLocaleString('en-IN')}</strong>
@@ -10932,8 +11264,8 @@ function formatMonthLabel(rawVal) {
             <button type="button" class="btn-ledger-action" style="padding:4px 9px; font-size:0.68rem;" onclick="toggleFlatGraph1Expense('ALL_ON')">Show All 4</button>
           </div>
 
-          <!-- SVG Total Breakdown Bar Chart -->
-          <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
+          <!-- SVG Total Breakdown Bar Chart (Click to Open Fullscreen HD Zoom Layout) -->
+          <div onclick="openFlatGraphZoomModal('graph1')" title="Click anywhere on this graph to open the larger display with HD Zoom In & Zoom Out" style="overflow-x:auto; -webkit-overflow-scrolling:touch; cursor:zoom-in; border-radius:12px; padding:6px; border:1px dashed rgba(56,189,248,0.28); background:rgba(15,23,42,0.25);">
             <svg viewBox="0 0 ${chartWidth} ${chartHeight}" style="width:100%; min-width:500px; height:auto; overflow:visible;">
               <line x1="${padLeft}" y1="${padTop}" x2="${chartWidth - padRight}" y2="${padTop}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,3" />
               <line x1="${padLeft}" y1="${padTop + (usableH / 2)}" x2="${chartWidth - padRight}" y2="${padTop + (usableH / 2)}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,3" />
@@ -10965,6 +11297,9 @@ function formatMonthLabel(rawVal) {
       flatGraph2SelectedMode = String(mode);
       if (typeof selectedProperty !== "undefined" && typeof selectedFlat !== "undefined" && selectedProperty && selectedFlat) {
         renderAllRentersGraphForFlat(selectedFlat.PropertyName || selectedProperty, selectedFlat.FlatName || selectedFlat);
+      }
+      if (document.getElementById("flatGraphZoomModal")?.classList.contains("active")) {
+        renderZoomedFlatGraphCanvas();
       }
     }
 
@@ -11140,8 +11475,11 @@ function formatMonthLabel(rawVal) {
           <!-- Header and Year Selector Controls -->
           <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
             <div>
-              <h4 style="margin:0; font-size:0.95rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px;">
-                <i class="fa-solid fa-chart-line" style="color:#6366f1;"></i> 2. Consolidated Annual &amp; Monthly Graph (${isSpecificYear ? flatGraph2SelectedMode : 'Last 3 Years'})
+              <h4 style="margin:0; font-size:0.95rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <span><i class="fa-solid fa-chart-line" style="color:#6366f1;"></i> 2. Consolidated Annual &amp; Monthly Graph (${isSpecificYear ? flatGraph2SelectedMode : 'Last 3 Years'})</span>
+                <button type="button" onclick="openFlatGraphZoomModal('graph2')" style="display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:999px; font-size:0.7rem; font-weight:800; background:linear-gradient(135deg, rgba(99,102,241,0.22), rgba(16,185,129,0.22)); border:1px solid #818cf8; color:#818cf8; cursor:pointer;">
+                  <i class="fa-solid fa-expand"></i> Click to Enlarge &amp; Zoom (HD)
+                </button>
               </h4>
               <p style="font-size:0.72rem; color:var(--text-muted); margin:3px 0 0 0;">
                 ${prop} — Flat ${flat} • Shows all renters (active + departed) • Auto-scrolls upcoming years as time passes
@@ -11158,8 +11496,8 @@ function formatMonthLabel(rawVal) {
             ${summaryCards}
           </div>
 
-          <!-- SVG Chart Area -->
-          <div style="overflow-x:auto; -webkit-overflow-scrolling:touch; width:100%;">
+          <!-- SVG Chart Area (Click to Open Fullscreen HD Zoom Layout) -->
+          <div onclick="openFlatGraphZoomModal('graph2')" title="Click anywhere on this graph to open the larger display with HD Zoom In & Zoom Out" style="overflow-x:auto; -webkit-overflow-scrolling:touch; width:100%; cursor:zoom-in; border-radius:12px; padding:6px; border:1px dashed rgba(99,102,241,0.28); background:rgba(15,23,42,0.25);">
             <svg viewBox="0 0 ${chartWidth} ${chartHeight}" style="width:100%; min-width:580px; height:auto; overflow:visible;">
               ${gridSvg}
               ${barsSvg}
@@ -11169,6 +11507,324 @@ function formatMonthLabel(rawVal) {
           </div>
         </div>
       `;
+    }
+
+    // Requirement 9: Fullscreen / Large Display Graph Modal with Progressive High-Definition Vector Zoom In & Zoom Out
+    let flatGraphActiveZoomTarget = "graph1"; // 'graph1' or 'graph2'
+    let flatGraphCurrentZoom = 1.5; // Default 150% enlarged HD view when clicked
+
+    function openFlatGraphZoomModal(targetGraph = "graph1") {
+      flatGraphActiveZoomTarget = targetGraph === "graph2" ? "graph2" : "graph1";
+      flatGraphCurrentZoom = 1.5;
+      const slider = document.getElementById("flatGraphZoomSlider");
+      if (slider) slider.value = String(flatGraphCurrentZoom);
+      openModal("flatGraphZoomModal");
+      renderZoomedFlatGraphCanvas();
+
+      const viewport = document.getElementById("flatGraphZoomViewport");
+      if (viewport && !viewport.dataset.wheelBound) {
+        viewport.dataset.wheelBound = "true";
+        viewport.addEventListener("wheel", (e) => {
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            adjustFlatGraphZoom(e.deltaY < 0 ? 0.25 : -0.25);
+          }
+        }, { passive: false });
+      }
+    }
+
+    function switchFlatGraphZoomTarget(targetGraph) {
+      flatGraphActiveZoomTarget = targetGraph === "graph2" ? "graph2" : "graph1";
+      renderZoomedFlatGraphCanvas();
+    }
+
+    function adjustFlatGraphZoom(delta) {
+      const next = Math.min(3.5, Math.max(0.75, Math.round((flatGraphCurrentZoom + delta) * 100) / 100));
+      setFlatGraphZoom(next);
+    }
+
+    function setFlatGraphZoom(val) {
+      const num = parseFloat(val);
+      if (isNaN(num)) return;
+      flatGraphCurrentZoom = Math.min(3.5, Math.max(0.75, num));
+      const slider = document.getElementById("flatGraphZoomSlider");
+      if (slider) slider.value = String(flatGraphCurrentZoom);
+      const badge = document.getElementById("flatGraphZoomPctBadge");
+      if (badge) badge.innerText = Math.round(flatGraphCurrentZoom * 100) + "%";
+      renderZoomedFlatGraphCanvas();
+    }
+
+    function renderZoomedFlatGraphCanvas() {
+      const host = document.getElementById("flatGraphZoomCanvasHost");
+      const filtersBar = document.getElementById("flatGraphZoomFiltersBar");
+      const titleEl = document.getElementById("flatGraphZoomModalTitle");
+      const badge = document.getElementById("flatGraphZoomPctBadge");
+      const btn1 = document.getElementById("btnZoomSwitchGraph1");
+      const btn2 = document.getElementById("btnZoomSwitchGraph2");
+      if (!host) return;
+
+      if (badge) badge.innerText = Math.round(flatGraphCurrentZoom * 100) + "%";
+      if (btn1) {
+        btn1.style.background = flatGraphActiveZoomTarget === "graph1" ? "#10b981" : "transparent";
+        btn1.style.color = flatGraphActiveZoomTarget === "graph1" ? "#ffffff" : "#94a3b8";
+      }
+      if (btn2) {
+        btn2.style.background = flatGraphActiveZoomTarget === "graph2" ? "#6366f1" : "transparent";
+        btn2.style.color = flatGraphActiveZoomTarget === "graph2" ? "#ffffff" : "#94a3b8";
+      }
+
+      const prop = selectedFlat?.PropertyName || selectedProperty || "";
+      const flat = selectedFlat?.FlatName || "";
+      const allFlatBills = (DB.bills || []).filter(b => isSamePropAndFlat(b.PropertyName, b.FlatName, prop, flat));
+      const activeRentersInFlat = (DB.renters || []).filter(r =>
+        isSamePropAndFlat(r.PropertyName, r.FlatName, prop, flat) &&
+        String(r.Status || "").trim().toLowerCase() === "active"
+      );
+      const inactiveRentersInFlat = (DB.renters || []).filter(r =>
+        isSamePropAndFlat(r.PropertyName, r.FlatName, prop, flat) &&
+        String(r.Status || "").trim().toLowerCase() !== "active"
+      );
+      const inactiveIds = new Set(inactiveRentersInFlat.map(r => String(r.RenterID || "").trim()).filter(Boolean));
+      const inactiveNames = new Set(inactiveRentersInFlat.map(r => String(r.RenterName || "").trim().toLowerCase()).filter(Boolean));
+      const activeIds = new Set(activeRentersInFlat.map(r => String(r.RenterID || "").trim()).filter(Boolean));
+      const activeNames = new Set(activeRentersInFlat.map(r => String(r.RenterName || "").trim().toLowerCase()).filter(Boolean));
+
+      let activeUsersBills = [];
+      if (activeRentersInFlat.length > 0) {
+        activeUsersBills = allFlatBills.filter(b => {
+          const bRId = String(b.RenterID || "").trim();
+          const bTName = String(b.TenantName || "").trim().toLowerCase();
+          if (bRId) return activeIds.has(bRId) && !inactiveIds.has(bRId);
+          if (bTName) {
+            if (activeNames.has(bTName)) return true;
+            if (inactiveNames.has(bTName)) return false;
+          }
+          return true;
+        });
+      }
+
+      const z = flatGraphCurrentZoom;
+      const isHighDetail = z >= 1.25;
+      const isUltraDetail = z >= 1.75;
+
+      if (flatGraphActiveZoomTarget === "graph1") {
+        if (titleEl) {
+          titleEl.innerHTML = `<i class="fa-solid fa-chart-pie" style="color:#10b981;"></i> 1. Total Expense Breakdown — ${prop} (Flat ${flat}) • High-Definition Vector Zoom (${Math.round(z * 100)}%)`;
+        }
+        const currentYear = new Date().getFullYear();
+        const threeYears = [currentYear, currentYear - 1, currentYear - 2];
+        const scopedBills = activeUsersBills.filter(b => {
+          if (flatGraph1SelectedScope === "ALL") return true;
+          const norm = normalizeMonthYear(b.MonthYear);
+          return norm.startsWith(String(flatGraph1SelectedScope) + "-");
+        });
+
+        const totals = { rent: 0, elec: 0, water: 0, png: 0 };
+        const counts = { rent: 0, elec: 0, water: 0, png: 0 };
+        scopedBills.forEach(b => {
+          const parts = extractBillExpenseParts(b);
+          totals.rent += parts.rent;
+          totals.elec += parts.elec;
+          totals.water += parts.water;
+          totals.png += parts.png;
+          if (parts.rent > 0) counts.rent++;
+          if (parts.elec > 0) counts.elec++;
+          if (parts.water > 0) counts.water++;
+          if (parts.png > 0) counts.png++;
+        });
+
+        const enabledExpenses = FLAT_EXPENSE_SERIES.filter(s => flatGraph1ExpenseFilters[s.key]);
+        const grandTotalAllFour = totals.rent + totals.elec + totals.water + totals.png;
+        let maxBarVal = 1000;
+        enabledExpenses.forEach(s => { if (totals[s.key] > maxBarVal) maxBarVal = totals[s.key]; });
+
+        if (filtersBar) {
+          const scopeBtns = [
+            `<button type="button" class="btn-ledger-action ${flatGraph1SelectedScope === 'ALL' ? 'active' : ''}" style="padding:5px 12px; font-size:0.75rem; font-weight:800; ${flatGraph1SelectedScope === 'ALL' ? 'background:var(--primary); color:#fff;' : ''}" onclick="setFlatGraph1Scope('ALL'); renderZoomedFlatGraphCanvas();">All Time Total</button>`,
+            ...threeYears.map(y => `<button type="button" class="btn-ledger-action ${String(flatGraph1SelectedScope) === String(y) ? 'active' : ''}" style="padding:5px 12px; font-size:0.75rem; font-weight:800; ${String(flatGraph1SelectedScope) === String(y) ? 'background:var(--primary); color:#fff;' : ''}" onclick="setFlatGraph1Scope('${y}'); renderZoomedFlatGraphCanvas();">${y}</button>`)
+          ].join("");
+          const expBtns = FLAT_EXPENSE_SERIES.map(s => {
+            const isOn = Boolean(flatGraph1ExpenseFilters[s.key]);
+            return `<button type="button" onclick="toggleFlatGraph1Expense('${s.key}'); renderZoomedFlatGraphCanvas();" style="display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:999px; font-size:0.74rem; font-weight:800; cursor:pointer; border:1.5px solid ${isOn ? s.color : 'rgba(255,255,255,0.2)'}; background:${isOn ? s.bg : 'transparent'}; color:${isOn ? '#fff' : '#94a3b8'};"><span style="width:9px; height:9px; border-radius:50%; background:${s.color};"></span>${s.label}</button>`;
+          }).join("");
+          filtersBar.innerHTML = `<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">${expBtns}</div><div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">${scopeBtns}</div>`;
+        }
+
+        const baseW = 960;
+        const baseH = 380;
+        const scaledW = Math.round(baseW * z);
+        const scaledH = Math.round(baseH * z);
+        const padLeft = 88;
+        const padRight = 48;
+        const padTop = 52;
+        const padBottom = 68;
+        const usableW = baseW - padLeft - padRight;
+        const usableH = baseH - padTop - padBottom;
+
+        const gridSteps = isUltraDetail ? 10 : (isHighDetail ? 8 : 5);
+        let gridSvg = "";
+        for (let i = 0; i <= gridSteps; i++) {
+          const yPos = padTop + (usableH * (i / gridSteps));
+          const valAtLine = Math.round(maxBarVal * (1 - (i / gridSteps)));
+          gridSvg += `<line x1="${padLeft}" y1="${yPos.toFixed(1)}" x2="${baseW - padRight}" y2="${yPos.toFixed(1)}" stroke="${i === gridSteps ? 'rgba(255,255,255,0.35)' : 'rgba(148,163,184,0.16)'}" stroke-dasharray="${i === gridSteps ? '' : '4,4'}" />`;
+          gridSvg += `<text x="${padLeft - 12}" y="${(yPos + 4).toFixed(1)}" font-size="11" font-weight="700" fill="#cbd5e1" text-anchor="end">₹${valAtLine.toLocaleString('en-IN')}</text>`;
+        }
+
+        const slotW = usableW / Math.max(1, enabledExpenses.length);
+        let barsSvg = "";
+        enabledExpenses.forEach((s, idx) => {
+          const val = totals[s.key] || 0;
+          const barW = Math.min(130, Math.max(52, slotW * 0.54));
+          const centerX = padLeft + (idx * slotW) + (slotW / 2);
+          const barX = centerX - (barW / 2);
+          const barH = (val / maxBarVal) * usableH;
+          const barY = padTop + usableH - barH;
+          const pct = grandTotalAllFour > 0 ? ((val / grandTotalAllFour) * 100).toFixed(1) : "0.0";
+          const avgPerBill = counts[s.key] > 0 ? Math.round(val / counts[s.key]) : 0;
+
+          barsSvg += `
+            <g>
+              <rect x="${barX.toFixed(1)}" y="${barY.toFixed(1)}" width="${barW.toFixed(1)}" height="${Math.max(5, barH).toFixed(1)}" rx="10" fill="${s.color}" fill-opacity="0.9" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.5" />
+              <text x="${centerX.toFixed(1)}" y="${Math.max(20, barY - (isHighDetail ? 22 : 10)).toFixed(1)}" font-size="13.5" font-weight="900" fill="${s.color}" text-anchor="middle">₹${val.toLocaleString('en-IN')}</text>
+              ${isHighDetail ? `<text x="${centerX.toFixed(1)}" y="${Math.max(34, barY - 7).toFixed(1)}" font-size="10.5" font-weight="700" fill="#e2e8f0" text-anchor="middle">${pct}% Share • ${counts[s.key]} Bills (Avg ₹${avgPerBill.toLocaleString('en-IN')})</text>` : ''}
+              <text x="${centerX.toFixed(1)}" y="${baseH - 36}" font-size="13" font-weight="900" fill="#ffffff" text-anchor="middle">${s.label}</text>
+              <text x="${centerX.toFixed(1)}" y="${baseH - 18}" font-size="11" font-weight="700" fill="#94a3b8" text-anchor="middle">Share: ${pct}% of ₹${grandTotalAllFour.toLocaleString('en-IN')}</text>
+            </g>
+          `;
+        });
+
+        host.innerHTML = `
+          <svg viewBox="0 0 ${baseW} ${baseH}" width="${scaledW}" height="${scaledH}" style="width:${scaledW}px; height:${scaledH}px; display:block; shape-rendering:geometricPrecision; text-rendering:geometricPrecision;">
+            ${gridSvg}
+            ${barsSvg}
+          </svg>
+        `;
+      } else {
+        if (titleEl) {
+          titleEl.innerHTML = `<i class="fa-solid fa-chart-line" style="color:#6366f1;"></i> 2. Consolidated Annual &amp; Monthly Graph — ${prop} (Flat ${flat}) • High-Definition Vector Zoom (${Math.round(z * 100)}%)`;
+        }
+        const currentYear = new Date().getFullYear();
+        const yearsSet = new Set([currentYear, currentYear - 1, currentYear - 2]);
+        allFlatBills.forEach(b => {
+          const norm = normalizeMonthYear(b.MonthYear);
+          if (norm) {
+            const yr = parseInt(norm.substring(0, 4), 10);
+            if (!isNaN(yr) && yr >= 2000 && yr <= 2100) yearsSet.add(yr);
+          }
+        });
+        const allAvailableYears = Array.from(yearsSet).sort((a, b) => b - a);
+        const paletteColors = [
+          { color: "#6366f1", bg: "rgba(99, 102, 241, 0.16)" },
+          { color: "#10b981", bg: "rgba(16, 185, 129, 0.16)" },
+          { color: "#f59e0b", bg: "rgba(245, 158, 11, 0.16)" },
+          { color: "#ec4899", bg: "rgba(236, 72, 153, 0.16)" }
+        ];
+
+        const isSpecificYear = flatGraph2SelectedMode !== "LAST_3_YEARS" && allAvailableYears.includes(Number(flatGraph2SelectedMode));
+        const activeYearsConfig = isSpecificYear
+          ? [{ year: Number(flatGraph2SelectedMode), label: `${flatGraph2SelectedMode} Full Year`, color: "#6366f1", bg: "rgba(99, 102, 241, 0.18)" }]
+          : allAvailableYears.slice(0, 3).map((yr, idx) => ({
+              year: yr,
+              label: yr === currentYear ? `${yr} (Current Year)` : `${yr}`,
+              color: paletteColors[idx % paletteColors.length].color,
+              bg: paletteColors[idx % paletteColors.length].bg
+            }));
+
+        if (filtersBar) {
+          const isAll3 = flatGraph2SelectedMode === "LAST_3_YEARS";
+          let yrBtns = `<button type="button" class="btn-ledger-action" style="padding:5px 12px; font-size:0.74rem; font-weight:800; border-radius:20px; ${isAll3 ? 'background:#6366f1; color:#fff;' : ''}" onclick="selectFlatGraph2Mode('LAST_3_YEARS')"><i class="fa-solid fa-layer-group"></i> Last 3 Years</button>`;
+          allAvailableYears.forEach(yr => {
+            const isSel = String(flatGraph2SelectedMode) === String(yr);
+            yrBtns += `<button type="button" class="btn-ledger-action" style="padding:5px 12px; font-size:0.74rem; font-weight:800; border-radius:20px; ${isSel ? 'background:#10b981; color:#fff;' : ''}" onclick="selectFlatGraph2Mode(${yr})">${yr}</button>`;
+          });
+          filtersBar.innerHTML = `<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">${yrBtns}</div><div style="font-size:0.76rem; color:#38bdf8; font-weight:700;"><i class="fa-solid fa-wand-magic-sparkles"></i> Zoom in to reveal exact ₹ amounts &amp; 10-step micro-gridlines on every month</div>`;
+        }
+
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const yearMonthlyTotals = {};
+        let maxVal = 1000;
+        activeYearsConfig.forEach(yc => {
+          yearMonthlyTotals[yc.year] = [];
+          for (let m = 1; m <= 12; m++) {
+            const monthKey = yc.year + "-" + String(m).padStart(2, "0");
+            const monthBills = allFlatBills.filter(b => normalizeMonthYear(b.MonthYear) === monthKey);
+            let mSum = 0;
+            monthBills.forEach(b => { mSum += extractBillExpenseParts(b).total; });
+            yearMonthlyTotals[yc.year].push(mSum);
+            if (mSum > maxVal) maxVal = mSum;
+          }
+        });
+
+        const baseW = 1040;
+        const baseH = 400;
+        const scaledW = Math.round(baseW * z);
+        const scaledH = Math.round(baseH * z);
+        const padLeft = 88;
+        const padRight = 42;
+        const padTop = 48;
+        const padBottom = 58;
+        const usableW = baseW - padLeft - padRight;
+        const usableH = baseH - padTop - padBottom;
+
+        const gridSteps = isUltraDetail ? 10 : (isHighDetail ? 8 : 5);
+        let gridSvg = "";
+        for (let s = 0; s <= gridSteps; s++) {
+          const yVal = padTop + (usableH * (s / gridSteps));
+          const numVal = Math.round(maxVal * (1 - (s / gridSteps)));
+          gridSvg += `<line x1="${padLeft}" y1="${yVal.toFixed(1)}" x2="${baseW - padRight}" y2="${yVal.toFixed(1)}" stroke="${s === gridSteps ? 'rgba(255,255,255,0.35)' : 'rgba(148,163,184,0.15)'}" stroke-dasharray="${s === gridSteps ? '' : '4,4'}"/>`;
+          gridSvg += `<text x="${padLeft - 12}" y="${(yVal + 4).toFixed(1)}" font-size="10.5" font-weight="700" fill="#cbd5e1" text-anchor="end">₹${numVal.toLocaleString('en-IN')}</text>`;
+        }
+
+        let barsSvg = "";
+        let linesSvg = "";
+        let labelsSvg = "";
+
+        months.forEach((mLabel, mIdx) => {
+          const centerX = padLeft + (mIdx * (usableW / 11));
+          labelsSvg += `<line x1="${centerX.toFixed(1)}" y1="${padTop}" x2="${centerX.toFixed(1)}" y2="${padTop + usableH}" stroke="rgba(148,163,184,0.08)" />`;
+          labelsSvg += `<text x="${centerX.toFixed(1)}" y="${baseH - 22}" font-size="12" font-weight="800" fill="#e2e8f0" text-anchor="middle">${mLabel}</text>`;
+
+          const count = activeYearsConfig.length;
+          const barW = Math.max(10, Math.min(26, Math.floor(54 / Math.max(1, count))));
+          const totalGroupW = count * barW + Math.max(0, count - 1) * 4;
+          const startX = centerX - (totalGroupW / 2);
+
+          activeYearsConfig.forEach((yc, yIdx) => {
+            const val = yearMonthlyTotals[yc.year][mIdx] || 0;
+            const barH = (val / maxVal) * usableH;
+            const barY = padTop + usableH - barH;
+            const barX = startX + yIdx * (barW + 4);
+            barsSvg += `<rect x="${barX.toFixed(1)}" y="${barY.toFixed(1)}" width="${barW}" height="${Math.max(0, barH).toFixed(1)}" rx="4" fill="${yc.color}" fill-opacity="0.42"><title>${mLabel} ${yc.year}: ₹${val.toLocaleString('en-IN')}</title></rect>`;
+          });
+        });
+
+        activeYearsConfig.forEach((yc, yIdx) => {
+          const pts = months.map((mLabel, mIdx) => {
+            const val = yearMonthlyTotals[yc.year][mIdx] || 0;
+            const x = padLeft + (mIdx * (usableW / 11));
+            const y = padTop + usableH - ((val / maxVal) * usableH);
+            return { x, y, val, mLabel };
+          });
+          const pathD = pts.reduce((acc, pt, idx) => idx === 0 ? `M ${pt.x.toFixed(1)} ${pt.y.toFixed(1)}` : `${acc} L ${pt.x.toFixed(1)} ${pt.y.toFixed(1)}`, "");
+          linesSvg += `<path d="${pathD}" fill="none" stroke="${yc.color}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />`;
+          pts.forEach(pt => {
+            linesSvg += `<circle cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="5.5" fill="${yc.color}" stroke="#0f172a" stroke-width="2"><title>${pt.mLabel} ${yc.year}: ₹${pt.val.toLocaleString('en-IN')}</title></circle>`;
+            if (pt.val > 0 && (isHighDetail || activeYearsConfig.length === 1)) {
+              const yOffset = pt.y - 10 - (yIdx * 13);
+              linesSvg += `<text x="${pt.x.toFixed(1)}" y="${Math.max(16, yOffset).toFixed(1)}" font-size="10.5" font-weight="800" fill="${yc.color}" text-anchor="middle">₹${pt.val.toLocaleString('en-IN')}</text>`;
+            }
+          });
+        });
+
+        host.innerHTML = `
+          <svg viewBox="0 0 ${baseW} ${baseH}" width="${scaledW}" height="${scaledH}" style="width:${scaledW}px; height:${scaledH}px; display:block; shape-rendering:geometricPrecision; text-rendering:geometricPrecision;">
+            ${gridSvg}
+            ${barsSvg}
+            ${linesSvg}
+            ${labelsSvg}
+          </svg>
+        `;
+      }
     }
 
     function renderAllRentersGraphForFlat(prop, flat) {
@@ -15893,15 +16549,411 @@ function formatMonthLabel(rawVal) {
       }
     }
 
+    // Requirement 1: Add Flat Modal — Only 2 Compulsory Fields (Property Section * & Flat Name *)
     function openAddFlatModal() {
       syncPropertyDropdowns();
       const addFlatPropSelect = document.getElementById("addFlatPropDropdown");
       if (selectedProperty && addFlatPropSelect) {
         addFlatPropSelect.value = selectedProperty;
       }
-      document.getElementById("addFlatNumber").value = "";
-      document.getElementById("addFlatRenter").value = "";
+      const flatNumEl = document.getElementById("addFlatNumber");
+      if (flatNumEl) flatNumEl.value = "";
       openModal("addFlatModal");
+    }
+
+    // Requirements 2 & 3: Add Renter Modal + Live Aadhaar Lookup & In-Page Reactivation with Complete Details
+    let addRenterModalMatchedRecord = null;
+    let addRenterModalIsReactivating = false;
+    let addRenterModalProfUrl = "";
+    let addRenterModalIdUrl = "";
+
+    function openAddRenterModal() {
+      syncPropertyDropdowns();
+      const propSelect = document.getElementById("addRenterPropDropdown");
+      if (propSelect) {
+        const options = ['<option value="">-- Select Location / Property (*) --</option>'].concat(
+          (DB.properties || []).map(p => `<option value="${p.PropertyName}">${p.PropertyName}</option>`)
+        ).join("");
+        propSelect.innerHTML = options;
+        if (selectedProperty) {
+          propSelect.value = selectedProperty;
+        } else if (DB.properties && DB.properties.length > 0) {
+          propSelect.value = DB.properties[0].PropertyName;
+        }
+      }
+      populateAddRenterFlatsDropdown();
+
+      addRenterModalMatchedRecord = null;
+      addRenterModalIsReactivating = false;
+      addRenterModalProfUrl = "";
+      addRenterModalIdUrl = "";
+
+      const nameEl = document.getElementById("addRenterNameInput");
+      const mobEl = document.getElementById("addRenterMobileInput");
+      const aadhEl = document.getElementById("addRenterAadhaarInput");
+      const matchBox = document.getElementById("addRenterAadhaarMatchBox");
+      const expBox = document.getElementById("addRenterExpandedDetailsBox");
+
+      if (nameEl) nameEl.value = "";
+      if (mobEl) mobEl.value = "+91";
+      if (aadhEl) aadhEl.value = "";
+      if (matchBox) {
+        matchBox.style.display = "none";
+        matchBox.innerHTML = "";
+      }
+      if (expBox) {
+        expBox.style.display = "none";
+      }
+
+      const altMobEl = document.getElementById("addRenterAltMobileInput");
+      const addrEl = document.getElementById("addRenterAddressInput");
+      const famEl = document.getElementById("addRenterFamilyInput");
+      const joinEl = document.getElementById("addRenterJoinDateInput");
+      const statEl = document.getElementById("addRenterStatusInput");
+      const profImg = document.getElementById("addRenterProfPreview");
+      const idImg = document.getElementById("addRenterIdPreview");
+
+      if (altMobEl) altMobEl.value = "";
+      if (addrEl) addrEl.value = "";
+      if (famEl) famEl.value = "1";
+      if (joinEl) joinEl.value = new Date().toISOString().split("T")[0];
+      if (statEl) statEl.value = "Active";
+      if (profImg) profImg.src = EMPTY_PROFILE_PLACEHOLDER;
+      if (idImg) idImg.src = EMPTY_IDENTITY_PLACEHOLDER;
+
+      openModal("addRenterModal");
+    }
+
+    function populateAddRenterFlatsDropdown() {
+      const propName = document.getElementById("addRenterPropDropdown")?.value || "";
+      const flatSelect = document.getElementById("addRenterFlatDropdown");
+      if (!flatSelect) return;
+      if (!propName) {
+        flatSelect.innerHTML = '<option value="">-- Select Location First (*) --</option>';
+        return;
+      }
+      const matchingFlats = (DB.flats || []).filter(f =>
+        String(f.PropertyName || "").trim().toLowerCase() === String(propName).trim().toLowerCase()
+      );
+      if (matchingFlats.length === 0) {
+        flatSelect.innerHTML = '<option value="">No flats found in this location (Add Flat first)</option>';
+        return;
+      }
+      flatSelect.innerHTML = ['<option value="">-- Select Flat Name / Number (*) --</option>'].concat(
+        matchingFlats.map(f => {
+          const activeOcc = (DB.renters || []).find(r =>
+            isSamePropAndFlat(r.PropertyName, r.FlatName, f.PropertyName, f.FlatName) &&
+            String(r.Status || "").trim().toLowerCase() === "active"
+          );
+          const statusNote = activeOcc ? `Occupied (${activeOcc.RenterName || 'Active'})` : "Vacant";
+          return `<option value="${f.FlatName}">${f.FlatName} — ${statusNote}</option>`;
+        })
+      ).join("");
+    }
+
+    function handleAddRenterModalAadhaarLookup(rawVal) {
+      const aadhInput = document.getElementById("addRenterAadhaarInput");
+      const digits = String(rawVal !== undefined ? rawVal : (aadhInput ? aadhInput.value : "")).replace(/\D/g, "").slice(0, 12);
+      if (aadhInput && aadhInput.value !== digits) {
+        aadhInput.value = digits;
+      }
+
+      const matchBox = document.getElementById("addRenterAadhaarMatchBox");
+      if (!matchBox) return;
+
+      if (digits.length < 4) {
+        addRenterModalMatchedRecord = null;
+        matchBox.style.display = "none";
+        matchBox.innerHTML = "";
+        return;
+      }
+
+      // Find all renter records matching this Aadhaar number (both Active and Inactive/Left)
+      const matchingRecords = (DB.renters || []).filter(r => {
+        const rAadhaar = String(r.IdentityDocNumber || "").replace(/\D/g, "");
+        if (!rAadhaar) return false;
+        return digits.length === 12 ? (rAadhaar === digits) : rAadhaar.startsWith(digits);
+      });
+
+      if (matchingRecords.length === 0) {
+        addRenterModalMatchedRecord = null;
+        matchBox.style.display = "none";
+        matchBox.innerHTML = "";
+        return;
+      }
+
+      // Prefer exact 12-digit match or the most complete/recent record
+      matchingRecords.sort((a, b) => {
+        const aExact = String(a.IdentityDocNumber || "").replace(/\D/g, "") === digits ? 1 : 0;
+        const bExact = String(b.IdentityDocNumber || "").replace(/\D/g, "") === digits ? 1 : 0;
+        if (aExact !== bExact) return bExact - aExact;
+        const aScore = (a.ProfileImageURL ? 2 : 0) + (a.IdentityImageURL ? 2 : 0) + (a.Address ? 1 : 0);
+        const bScore = (b.ProfileImageURL ? 2 : 0) + (b.IdentityImageURL ? 2 : 0) + (b.Address ? 1 : 0);
+        return bScore - aScore;
+      });
+
+      const best = matchingRecords[0];
+      addRenterModalMatchedRecord = best;
+
+      const isCurrentlyActive = String(best.Status || "").trim().toLowerCase() === "active";
+      const statusBadgeHtml = isCurrentlyActive
+        ? `<span class="badge-paid" style="font-size:0.68rem; padding:3px 9px;"><i class="fa-solid fa-circle-check"></i> Currently Active</span>`
+        : `<span class="badge-unpaid" style="font-size:0.68rem; padding:3px 9px;"><i class="fa-solid fa-clock-rotate-left"></i> Past / Left Renter</span>`;
+
+      const allStaysText = matchingRecords
+        .map(r => `${r.PropertyName || '--'} (Flat ${r.FlatName || '--'} • ${String(r.Status || 'Active')})`)
+        .filter((v, idx, arr) => arr.indexOf(v) === idx)
+        .join(" | ");
+
+      const profSrc = (!isPlaceholderImageUrl(best.ProfileImageURL)) ? normalizeGoogleDriveImageUrl(best.ProfileImageURL) : EMPTY_PROFILE_PLACEHOLDER;
+      const idSrc = (!isPlaceholderImageUrl(best.IdentityImageURL)) ? normalizeGoogleDriveImageUrl(best.IdentityImageURL) : EMPTY_IDENTITY_PLACEHOLDER;
+
+      matchBox.style.display = "block";
+      matchBox.innerHTML = `
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid rgba(16,185,129,0.28);">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <img src="${profSrc}" alt="Renter" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid #10b981; flex-shrink:0;" />
+            <div>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <strong style="font-size:0.95rem; color:var(--text-main);">${best.RenterName || 'Saved Renter'}</strong>
+                ${statusBadgeHtml}
+              </div>
+              <div style="font-size:0.74rem; color:#38bdf8; font-weight:700; margin-top:2px;">
+                <i class="fa-solid fa-id-card"></i> Aadhaar: ${best.IdentityDocNumber || digits}
+              </div>
+            </div>
+          </div>
+          <button
+            type="button"
+            class="btn-primary"
+            style="width:auto; padding:8px 14px; font-size:0.78rem; font-weight:800; background:linear-gradient(135deg, #10b981, #059669); border-radius:10px; box-shadow:0 6px 16px rgba(16,185,129,0.3);"
+            onclick="activateInPageRenterDetailsFromAadhaar()"
+          >
+            <i class="fa-solid fa-bolt"></i> Reactivate &amp; Fill Complete Details Here
+          </button>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(155px, 1fr)); gap:8px; font-size:0.76rem; background:rgba(15,23,42,0.5); padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.08);">
+          <div><span style="color:var(--text-muted);">Name:</span> <strong style="color:var(--text-main);">${best.RenterName || '--'}</strong></div>
+          <div><span style="color:var(--text-muted);">Mobile:</span> <strong style="color:#34d399;">${best.MobileNumber || '--'}</strong></div>
+          <div><span style="color:var(--text-muted);">Alt Mobile:</span> <strong style="color:var(--text-main);">${best.AltMobileNumber || '--'}</strong></div>
+          <div><span style="color:var(--text-muted);">Family Members:</span> <strong style="color:var(--text-main);">${best.TotalFamilyMembers || '1'}</strong></div>
+          <div><span style="color:var(--text-muted);">Join Date:</span> <strong style="color:var(--text-main);">${formatDateOnly(best.JoinDate)}</strong></div>
+          <div><span style="color:var(--text-muted);">Leave Date:</span> <strong style="color:var(--text-main);">${best.EndDate ? formatDateOnly(best.EndDate) : 'Active / Present'}</strong></div>
+          <div style="grid-column:1 / -1;"><span style="color:var(--text-muted);">Permanent Address:</span> <strong style="color:var(--text-main);">${best.Address || '--'}</strong></div>
+          <div style="grid-column:1 / -1;"><span style="color:var(--text-muted);">Recorded Flat History:</span> <strong style="color:#a78bfa;">${allStaysText}</strong></div>
+        </div>
+      `;
+    }
+
+    function activateInPageRenterDetailsFromAadhaar() {
+      const rec = addRenterModalMatchedRecord;
+      if (!rec) return;
+      addRenterModalIsReactivating = true;
+
+      const nameEl = document.getElementById("addRenterNameInput");
+      const mobEl = document.getElementById("addRenterMobileInput");
+      const aadhEl = document.getElementById("addRenterAadhaarInput");
+      const altMobEl = document.getElementById("addRenterAltMobileInput");
+      const addrEl = document.getElementById("addRenterAddressInput");
+      const famEl = document.getElementById("addRenterFamilyInput");
+      const joinEl = document.getElementById("addRenterJoinDateInput");
+      const statEl = document.getElementById("addRenterStatusInput");
+      const profImg = document.getElementById("addRenterProfPreview");
+      const idImg = document.getElementById("addRenterIdPreview");
+      const expBox = document.getElementById("addRenterExpandedDetailsBox");
+
+      if (nameEl) nameEl.value = rec.RenterName || "";
+      if (mobEl) mobEl.value = rec.MobileNumber ? formatIndianMobilePlus91(rec.MobileNumber) : "+91";
+      if (aadhEl && rec.IdentityDocNumber) aadhEl.value = String(rec.IdentityDocNumber).replace(/\D/g, "").slice(0, 12);
+      if (altMobEl) altMobEl.value = rec.AltMobileNumber || "";
+      if (addrEl) addrEl.value = rec.Address || "";
+      if (famEl) famEl.value = rec.TotalFamilyMembers || 1;
+      if (joinEl) joinEl.value = new Date().toISOString().split("T")[0];
+      if (statEl) statEl.value = "Active";
+
+      addRenterModalProfUrl = (!isPlaceholderImageUrl(rec.ProfileImageURL)) ? rec.ProfileImageURL : "";
+      addRenterModalIdUrl = (!isPlaceholderImageUrl(rec.IdentityImageURL)) ? rec.IdentityImageURL : "";
+
+      if (profImg) profImg.src = addRenterModalProfUrl ? normalizeGoogleDriveImageUrl(addRenterModalProfUrl) : EMPTY_PROFILE_PLACEHOLDER;
+      if (idImg) idImg.src = addRenterModalIdUrl ? normalizeGoogleDriveImageUrl(addRenterModalIdUrl) : EMPTY_IDENTITY_PLACEHOLDER;
+
+      if (expBox) {
+        expBox.style.display = "block";
+        expBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+      triggerSideToast("Renter Details Loaded", "Complete profile & photos loaded right here on the Add Renter page. Select Location & Flat and click Save!", true);
+    }
+
+    async function handleAddRenterModalPhotoSelect(inputEl, docType) {
+      const file = inputEl.files && inputEl.files[0];
+      if (!file) return;
+      try {
+        const sheetSafeBase64 = await compressImageFileToDataUrl(file, 760, 0.78);
+        if (docType === "identity") {
+          addRenterModalIdUrl = sheetSafeBase64;
+          const idImg = document.getElementById("addRenterIdPreview");
+          if (idImg) idImg.src = sheetSafeBase64;
+        } else {
+          addRenterModalProfUrl = sheetSafeBase64;
+          const profImg = document.getElementById("addRenterProfPreview");
+          if (profImg) profImg.src = sheetSafeBase64;
+        }
+        triggerSideToast("Photo Attached", `${docType === "identity" ? "Aadhaar Card" : "Profile"} photo ready to save with renter.`, true);
+      } catch (e) {
+        triggerSideToast("Photo Error", "Could not read selected image.", false);
+      }
+    }
+
+    async function submitAddRenterModal() {
+      const targetProp = (document.getElementById("addRenterPropDropdown")?.value || "").trim();
+      const targetFlat = (document.getElementById("addRenterFlatDropdown")?.value || "").trim();
+      const rName = (document.getElementById("addRenterNameInput")?.value || "").trim();
+      const rawMob = (document.getElementById("addRenterMobileInput")?.value || "").trim();
+      const rawAadhaar = (document.getElementById("addRenterAadhaarInput")?.value || "").replace(/\D/g, "").slice(0, 12);
+
+      // Compulsory validation: ONLY Location, Flat Name, and Renter Name are compulsory
+      if (!targetProp) {
+        return triggerSideToast("Location Required", "Please select a Location / Property (*).", false);
+      }
+      if (!targetFlat) {
+        return triggerSideToast("Flat Required", "Please select a Flat Name / Number (*).", false);
+      }
+      if (!rName) {
+        return triggerSideToast("Renter Name Required", "Renter Name (*) is compulsory.", false);
+      }
+
+      // Optional Mobile & Aadhaar validation (only if user entered digits beyond "+91")
+      const mobDigits = extractIndianMobile10Digits(rawMob);
+      if (rawMob && rawMob !== "+91" && mobDigits.length > 0 && mobDigits.length !== 10) {
+        return triggerSideToast("Invalid Mobile Number", "If entering a mobile number, please enter 10 digits.", false);
+      }
+      const formattedMob = mobDigits.length === 10 ? ("+91 " + mobDigits) : "";
+
+      if (rawAadhaar.length > 0 && rawAadhaar.length !== 12) {
+        return triggerSideToast("Invalid Aadhaar Number", "If entering an Aadhaar number, please enter all 12 digits.", false);
+      }
+
+      const expBox = document.getElementById("addRenterExpandedDetailsBox");
+      const isExpandedVisible = expBox && expBox.style.display !== "none";
+
+      const altMob = isExpandedVisible
+        ? (document.getElementById("addRenterAltMobileInput")?.value || "").trim()
+        : (addRenterModalMatchedRecord?.AltMobileNumber || "");
+      const addr = isExpandedVisible
+        ? (document.getElementById("addRenterAddressInput")?.value || "").trim()
+        : (addRenterModalMatchedRecord?.Address || "");
+      const famCount = isExpandedVisible
+        ? (parseInt(document.getElementById("addRenterFamilyInput")?.value || "1", 10) || 1)
+        : (parseInt(addRenterModalMatchedRecord?.TotalFamilyMembers || "1", 10) || 1);
+      const joinDate = (isExpandedVisible && document.getElementById("addRenterJoinDateInput")?.value)
+        ? document.getElementById("addRenterJoinDateInput").value
+        : new Date().toISOString().split("T")[0];
+      const statusVal = (isExpandedVisible && document.getElementById("addRenterStatusInput")?.value)
+        ? document.getElementById("addRenterStatusInput").value
+        : "Active";
+
+      const profUrl = addRenterModalProfUrl || (addRenterModalMatchedRecord && !isPlaceholderImageUrl(addRenterModalMatchedRecord.ProfileImageURL) ? addRenterModalMatchedRecord.ProfileImageURL : "");
+      const idUrl = addRenterModalIdUrl || (addRenterModalMatchedRecord && !isPlaceholderImageUrl(addRenterModalMatchedRecord.IdentityImageURL) ? addRenterModalMatchedRecord.IdentityImageURL : "");
+
+      const flatObj = findFlatObject(targetProp, targetFlat);
+      const propObj = findPropertyObject(targetProp);
+      const inheritedRent = flatObj?.RentAmount || 0;
+      const inheritedElec = flatObj?.ElecRate !== undefined ? flatObj.ElecRate : "";
+      const inheritedPng = flatObj?.PNGRate !== undefined ? flatObj.PNGRate : "";
+      const inheritedWater = flatObj?.WaterRate !== undefined ? flatObj.WaterRate : "";
+      const inheritedUpiName = propObj?.UPIName || flatObj?.UPIName || "";
+      const inheritedUpiId = propObj?.UPIID || flatObj?.UPIID || "";
+      const inheritedContract = propObj?.ContractNumber || flatObj?.ContractMobile || "";
+
+      // If another renter is currently Active in this target flat, mark them Inactive so history is preserved
+      (DB.renters || []).forEach(r => {
+        if (isSamePropAndFlat(r.PropertyName, r.FlatName, targetProp, targetFlat) && String(r.Status || "").trim().toLowerCase() === "active") {
+          r.Status = "Inactive";
+          if (!r.EndDate) r.EndDate = new Date().toISOString().split("T")[0];
+        }
+      });
+
+      const newRenterId = "R-" + Date.now();
+      const newRenterObj = {
+        RenterID: newRenterId,
+        PropertyName: targetProp,
+        FlatName: targetFlat,
+        RenterName: rName,
+        RentAmount: inheritedRent,
+        ElecFixedRate: inheritedElec,
+        PNGFixedRate: inheritedPng,
+        WaterFixedRate: inheritedWater,
+        UPIName: inheritedUpiName,
+        UPIID: inheritedUpiId,
+        ContractMobile: inheritedContract,
+        JoinDate: joinDate,
+        Status: statusVal,
+        IdentityDocNumber: rawAadhaar,
+        ProfileImageURL: profUrl,
+        IdentityImageURL: idUrl,
+        MobileNumber: formattedMob,
+        AltMobileNumber: altMob,
+        Address: addr,
+        TotalFamilyMembers: famCount,
+        EndDate: ""
+      };
+
+      DB.renters.push(newRenterObj);
+
+      // Sync Aadhaar-linked profile & photos across all flats where this Aadhaar lived
+      if (rawAadhaar.length === 12) {
+        (DB.renters || []).forEach(r => {
+          const rAadh = String(r.IdentityDocNumber || "").replace(/\D/g, "");
+          if (rAadh === rawAadhaar) {
+            r.RenterName = rName;
+            if (formattedMob) r.MobileNumber = formattedMob;
+            if (altMob) r.AltMobileNumber = altMob;
+            if (addr) r.Address = addr;
+            if (profUrl) r.ProfileImageURL = profUrl;
+            if (idUrl) r.IdentityImageURL = idUrl;
+          }
+        });
+      }
+
+      selectedProperty = targetProp;
+      sessionStorage.setItem("active_selected_property", targetProp);
+      saveDbSnapshotToCache();
+      renderAllDashboardUI();
+      closeModal("addRenterModal");
+
+      triggerSideToast(
+        addRenterModalIsReactivating ? "Renter Reactivated & Saved" : "Renter Added",
+        `${rName} has been assigned to ${targetProp} — Flat ${targetFlat}!`,
+        true
+      );
+
+      await sendGasPost({
+        action: "saveRenterProfile",
+        renterId: newRenterId,
+        propertyName: targetProp,
+        flatName: targetFlat,
+        renterName: rName,
+        rentAmount: inheritedRent,
+        elecRate: inheritedElec,
+        pngRate: inheritedPng,
+        waterRate: inheritedWater,
+        upiName: inheritedUpiName,
+        upiId: inheritedUpiId,
+        contractMobile: inheritedContract,
+        joinDate: joinDate,
+        endDate: "",
+        status: statusVal,
+        identityNumber: rawAadhaar,
+        profileImg: profUrl,
+        identityImg: idUrl,
+        mobile: formattedMob,
+        altMobile: altMob,
+        address: addr,
+        familyMembers: famCount,
+        forceCreateNewRow: true
+      });
+      syncDataLive();
     }
 
     function syncPropertyDropdowns() {
@@ -15910,12 +16962,16 @@ function formatMonthLabel(rawVal) {
       const delSelect = document.getElementById("deletePropDropdown");
       const addFlatSelect = document.getElementById("addFlatPropDropdown");
       const delFlatPropSelect = document.getElementById("deleteFlatPropDropdown");
+      const addRenterPropSelect = document.getElementById("addRenterPropDropdown");
 
       const currentAddPropVal = addFlatSelect?.value;
       const options = DB.properties.map(p => `<option value="${p.PropertyName}">${p.PropertyName}</option>`).join("");
       [editSelect, delSelect, addFlatSelect, delFlatPropSelect].forEach(sel => {
         if (sel) sel.innerHTML = options;
       });
+      if (addRenterPropSelect) {
+        addRenterPropSelect.innerHTML = '<option value="">-- Select Location / Property (*) --</option>' + options;
+      }
 
       if (selectedProperty && addFlatSelect) {
         addFlatSelect.value = selectedProperty;
@@ -15927,9 +16983,22 @@ function formatMonthLabel(rawVal) {
       populateDeleteFlatList();
     }
 
+    // Requirement 7: Edit Property Modal — Populate & Save Current Name, New Name, UPI Name, UPI ID, and Contact Mobile Number
     function syncEditPropDisplay() {
-      const val = document.getElementById("editPropDropdown").value;
-      document.getElementById("editPropCurrentName").value = val || "";
+      const val = document.getElementById("editPropDropdown")?.value || "";
+      const currEl = document.getElementById("editPropCurrentName");
+      const newEl = document.getElementById("editPropNewName");
+      const upiNameEl = document.getElementById("editPropUpiName");
+      const upiIdEl = document.getElementById("editPropUpiId");
+      const mobEl = document.getElementById("editPropContractMobile");
+
+      if (currEl) currEl.value = val;
+      if (newEl) newEl.value = val;
+
+      const propObj = findPropertyObject(val);
+      if (upiNameEl) upiNameEl.value = propObj?.UPIName || "";
+      if (upiIdEl) upiIdEl.value = propObj?.UPIID || "";
+      if (mobEl) mobEl.value = propObj?.ContractNumber ? formatIndianMobilePlus91(propObj.ContractNumber) : "+91";
     }
 
     function populateDeleteFlatList() {
@@ -15975,29 +17044,73 @@ function formatMonthLabel(rawVal) {
     }
 
     async function submitEditProperty() {
-      const oldName = document.getElementById("editPropCurrentName").value;
-      const newName = document.getElementById("editPropNewName").value.trim();
-      if (!newName) return triggerSideToast("Required", "Please enter a new name.", false);
+      const oldName = (document.getElementById("editPropCurrentName")?.value || "").trim();
+      const rawNewName = (document.getElementById("editPropNewName")?.value || "").trim();
+      const newName = rawNewName || oldName;
+      if (!oldName || !newName) return triggerSideToast("Required", "Please select a property and enter a name.", false);
 
       if (DB.properties.some(p => String(p.PropertyName).trim().toLowerCase() === newName.toLowerCase() && String(p.PropertyName).trim().toLowerCase() !== oldName.toLowerCase())) {
         return triggerSideToast("Duplicate Name", "This property name is already taken. Please use a different name.", false);
       }
 
-      DB.properties.forEach(p => { if (p.PropertyName === oldName) p.PropertyName = newName; });
-      DB.flats.forEach(f => { if (f.PropertyName === oldName) f.PropertyName = newName; });
-      DB.renters.forEach(r => { if (r.PropertyName === oldName) r.PropertyName = newName; });
-      DB.bills.forEach(b => { if (b.PropertyName === oldName) b.PropertyName = newName; });
+      const upiName = (document.getElementById("editPropUpiName")?.value || "").trim();
+      const upiId = (document.getElementById("editPropUpiId")?.value || "").trim();
+      const rawMob = (document.getElementById("editPropContractMobile")?.value || "").trim();
+      const mobDigits = extractIndianMobile10Digits(rawMob);
+      if (rawMob && rawMob !== "+91" && mobDigits.length > 0 && mobDigits.length !== 10) {
+        return triggerSideToast("Invalid Contact Mobile", "Please enter a valid 10-digit Indian mobile number.", false);
+      }
+      const contractNumber = mobDigits.length === 10 ? ("+91 " + mobDigits) : "";
 
-      if (selectedProperty === oldName) {
+      DB.properties.forEach(p => {
+        if (String(p.PropertyName).trim().toLowerCase() === oldName.toLowerCase()) {
+          p.PropertyName = newName;
+          p.UPIName = upiName;
+          p.UPIID = upiId;
+          p.ContractNumber = contractNumber;
+        }
+      });
+      DB.flats.forEach(f => {
+        if (String(f.PropertyName).trim().toLowerCase() === oldName.toLowerCase()) {
+          f.PropertyName = newName;
+          f.UPIName = upiName;
+          f.UPIID = upiId;
+          f.ContractMobile = contractNumber;
+        }
+      });
+      DB.renters.forEach(r => {
+        if (String(r.PropertyName).trim().toLowerCase() === oldName.toLowerCase()) {
+          r.PropertyName = newName;
+          if (String(r.Status || "").trim().toLowerCase() === "active") {
+            r.UPIName = upiName;
+            r.UPIID = upiId;
+            r.ContractMobile = contractNumber;
+          }
+        }
+      });
+      DB.bills.forEach(b => {
+        if (String(b.PropertyName).trim().toLowerCase() === oldName.toLowerCase()) {
+          b.PropertyName = newName;
+        }
+      });
+
+      if (selectedProperty && String(selectedProperty).trim().toLowerCase() === oldName.toLowerCase()) {
         selectedProperty = newName;
         sessionStorage.setItem("active_selected_property", newName);
       }
       saveDbSnapshotToCache();
       renderAllDashboardUI();
       closeModal("editPropertyModal");
-      triggerSideToast("Property Updated", `Renamed to ${newName}`, true);
+      triggerSideToast("Property Updated", `${newName} details (Name, UPI & Contact Mobile) updated!`, true);
 
-      await sendGasPost({ action: "editProperty", oldName: oldName, newName: newName });
+      await sendGasPost({
+        action: "editProperty",
+        oldName: oldName,
+        newName: newName,
+        upiName: upiName,
+        upiId: upiId,
+        contractNumber: contractNumber
+      });
       syncDataLive();
     }
 
@@ -16031,23 +17144,17 @@ function formatMonthLabel(rawVal) {
       );
     }
 
+    // Requirement 1: Submit Add Flat — Strictly Only Property Section (*) and Flat Name (*)
     async function submitAddFlat() {
-      const targetProp = document.getElementById("addFlatPropDropdown").value.trim();
-      const flat = document.getElementById("addFlatNumber").value.trim();
-      const rName = document.getElementById("addFlatRenter").value.trim();
+      const targetProp = (document.getElementById("addFlatPropDropdown")?.value || "").trim();
+      const flat = (document.getElementById("addFlatNumber")?.value || "").trim();
 
-      if (!targetProp) return triggerSideToast("Select Property", "Please select a property first.", false);
-      if (!flat) return triggerSideToast("Flat Number Required", "Flat Name/Number (*) is strictly mandatory.", false);
+      if (!targetProp) return triggerSideToast("Property Required", "Property Section (*) is compulsory.", false);
+      if (!flat) return triggerSideToast("Flat Name Required", "Flat Name (*) is compulsory.", false);
 
       if (DB.flats.some(f => isSamePropAndFlat(f.PropertyName, f.FlatName, targetProp, flat))) {
         return triggerSideToast("Duplicate Flat", `Flat ${flat} already exists in ${targetProp}.`, false);
       }
-
-      const rentAmt = parseInputRateOrEmpty("addFlatRent") !== "" ? parseInputRateOrEmpty("addFlatRent") : 0;
-      const eRate = parseInputRateOrEmpty("addFlatElecRate");
-      const pRate = parseInputRateOrEmpty("addFlatPngRate");
-      const wRate = parseInputRateOrEmpty("addFlatWaterRate");
-      const generatedRenterId = "R-" + Date.now();
 
       const propObj = findPropertyObject(targetProp);
       const inheritedUpiName = propObj?.UPIName || "";
@@ -16057,59 +17164,33 @@ function formatMonthLabel(rawVal) {
       DB.flats.push({
         PropertyName: targetProp,
         FlatName: flat,
-        RentAmount: rentAmt,
-        ElecRate: eRate,
-        PNGRate: pRate,
-        WaterRate: wRate,
+        RentAmount: 0,
+        ElecRate: "",
+        PNGRate: "",
+        WaterRate: "",
         Status: "Active",
         UPIName: inheritedUpiName,
         UPIID: inheritedUpiId,
         ContractMobile: inheritedContract
       });
 
-      if (rName) {
-        DB.renters.push({
-          RenterID: generatedRenterId,
-          PropertyName: targetProp,
-          FlatName: flat,
-          RenterName: rName,
-          RentAmount: rentAmt,
-          ElecFixedRate: eRate,
-          PNGFixedRate: pRate,
-          WaterFixedRate: wRate,
-          UPIName: inheritedUpiName,
-          UPIID: inheritedUpiId,
-          ContractMobile: inheritedContract,
-          JoinDate: new Date().toISOString().split('T')[0],
-          Status: "Active",
-          IdentityDocNumber: "",
-          ProfileImageURL: "",
-          IdentityImageURL: "",
-          MobileNumber: "",
-          AltMobileNumber: "",
-          Address: "",
-          TotalFamilyMembers: 1,
-          EndDate: ""
-        });
-      }
-
       selectedProperty = targetProp;
       sessionStorage.setItem("active_selected_property", targetProp);
       saveDbSnapshotToCache();
       renderAllDashboardUI();
       closeModal("addFlatModal");
-      triggerSideToast("Flat Added", `Flat ${flat}${rName ? ` (${rName})` : ""} added to ${targetProp}!`, true);
+      triggerSideToast("Flat Added", `Flat ${flat} added to ${targetProp}!`, true);
 
       await sendGasPost({
         action: "addFlat",
-        renterId: rName ? generatedRenterId : "",
+        renterId: "",
         propertyName: targetProp,
         flatName: flat,
-        renterName: rName,
-        rentAmount: rentAmt,
-        elecRate: eRate,
-        pngRate: pRate,
-        waterRate: wRate,
+        renterName: "",
+        rentAmount: 0,
+        elecRate: "",
+        pngRate: "",
+        waterRate: "",
         upiName: inheritedUpiName,
         upiId: inheritedUpiId,
         contractMobile: inheritedContract
@@ -16157,6 +17238,7 @@ function formatMonthLabel(rawVal) {
       document.getElementById("dashboardScreen").classList.remove("active");
       document.getElementById("loginScreen").classList.add("active");
       document.querySelectorAll(".modal-overlay").forEach(m => m.classList.remove("active"));
+      applyCustomBackgrounds();
 
       // Requirement 9: Slide in "Logged out successfully" notification on the logout/login page
       setTimeout(() => {
