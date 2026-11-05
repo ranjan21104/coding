@@ -5024,14 +5024,117 @@
     </div>
   </div>
 
+  <!-- UPI QR Code Rent Collection Popup Modal (Powered by QRious) -->
+  <div id="rentCollectionQrModal" class="modal-overlay" style="z-index: 4800;" onclick="if(event.target===this) closeModal('rentCollectionQrModal')">
+    <div class="modal-window" style="max-width: 500px; width: 95%; padding: 22px;">
+      <button class="modal-close-btn" onclick="closeModal('rentCollectionQrModal')"><i class="fa-solid fa-xmark"></i></button>
+
+      <!-- Header -->
+      <div style="display:flex; align-items:center; gap:12px; padding-right:32px; margin-bottom:14px;">
+        <div style="width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg, #10b981, #059669); display:flex; align-items:center; justify-content:center; color:#ffffff; font-size:1.25rem; flex-shrink:0; box-shadow:0 6px 16px rgba(16,185,129,0.35);">
+          <i class="fa-solid fa-qrcode"></i>
+        </div>
+        <div>
+          <h3 id="qrModalPropFlatTitle" style="margin:0; font-size:1.08rem; font-weight:800; color:var(--text-main);">Rent Collection QR Code</h3>
+          <p id="qrModalSubMeta" style="margin:2px 0 0 0; font-size:0.75rem; color:var(--text-muted); font-weight:600;">
+            Scan with GPay, PhonePe, Paytm or any UPI App
+          </p>
+        </div>
+      </div>
+
+      <!-- Current Amount Due Highlight Banner -->
+      <div style="background:linear-gradient(135deg, rgba(16,185,129,0.14), rgba(99,102,241,0.12)); border:1.5px solid rgba(16,185,129,0.4); border-radius:14px; padding:12px 14px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <div>
+          <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-muted);">Current Amount Due</div>
+          <div id="qrModalDueSourceHint" style="font-size:0.72rem; color:#10b981; font-weight:700; margin-top:2px;">Pre-filled from active flat billing</div>
+        </div>
+        <div id="qrModalBigAmountDisplay" style="font-size:1.45rem; font-weight:900; color:#10b981; letter-spacing:-0.5px;">₹ 0.00</div>
+      </div>
+
+      <!-- Quick Amount Preset Pills -->
+      <div id="qrModalPresetPills" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+        <!-- Dynamically populated with Current Due, Grand Total, Ledger Balance, Base Rent -->
+      </div>
+
+      <!-- QRious Canvas Display Card -->
+      <div style="background:#ffffff; border:2px solid #e2e8f0; border-radius:16px; padding:16px; text-align:center; box-shadow:0 8px 24px rgba(0,0,0,0.18); margin-bottom:14px;">
+        <div id="qrModalPayeeNameBadge" style="font-size:0.88rem; font-weight:800; color:#0f172a; margin-bottom:8px;">Property Rent Receiver</div>
+        <div style="display:inline-flex; align-items:center; justify-content:center; padding:8px; background:#ffffff; border-radius:12px; border:1px solid #cbd5e1;">
+          <canvas id="rentCollectionQrCanvas" width="230" height="230" style="width:210px; height:210px; display:block;"></canvas>
+        </div>
+        <div id="qrModalMissingUpiWarning" style="display:none; padding:14px 10px; color:#dc2626; font-size:0.78rem; font-weight:700; background:#fef2f2; border-radius:10px; border:1px dashed #f87171; margin-top:6px;">
+          <i class="fa-solid fa-triangle-exclamation"></i> No valid UPI ID (e.g. name@okaxis) found for this property/flat. Enter a UPI ID below to generate the QR code.
+        </div>
+        <div id="qrModalUpiIdDisplay" style="font-size:0.84rem; font-weight:800; color:#4f46e5; margin-top:8px; word-break:break-all;">--</div>
+        <div style="font-size:0.7rem; font-weight:700; color:#64748b; margin-top:4px; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <i class="fa-solid fa-shield-halved" style="color:#10b981;"></i> NPCI Verified Instant UPI QR • 0% Gateway Fee
+        </div>
+      </div>
+
+      <!-- Pre-filled & Live Editable UPI + Amount Inputs -->
+      <div style="background:var(--bg-input); border:1px solid var(--glass-border); border-radius:14px; padding:12px; margin-bottom:14px;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label style="font-size:0.72rem;"><i class="fa-solid fa-at" style="color:var(--primary);"></i> Property UPI ID (VPA)</label>
+            <input type="text" id="qrCollectUpiIdInput" class="form-control" style="padding:7px 10px; font-size:0.8rem;" placeholder="e.g. owner@upi" oninput="refreshRentCollectionQrModal()">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label style="font-size:0.72rem;"><i class="fa-solid fa-user-check" style="color:#10b981;"></i> Payee Display Name</label>
+            <input type="text" id="qrCollectUpiNameInput" class="form-control" style="padding:7px 10px; font-size:0.8rem;" placeholder="Property Owner Name" oninput="refreshRentCollectionQrModal()">
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1.3fr; gap:10px;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label style="font-size:0.72rem;"><i class="fa-solid fa-indian-rupee-sign" style="color:#f59e0b;"></i> Amount Due (₹)</label>
+            <input type="number" id="qrCollectAmountInput" class="form-control" style="padding:7px 10px; font-size:0.84rem; font-weight:800;" min="0" step="0.01" placeholder="0.00" oninput="refreshRentCollectionQrModal()">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label style="font-size:0.72rem;"><i class="fa-solid fa-note-sticky" style="color:#38bdf8;"></i> Payment Note</label>
+            <input type="text" id="qrCollectNoteInput" class="form-control" style="padding:7px 10px; font-size:0.8rem;" placeholder="Rent Payment" oninput="refreshRentCollectionQrModal()">
+          </div>
+        </div>
+        <div class="admin-only" style="margin-top:8px; display:flex; justify-content:flex-end;">
+          <button type="button" class="btn-ledger-action" style="padding:4px 10px; font-size:0.7rem; font-weight:700; color:#38bdf8; border-color:rgba(56,189,248,0.4);" onclick="saveRentQrUpiDetailsToFlat()">
+            <i class="fa-solid fa-floppy-disk"></i> Save UPI Details to Property/Flat
+          </button>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+        <button type="button" class="btn-ledger-action" style="justify-content:center; padding:10px; font-size:0.78rem; font-weight:800; color:var(--primary); border-color:rgba(99,102,241,0.45); background:rgba(99,102,241,0.1);" onclick="copyRentCollectionUpiLink()">
+          <i class="fa-solid fa-copy"></i> Copy UPI Link
+        </button>
+        <button type="button" class="btn-ledger-action" style="justify-content:center; padding:10px; font-size:0.78rem; font-weight:800; color:#10b981; border-color:rgba(16,185,129,0.45); background:rgba(16,185,129,0.1);" onclick="downloadRentCollectionQrCard()">
+          <i class="fa-solid fa-download"></i> Download QR PNG
+        </button>
+      </div>
+      <button type="button" class="btn-whatsapp-share" style="margin-top:8px; width:100%; justify-content:center; padding:10px 14px; font-size:0.82rem;" onclick="shareRentCollectionQrOnWhatsApp()">
+        <i class="fa-brands fa-whatsapp" style="font-size:1.05rem;"></i> Send Payment Request on WhatsApp
+      </button>
+    </div>
+  </div>
+
   <!-- Detailed 4-Tab Flat Popup Modal -->
   <div id="flatDetailsModal" class="modal-overlay">
     <div class="modal-window modal-flat-details">
       <button class="modal-close-btn" onclick="closeModal('flatDetailsModal')"><i class="fa-solid fa-xmark"></i></button>
 
-      <div style="display:flex; justify-content:space-between; align-items:center; padding-right: 36px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; padding-right: 36px; flex-wrap:wrap; gap:8px;">
         <h3 id="modalHeaderTitle">Flat Space</h3>
-        <span id="modalFlatTag" style="background:var(--primary); color:#ffffff; padding:4px 12px; border-radius:20px; font-size:0.82rem; font-weight:700;">--</span>
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <button
+            type="button"
+            id="btnFlatHeaderQrCollect"
+            class="btn-ledger-action"
+            style="background:linear-gradient(135deg, #10b981, #059669); color:#ffffff; border:none; padding:5px 13px; border-radius:20px; font-size:0.78rem; font-weight:800; box-shadow:0 4px 12px rgba(16,185,129,0.3); display:inline-flex; align-items:center; gap:6px; cursor:pointer;"
+            onclick="openRentCollectionQrModal()"
+            title="Show UPI QR Code Pre-filled with Property UPI & Current Amount Due"
+          >
+            <i class="fa-solid fa-qrcode"></i> Collect Rent QR
+          </button>
+          <span id="modalFlatTag" style="background:var(--primary); color:#ffffff; padding:4px 12px; border-radius:20px; font-size:0.82rem; font-weight:700;">--</span>
+        </div>
       </div>
 
       <!-- Flat Header Tag -->
@@ -5281,9 +5384,14 @@
           <textarea id="calcNotes" class="form-control" rows="2" placeholder="Write additional points..."></textarea>
         </div>
 
-        <button class="btn-primary admin-only" id="calcSubmitBtn" onclick="submitBillCalculation()">
-          <i class="fa-solid fa-calculator"></i> <span id="calcSubmitBtnText">Calculate Bill</span>
-        </button>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
+          <button class="btn-primary admin-only" id="calcSubmitBtn" onclick="submitBillCalculation()">
+            <i class="fa-solid fa-calculator"></i> <span id="calcSubmitBtnText">Calculate Bill</span>
+          </button>
+          <button type="button" class="btn-primary" id="btnCalcCollectRentQr" style="background:linear-gradient(135deg, #10b981, #059669);" onclick="openRentCollectionQrModal()">
+            <i class="fa-solid fa-qrcode"></i> Generate UPI Rent QR
+          </button>
+        </div>
       </div>
 
       <!-- TAB 2: HISTORY (Billed Ledger - Shows Prev Reading, Curr Reading, Total Consumption, Rate/Unit & Calculated Total for Electricity, PNG & Water) -->
@@ -11561,7 +11669,7 @@ function formatMonthLabel(rawVal) {
     // Requirements 1, 4 & 5: Valid NPCI-Compliant UPI QR Code (Never encodes '@' as '%40'), Removed WhatsApp Target Line, and Removed Total Amount Paid from Receipt
     let lastQrFetchToken = 0;
 
-    function buildValidUpiUri(rawUpiId, rawUpiName, exactAmount) {
+    function buildValidUpiUri(rawUpiId, rawUpiName, exactAmount, rawTransactionNote) {
       const cleanPa = String(rawUpiId || "").replace(/['"\s]/g, "").trim();
       if (!cleanPa || !cleanPa.includes("@")) return "";
 
@@ -11571,12 +11679,395 @@ function formatMonthLabel(rawVal) {
         .trim() || "Rent Payment";
       const encodedPn = encodeURIComponent(cleanPnRaw);
       const cleanAmt = Math.max(0, Number(exactAmount) || 0);
+      const cleanTnRaw = String(rawTransactionNote || "")
+        .replace(/[^a-zA-Z0-9 .,#&-]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+      const tnParam = cleanTnRaw ? `&tn=${encodeURIComponent(cleanTnRaw.slice(0, 48))}` : "";
 
       // CRITICAL: Keep literal '@' in pa= parameter per NPCI UPI Linking Spec so GPay, PhonePe, Paytm & BHIM never say "Invalid QR Code"
       if (cleanAmt > 0) {
-        return `upi://pay?pa=${cleanPa}&pn=${encodedPn}&am=${cleanAmt.toFixed(2)}&cu=INR`;
+        return `upi://pay?pa=${cleanPa}&pn=${encodedPn}&am=${cleanAmt.toFixed(2)}&cu=INR${tnParam}`;
       }
-      return `upi://pay?pa=${cleanPa}&pn=${encodedPn}&cu=INR`;
+      return `upi://pay?pa=${cleanPa}&pn=${encodedPn}&cu=INR${tnParam}`;
+    }
+
+    /**
+     * Dedicated QRious QR Code Generation Utility for Property Rent Collection.
+     * Renders directly onto a target <canvas> and/or returns a PNG data URL.
+     */
+    function generatePropertyRentQrCode({ upiId, upiName, amount, note, canvasEl, size = 230 }) {
+      const upiUri = buildValidUpiUri(upiId, upiName, amount, note);
+      if (!upiUri) {
+        if (canvasEl && canvasEl.getContext) {
+          const ctx = canvasEl.getContext("2d");
+          ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+        }
+        return { valid: false, upiUri: "", dataUrl: "" };
+      }
+
+      let dataUrl = "";
+      if (window.QRious) {
+        try {
+          const qrConfig = {
+            value: upiUri,
+            size: size,
+            padding: 14,
+            level: "H",
+            background: "#ffffff",
+            foreground: "#000000"
+          };
+          if (canvasEl) {
+            qrConfig.element = canvasEl;
+          }
+          const qr = new window.QRious(qrConfig);
+          dataUrl = qr.toDataURL("image/png") || "";
+        } catch (err) {
+          console.error("QRious generation error:", err);
+        }
+      }
+      return { valid: Boolean(dataUrl), upiUri, dataUrl };
+    }
+
+    /**
+     * Resolves the current amount due and breakdown options for the currently selected flat.
+     */
+    function computeCurrentFlatAmountDue() {
+      const propName = selectedFlat?.PropertyName || selectedProperty || "";
+      const flatName = selectedFlat?.FlatName || "";
+
+      // 1. Live Calculator values from Tab 1
+      const rent = parseFloat(document.getElementById("calcRent")?.value) || parseFloat(selectedFlat?.RentAmount || activeFlatRenterObj?.RentAmount || 0) || 0;
+      const elecPrev = parseFloat(document.getElementById("calcElecPrev")?.value) || 0;
+      const elecCurr = parseFloat(document.getElementById("calcElecCurr")?.value) || 0;
+      const elecRate = parseFloat(document.getElementById("calcElecRate")?.value) || 0;
+      const elecTotal = elecCurr > elecPrev ? (elecCurr - elecPrev) * elecRate : 0;
+
+      const pngPrev = parseFloat(document.getElementById("calcPngPrev")?.value) || 0;
+      const pngCurr = parseFloat(document.getElementById("calcPngCurr")?.value) || 0;
+      const pngRate = parseFloat(document.getElementById("calcPngRate")?.value) || 0;
+      const pngTotal = pngCurr > pngPrev ? (pngCurr - pngPrev) * pngRate : 0;
+
+      const waterPrev = parseFloat(document.getElementById("calcWaterPrev")?.value) || 0;
+      const waterCurr = parseFloat(document.getElementById("calcWaterCurr")?.value) || 0;
+      const waterRate = parseFloat(document.getElementById("calcWaterRate")?.value) || 0;
+      const waterTotal = waterCurr > waterPrev ? (waterCurr - waterPrev) * waterRate : 0;
+
+      const addToggle = document.getElementById("calcAddToggle")?.value || "+";
+      const addAmt = parseFloat(document.getElementById("calcAddAmount")?.value) || 0;
+      const addCalculated = addToggle === "+" ? addAmt : -addAmt;
+
+      const prevCarry = parseFloat(document.getElementById("calcPrevCarryBalance")?.value) || 0;
+      const paidNow = parseFloat(document.getElementById("calcPaidNow")?.value) || 0;
+
+      const rawGrand = rent + elecTotal + pngTotal + waterTotal + addCalculated + prevCarry;
+      const calcGrandTotal = Math.max(0, rawGrand);
+      const calcClosingDue = Math.max(0, rawGrand - paidNow);
+
+      // 2. Saved Ledger Net Balance for Active Renter
+      const ledgerStats = calculateCurrentNetBalanceForRenter(propName, flatName, activeFlatRenterObj);
+      const ledgerNetDue = Math.max(0, parseFloat(ledgerStats?.netBalance) || 0);
+
+      // 3. Determine Primary Current Amount Due
+      let primaryAmountDue = calcClosingDue;
+      let sourceLabel = "Current Month Closing Balance Due";
+
+      if (activeRole === "Renter") {
+        // For Renter view (where calculator tab is hidden), prefer ledger pending due or latest unpaid bill
+        if (ledgerNetDue > 0) {
+          primaryAmountDue = ledgerNetDue;
+          sourceLabel = "Total Pending Ledger Balance";
+        } else if (calcClosingDue > 0) {
+          primaryAmountDue = calcClosingDue;
+          sourceLabel = "Current Bill Balance Due";
+        } else {
+          primaryAmountDue = rent;
+          sourceLabel = "Monthly Base Rent";
+        }
+      } else {
+        if (calcClosingDue > 0) {
+          primaryAmountDue = calcClosingDue;
+          sourceLabel = paidNow > 0 ? "Remaining Unpaid Balance (After Partial Paid)" : "Current Month Net Amount Due";
+        } else if (ledgerNetDue > 0) {
+          primaryAmountDue = ledgerNetDue;
+          sourceLabel = "Cumulative Ledger Pending Due";
+        } else if (calcGrandTotal > 0) {
+          primaryAmountDue = calcGrandTotal;
+          sourceLabel = "Current Month Grand Total Billed";
+        } else {
+          primaryAmountDue = rent;
+          sourceLabel = "Monthly Base Rent";
+        }
+      }
+
+      return {
+        primaryAmountDue: Number(primaryAmountDue.toFixed(2)),
+        sourceLabel,
+        calcClosingDue: Number(calcClosingDue.toFixed(2)),
+        calcGrandTotal: Number(calcGrandTotal.toFixed(2)),
+        ledgerNetDue: Number(ledgerNetDue.toFixed(2)),
+        baseRent: Number(rent.toFixed(2))
+      };
+    }
+
+    function openRentCollectionQrModal() {
+      if (!selectedFlat) {
+        return triggerSideToast("Select a Flat", "Please open a flat first to generate its rent collection QR code.", false);
+      }
+
+      const propName = selectedFlat.PropertyName || selectedProperty || "Property";
+      const flatName = selectedFlat.FlatName || "--";
+      const tenantName = document.getElementById("renterName")?.value?.trim() || activeFlatRenterObj?.RenterName || "Tenant";
+      const billingMonthRaw = document.getElementById("calcMonthPicker")?.value || "";
+      const billingMonthLabel = billingMonthRaw ? formatMonthLabel(billingMonthRaw) : "Current Month";
+
+      // Resolve UPI details from profile inputs, flat record, renter record, or property record
+      const domUpiId = document.getElementById("profUpiId")?.value?.trim() || "";
+      const domUpiName = document.getElementById("profUpiName")?.value?.trim() || "";
+      const resolvedContact = resolveFlatUpiAndContact(propName, selectedFlat, activeFlatRenterObj);
+
+      const upiId = domUpiId || resolvedContact.upiId || "";
+      const upiName = domUpiName || resolvedContact.upiName || propName || "Rent Receiver";
+
+      const dueInfo = computeCurrentFlatAmountDue();
+      const defaultNote = `Rent ${propName} Flat ${flatName} (${billingMonthLabel})`;
+
+      document.getElementById("qrModalPropFlatTitle").innerText = `${propName} — Flat ${flatName}`;
+      document.getElementById("qrModalSubMeta").innerText = `Tenant: ${tenantName} • ${billingMonthLabel}`;
+      document.getElementById("qrModalDueSourceHint").innerText = dueInfo.sourceLabel;
+
+      document.getElementById("qrCollectUpiIdInput").value = upiId;
+      document.getElementById("qrCollectUpiNameInput").value = upiName;
+      document.getElementById("qrCollectAmountInput").value = dueInfo.primaryAmountDue;
+      document.getElementById("qrCollectNoteInput").value = defaultNote;
+
+      // Render quick-select amount pills
+      const pillsContainer = document.getElementById("qrModalPresetPills");
+      if (pillsContainer) {
+        const presets = [
+          { label: "Current Due", amount: dueInfo.calcClosingDue },
+          { label: "Grand Total", amount: dueInfo.calcGrandTotal },
+          { label: "Ledger Due", amount: dueInfo.ledgerNetDue },
+          { label: "Base Rent", amount: dueInfo.baseRent }
+        ];
+        pillsContainer.innerHTML = presets.map(p => `
+          <button
+            type="button"
+            class="btn-ledger-action"
+            style="padding:4px 10px; font-size:0.72rem; font-weight:700; border-radius:16px;"
+            onclick="selectRentQrPresetAmount(${p.amount}, '${p.label.replace(/'/g, "\\'")}')"
+          >
+            ${p.label}: ₹${p.amount.toLocaleString('en-IN')}
+          </button>
+        `).join("");
+      }
+
+      refreshRentCollectionQrModal();
+      openModal("rentCollectionQrModal");
+    }
+
+    function selectRentQrPresetAmount(amountVal, labelText) {
+      const amtInput = document.getElementById("qrCollectAmountInput");
+      if (amtInput) {
+        amtInput.value = Number(amountVal || 0).toFixed(2);
+      }
+      const hintEl = document.getElementById("qrModalDueSourceHint");
+      if (hintEl && labelText) {
+        hintEl.innerText = `Selected: ${labelText}`;
+      }
+      refreshRentCollectionQrModal();
+    }
+
+    function refreshRentCollectionQrModal() {
+      const upiId = document.getElementById("qrCollectUpiIdInput")?.value?.trim() || "";
+      const upiName = document.getElementById("qrCollectUpiNameInput")?.value?.trim() || "Rent Receiver";
+      const amount = parseFloat(document.getElementById("qrCollectAmountInput")?.value) || 0;
+      const note = document.getElementById("qrCollectNoteInput")?.value?.trim() || "";
+      const canvasEl = document.getElementById("rentCollectionQrCanvas");
+      const warningEl = document.getElementById("qrModalMissingUpiWarning");
+      const upiIdDisplay = document.getElementById("qrModalUpiIdDisplay");
+      const payeeBadge = document.getElementById("qrModalPayeeNameBadge");
+      const bigAmountEl = document.getElementById("qrModalBigAmountDisplay");
+
+      if (bigAmountEl) {
+        bigAmountEl.innerText = `₹ ${amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      }
+      if (payeeBadge) {
+        payeeBadge.innerText = upiName || "Property Rent Receiver";
+      }
+
+      const qrResult = generatePropertyRentQrCode({
+        upiId,
+        upiName,
+        amount,
+        note,
+        canvasEl,
+        size: 230
+      });
+
+      if (!qrResult.valid) {
+        if (canvasEl) canvasEl.style.display = "none";
+        if (warningEl) warningEl.style.display = "block";
+        if (upiIdDisplay) upiIdDisplay.innerText = "UPI ID Not Configured";
+      } else {
+        if (canvasEl) canvasEl.style.display = "block";
+        if (warningEl) warningEl.style.display = "none";
+        if (upiIdDisplay) upiIdDisplay.innerText = `${upiId} (${upiName})`;
+      }
+    }
+
+    async function copyRentCollectionUpiLink() {
+      const upiId = document.getElementById("qrCollectUpiIdInput")?.value?.trim() || "";
+      const upiName = document.getElementById("qrCollectUpiNameInput")?.value?.trim() || "Rent Receiver";
+      const amount = parseFloat(document.getElementById("qrCollectAmountInput")?.value) || 0;
+      const note = document.getElementById("qrCollectNoteInput")?.value?.trim() || "";
+      const upiUri = buildValidUpiUri(upiId, upiName, amount, note);
+
+      if (!upiUri) {
+        return triggerSideToast("Missing UPI ID", "Please enter a valid UPI ID (e.g. name@upi) first.", false);
+      }
+      try {
+        await navigator.clipboard.writeText(upiUri);
+        triggerSideToast("UPI Link Copied", `Copied UPI payment link for ₹${amount.toLocaleString('en-IN')}!`, true);
+      } catch (e) {
+        triggerSideToast("UPI ID", `${upiId} — Amount: ₹${amount}`, true);
+      }
+    }
+
+    function downloadRentCollectionQrCard() {
+      const upiId = document.getElementById("qrCollectUpiIdInput")?.value?.trim() || "";
+      const upiName = document.getElementById("qrCollectUpiNameInput")?.value?.trim() || "Rent Receiver";
+      const amount = parseFloat(document.getElementById("qrCollectAmountInput")?.value) || 0;
+      const note = document.getElementById("qrCollectNoteInput")?.value?.trim() || "";
+      const qrCanvas = document.getElementById("rentCollectionQrCanvas");
+
+      const upiUri = buildValidUpiUri(upiId, upiName, amount, note);
+      if (!upiUri || !qrCanvas) {
+        return triggerSideToast("Invalid QR Code", "Please enter a valid UPI ID before downloading.", false);
+      }
+
+      const propName = selectedFlat?.PropertyName || selectedProperty || "Property";
+      const flatName = selectedFlat?.FlatName || "";
+
+      // Create a styled summary card canvas with header, QRious QR, UPI ID & Amount Due
+      const exportCanvas = document.createElement("canvas");
+      exportCanvas.width = 420;
+      exportCanvas.height = 520;
+      const ctx = exportCanvas.getContext("2d");
+
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+
+      ctx.fillStyle = "#0f172a";
+      ctx.fillRect(0, 0, exportCanvas.width, 76);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 20px 'Plus Jakarta Sans', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(`${propName} — Flat ${flatName}`, 210, 34);
+
+      ctx.fillStyle = "#34d399";
+      ctx.font = "600 13px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText(note || "Property Rent Payment", 210, 58);
+
+      ctx.fillStyle = "#0f172a";
+      ctx.font = "bold 18px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText(upiName, 210, 112);
+
+      ctx.drawImage(qrCanvas, 80, 128, 260, 260);
+
+      ctx.fillStyle = "#4f46e5";
+      ctx.font = "bold 15px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText(`UPI ID: ${upiId}`, 210, 415);
+
+      ctx.fillStyle = "#059669";
+      ctx.font = "bold 26px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText(`Amount Due: ₹${amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 210, 456);
+
+      ctx.fillStyle = "#64748b";
+      ctx.font = "600 12px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText("Scan with Google Pay, PhonePe, Paytm or BHIM", 210, 492);
+
+      const link = document.createElement("a");
+      link.download = `Rent_QR_${propName}_Flat_${flatName}_Rs${amount.toFixed(0)}.png`.replace(/\s+/g, "_");
+      link.href = exportCanvas.toDataURL("image/png");
+      link.click();
+      triggerSideToast("QR Downloaded", "Rent collection QR card saved as PNG.", true);
+    }
+
+    function shareRentCollectionQrOnWhatsApp() {
+      const upiId = document.getElementById("qrCollectUpiIdInput")?.value?.trim() || "";
+      const upiName = document.getElementById("qrCollectUpiNameInput")?.value?.trim() || "Rent Receiver";
+      const amount = parseFloat(document.getElementById("qrCollectAmountInput")?.value) || 0;
+      const note = document.getElementById("qrCollectNoteInput")?.value?.trim() || "";
+      const upiUri = buildValidUpiUri(upiId, upiName, amount, note);
+
+      if (!upiUri) {
+        return triggerSideToast("Missing UPI ID", "Please enter a valid UPI ID before sharing on WhatsApp.", false);
+      }
+
+      const propName = selectedFlat?.PropertyName || selectedProperty || "Property";
+      const flatName = selectedFlat?.FlatName || "";
+      const tenantName = document.getElementById("renterName")?.value?.trim() || activeFlatRenterObj?.RenterName || "Tenant";
+      const rawPhone = resolveReceiptTargetMobile(null, activeFlatRenterObj);
+      const waPhone = formatWhatsAppPhone(rawPhone);
+
+      const msgLines = [
+        `*RENT PAYMENT REQUEST*`,
+        `Property: *${propName} (Flat ${flatName})*`,
+        `Tenant: *${tenantName}*`,
+        `Amount Due: *₹${amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}*`,
+        `Payee Name: *${upiName}*`,
+        `UPI ID: *${upiId}*`,
+        note ? `Note: ${note}` : ``,
+        ``,
+        `Pay Instantly via UPI App:`,
+        upiUri
+      ].filter(Boolean).join("\n");
+
+      const waUrl = waPhone
+        ? `https://wa.me/${waPhone}?text=${encodeURIComponent(msgLines)}`
+        : `https://wa.me/?text=${encodeURIComponent(msgLines)}`;
+
+      try {
+        window.open(waUrl, "_blank", "noopener,noreferrer");
+      } catch (err) {
+        const a = document.createElement("a");
+        a.href = waUrl;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.click();
+      }
+    }
+
+    async function saveRentQrUpiDetailsToFlat() {
+      if (activeRole === "Viewer" || activeRole === "Renter" || !selectedFlat) return;
+      const newUpiId = document.getElementById("qrCollectUpiIdInput")?.value?.trim() || "";
+      const newUpiName = document.getElementById("qrCollectUpiNameInput")?.value?.trim() || "";
+      if (!newUpiId || !newUpiId.includes("@")) {
+        return triggerSideToast("Invalid UPI ID", "Please enter a valid UPI ID containing '@'.", false);
+      }
+
+      const profUpiIdEl = document.getElementById("profUpiId");
+      const profUpiNameEl = document.getElementById("profUpiName");
+      if (profUpiIdEl) profUpiIdEl.value = newUpiId;
+      if (profUpiNameEl) profUpiNameEl.value = newUpiName;
+
+      selectedFlat.UPIID = newUpiId;
+      selectedFlat.UPIName = newUpiName;
+      if (activeFlatRenterObj) {
+        activeFlatRenterObj.UPIID = newUpiId;
+        activeFlatRenterObj.UPIName = newUpiName;
+      }
+      const propObj = findPropertyObject(selectedFlat.PropertyName);
+      if (propObj) {
+        propObj.UPIID = newUpiId;
+        propObj.UPIName = newUpiName;
+      }
+
+      await saveUtilitiesLeft(true);
+      refreshRentCollectionQrModal();
+      triggerSideToast("UPI Details Saved", `Saved ${newUpiId} (${newUpiName}) to ${selectedFlat.PropertyName} - Flat ${selectedFlat.FlatName}.`, true);
     }
 
     async function fetchQrCodeAsDataUrl(upiUri) {
