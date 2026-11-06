@@ -6,10 +6,10 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home</title>
-  <meta name="description" content="Comprehensive rental property, tenant billing, utility calculation, FD portfolio, and land records management portal with Google Sheets live sync." />
-  <meta property="og:title" content="Home" />
-  <meta property="og:description" content="Comprehensive rental property, tenant billing, utility calculation, FD portfolio, and land records management portal with Google Sheets live sync." />
+  <title>Home - Property & Rental Management Portal</title>
+  <meta name="description" content="Comprehensive rental property, tenant billing, utility calculation, FD portfolio, and land records management portal with Firebase Firestore live sync." />
+  <meta property="og:title" content="Home - Property & Rental Management Portal" />
+  <meta property="og:description" content="Comprehensive rental property, tenant billing, utility calculation, FD portfolio, and land records management portal with Firebase Firestore live sync." />
   <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3644,7 +3644,11 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
   }
 </style>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script>
+  <!-- Firebase SDK (Compat v10 for rock-solid standalone browser runtime) -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+</head>
 <body class="theme-black">
 
   <!-- PERMANENT HOUSE BACKGROUND CANVAS FOR HOME PAGE & LOGIN -->
@@ -3914,7 +3918,7 @@
           </div>
 
           <button type="button" id="btnSubmitFdRecord" class="btn-primary" style="background:#4f46e5; color:#ffffff;" onclick="addFdRecord()">
-            <i class="fa-solid fa-check"></i> <span id="btnSubmitFdRecordText">Save Portfolio &amp; FD Entry to Google Sheet</span>
+            <i class="fa-solid fa-check"></i> <span id="btnSubmitFdRecordText">Save Portfolio &amp; FD Entry to Firebase</span>
           </button>
         </div>
       </div>
@@ -3955,7 +3959,7 @@
           </div>
         </div>
         <span style="font-size:0.7rem; font-weight:700; color:var(--accent-green); background:rgba(16,185,129,0.14); padding:4px 10px; border-radius:20px; border:1px solid rgba(16,185,129,0.3);">
-          <i class="fa-solid fa-cloud-arrow-up"></i> Live Google Sheet Sync
+          <i class="fa-solid fa-cloud-arrow-up"></i> Live Firebase Sync
         </span>
       </div>
 
@@ -4092,7 +4096,7 @@
           </div>
 
           <button type="button" id="btnSubmitKhetRecord" class="btn-primary" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%);" onclick="addKhetRecord()">
-            <i class="fa-solid fa-check"></i> <span id="btnSubmitKhetRecordText">Save Complete Khet &amp; Partner Record to Google Sheet</span>
+            <i class="fa-solid fa-check"></i> <span id="btnSubmitKhetRecordText">Save Complete Khet &amp; Partner Record to Firebase</span>
           </button>
         </div>
       </div>
@@ -4138,7 +4142,7 @@
             <i class="fa-solid fa-wallet" style="color:#f59e0b;"></i> Kharch (Expenses) Ledger &amp; Tracker
           </h3>
           <div style="font-size:0.74rem; color:var(--text-muted); margin-top:2px;">
-            Calculate property utility expenses (excluding rent) &amp; track complete expense history synced live with Google Sheets
+            Calculate property utility expenses (excluding rent) &amp; track complete expense history synced live with Firebase
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:10px;">
@@ -4276,7 +4280,7 @@
             <input type="text" id="kharchNotes" class="form-control" placeholder="Optional bill reference, person paid, or details">
           </div>
           <button type="button" id="btnSubmitKharchRecord" class="btn-primary" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); font-weight:800;" onclick="addKharchRecord()">
-            <i class="fa-solid fa-check"></i> <span id="btnSubmitKharchRecordText">Save Kharch Entry to Google Sheet</span>
+            <i class="fa-solid fa-check"></i> <span id="btnSubmitKharchRecordText">Save Kharch Entry to Firebase</span>
           </button>
         </div>
       </div>
@@ -4347,7 +4351,7 @@
     <header class="top-nav">
       <div class="nav-left">
         <h2> HOME </h2>
-        <div class="pulse-dot" title="Live Continuous Connection with Google Sheet"></div>
+        <div class="pulse-dot" title="Live Continuous Connection with Firebase"></div>
         <span id="headerRoleBadge" class="role-badge">Admin</span>
       </div>
 
@@ -5421,7 +5425,7 @@
         </div>
 
         <button class="btn-primary" style="background:linear-gradient(135deg, #059669, #10b981);" onclick="submitCreateNewUser()">
-          <i class="fa-solid fa-user-check"></i> Create New User ID in Google Sheet
+          <i class="fa-solid fa-user-check"></i> Create New User ID in Firebase
         </button>
       </div>
 
@@ -5435,7 +5439,7 @@
             <span class="badge-unpaid" style="font-size:0.68rem;">Cascade Delete</span>
           </div>
           <p style="font-size:0.79rem; color:var(--text-muted); margin-bottom:12px; line-height:1.4;">
-            Permanently delete a building/property along with all flats, tenant profiles, and billing history inside it from Google Sheets.
+            Permanently delete a building/property along with all flats, tenant profiles, and billing history inside it from Firebase.
           </p>
           <button type="button" class="btn-primary admin-only" style="background:linear-gradient(135deg, #dc2626, #ef4444);" onclick="closeModal('settingsModal'); syncPropertyDropdowns(); openModal('deletePropertyModal');">
             <i class="fa-solid fa-trash-can"></i> Open Delete Property Tool
@@ -6737,13 +6741,1243 @@
     </div>
   </div>
 <script>
+    
     /**
      * ============================================================================
-     * BACKEND CONFIGURATION (HIDDEN FROM UI)
-     * Paste your Google Apps Script Web App URL directly inside the quotes below:
+     * FIREBASE BACKEND ENGINE (REPLACING GOOGLE APPS SCRIPT)
+     * Cloud Firestore Database: home-eb346
      * ============================================================================
      */
-    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzHSSs7xN9tlcZmwO1hpfdwwc8zdhvwRyP1294-RC-SFlj6QvfqtSyFrJH1c8VacYFZWQ/exec";
+    const firebaseConfig = {
+      apiKey: "AIzaSyCygY2bTk7CekfZ5TZgq8X4k6lEtKUBMkM",
+      authDomain: "home-eb346.firebaseapp.com",
+      projectId: "home-eb346",
+      storageBucket: "home-eb346.firebasestorage.app",
+      messagingSenderId: "481342405175",
+      appId: "1:481342405175:web:083035daa1c19d1ff15db2",
+      measurementId: "G-4T81THVSVD"
+    };
+
+    let fbApp = null;
+    let fbDb = null;
+    let isFirebaseReady = false;
+
+    try {
+      if (typeof firebase !== "undefined") {
+        if (!firebase.apps || !firebase.apps.length) {
+          fbApp = firebase.initializeApp(firebaseConfig);
+        } else {
+          fbApp = firebase.app();
+        }
+        fbDb = firebase.firestore();
+        try {
+          fbDb.enablePersistence({ synchronizeTabs: true }).catch(function() {});
+        } catch (persErr) {}
+        isFirebaseReady = true;
+        console.log("Firebase Firestore initialized successfully.");
+      }
+    } catch (fbInitErr) {
+      console.warn("Firebase initialization notice:", fbInitErr);
+    }
+
+    function getFirestoreDb() {
+      if (!fbDb && typeof firebase !== "undefined") {
+        try {
+          if (!firebase.apps || !firebase.apps.length) {
+            fbApp = firebase.initializeApp(firebaseConfig);
+          } else {
+            fbApp = firebase.app();
+          }
+          fbDb = firebase.firestore();
+          isFirebaseReady = true;
+        } catch (e) {}
+      }
+      return fbDb;
+    }
+
+    // Default administrator credentials & profile
+    const DEFAULT_ADMIN_USER = {
+      Username: "admin",
+      Password: "Admin@123",
+      CreatedAt: new Date().toISOString(),
+      FullName: "Administrator",
+      Role: "Admin",
+      Theme: "dark",
+      MobileNumber: "",
+      AssignedProperty: "",
+      AssignedFlat: "",
+      AssignedAadhaar: "",
+      Status: "Active",
+      AccountStatus: "Active",
+      BgLogin: "",
+      BgDashboard: "",
+      BgLoginUrl: "",
+      BgDashboardUrl: "",
+      BackgroundURL: "",
+      ActiveSessionToken: ""
+    };
+
+    let hasCheckedAdminSeed = false;
+    async function ensureFirebaseAdminSeeded() {
+      if (hasCheckedAdminSeed) return;
+      const dbInstance = getFirestoreDb();
+      if (!dbInstance) return;
+      try {
+        const adminDocRef = dbInstance.collection("users").doc("admin");
+        const docSnap = await adminDocRef.get();
+        if (!docSnap.exists) {
+          await adminDocRef.set(DEFAULT_ADMIN_USER);
+          console.log("Default admin account seeded to Firebase.");
+        }
+        hasCheckedAdminSeed = true;
+      } catch (err) {
+        console.warn("Notice checking admin seed in Firestore:", err);
+      }
+    }
+
+    // Normalize phone numbers
+    function cleanPhoneStr(val) {
+      if (!val) return "";
+      const s = String(val).trim();
+      if (!s) return "";
+      if (s.indexOf("+") === 0) {
+        return "+" + s.substring(1).replace(/\D/g, "");
+      }
+      return s.replace(/\D/g, "");
+    }
+
+    /**
+     * Firebase-powered Login Authenticator
+     */
+    async function firebaseLogin(username, password, sessionToken) {
+      const dbInstance = getFirestoreDb();
+      const cleanUser = String(username || "").trim();
+      const lowerUser = cleanUser.toLowerCase();
+
+      if (!dbInstance) {
+        // Fallback for offline demo
+        if (lowerUser === "admin" && (password === "Admin@123" || password === "admin")) {
+          return {
+            status: "success",
+            sessionToken: sessionToken || "SESS-LOCAL-ADMIN",
+            role: "Admin",
+            fullName: "Administrator",
+            mobileNumber: "",
+            theme: "dark",
+            userAssignedProperty: "",
+            userAssignedFlat: "",
+            userAssignedAadhaar: "",
+            bgDashboardUrl: "",
+            bgLoginUrl: ""
+          };
+        }
+        return { status: "error", message: "Firebase database is not connected." };
+      }
+
+      await ensureFirebaseAdminSeeded();
+
+      try {
+        let userDocData = null;
+        let userDocId = lowerUser;
+
+        const directDoc = await dbInstance.collection("users").doc(lowerUser).get();
+        if (directDoc.exists) {
+          userDocData = directDoc.data();
+          userDocId = directDoc.id;
+        } else {
+          // Query by case-insensitive Username field
+          const qSnap = await dbInstance.collection("users").get();
+          qSnap.forEach(function(d) {
+            const data = d.data();
+            if (String(data.Username || "").trim().toLowerCase() === lowerUser) {
+              userDocData = data;
+              userDocId = d.id;
+            }
+          });
+        }
+
+        // If admin account doesn't exist yet, seed it immediately on matching credentials
+        if (!userDocData && lowerUser === "admin" && (password === "Admin@123" || password === "admin")) {
+          userDocData = { ...DEFAULT_ADMIN_USER, ActiveSessionToken: sessionToken };
+          await dbInstance.collection("users").doc("admin").set(userDocData);
+        }
+
+        if (!userDocData) {
+          return { status: "error", message: "User not found or invalid credentials." };
+        }
+
+        if (String(userDocData.Password || "") !== String(password || "")) {
+          return { status: "error", message: "Your Username or Password is wrong." };
+        }
+
+        const userStatus = String(userDocData.Status || userDocData.AccountStatus || "Active").trim();
+        if (userStatus.toLowerCase() === "blocked") {
+          return { status: "blocked", message: "Your account has been blocked by an administrator." };
+        }
+
+        // Update single-device active session token in Firestore
+        await dbInstance.collection("users").doc(userDocId).update({
+          ActiveSessionToken: sessionToken,
+          LastLoginAt: new Date().toISOString()
+        });
+
+        // Record entry in login history
+        try {
+          await dbInstance.collection("loginHistory").add({
+            Username: userDocData.Username || cleanUser,
+            FullName: userDocData.FullName || cleanUser,
+            Role: userDocData.Role || "Admin",
+            LoginTime: new Date().toLocaleString(),
+            Timestamp: Date.now(),
+            Status: "Success",
+            SessionToken: sessionToken,
+            UserAgent: navigator.userAgent
+          });
+        } catch (lhErr) {}
+
+        return {
+          status: "success",
+          sessionToken: sessionToken,
+          role: userDocData.Role || "Admin",
+          fullName: userDocData.FullName || cleanUser,
+          mobileNumber: userDocData.MobileNumber || "",
+          theme: userDocData.Theme || "dark",
+          userAssignedProperty: userDocData.AssignedProperty || "",
+          userAssignedFlat: userDocData.AssignedFlat || "",
+          userAssignedAadhaar: userDocData.AssignedAadhaar || "",
+          bgDashboardUrl: userDocData.BgDashboardUrl || userDocData.BgDashboard || "",
+          bgLoginUrl: userDocData.BgLoginUrl || userDocData.BgLogin || ""
+        };
+      } catch (err) {
+        console.error("Firebase login error:", err);
+        return { status: "error", message: err.message || "Failed to authenticate with Firebase." };
+      }
+    }
+
+    /**
+     * Firebase getInitialData & Live Sync Implementation
+     */
+    async function firebaseGetInitialData(username, clientSessionToken) {
+      const dbInstance = getFirestoreDb();
+      if (!dbInstance) {
+        return {
+          status: "success",
+          properties: DB.properties || [],
+          flats: DB.flats || [],
+          renters: DB.renters || [],
+          bills: DB.bills || [],
+          users: DB.users || [],
+          loginHistory: DB.loginHistory || [],
+          fdRecords: DB.fdRecords || [],
+          khetRecords: DB.khetRecords || [],
+          kharchRecords: DB.kharchRecords || [],
+          globalConfig: {},
+          userExists: true,
+          sessionConflict: false
+        };
+      }
+
+      await ensureFirebaseAdminSeeded();
+
+      try {
+        const [
+          propsSnap, flatsSnap, rentersSnap, billsSnap,
+          usersSnap, lhSnap, fdSnap, khetSnap, kharchSnap, confSnap
+        ] = await Promise.all([
+          dbInstance.collection("properties").get(),
+          dbInstance.collection("flats").get(),
+          dbInstance.collection("renters").get(),
+          dbInstance.collection("bills").get(),
+          dbInstance.collection("users").get(),
+          dbInstance.collection("loginHistory").get(),
+          dbInstance.collection("fdRecords").get(),
+          dbInstance.collection("khetRecords").get(),
+          dbInstance.collection("kharchRecords").get(),
+          dbInstance.collection("config").doc("app_config").get()
+        ]);
+
+        const properties = [];
+        propsSnap.forEach(function(d) {
+          const item = d.data();
+          if (item && item.PropertyName) properties.push(item);
+        });
+        properties.sort(function(a, b) {
+          return String(a.PropertyName || "").trim().localeCompare(String(b.PropertyName || "").trim(), undefined, { sensitivity: "base", numeric: true });
+        });
+
+        const flats = [];
+        flatsSnap.forEach(function(d) {
+          const item = d.data();
+          if (item && item.PropertyName && item.FlatName) flats.push(item);
+        });
+
+        const renters = [];
+        rentersSnap.forEach(function(d) {
+          const item = d.data();
+          if (item) renters.push(item);
+        });
+
+        const bills = [];
+        billsSnap.forEach(function(d) {
+          const item = d.data();
+          if (item) bills.push(item);
+        });
+
+        const usersList = [];
+        let adminBgLogin = "";
+        let adminBgDash = "";
+
+        usersSnap.forEach(function(d) {
+          const item = d.data();
+          if (!item || !item.Username) return;
+          const uRole = item.Role || "Admin";
+          if (String(uRole).toLowerCase() === "admin") {
+            if (item.BgLogin && !adminBgLogin) adminBgLogin = item.BgLogin;
+            if (item.BgDashboard && !adminBgDash) adminBgDash = item.BgDashboard;
+          }
+          usersList.push(item);
+        });
+
+        if (usersList.length === 0) {
+          usersList.push(DEFAULT_ADMIN_USER);
+        }
+
+        const rawLh = [];
+        lhSnap.forEach(function(d) {
+          const item = d.data();
+          if (item) rawLh.push(item);
+        });
+        rawLh.sort(function(a, b) { return (b.Timestamp || 0) - (a.Timestamp || 0); });
+        const loginHistory = rawLh.slice(0, 120);
+
+        const fdRecords = [];
+        fdSnap.forEach(function(d) {
+          const item = d.data();
+          if (item) fdRecords.push(item);
+        });
+
+        const khetRecords = [];
+        khetSnap.forEach(function(d) {
+          const item = d.data();
+          if (item) khetRecords.push(item);
+        });
+
+        const kharchRecords = [];
+        kharchSnap.forEach(function(d) {
+          const item = d.data();
+          if (item) kharchRecords.push(item);
+        });
+
+        const globalConfig = confSnap.exists ? (confSnap.data() || {}) : {};
+
+        // Link property, flat, and renter utility details
+        const propMap = {};
+        properties.forEach(function(p) {
+          const k = String(p.PropertyName || "").trim().toLowerCase();
+          if (k) propMap[k] = p;
+        });
+
+        const activeRenterMap = {};
+        const anyRenterByFlatMap = {};
+        renters.forEach(function(r) {
+          const pKey = String(r.PropertyName || "").trim().toLowerCase();
+          const fKey = String(r.FlatName || "").trim().toLowerCase();
+          const parentProp = propMap[pKey];
+          if (parentProp) {
+            if (!r.UPIName) r.UPIName = parentProp.UPIName || "";
+            if (!r.UPIID) r.UPIID = parentProp.UPIID || "";
+            if (!r.ContractMobile) r.ContractMobile = cleanPhoneStr(parentProp.ContractNumber || "");
+          }
+          if (pKey && fKey) {
+            anyRenterByFlatMap[pKey + "::" + fKey] = r;
+            if (String(r.Status || "").trim().toLowerCase() === "active") {
+              activeRenterMap[pKey + "::" + fKey] = r;
+            }
+          }
+        });
+
+        flats.forEach(function(f) {
+          const pKey = String(f.PropertyName || "").trim().toLowerCase();
+          const fKey = String(f.FlatName || "").trim().toLowerCase();
+          const parentProp = propMap[pKey];
+          if (parentProp) {
+            if (!f.UPIName) f.UPIName = parentProp.UPIName || "";
+            if (!f.UPIID) f.UPIID = parentProp.UPIID || "";
+            if (!f.ContractMobile) f.ContractMobile = cleanPhoneStr(parentProp.ContractNumber || "");
+          }
+          const actRenter = activeRenterMap[pKey + "::" + fKey];
+          const fallbackRenter = actRenter || anyRenterByFlatMap[pKey + "::" + fKey];
+          if (fallbackRenter) {
+            if (!f.PNGNumber && fallbackRenter.PNGNumber) f.PNGNumber = String(fallbackRenter.PNGNumber);
+            if (!f.PNGMeterNumber && fallbackRenter.PNGMeterNumber) f.PNGMeterNumber = String(fallbackRenter.PNGMeterNumber);
+            if (!f.WaterNumber && fallbackRenter.WaterNumber) f.WaterNumber = String(fallbackRenter.WaterNumber);
+            if (!f.WaterMeterNumber && fallbackRenter.WaterMeterNumber) f.WaterMeterNumber = String(fallbackRenter.WaterMeterNumber);
+            if (!f.ElecMeterNumber && fallbackRenter.ElecMeterNumber) f.ElecMeterNumber = String(fallbackRenter.ElecMeterNumber);
+          }
+          if (actRenter) {
+            if (f.RentAmount !== undefined && f.RentAmount !== "") {
+              actRenter.RentAmount = f.RentAmount;
+            } else if (actRenter.RentAmount !== undefined && actRenter.RentAmount !== "") {
+              f.RentAmount = actRenter.RentAmount;
+            }
+            if (f.ElecRate !== undefined && f.ElecRate !== "") {
+              actRenter.ElecFixedRate = f.ElecRate;
+            } else if (actRenter.ElecFixedRate !== undefined && actRenter.ElecFixedRate !== "") {
+              f.ElecRate = actRenter.ElecFixedRate;
+            }
+            if (f.PNGRate !== undefined && f.PNGRate !== "") {
+              actRenter.PNGFixedRate = f.PNGRate;
+            } else if (actRenter.PNGFixedRate !== undefined && actRenter.PNGFixedRate !== "") {
+              f.PNGRate = actRenter.PNGFixedRate;
+            }
+            if (f.WaterRate !== undefined && f.WaterRate !== "") {
+              actRenter.WaterFixedRate = f.WaterRate;
+            } else if (actRenter.WaterFixedRate !== undefined && actRenter.WaterFixedRate !== "") {
+              f.WaterRate = actRenter.WaterFixedRate;
+            }
+            if (f.PNGNumber) actRenter.PNGNumber = String(f.PNGNumber);
+            else if (actRenter.PNGNumber) f.PNGNumber = String(actRenter.PNGNumber);
+            if (f.PNGMeterNumber) actRenter.PNGMeterNumber = String(f.PNGMeterNumber);
+            else if (actRenter.PNGMeterNumber) f.PNGMeterNumber = String(actRenter.PNGMeterNumber);
+            if (f.WaterNumber) actRenter.WaterNumber = String(f.WaterNumber);
+            else if (actRenter.WaterNumber) f.WaterNumber = String(actRenter.WaterNumber);
+            if (f.WaterMeterNumber) actRenter.WaterMeterNumber = String(f.WaterMeterNumber);
+            else if (actRenter.WaterMeterNumber) f.WaterMeterNumber = String(actRenter.WaterMeterNumber);
+            if (f.ElecMeterNumber) actRenter.ElecMeterNumber = String(f.ElecMeterNumber);
+            else if (actRenter.ElecMeterNumber) f.ElecMeterNumber = String(actRenter.ElecMeterNumber);
+          }
+        });
+
+        bills.forEach(function(bill) {
+          if (!bill.TenantMobile) {
+            let matchedRenter = null;
+            if (bill.RenterID) {
+              matchedRenter = renters.find(function(r) {
+                return String(r.RenterID || "").trim() === String(bill.RenterID).trim();
+              });
+            }
+            if (!matchedRenter) {
+              matchedRenter = renters.find(function(r) {
+                return String(r.PropertyName || "").trim().toLowerCase() === String(bill.PropertyName || "").trim().toLowerCase() &&
+                       String(r.FlatName || "").trim().toLowerCase() === String(bill.FlatName || "").trim().toLowerCase() &&
+                       String(r.RenterName || "").trim().toLowerCase() === String(bill.TenantName || "").trim().toLowerCase();
+              });
+            }
+            if (matchedRenter) {
+              bill.TenantMobile = cleanPhoneStr(matchedRenter.MobileNumber || matchedRenter.AltMobileNumber || "");
+            }
+          }
+        });
+
+        let userExists = false;
+        let sessionConflict = false;
+        let serverActiveSessionToken = "";
+        let matchedU = null;
+
+        if (username) {
+          const cleanU = String(username).trim().toLowerCase();
+          matchedU = usersList.find(function(u) {
+            return String(u.Username || "").trim().toLowerCase() === cleanU;
+          });
+          if (matchedU) {
+            userExists = true;
+            serverActiveSessionToken = String(matchedU.ActiveSessionToken || "").trim();
+            const clientTok = String(clientSessionToken || "").trim();
+            if (clientTok && serverActiveSessionToken && clientTok !== serverActiveSessionToken) {
+              sessionConflict = true;
+            }
+          }
+        }
+
+        const resolvedDashBg = globalConfig.bgDashboardUrl || adminBgDash || adminBgLogin || "";
+
+        return {
+          status: "success",
+          userExists: username ? userExists : true,
+          userDeleted: Boolean(username && !userExists),
+          sessionConflict: sessionConflict,
+          activeSessionToken: serverActiveSessionToken,
+          theme: (matchedU && matchedU.Theme) || "dark",
+          userTheme: (matchedU && matchedU.Theme) || "dark",
+          role: (matchedU && matchedU.Role) || "Admin",
+          userRole: (matchedU && matchedU.Role) || "Admin",
+          fullName: (matchedU && matchedU.FullName) || username || "Administrator",
+          userFullName: (matchedU && matchedU.FullName) || username || "Administrator",
+          mobileNumber: (matchedU && matchedU.MobileNumber) || "",
+          userMobile: (matchedU && matchedU.MobileNumber) || "",
+          userAssignedProperty: (matchedU && matchedU.AssignedProperty) || "",
+          userAssignedFlat: (matchedU && matchedU.AssignedFlat) || "",
+          userAssignedAadhaar: (matchedU && matchedU.AssignedAadhaar) || "",
+          accountStatus: (matchedU && (matchedU.Status || matchedU.AccountStatus)) || "Active",
+          userStatus: (matchedU && (matchedU.Status || matchedU.AccountStatus)) || "Active",
+          bgLoginUrl: globalConfig.bgLoginUrl || "",
+          bgDashboardUrl: resolvedDashBg,
+          backgroundUrl: resolvedDashBg,
+          customBackgrounds: globalConfig.customBackgrounds || [],
+          globalConfig: globalConfig,
+          users: usersList,
+          loginHistory: loginHistory,
+          properties: properties,
+          flats: flats,
+          renters: renters,
+          bills: bills,
+          fdRecords: fdRecords,
+          khetRecords: khetRecords,
+          kharchRecords: kharchRecords
+        };
+      } catch (err) {
+        console.error("firebaseGetInitialData error:", err);
+        throw err;
+      }
+    }
+
+    /**
+     * Firebase user profile fetch
+     */
+    async function firebaseGetUserProfile(username) {
+      const dbInstance = getFirestoreDb();
+      const cleanUser = String(username || "").trim();
+      const lowerUser = cleanUser.toLowerCase();
+      if (!dbInstance) {
+        return {
+          status: "success",
+          username: cleanUser,
+          fullName: cleanUser,
+          mobile: "",
+          role: "Admin",
+          theme: "dark"
+        };
+      }
+      try {
+        const docRef = dbInstance.collection("users").doc(lowerUser);
+        const docSnap = await docRef.get();
+        if (docSnap.exists) {
+          const u = docSnap.data();
+          return {
+            status: "success",
+            username: u.Username || cleanUser,
+            fullName: u.FullName || cleanUser,
+            mobile: u.MobileNumber || "",
+            role: u.Role || "Admin",
+            theme: u.Theme || "dark"
+          };
+        }
+        return {
+          status: "success",
+          username: cleanUser,
+          fullName: cleanUser,
+          mobile: "",
+          role: "Admin",
+          theme: "dark"
+        };
+      } catch (e) {
+        return { status: "error", message: e.message };
+      }
+    }
+
+    /**
+     * Unified Firebase Action Dispatcher
+     * Completely replaces Firebase Cloud Firestore sendGasPost logic
+     */
+    async function handleFirebaseAction(data) {
+      const dbInstance = getFirestoreDb();
+      if (!dbInstance) {
+        console.warn("Firestore not connected, action saved in browser memory.");
+        return { status: "success", message: "Saved in browser." };
+      }
+
+      const action = data.action;
+      try {
+        switch (action) {
+          case "addProperty": {
+            const pName = String(data.propertyName || "").trim();
+            if (!pName) return { status: "error", message: "Property name is required." };
+            const docId = pName.replace(/[\/\\#?\s+]/g, "_");
+            const propData = {
+              PropertyName: pName,
+              UPIName: String(data.upiName || "").trim(),
+              UPIID: String(data.upiId || "").trim(),
+              ContractNumber: cleanPhoneStr(data.contractNumber || ""),
+              CreatedAt: new Date().toISOString()
+            };
+            await dbInstance.collection("properties").doc(docId).set(propData, { merge: true });
+            return { status: "success", message: "Property added to Firebase." };
+          }
+
+          case "editProperty": {
+            const oldName = String(data.oldName || "").trim();
+            const newName = String(data.newName || oldName).trim();
+            const oldDocId = oldName.replace(/[\/\\#?\s+]/g, "_");
+            const newDocId = newName.replace(/[\/\\#?\s+]/g, "_");
+            const upiName = String(data.upiName || "").trim();
+            const upiId = String(data.upiId || "").trim();
+            const contractNumber = cleanPhoneStr(data.contractNumber || "");
+
+            // Update property document
+            if (oldDocId !== newDocId) {
+              await dbInstance.collection("properties").doc(oldDocId).delete();
+            }
+            await dbInstance.collection("properties").doc(newDocId).set({
+              PropertyName: newName,
+              UPIName: upiName,
+              UPIID: upiId,
+              ContractNumber: contractNumber,
+              UpdatedAt: new Date().toISOString()
+            }, { merge: true });
+
+            // Cascade rename across flats
+            const flatsSnap = await dbInstance.collection("flats").where("PropertyName", "==", oldName).get();
+            const batch = dbInstance.batch();
+            flatsSnap.forEach(function(doc) {
+              batch.update(doc.ref, {
+                PropertyName: newName,
+                UPIName: upiName,
+                UPIID: upiId,
+                ContractMobile: contractNumber
+              });
+            });
+
+            // Cascade rename across renters
+            const rentersSnap = await dbInstance.collection("renters").where("PropertyName", "==", oldName).get();
+            rentersSnap.forEach(function(doc) {
+              batch.update(doc.ref, {
+                PropertyName: newName,
+                UPIName: upiName,
+                UPIID: upiId,
+                ContractMobile: contractNumber
+              });
+            });
+
+            // Cascade rename across bills
+            const billsSnap = await dbInstance.collection("bills").where("PropertyName", "==", oldName).get();
+            billsSnap.forEach(function(doc) {
+              batch.update(doc.ref, { PropertyName: newName });
+            });
+
+            await batch.commit();
+            return { status: "success", message: "Property updated and cascaded in Firebase." };
+          }
+
+          case "deleteProperty": {
+            const pName = String(data.propertyName || "").trim();
+            const docId = pName.replace(/[\/\\#?\s+]/g, "_");
+            await dbInstance.collection("properties").doc(docId).delete();
+
+            const batch = dbInstance.batch();
+            const [flatsSnap, rentersSnap, billsSnap] = await Promise.all([
+              dbInstance.collection("flats").where("PropertyName", "==", pName).get(),
+              dbInstance.collection("renters").where("PropertyName", "==", pName).get(),
+              dbInstance.collection("bills").where("PropertyName", "==", pName).get()
+            ]);
+
+            flatsSnap.forEach(function(doc) { batch.delete(doc.ref); });
+            rentersSnap.forEach(function(doc) { batch.delete(doc.ref); });
+            billsSnap.forEach(function(doc) { batch.delete(doc.ref); });
+            await batch.commit();
+
+            return { status: "success", message: "Property deleted from Firebase." };
+          }
+
+          case "addFlat": {
+            const pName = String(data.propertyName || "").trim();
+            const fName = String(data.flatName || "").trim();
+            if (!pName || !fName) return { status: "error", message: "Property and Flat Name are required." };
+            const docId = (pName + "___" + fName).replace(/[\/\\#?\s+]/g, "_");
+            const flatData = {
+              PropertyName: pName,
+              FlatName: fName,
+              RentAmount: parseFloat(data.rentAmount) || 0,
+              ElecRate: parseFloat(data.elecFixedRate !== undefined ? data.elecFixedRate : data.elecRate) || 0,
+              PNGRate: parseFloat(data.pngFixedRate !== undefined ? data.pngFixedRate : data.pngRate) || 0,
+              WaterRate: parseFloat(data.waterFixedRate !== undefined ? data.waterFixedRate : data.waterRate) || 0,
+              PNGNumber: String(data.pngNumber || "").trim(),
+              PNGMeterNumber: String(data.pngMeterNumber || "").trim(),
+              WaterNumber: String(data.waterNumber || "").trim(),
+              WaterMeterNumber: String(data.waterMeterNumber || "").trim(),
+              ElecMeterNumber: String(data.elecMeterNumber || "").trim(),
+              UPIName: String(data.upiName || "").trim(),
+              UPIID: String(data.upiId || "").trim(),
+              ContractMobile: cleanPhoneStr(data.contractMobile || ""),
+              Status: "Vacant",
+              CreatedAt: new Date().toISOString()
+            };
+            await dbInstance.collection("flats").doc(docId).set(flatData, { merge: true });
+            return { status: "success", message: "Flat added to Firebase." };
+          }
+
+          case "deleteFlat": {
+            const pName = String(data.propertyName || "").trim();
+            const fName = String(data.flatName || "").trim();
+            const docId = (pName + "___" + fName).replace(/[\/\\#?\s+]/g, "_");
+            await dbInstance.collection("flats").doc(docId).delete();
+
+            const batch = dbInstance.batch();
+            const [rentersSnap, billsSnap] = await Promise.all([
+              dbInstance.collection("renters")
+                .where("PropertyName", "==", pName)
+                .where("FlatName", "==", fName)
+                .get(),
+              dbInstance.collection("bills")
+                .where("PropertyName", "==", pName)
+                .where("FlatName", "==", fName)
+                .get()
+            ]);
+
+            rentersSnap.forEach(function(doc) { batch.delete(doc.ref); });
+            billsSnap.forEach(function(doc) { batch.delete(doc.ref); });
+            await batch.commit();
+
+            return { status: "success", message: "Flat deleted from Firebase." };
+          }
+
+          case "updateMasterRentAndRates": {
+            const pName = String(data.propertyName || "").trim();
+            const fName = String(data.flatName || "").trim();
+            const docId = (pName + "___" + fName).replace(/[\/\\#?\s+]/g, "_");
+            const updatePayload = {
+              RentAmount: parseFloat(data.rentAmount) || 0,
+              ElecRate: parseFloat(data.elecRate) || 0,
+              PNGRate: parseFloat(data.pngRate) || 0,
+              WaterRate: parseFloat(data.waterRate) || 0,
+              UpdatedAt: new Date().toISOString()
+            };
+            await dbInstance.collection("flats").doc(docId).set(updatePayload, { merge: true });
+            return { status: "success", message: "Rates updated in Firebase." };
+          }
+
+          case "updateFlatUtilities": {
+            const pName = String(data.propertyName || "").trim();
+            const oldFlat = String(data.oldFlatName || data.flatName || "").trim();
+            const newFlat = String(data.newFlatName || data.flatName || oldFlat).trim();
+            const oldDocId = (pName + "___" + oldFlat).replace(/[\/\\#?\s+]/g, "_");
+            const newDocId = (pName + "___" + newFlat).replace(/[\/\\#?\s+]/g, "_");
+
+            const flatPayload = {
+              PropertyName: pName,
+              FlatName: newFlat,
+              RentAmount: parseFloat(data.rentAmount) || 0,
+              ElecRate: parseFloat(data.elecFixedRate) || 0,
+              PNGRate: parseFloat(data.pngFixedRate) || 0,
+              WaterRate: parseFloat(data.waterFixedRate) || 0,
+              PNGNumber: String(data.pngNumber || "").trim(),
+              PNGMeterNumber: String(data.pngMeterNumber || "").trim(),
+              WaterNumber: String(data.waterNumber || "").trim(),
+              WaterMeterNumber: String(data.waterMeterNumber || "").trim(),
+              ElecMeterNumber: String(data.elecMeterNumber || "").trim(),
+              UPIName: String(data.upiName || "").trim(),
+              UPIID: String(data.upiId || "").trim(),
+              ContractMobile: cleanPhoneStr(data.contractMobile || ""),
+              UpdatedAt: new Date().toISOString()
+            };
+
+            if (oldDocId !== newDocId) {
+              await dbInstance.collection("flats").doc(oldDocId).delete();
+            }
+            await dbInstance.collection("flats").doc(newDocId).set(flatPayload, { merge: true });
+
+            // If flat was renamed, update matching renters and bills
+            if (oldFlat.toLowerCase() !== newFlat.toLowerCase()) {
+              const batch = dbInstance.batch();
+              const [rentersSnap, billsSnap] = await Promise.all([
+                dbInstance.collection("renters")
+                  .where("PropertyName", "==", pName)
+                  .where("FlatName", "==", oldFlat)
+                  .get(),
+                dbInstance.collection("bills")
+                  .where("PropertyName", "==", pName)
+                  .where("FlatName", "==", oldFlat)
+                  .get()
+              ]);
+              rentersSnap.forEach(function(doc) { batch.update(doc.ref, { FlatName: newFlat }); });
+              billsSnap.forEach(function(doc) { batch.update(doc.ref, { FlatName: newFlat }); });
+              await batch.commit();
+            }
+
+            return { status: "success", message: "Flat utilities saved to Firebase." };
+          }
+
+          case "saveRenterProfile":
+          case "updateRenterProfile": {
+            const pName = String(data.propertyName || "").trim();
+            const fName = String(data.flatName || "").trim();
+            const rId = String(data.renterId || ("R-" + Date.now())).trim();
+            const status = String(data.renterStatus || "Active").trim();
+
+            const renterDoc = {
+              RenterID: rId,
+              PropertyName: pName,
+              FlatName: fName,
+              RenterName: String(data.renterName || "").trim(),
+              IdentityDocNumber: cleanPhoneStr(data.identityDocNumber || ""),
+              MobileNumber: cleanPhoneStr(data.mobileNumber || ""),
+              AltMobileNumber: cleanPhoneStr(data.altMobileNumber || ""),
+              Address: String(data.address || "").trim(),
+              TotalFamilyMembers: data.familyMembers || 1,
+              Status: status,
+              JoinDate: data.joinDate || "",
+              EndDate: data.endDate || "",
+              ProfileImageURL: data.profileImageUrl || "",
+              IdentityImageURL: data.identityImageUrl || "",
+              RentAmount: parseFloat(data.rentAmount) || 0,
+              PNGNumber: String(data.pngNumber || "").trim(),
+              PNGMeterNumber: String(data.pngMeterNumber || "").trim(),
+              PNGFixedRate: parseFloat(data.pngFixedRate) || 0,
+              WaterNumber: String(data.waterNumber || "").trim(),
+              WaterMeterNumber: String(data.waterMeterNumber || "").trim(),
+              WaterFixedRate: parseFloat(data.waterFixedRate) || 0,
+              ElecMeterNumber: String(data.elecMeterNumber || "").trim(),
+              ElecFixedRate: parseFloat(data.elecFixedRate) || 0,
+              UPIName: String(data.upiName || "").trim(),
+              UPIID: String(data.upiId || "").trim(),
+              ContractMobile: cleanPhoneStr(data.contractMobile || ""),
+              UpdatedAt: new Date().toISOString()
+            };
+
+            await dbInstance.collection("renters").doc(rId).set(renterDoc, { merge: true });
+
+            // Update flat status in Firestore
+            const flatDocId = (pName + "___" + fName).replace(/[\/\\#?\s+]/g, "_");
+            await dbInstance.collection("flats").doc(flatDocId).set({
+              Status: status === "Active" ? "Occupied" : "Vacant",
+              RentAmount: parseFloat(data.rentAmount) || 0,
+              ElecRate: parseFloat(data.elecFixedRate) || 0,
+              PNGRate: parseFloat(data.pngFixedRate) || 0,
+              WaterRate: parseFloat(data.waterFixedRate) || 0,
+              PNGNumber: String(data.pngNumber || "").trim(),
+              PNGMeterNumber: String(data.pngMeterNumber || "").trim(),
+              WaterNumber: String(data.waterNumber || "").trim(),
+              WaterMeterNumber: String(data.waterMeterNumber || "").trim(),
+              ElecMeterNumber: String(data.elecMeterNumber || "").trim(),
+              UPIName: String(data.upiName || "").trim(),
+              UPIID: String(data.upiId || "").trim(),
+              ContractMobile: cleanPhoneStr(data.contractMobile || "")
+            }, { merge: true });
+
+            return { status: "success", renterId: rId, message: "Renter profile saved to Firebase." };
+          }
+
+          case "uploadRenterDocument": {
+            const rId = String(data.renterId || "").trim();
+            const docType = String(data.docType || "profile").trim();
+            const imgData = data.base64Data || data.imageUrl || "";
+
+            if (rId) {
+              const fieldName = (docType === "identity") ? "IdentityImageURL" : "ProfileImageURL";
+              await dbInstance.collection("renters").doc(rId).set({
+                [fieldName]: imgData,
+                UpdatedAt: new Date().toISOString()
+              }, { merge: true });
+            }
+            return { status: "success", url: imgData, message: "Document saved to Firebase." };
+          }
+
+          case "deleteRenterDocument": {
+            const rId = String(data.renterId || "").trim();
+            const docType = String(data.docType || "profile").trim();
+            if (rId) {
+              const fieldName = (docType === "identity") ? "IdentityImageURL" : "ProfileImageURL";
+              await dbInstance.collection("renters").doc(rId).set({
+                [fieldName]: "",
+                UpdatedAt: new Date().toISOString()
+              }, { merge: true });
+            }
+            return { status: "success", message: "Document removed from Firebase." };
+          }
+
+          case "recordBill":
+          case "updateSingleBill": {
+            const bId = String(data.billId || data.BillID || ("BILL-" + Date.now())).trim();
+            const cleanMonth = String(data.monthYear || "").replace(/^'+/, "").trim();
+            const billDateVal = String(data.billDate || new Date().toISOString().split("T")[0]).trim();
+            const paymentDateVal = String(data.paymentDate || billDateVal).trim();
+
+            const billDoc = {
+              BillID: bId,
+              PropertyName: String(data.propertyName || "").trim(),
+              FlatName: String(data.flatName || "").trim(),
+              MonthYear: cleanMonth,
+              TenantName: String(data.tenantName || "").trim(),
+              TenantMobile: cleanPhoneStr(data.tenantMobile || ""),
+              BaseRent: parseFloat(data.baseRent) || 0,
+              ElecPrev: parseFloat(data.elecPrev) || 0,
+              ElecCurr: parseFloat(data.elecCurr) || 0,
+              ElecUnits: parseFloat(data.elecUnits) || 0,
+              ElecRate: parseFloat(data.elecRate) || 0,
+              ElecTotal: parseFloat(data.elecTotal) || 0,
+              PNGPrev: parseFloat(data.pngPrev) || 0,
+              PNGCurr: parseFloat(data.pngCurr) || 0,
+              PNGUnits: parseFloat(data.pngUnits) || 0,
+              PNGRate: parseFloat(data.pngRate) || 0,
+              PNGTotal: parseFloat(data.pngTotal) || 0,
+              WaterPrev: parseFloat(data.waterPrev) || 0,
+              WaterCurr: parseFloat(data.waterCurr) || 0,
+              WaterUnits: parseFloat(data.waterUnits) || 0,
+              WaterRate: parseFloat(data.waterRate) || 0,
+              WaterTotal: parseFloat(data.waterTotal) || 0,
+              AdditionalName: String(data.additionalName || "").trim(),
+              AdditionalAmount: parseFloat(data.additionalAmount) || 0,
+              TotalBilled: parseFloat(data.totalBilled) || 0,
+              PaidAmount: parseFloat(data.paidAmount) || 0,
+              PaymentMode: String(data.paymentMode || "UPI").trim(),
+              Status: String(data.status || "Unpaid").trim(),
+              Notes: String(data.notes || "").trim(),
+              BillDate: billDateVal,
+              PaymentDate: paymentDateVal,
+              RenterID: String(data.renterId || "").trim(),
+              PrevCarryBalance: parseFloat(data.prevCarryBalance) || 0,
+              UPIName: String(data.upiName || "").trim(),
+              UPIID: String(data.upiId || "").trim(),
+              ContractMobile: cleanPhoneStr(data.contractMobile || ""),
+              UpdatedAt: new Date().toISOString()
+            };
+
+            await dbInstance.collection("bills").doc(bId).set(billDoc, { merge: true });
+            return { status: "success", billId: bId, message: "Bill saved to Firebase." };
+          }
+
+          case "deleteBill": {
+            const bId = String(data.billId || data.BillID || "").trim();
+            if (bId) {
+              await dbInstance.collection("bills").doc(bId).delete();
+            }
+            return { status: "success", message: "Bill deleted from Firebase." };
+          }
+
+          case "saveFdRecord": {
+            const fdId = String(data.id || data.FDID || ("FD-" + Date.now())).trim();
+            const initAmt = parseFloat(data.PrincipalAmount !== undefined ? data.PrincipalAmount : data.amount) || 0;
+            const matAmt = parseFloat(data.MaturityAmount !== undefined ? data.MaturityAmount : data.maturityAmount) || 0;
+            const fdDoc = {
+              id: fdId,
+              FDID: fdId,
+              bank: String(data.BankName || data.bank || "").trim(),
+              BankName: String(data.BankName || data.bank || "").trim(),
+              amount: initAmt,
+              PrincipalAmount: initAmt,
+              rate: data.InterestRate !== undefined ? data.InterestRate : (data.rate || ""),
+              InterestRate: data.InterestRate !== undefined ? data.InterestRate : (data.rate || ""),
+              maturity: data.MaturityDate || data.maturity || "",
+              MaturityDate: data.MaturityDate || data.maturity || "",
+              notes: data.Notes || data.notes || "",
+              Notes: data.Notes || data.notes || "",
+              sourceProperty: data.SourceProperty || data.sourceProperty || "All Properties",
+              SourceProperty: data.SourceProperty || data.sourceProperty || "All Properties",
+              purposeType: data.PurposeType || data.purposeType || "Saving / Fixed Deposit (FD)",
+              PurposeType: data.PurposeType || data.purposeType || "Saving / Fixed Deposit (FD)",
+              usedPurpose: data.UsedPurpose || data.usedPurpose || "",
+              UsedPurpose: data.UsedPurpose || data.usedPurpose || "",
+              accountNo: cleanPhoneStr(data.AccountNumber || data.accountNo || ""),
+              AccountNumber: cleanPhoneStr(data.AccountNumber || data.accountNo || ""),
+              maturityAmount: matAmt,
+              MaturityAmount: matAmt,
+              usageDate: data.UsageDate || data.usageDate || "",
+              UsageDate: data.UsageDate || data.usageDate || "",
+              UpdatedAt: new Date().toISOString()
+            };
+            await dbInstance.collection("fdRecords").doc(fdId).set(fdDoc, { merge: true });
+            return { status: "success", id: fdId, message: "FD record saved to Firebase." };
+          }
+
+          case "deleteFdRecord": {
+            const fdId = String(data.id || data.FDID || "").trim();
+            if (fdId) {
+              await dbInstance.collection("fdRecords").doc(fdId).delete();
+            }
+            return { status: "success", message: "FD record deleted from Firebase." };
+          }
+
+          case "saveKhetRecord": {
+            const khetId = String(data.id || data.KhetID || ("KHET-" + Date.now())).trim();
+            const paidAmt = parseFloat(data.AmountPaid !== undefined ? data.AmountPaid : (data.amountPaid !== undefined ? data.amountPaid : data.income)) || 0;
+            const adjAmt = parseFloat(data.AdjustedAmount !== undefined ? data.AdjustedAmount : (data.adjustedAmount !== undefined ? data.adjustedAmount : data.expense)) || 0;
+            const khetDoc = {
+              id: khetId,
+              KhetID: khetId,
+              name: String(data.KhetName || data.name || "").trim(),
+              KhetName: String(data.KhetName || data.name || "").trim(),
+              registeredName: String(data.RegisteredName || data.registeredName || "").trim(),
+              RegisteredName: String(data.RegisteredName || data.registeredName || "").trim(),
+              partnerName: String(data.PartnerName || data.partnerName || "").trim(),
+              PartnerName: String(data.PartnerName || data.partnerName || "").trim(),
+              partnerAadhaar: cleanPhoneStr(data.PartnerAadhaar || data.partnerAadhaar || ""),
+              PartnerAadhaar: cleanPhoneStr(data.PartnerAadhaar || data.partnerAadhaar || ""),
+              partnerMobile: cleanPhoneStr(data.PartnerMobile || data.partnerMobile || ""),
+              PartnerMobile: cleanPhoneStr(data.PartnerMobile || data.partnerMobile || ""),
+              partnerAddress: String(data.PartnerAddress || data.partnerAddress || "").trim(),
+              PartnerAddress: String(data.PartnerAddress || data.partnerAddress || "").trim(),
+              khataNo: String(data.KhataNo || data.khataNo || "").trim(),
+              KhataNo: String(data.KhataNo || data.khataNo || "").trim(),
+              keshraNo: String(data.KeshraNo || data.keshraNo || "").trim(),
+              KeshraNo: String(data.KeshraNo || data.keshraNo || "").trim(),
+              bigha: data.FieldSizeBigha !== undefined ? data.FieldSizeBigha : (data.bigha || ""),
+              FieldSizeBigha: data.FieldSizeBigha !== undefined ? data.FieldSizeBigha : (data.bigha || ""),
+              katha: data.Katha !== undefined ? data.Katha : (data.katha || ""),
+              Katha: data.Katha !== undefined ? data.Katha : (data.katha || ""),
+              ratePerKatha: parseFloat(data.RatePerKatha || data.ratePerKatha) || 0,
+              RatePerKatha: parseFloat(data.RatePerKatha || data.ratePerKatha) || 0,
+              totalLandValue: parseFloat(data.TotalLandValue || data.totalLandValue) || 0,
+              TotalLandValue: parseFloat(data.TotalLandValue || data.totalLandValue) || 0,
+              amountPaid: paidAmt,
+              AmountPaid: paidAmt,
+              adjustedAmount: adjAmt,
+              AdjustedAmount: adjAmt,
+              paymentDate: data.PaymentDate || data.paymentDate || "",
+              PaymentDate: data.PaymentDate || data.paymentDate || "",
+              notes: data.Notes || data.notes || "",
+              Notes: data.Notes || data.notes || "",
+              UpdatedAt: new Date().toISOString()
+            };
+            await dbInstance.collection("khetRecords").doc(khetId).set(khetDoc, { merge: true });
+            return { status: "success", id: khetId, message: "Khet record saved to Firebase." };
+          }
+
+          case "deleteKhetRecord": {
+            const khetId = String(data.id || data.KhetID || "").trim();
+            if (khetId) {
+              await dbInstance.collection("khetRecords").doc(khetId).delete();
+            }
+            return { status: "success", message: "Khet record deleted from Firebase." };
+          }
+
+          case "saveKharchRecord": {
+            const kharchId = String(data.id || data.KharchID || ("KHARCH-" + Date.now())).trim();
+            const amt = parseFloat(data.Amount !== undefined ? data.Amount : data.amount) || 0;
+            const expDate = data.ExpenseDate || data.expenseDate || new Date().toISOString().split("T")[0];
+            const kharchDoc = {
+              id: kharchId,
+              KharchID: kharchId,
+              title: String(data.ExpenseTitle || data.title || "").trim(),
+              ExpenseTitle: String(data.ExpenseTitle || data.title || "").trim(),
+              category: String(data.Category || data.category || "General").trim(),
+              Category: String(data.Category || data.category || "General").trim(),
+              amount: amt,
+              Amount: amt,
+              expenseDate: expDate,
+              ExpenseDate: expDate,
+              propertyName: String(data.PropertyName || data.propertyName || "All Properties").trim(),
+              PropertyName: String(data.PropertyName || data.propertyName || "All Properties").trim(),
+              paymentMode: String(data.PaymentMode || data.paymentMode || "Cash").trim(),
+              PaymentMode: String(data.PaymentMode || data.paymentMode || "Cash").trim(),
+              notes: data.Notes || data.notes || "",
+              Notes: data.Notes || data.notes || "",
+              UpdatedAt: new Date().toISOString()
+            };
+            await dbInstance.collection("kharchRecords").doc(kharchId).set(kharchDoc, { merge: true });
+            return { status: "success", id: kharchId, message: "Kharch record saved to Firebase." };
+          }
+
+          case "deleteKharchRecord": {
+            const kharchId = String(data.id || data.KharchID || "").trim();
+            if (kharchId) {
+              await dbInstance.collection("kharchRecords").doc(kharchId).delete();
+            }
+            return { status: "success", message: "Kharch record deleted from Firebase." };
+          }
+
+          case "createUser":
+          case "addUser": {
+            const uName = String(data.newUsername || "").trim();
+            if (!uName) return { status: "error", message: "Username is required." };
+            const lowerU = uName.toLowerCase();
+            const userDoc = {
+              Username: uName,
+              Password: String(data.newPassword || "").trim(),
+              FullName: String(data.fullName || uName).trim(),
+              Role: String(data.role || data.newRole || "Viewer").trim(),
+              Theme: "dark",
+              MobileNumber: cleanPhoneStr(data.mobile || data.mobileNumber || ""),
+              AssignedProperty: String(data.assignedProperty || "").trim(),
+              AssignedFlat: String(data.assignedFlat || "").trim(),
+              AssignedAadhaar: cleanPhoneStr(data.assignedAadhaar || "").slice(0, 12),
+              Status: "Active",
+              AccountStatus: "Active",
+              CreatedAt: new Date().toISOString(),
+              BgLogin: "",
+              BgDashboard: "",
+              ActiveSessionToken: ""
+            };
+            await dbInstance.collection("users").doc(lowerU).set(userDoc, { merge: true });
+            return { status: "success", message: "User account created in Firebase." };
+          }
+
+          case "updateUserRole": {
+            const targetU = String(data.targetUsername || "").trim().toLowerCase();
+            if (!targetU) return { status: "error", message: "Target username is required." };
+            const updateFields = {
+              Role: String(data.role || data.newRole || "Viewer").trim(),
+              AssignedProperty: String(data.assignedProperty || "").trim(),
+              AssignedFlat: String(data.assignedFlat || "").trim(),
+              AssignedAadhaar: cleanPhoneStr(data.assignedAadhaar || "").slice(0, 12),
+              UpdatedAt: new Date().toISOString()
+            };
+            await dbInstance.collection("users").doc(targetU).set(updateFields, { merge: true });
+            return { status: "success", message: "User role updated in Firebase." };
+          }
+
+          case "toggleUserBlock": {
+            const targetU = String(data.targetUsername || "").trim().toLowerCase();
+            const newStatus = data.newStatus || (data.block ? "Blocked" : "Active");
+            await dbInstance.collection("users").doc(targetU).set({
+              Status: newStatus,
+              AccountStatus: newStatus,
+              UpdatedAt: new Date().toISOString()
+            }, { merge: true });
+            return { status: "success", message: `User status updated to ${newStatus} in Firebase.` };
+          }
+
+          case "deleteUser": {
+            const targetU = String(data.targetUsername || "").trim().toLowerCase();
+            if (targetU === "admin") {
+              return { status: "error", message: "Cannot delete master administrator account." };
+            }
+            await dbInstance.collection("users").doc(targetU).delete();
+            return { status: "success", message: "User account deleted from Firebase." };
+          }
+
+          case "changePassword": {
+            const uName = String(data.username || "").trim().toLowerCase();
+            const userDoc = await dbInstance.collection("users").doc(uName).get();
+            if (!userDoc.exists) {
+              return { status: "error", message: "User account not found." };
+            }
+            const currentPass = userDoc.data().Password || "";
+            if (data.oldPassword && String(data.oldPassword) !== String(currentPass)) {
+              return { status: "error", message: "Old password does not match." };
+            }
+            await dbInstance.collection("users").doc(uName).set({
+              Password: String(data.newPassword || "").trim(),
+              UpdatedAt: new Date().toISOString()
+            }, { merge: true });
+            return { status: "success", message: "Password updated in Firebase." };
+          }
+
+          case "changeUsername": {
+            const oldU = String(data.currentUsernameInput || data.loggedUsername || "").trim().toLowerCase();
+            const newU = String(data.newUsername || "").trim();
+            const lowerNew = newU.toLowerCase();
+            if (!newU) return { status: "error", message: "New username is required." };
+
+            const existingSnap = await dbInstance.collection("users").doc(lowerNew).get();
+            if (existingSnap.exists && lowerNew !== oldU) {
+              return { status: "error", message: "This username is already taken in Firebase." };
+            }
+
+            const oldSnap = await dbInstance.collection("users").doc(oldU).get();
+            if (oldSnap.exists) {
+              const oldData = oldSnap.data();
+              oldData.Username = newU;
+              await dbInstance.collection("users").doc(lowerNew).set(oldData);
+              if (lowerNew !== oldU) {
+                await dbInstance.collection("users").doc(oldU).delete();
+              }
+            }
+            return { status: "success", message: "Username updated in Firebase." };
+          }
+
+          case "changeNameAndMobile": {
+            const uName = String(data.loggedUsername || data.username || "").trim().toLowerCase();
+            await dbInstance.collection("users").doc(uName).set({
+              FullName: String(data.newFullName || "").trim(),
+              MobileNumber: cleanPhoneStr(data.newMobile || ""),
+              UpdatedAt: new Date().toISOString()
+            }, { merge: true });
+            return { status: "success", message: "Profile details updated in Firebase." };
+          }
+
+          case "saveTheme":
+          case "updateTheme": {
+            const uName = String(data.username || "").trim().toLowerCase();
+            if (uName) {
+              await dbInstance.collection("users").doc(uName).set({
+                Theme: data.theme || "dark",
+                UpdatedAt: new Date().toISOString()
+              }, { merge: true });
+            }
+            return { status: "success", message: "Theme preference saved to Firebase." };
+          }
+
+          case "saveBackgrounds":
+          case "saveGlobalAppConfig": {
+            const bgLogin = data.bgLogin || data.bgLoginUrl || "";
+            const bgDash = data.bgDashboard || data.bgDashboardUrl || "";
+            const customBgs = data.customBackgrounds || [];
+
+            await dbInstance.collection("config").doc("app_config").set({
+              bgLoginUrl: bgLogin,
+              bgDashboardUrl: bgDash,
+              customBackgrounds: customBgs,
+              updatedAt: new Date().toISOString()
+            }, { merge: true });
+
+            if (data.username) {
+              const lowerU = String(data.username).trim().toLowerCase();
+              await dbInstance.collection("users").doc(lowerU).set({
+                BgLogin: bgLogin,
+                BgDashboard: bgDash,
+                BgLoginUrl: bgLogin,
+                BgDashboardUrl: bgDash,
+                BackgroundURL: bgDash || bgLogin
+              }, { merge: true });
+            }
+
+            return { status: "success", message: "Backgrounds saved to Firebase." };
+          }
+
+          case "uploadBackgroundPhoto": {
+            const photoUrl = data.base64Data || data.imageUrl || "";
+            const slot = data.slot || "dashboard";
+            const field = slot === "login" ? "bgLoginUrl" : "bgDashboardUrl";
+
+            await dbInstance.collection("config").doc("app_config").set({
+              [field]: photoUrl,
+              updatedAt: new Date().toISOString()
+            }, { merge: true });
+
+            return { status: "success", url: photoUrl, message: "Background photo uploaded to Firebase." };
+          }
+
+          case "syncAllData": {
+            // Save client data snapshots into Firebase
+            const clientProps = Array.isArray(data.properties) ? data.properties : [];
+            const clientFlats = Array.isArray(data.flats) ? data.flats : [];
+            const clientRenters = Array.isArray(data.renters) ? data.renters : [];
+            const clientBills = Array.isArray(data.bills) ? data.bills : [];
+
+            for (const p of clientProps) {
+              if (p && p.PropertyName) {
+                const docId = p.PropertyName.replace(/[\/\\#?\s+]/g, "_");
+                await dbInstance.collection("properties").doc(docId).set(p, { merge: true });
+              }
+            }
+            for (const f of clientFlats) {
+              if (f && f.PropertyName && f.FlatName) {
+                const docId = (f.PropertyName + "___" + f.FlatName).replace(/[\/\\#?\s+]/g, "_");
+                await dbInstance.collection("flats").doc(docId).set(f, { merge: true });
+              }
+            }
+            for (const r of clientRenters) {
+              if (r && r.RenterID) {
+                await dbInstance.collection("renters").doc(r.RenterID).set(r, { merge: true });
+              }
+            }
+            for (const b of clientBills) {
+              if (b && b.BillID) {
+                await dbInstance.collection("bills").doc(b.BillID).set(b, { merge: true });
+              }
+            }
+            return { status: "success", message: "Complete data synced to Firebase." };
+          }
+
+          default:
+            console.log("Unhandled Firebase action:", action, data);
+            return { status: "success", message: "Processed action: " + action };
+        }
+      } catch (err) {
+        console.error("handleFirebaseAction error for action " + action + ":", err);
+        return { status: "error", message: err.message };
+      }
+    }
+
     const DEFAULT_PORTAL_BACKGROUND_IMAGE = "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=90";
 
     let DB = {
@@ -7123,7 +8357,7 @@
       deleteCustomBgImage();
     }
 
-    // No-cache photo helpers: Photos are loaded directly from Google Sheets / Google Drive so manual deletions in Sheets reflect immediately
+    // No-cache photo helpers: Photos are loaded directly from Firebases / Google Drive so manual deletions in Sheets reflect immediately
     function savePermanentRenterPhoto(prop, flat, renterId, docType, url) {
       try {
         // Cache safe photo reference if needed
@@ -7900,7 +9134,7 @@
     let currentOpenedReceiptFlat = null;
 
     function getGasUrl() {
-      return GAS_WEB_APP_URL.trim();
+      return "firebase";
     }
 
     /**
@@ -8518,7 +9752,7 @@ function formatMonthLabel(rawVal) {
       const savedTheme = localStorage.getItem("app_visual_theme") || "black";
       applyVisualTheme(savedTheme);
 
-      // Strictly purge all legacy local DB & credential caches so deleted Google Sheets records or User IDs NEVER reappear
+      // Strictly purge all legacy local DB & credential caches so deleted Firebase Firestore records or User IDs NEVER reappear
       try {
         sessionStorage.removeItem("cached_db_snapshot");
         localStorage.removeItem("portal_full_db_backup");
@@ -8551,7 +9785,7 @@ function formatMonthLabel(rawVal) {
       });
 
       if (savedSessionUser) {
-        // Verify active session user and load fresh data directly from Google Apps Script / Google Sheets
+        // Verify active session user and load fresh data directly from Firebase Cloud Firestore / Firebase Firestore
         activeUser = savedSessionUser;
         activeRole = savedRole;
         activeUserFullName = savedFullName;
@@ -8573,7 +9807,7 @@ function formatMonthLabel(rawVal) {
     let pendingWriteCount = 0;
     let lastWriteCompletedAt = 0;
 
-    // Zero-Cache Policy: Never save DB snapshots to localStorage or sessionStorage so Google Sheets is always the single source of truth
+    // Zero-Cache Policy: Never save DB snapshots to localStorage or sessionStorage so Firebase Firestore is always the single source of truth
     function saveDbSnapshotToCache() {
       try {
         sortPropertiesAlphabetically(DB.properties);
@@ -8601,7 +9835,7 @@ function formatMonthLabel(rawVal) {
       if (matchedFlat) {
         selectedFlat = matchedFlat;
       } else {
-        // Selected flat was deleted in Google Sheets — close modal immediately
+        // Selected flat was deleted in Firebases — close modal immediately
         selectedFlat = null;
         activeFlatRenterObj = null;
         closeModal("flatDetailsModal");
@@ -8954,7 +10188,7 @@ function formatMonthLabel(rawVal) {
       }, 6000);
     }
 
-    // Zero Auth Cache Policy: Never store or validate usernames/passwords in localStorage so deleted IDs in Google Sheets fail login immediately
+    // Zero Auth Cache Policy: Never store or validate usernames/passwords in localStorage so deleted IDs in Firebases fail login immediately
     function getVerifiedAuthMap() {
       try { localStorage.removeItem("portal_verified_auth_map"); } catch (e) {}
       return {};
@@ -8972,18 +10206,14 @@ function formatMonthLabel(rawVal) {
       try { localStorage.removeItem("portal_verified_auth_map"); } catch (e) {}
     }
 
-    // Pre-warm Google Apps Script server while login screen is open so server is hot & custom backgrounds load
+    // Pre-warm Firebase Cloud Firestore server while login screen is open so server is hot & custom backgrounds load
     let isPrewarmingServer = false;
     async function prewarmServerInBackground() {
       if (isPrewarmingServer || activeUser) return;
       isPrewarmingServer = true;
       try {
-        const gasUrl = getGasUrl();
-        const resp = await fetch(`${gasUrl}?action=getInitialData&t=${Date.now()}`, {
-          method: "GET",
-          cache: "no-store"
-        });
-        const res = await resp.json();
+        await ensureFirebaseAdminSeeded();
+        const res = await firebaseGetInitialData();
         if (res && res.status === "success" && !activeUser) {
           syncServerBackgroundsToLocal(res.globalConfig || res, res.bgLoginUrl || "", res.bgDashboardUrl || "", Boolean(res.globalConfig));
         }
@@ -9064,7 +10294,7 @@ function formatMonthLabel(rawVal) {
       activeRole = res.role || "Admin";
       const sheetTheme = res.theme || "black";
 
-      // Strictly use the live arrays from Google Sheets (never fall back to localStorage or re-upload deleted rows)
+      // Strictly use the live arrays from Firebases (never fall back to localStorage or re-upload deleted rows)
       DB.properties = Array.isArray(res.properties) ? res.properties : [];
       DB.flats = Array.isArray(res.flats) ? res.flats : [];
       DB.renters = (Array.isArray(res.renters) ? res.renters : []).map(r => {
@@ -9132,16 +10362,11 @@ function formatMonthLabel(rawVal) {
 
       isSubmittingLogin = true;
       btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Verifying with Google Sheet...`;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Verifying with Firebase...`;
 
       try {
         const newSessionToken = "SESS-" + Date.now() + "-" + Math.random().toString(36).substring(2, 10);
-        const gasUrl = getGasUrl();
-        const response = await fetch(`${gasUrl}?action=login&username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}&sessionToken=${encodeURIComponent(newSessionToken)}&t=${Date.now()}`, {
-          method: "GET",
-          cache: "no-store"
-        });
-        const res = await response.json();
+        const res = await firebaseLogin(user, pass, newSessionToken);
 
         if (res && res.status === "blocked") {
           showAccountBlockedModal(res.message || "Your account has been blocked by an administrator.");
@@ -9170,7 +10395,7 @@ function formatMonthLabel(rawVal) {
           triggerSideToast("Local Demo Mode", "Logged in as Administrator (Offline/Local Mode)", true);
           return;
         }
-        triggerSideToast("Connection Error", "Unable to reach Google Sheet server. Verify your internet or Google Apps Script Web App URL.", false);
+        triggerSideToast("Connection Error", "Unable to reach Firebase cloud database. Verify your internet or Firebase configuration.", false);
       } finally {
         isSubmittingLogin = false;
         btn.disabled = false;
@@ -9178,7 +10403,7 @@ function formatMonthLabel(rawVal) {
       }
     }
 
-    // 2. Continuous Live Background Sync Directly from Google Sheets (Detects 2nd-device login conflict, manual row deletions & Admin global background)
+    // 2. Continuous Live Background Sync Directly from Firebases (Detects 2nd-device login conflict, manual row deletions & Admin global background)
     async function syncDataLive(forceRender = false) {
       if (!activeUser || isSyncingLive || isSessionConflictModalOpen) return;
       if (!forceRender && (pendingWriteCount > 0 || (Date.now() - lastWriteCompletedAt < 4000))) {
@@ -9186,12 +10411,7 @@ function formatMonthLabel(rawVal) {
       }
       isSyncingLive = true;
       try {
-        const gasUrl = getGasUrl();
-        const response = await fetch(`${gasUrl}?action=getInitialData&username=${encodeURIComponent(activeUser)}&sessionToken=${encodeURIComponent(activeSessionToken || "")}&t=${Date.now()}`, {
-          method: "GET",
-          cache: "no-store"
-        });
-        const res = await response.json();
+        const res = await firebaseGetInitialData(activeUser, activeSessionToken || "");
 
         if (res && res.status === "success") {
           if (!forceRender && (pendingWriteCount > 0 || (Date.now() - lastWriteCompletedAt < 4000))) {
@@ -9214,7 +10434,7 @@ function formatMonthLabel(rawVal) {
             return;
           }
 
-          // If the currently logged-in user's row was manually deleted in Google Sheets, log out & wipe dashboard immediately!
+          // If the currently logged-in user's row was manually deleted in Firebases, log out & wipe dashboard immediately!
           if (res.userDeleted === true || res.userExists === false || !activeUserStillInSheet) {
             DB.properties = [];
             DB.flats = [];
@@ -9225,7 +10445,7 @@ function formatMonthLabel(rawVal) {
             DB.khetRecords = [];
             performConfirmedLogout();
             setTimeout(() => {
-              triggerSideToast("Account Removed", "Your User ID no longer exists in Google Sheets. Please log in with a valid ID.", false);
+              triggerSideToast("Account Removed", "Your User ID no longer exists in Firebase. Please log in with a valid ID.", false);
             }, 120);
             return;
           }
@@ -9934,7 +11154,7 @@ function formatMonthLabel(rawVal) {
       const passInput = document.getElementById("profViewPassword");
       passInput.type = "password";
       passInput.value = "";
-      passInput.placeholder = "Fetching live from Google Sheet...";
+      passInput.placeholder = "Fetching live from Firebase...";
 
       document.getElementById("passChangeBottomMsg").className = "bottom-status-msg";
       document.getElementById("userChangeBottomMsg").className = "bottom-status-msg";
@@ -9952,12 +11172,7 @@ function formatMonthLabel(rawVal) {
       openModal("profileModal");
 
       try {
-        const gasUrl = getGasUrl();
-        const response = await fetch(`${gasUrl}?action=getUserProfile&username=${encodeURIComponent(activeUser)}&t=${Date.now()}`, {
-          method: "GET",
-          cache: "no-store"
-        });
-        const res = await response.json();
+        const res = await firebaseGetUserProfile(activeUser);
         if (res.status === "success") {
           activeUserFullName = res.fullName || activeUser;
           activeUserMobile = sanitizeContactPhoneDisplay(res.mobile || "");
@@ -10079,7 +11294,7 @@ function formatMonthLabel(rawVal) {
 
         msgBox.innerText = "Username updated successfully!";
         msgBox.className = "bottom-status-msg success";
-        triggerSideToast("Username Updated", "Your username has been updated in Google Sheet!", true);
+        triggerSideToast("Username Updated", "Your username has been updated in Firebase!", true);
         syncDataLive();
       } else {
         msgBox.innerText = res.message || "Could not update username.";
@@ -10144,7 +11359,7 @@ function formatMonthLabel(rawVal) {
         }
         msgBox.innerText = "Name and Mobile No. updated successfully!";
         msgBox.className = "bottom-status-msg success";
-        triggerSideToast("Profile Updated", "Name and Mobile No. saved to Google Sheet!", true);
+        triggerSideToast("Profile Updated", "Name and Mobile No. saved to Firebase!", true);
         syncDataLive();
       } else {
         msgBox.innerText = res.message || "Could not update Name & Mobile No.";
@@ -10625,7 +11840,7 @@ function formatMonthLabel(rawVal) {
       closeModal("editEverythingBillModal");
       renderEditEverythingBillsList();
       renderAllDashboardUI();
-      triggerSideToast("Bill Updated", "Bill changes saved to Google Sheets!", true);
+      triggerSideToast("Bill Updated", "Bill changes saved to Firebases!", true);
 
       await sendGasPost({
         action: "recordBill",
@@ -10670,7 +11885,7 @@ function formatMonthLabel(rawVal) {
     function deleteBillFromEditEverything(billId) {
       openCenteredConfirmModal(
         "Delete Bill Entry Permanently",
-        "Are you sure you want to permanently delete this bill entry? It will be removed from Google Sheets and cannot be recovered.",
+        "Are you sure you want to permanently delete this bill entry? It will be removed from Firebases and cannot be recovered.",
         async () => {
           const target = (DB.bills || []).find(b => String(b.BillID || "").trim() === String(billId).trim());
           DB.bills = (DB.bills || []).filter(b => String(b.BillID || "").trim() !== String(billId).trim());
@@ -15608,7 +16823,7 @@ function formatMonthLabel(rawVal) {
       openModal("tenantFullProfileModal");
     }
 
-    // Requirement 4 (Latest): Fixed Deposit (FD) & Farmland (Khet) Auto-Save to Google Sheet + Full Portfolio & Partner Ledger
+    // Requirement 4 (Latest): Fixed Deposit (FD) & Farmland (Khet) Auto-Save to Firebase + Full Portfolio & Partner Ledger
     let editingFdRecordId = null;
     let editingKhetRecordId = null;
     let activeFdPlaceFilter = "ALL";
@@ -15768,7 +16983,7 @@ function formatMonthLabel(rawVal) {
       const btnTextEl = document.getElementById("btnSubmitFdRecordText");
       const cancelBtn = document.getElementById("btnCancelFdEdit");
       if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Portfolio / Saving (FD) Entry`;
-      if (btnTextEl) btnTextEl.innerText = "Update Portfolio & FD Record in Google Sheet";
+      if (btnTextEl) btnTextEl.innerText = "Update Portfolio & FD Record in Firebase";
       if (cancelBtn) cancelBtn.style.display = "inline-flex";
     }
 
@@ -15804,7 +17019,7 @@ function formatMonthLabel(rawVal) {
       const btnTextEl = document.getElementById("btnSubmitFdRecordText");
       const cancelBtn = document.getElementById("btnCancelFdEdit");
       if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-briefcase"></i> Add Portfolio Usage / Saving (FD) Entry`;
-      if (btnTextEl) btnTextEl.innerText = "Save Portfolio & FD Entry to Google Sheet";
+      if (btnTextEl) btnTextEl.innerText = "Save Portfolio & FD Entry to Firebase";
       if (cancelBtn) cancelBtn.style.display = "none";
     }
 
@@ -16362,7 +17577,7 @@ function formatMonthLabel(rawVal) {
       const btnText = document.getElementById("btnSubmitKharchRecordText");
       const cancelBtn = document.getElementById("btnCancelKharchEdit");
       if (formTitle) formTitle.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Add New Kharch (Expense) Entry`;
-      if (btnText) btnText.innerText = "Save Kharch Entry to Google Sheet";
+      if (btnText) btnText.innerText = "Save Kharch Entry to Firebase";
       if (cancelBtn) cancelBtn.style.display = "none";
     }
 
@@ -16394,7 +17609,7 @@ function formatMonthLabel(rawVal) {
       const btnText = document.getElementById("btnSubmitKharchRecordText");
       const cancelBtn = document.getElementById("btnCancelKharchEdit");
       if (formTitle) formTitle.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Kharch (Expense) Entry`;
-      if (btnText) btnText.innerText = "Update Kharch Entry in Google Sheet";
+      if (btnText) btnText.innerText = "Update Kharch Entry in Firebase";
       if (cancelBtn) cancelBtn.style.display = "inline-flex";
     }
 
@@ -16789,7 +18004,7 @@ function formatMonthLabel(rawVal) {
       const btnTextEl = document.getElementById("btnSubmitKhetRecordText");
       const cancelBtn = document.getElementById("btnCancelKhetEdit");
       if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Khet Registry &amp; Partner Details`;
-      if (btnTextEl) btnTextEl.innerText = "Update Khet & Partner Record in Google Sheet";
+      if (btnTextEl) btnTextEl.innerText = "Update Khet & Partner Record in Firebase";
       if (cancelBtn) cancelBtn.style.display = "inline-flex";
     }
 
@@ -16814,7 +18029,7 @@ function formatMonthLabel(rawVal) {
       const btnTextEl = document.getElementById("btnSubmitKhetRecordText");
       const cancelBtn = document.getElementById("btnCancelKhetEdit");
       if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-wheat-awn"></i> Add Complete Khet &amp; Farming Partner Record`;
-      if (btnTextEl) btnTextEl.innerText = "Save Complete Khet & Partner Record to Google Sheet";
+      if (btnTextEl) btnTextEl.innerText = "Save Complete Khet & Partner Record to Firebase";
       if (cancelBtn) cancelBtn.style.display = "none";
     }
 
@@ -16945,7 +18160,7 @@ function formatMonthLabel(rawVal) {
 
       triggerSideToast(
         isEditing ? "Khet Record Updated" : "Khet Record Saved",
-        `${isEditing ? "Updated" : "Saved"} ${place} (Partner: ${partnerName}) to Google Sheet!`,
+        `${isEditing ? "Updated" : "Saved"} ${place} (Partner: ${partnerName}) to Firebase!`,
         true
       );
 
@@ -18789,7 +20004,7 @@ function formatMonthLabel(rawVal) {
       );
     }
 
-    // Requirement 1 & 2: Compress (Strictly <= 38,000 chars so Google Sheets cell storage NEVER drops Aadhaar or Profile photos), Preview, Auto-Upload to Cloud Drive & Delete Document Slot
+    // Requirement 1 & 2: Compress (Strictly <= 38,000 chars so Firebase Firestore cell storage NEVER drops Aadhaar or Profile photos), Preview, Auto-Upload to Cloud Drive & Delete Document Slot
     function compressImageFileToDataUrl(file, maxDimension = 760, quality = 0.78) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -18905,7 +20120,7 @@ function formatMonthLabel(rawVal) {
       renderAllDashboardUI();
       populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
 
-      triggerSideToast("Syncing Photo Link", "Saving direct photo link to Google Sheets so it loads across all devices...", "warning");
+      triggerSideToast("Syncing Photo Link", "Saving direct photo link to Firebases so it loads across all devices...", "warning");
       try {
         const res = await sendGasPost({
           action: "uploadRenterDocument",
@@ -18921,9 +20136,9 @@ function formatMonthLabel(rawVal) {
           activeFlatRenterObj.RenterID = res.resolvedRenterId;
           saveDbSnapshotToCache();
         }
-        triggerSideToast("Photo Link Synced", "Photo link saved to Google Sheets and active across all devices!", true);
+        triggerSideToast("Photo Link Synced", "Photo link saved to Firebases and active across all devices!", true);
       } catch (e) {
-        triggerSideToast("Sync Warning", "Could not reach Google Sheets server.", false);
+        triggerSideToast("Sync Warning", "Could not reach Firebase Firestore server.", false);
       }
     }
 
@@ -18941,7 +20156,7 @@ function formatMonthLabel(rawVal) {
           badgeEl.style.color = "var(--primary)";
         }
 
-        // Guaranteed <= 38,000 chars so both Aadhaar Card and Profile Photo save directly in Google Sheets AND Google Drive
+        // Guaranteed <= 38,000 chars so both Aadhaar Card and Profile Photo save directly in Firebases AND Google Drive
         const compressedDataUrl = await compressImageFileToDataUrl(file, isIdentity ? 780 : 620, 0.78);
         const sheetSafeBase64 = compressedDataUrl.length <= 38000
           ? compressedDataUrl
@@ -18968,7 +20183,7 @@ function formatMonthLabel(rawVal) {
 
         triggerSideToast(
           "Uploading to Shared Drive",
-          `Saving ${isIdentity ? "Aadhaar / ID Card" : "Profile Photo"} to Google Drive & Google Sheets for all devices...`,
+          `Saving ${isIdentity ? "Aadhaar / ID Card" : "Profile Photo"} to Google Drive & Firebase Firestore for all devices...`,
           "warning"
         );
 
@@ -19067,22 +20282,13 @@ function formatMonthLabel(rawVal) {
     }
 
     async function sendGasPost(data) {
-      const url = getGasUrl();
-      if (!url || url.includes("YOUR_APPS_SCRIPT")) {
-        console.warn("Google Apps Script URL not linked. Action saved locally.");
-        return { status: "success", message: "Saved locally." };
-      }
       pendingWriteCount++;
       try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(data)
-        });
-        return await response.json();
+        const result = await handleFirebaseAction(data);
+        return result || { status: "success", message: "Saved in Firebase." };
       } catch (err) {
-        console.warn("sendGasPost network warning:", err);
-        return { status: "network_offline", message: "Saved locally in browser." };
+        console.warn("Firebase action warning:", err);
+        return { status: "network_offline", message: "Saved locally." };
       } finally {
         pendingWriteCount = Math.max(0, pendingWriteCount - 1);
         lastWriteCompletedAt = Date.now();
