@@ -7249,7 +7249,10 @@
           }
         }
 
-        const resolvedDashBg = globalConfig.bgDashboardUrl || adminBgDash || adminBgLogin || "";
+        const isBgExplicitlyCleared = Boolean(globalConfig && globalConfig.bgCleared === true);
+        const resolvedDashBg = isBgExplicitlyCleared
+          ? DEFAULT_PORTAL_BACKGROUND_IMAGE
+          : (globalConfig.bgDashboardUrl || adminBgDash || adminBgLogin || "");
 
         return {
           status: "success",
@@ -7270,7 +7273,7 @@
           userAssignedAadhaar: (matchedU && matchedU.AssignedAadhaar) || "",
           accountStatus: (matchedU && (matchedU.Status || matchedU.AccountStatus)) || "Active",
           userStatus: (matchedU && (matchedU.Status || matchedU.AccountStatus)) || "Active",
-          bgLoginUrl: globalConfig.bgLoginUrl || "",
+          bgLoginUrl: isBgExplicitlyCleared ? DEFAULT_PORTAL_BACKGROUND_IMAGE : (globalConfig.bgLoginUrl || ""),
           bgDashboardUrl: resolvedDashBg,
           backgroundUrl: resolvedDashBg,
           customBackgrounds: globalConfig.customBackgrounds || [],
@@ -8223,13 +8226,15 @@
       });
     }
 
-    // Requirement 10: Home Page Background Photo Persistence (Never disappears on sync)
+    // Requirement 10 & Bug 2 Fix: Home Page Background Photo Persistence + Admin-Only Deletion & Global Default Placeholder Sync
     function getCustomBackgrounds() {
       const hdCache = localStorage.getItem("portal_custom_bg_hd_cache") || "";
       const storedUrl = normalizeGoogleDriveBgUrl(localStorage.getItem("portal_custom_bg_dashboard") || localStorage.getItem("portal_custom_bg_login") || "");
       const sheetSafe = localStorage.getItem("portal_custom_bg_sheet_safe") || "";
-      const activeBg = hdCache || storedUrl || sheetSafe || "";
-      return { loginBg: storedUrl || activeBg, dashBg: activeBg };
+      const rawActive = hdCache || storedUrl || sheetSafe || "";
+      const activeBg = (rawActive && rawActive.trim() !== DEFAULT_PORTAL_BACKGROUND_IMAGE) ? rawActive : "";
+      const cleanLogin = (storedUrl && storedUrl.trim() !== DEFAULT_PORTAL_BACKGROUND_IMAGE) ? storedUrl : activeBg;
+      return { loginBg: cleanLogin, dashBg: activeBg };
     }
 
     function initCustomBgInputs() {
@@ -8238,28 +8243,34 @@
       const hintLogin = document.getElementById("bgLoginStatusHint");
       const previewWrap = document.getElementById("bgActivePreviewContainer");
       const previewImg = document.getElementById("bgActivePreviewImg");
+      const isAdminUser = String(activeRole || "").trim().toLowerCase() === "admin";
 
-      const hasCustom = Boolean(dashBg && dashBg.trim());
+      const deleteBtn = document.getElementById("btnDeleteCustomBgPhoto");
+      const resetBtn = document.getElementById("btnResetDefaultBgPhoto");
+      const saveBtn = document.getElementById("btnSaveCustomBgPhoto");
+      if (deleteBtn) deleteBtn.style.display = isAdminUser ? "inline-flex" : "none";
+      if (resetBtn) resetBtn.style.display = isAdminUser ? "inline-flex" : "none";
+      if (saveBtn) saveBtn.style.display = isAdminUser ? "inline-flex" : "none";
+
+      const hasCustom = Boolean(dashBg && dashBg.trim() && dashBg.trim() !== DEFAULT_PORTAL_BACKGROUND_IMAGE);
       if (inputLogin) {
-        inputLogin.value = (loginBg && !loginBg.startsWith("data:image/"))
+        inputLogin.value = (loginBg && !loginBg.startsWith("data:image/") && loginBg !== DEFAULT_PORTAL_BACKGROUND_IMAGE)
           ? loginBg
           : (hasCustom ? "Full HD Photo Uploaded & Active (Home Page Only)" : "");
+        inputLogin.readOnly = !isAdminUser;
       }
 
       if (previewWrap && previewImg) {
-        if (hasCustom) {
-          previewImg.src = normalizeGoogleDriveBgUrl(dashBg.trim());
-          previewWrap.style.display = "block";
-        } else {
-          previewImg.src = "";
-          previewWrap.style.display = "none";
-        }
+        previewImg.src = hasCustom
+          ? normalizeGoogleDriveBgUrl(dashBg.trim())
+          : DEFAULT_PORTAL_BACKGROUND_IMAGE;
+        previewWrap.style.display = "block";
       }
 
       if (hintLogin) {
         hintLogin.innerText = hasCustom
-          ? "Full HD custom background photo is locked & active on the Home Page after login (will never auto-disappear)."
-          : "No custom photo set — automatically displaying default background photo on the Home Page.";
+          ? "Full HD custom background photo is locked & active on the Home Page after login (Admin-controlled)."
+          : "Default placeholder background photo is active across all locations.";
         hintLogin.style.color = hasCustom ? "var(--accent-green)" : "var(--text-muted)";
       }
     }
@@ -8270,7 +8281,7 @@
       const dashScreenEl = document.getElementById("dashboardScreen");
       const bgCanvasEl = document.querySelector(".bg-canvas");
 
-      const effectiveHomeBg = (dashBg && dashBg.trim())
+      const effectiveHomeBg = (dashBg && dashBg.trim() && dashBg.trim() !== DEFAULT_PORTAL_BACKGROUND_IMAGE)
         ? normalizeGoogleDriveBgUrl(dashBg.trim())
         : DEFAULT_PORTAL_BACKGROUND_IMAGE;
 
@@ -8301,12 +8312,19 @@
       }
     }
 
-    // Requirement 10 Fix: Never wipe local custom background when periodic sync returns an empty serverDashBg
     function syncServerBackgroundsToLocal(globalConfig, userBgLogin, userBgDash, hasServerConfig = true) {
       let rawDashBg = "";
+      let isExplicitlyCleared = false;
+
       if (globalConfig && typeof globalConfig === "object") {
         const cfgBg = String(globalConfig.bgDashboardUrl || globalConfig.bgDashboard || globalConfig.bgLoginUrl || globalConfig.bgLogin || globalConfig.backgroundUrl || "").trim();
         rawDashBg = cfgBg;
+        if (
+          globalConfig.bgCleared === true ||
+          cfgBg === DEFAULT_PORTAL_BACKGROUND_IMAGE
+        ) {
+          isExplicitlyCleared = true;
+        }
       } else if (!hasServerConfig) {
         rawDashBg = String(userBgDash || userBgLogin || "").trim();
       }
@@ -8315,9 +8333,19 @@
       const localHdCache = localStorage.getItem("portal_custom_bg_hd_cache") || "";
       const prevUrl = localStorage.getItem("portal_custom_bg_dashboard") || localStorage.getItem("portal_custom_bg_login") || "";
 
+      if (isExplicitlyCleared) {
+        const hadCustomLocal = Boolean(prevUrl || localHdCache || localStorage.getItem("portal_custom_bg_sheet_safe"));
+        localStorage.removeItem("portal_custom_bg_dashboard");
+        localStorage.removeItem("portal_custom_bg_login");
+        localStorage.removeItem("portal_custom_bg_hd_cache");
+        localStorage.removeItem("portal_custom_bg_sheet_safe");
+        applyCustomBackgrounds();
+        initCustomBgInputs();
+        return;
+      }
+
       let updated = false;
-      if (serverDashBg) {
-        // If user has a local HD cached photo and server returned a compressed data:image fallback, keep the local HD cache
+      if (serverDashBg && serverDashBg !== DEFAULT_PORTAL_BACKGROUND_IMAGE) {
         if (localHdCache && serverDashBg.startsWith("data:image/")) {
           localStorage.setItem("portal_custom_bg_sheet_safe", serverDashBg);
         } else if (prevUrl !== serverDashBg) {
@@ -8329,7 +8357,6 @@
           updated = true;
         }
       }
-      // IMPORTANT: Never auto-delete localStorage background when serverDashBg is empty during background polling
 
       if (updated) {
         applyCustomBackgrounds();
@@ -8339,14 +8366,15 @@
 
     async function saveCustomBackgrounds() {
       if (String(activeRole || "").trim().toLowerCase() !== "admin") {
-        return triggerSideToast("Admin Permission Required", "Only the Admin has authority to change the background photo.", false);
+        return triggerSideToast("Admin Permission Required", "Only an Admin has authority to change or delete the background photo.", false);
       }
       const inputLogin = document.getElementById("bgUrlLoginScreen");
       const rawInputVal = inputLogin ? inputLogin.value.trim() : "";
       const isHdPlaceholderText = rawInputVal.startsWith("Full HD Photo Uploaded");
-      const globalVal = isHdPlaceholderText
+      const rawGlobalVal = isHdPlaceholderText
         ? (localStorage.getItem("portal_custom_bg_hd_cache") || localStorage.getItem("portal_custom_bg_dashboard") || localStorage.getItem("portal_custom_bg_login") || "")
         : normalizeGoogleDriveBgUrl(rawInputVal);
+      const globalVal = (rawGlobalVal && rawGlobalVal !== DEFAULT_PORTAL_BACKGROUND_IMAGE) ? rawGlobalVal : "";
 
       if (!isHdPlaceholderText && inputLogin) {
         inputLogin.value = globalVal;
@@ -8371,34 +8399,34 @@
       applyCustomBackgrounds();
       initCustomBgInputs();
       triggerSideToast(
-        globalVal ? "Home Page HD Background Saved" : "Default Background Restored",
+        globalVal ? "Home Page HD Background Saved" : "Default Placeholder Photo Restored",
         globalVal
           ? "Full HD background photo locked & applied to the Home Page after login!"
-          : "Custom background cleared — default background photo is now active.",
+          : "Custom background deleted by Admin — default placeholder photo is now applied across all locations.",
         true
       );
 
       if (activeUser) {
         try {
           const sheetSafeCopy = localStorage.getItem("portal_custom_bg_sheet_safe") || "";
-          const serverSafePayload = (globalVal.startsWith("data:image/") && globalVal.length >= 47000)
-            ? sheetSafeCopy
-            : globalVal;
+          const serverSafePayload = globalVal
+            ? ((globalVal.startsWith("data:image/") && globalVal.length >= 47000) ? sheetSafeCopy : globalVal)
+            : DEFAULT_PORTAL_BACKGROUND_IMAGE;
           await sendFirebaseAction({
             action: "saveBackgrounds",
             username: activeUser,
-            bgLogin: "",
+            bgLogin: globalVal ? "" : DEFAULT_PORTAL_BACKGROUND_IMAGE,
             bgDashboard: serverSafePayload,
-            sheetSafeBase64: sheetSafeCopy,
+            sheetSafeBase64: globalVal ? sheetSafeCopy : "",
             explicitClear: !globalVal
           });
         } catch (e) {}
       }
     }
 
-    function deleteCustomBgImage() {
+    async function deleteCustomBgImage() {
       if (String(activeRole || "").trim().toLowerCase() !== "admin") {
-        return triggerSideToast("Admin Permission Required", "Only the Admin has authority to change or remove the background photo.", false);
+        return triggerSideToast("Admin Permission Required", "Only an Admin can delete the background photo.", false);
       }
       localStorage.removeItem("portal_custom_bg_login");
       localStorage.removeItem("portal_custom_bg_dashboard");
@@ -8408,7 +8436,7 @@
       if (input) input.value = "";
       applyCustomBackgrounds();
       initCustomBgInputs();
-      saveCustomBackgrounds();
+      await saveCustomBackgrounds();
     }
 
     async function handleDirectBgUpload(inputEl) {
@@ -9365,6 +9393,16 @@ function formatMonthLabel(rawVal) {
 
     function resolveFlatUpiAndContact(propertyName, flatObj, renterObj) {
       const propObj = findPropertyObject(propertyName || flatObj?.PropertyName || renterObj?.PropertyName);
+      let globalCfgPhone = "";
+      let globalCfgName = "";
+      try {
+        const rawCfg = localStorage.getItem("portal_admin_contact_cfg");
+        if (rawCfg) {
+          const parsedCfg = JSON.parse(rawCfg);
+          globalCfgPhone = sanitizeContactPhoneDisplay(parsedCfg?.phone || parsedCfg?.whatsapp || "");
+          globalCfgName = String(parsedCfg?.name || "").trim();
+        }
+      } catch (e) {}
       const domProfContract = sanitizeContactPhoneDisplay(document.getElementById("profContractMobile")?.value);
       const flatContract = sanitizeContactPhoneDisplay(flatObj?.ContractMobile || flatObj?.ContractNumber);
       const propContract = sanitizeContactPhoneDisplay(propObj?.ContractNumber || propObj?.ContractMobile);
@@ -9378,9 +9416,9 @@ function formatMonthLabel(rawVal) {
       const adminMobileFallback = sanitizeContactPhoneDisplay(activeUserMobile) || sanitizeContactPhoneDisplay(adminUserObj?.MobileNumber);
 
       return {
-        upiName: flatObj?.UPIName || renterObj?.UPIName || propObj?.UPIName || "",
+        upiName: flatObj?.UPIName || renterObj?.UPIName || propObj?.UPIName || globalCfgName || "",
         upiId: flatObj?.UPIID || renterObj?.UPIID || propObj?.UPIID || "",
-        contractMobile: flatContract || propContract || renterContract || fallbackFlatContract || domProfContract || adminMobileFallback || ""
+        contractMobile: globalCfgPhone || flatContract || propContract || renterContract || fallbackFlatContract || domProfContract || adminMobileFallback || ""
       };
     }
 
@@ -10119,8 +10157,11 @@ function formatMonthLabel(rawVal) {
           WaterRate: primaryRenter.WaterFixedRate || 0
         };
 
-        // Render a dedicated Aadhaar-scoped Renter Portal Card on the dashboard
+        // Render a dedicated Aadhaar-scoped Renter Portal Card on the dashboard with synced Help Center Contact Info
         const myBills = (DB.bills || []).filter(b => isBillLinkedToLoggedInRenterAadhaar(b));
+        const helpCfg = typeof getAdminContactSettings === "function" ? getAdminContactSettings() : { name: "Property Admin", phone: "", whatsapp: "" };
+        const syncedSupportPhone = helpCfg.phone || helpCfg.whatsapp || primaryRenter.ContractMobile || "--";
+        const syncedSupportName = helpCfg.name || "Property Admin";
         if (flatsContainer) {
           flatsContainer.innerHTML = `
             <div class="flat-card" style="grid-column: 1 / -1; max-width: 760px; margin: 0 auto; width: 100%; cursor: pointer; border: 2px solid rgba(192, 132, 252, 0.55) !important;" onclick="openFlatDetailsModal(findFlatObject('${String(targetProp).replace(/'/g, "\\'")}', '${String(targetFlat).replace(/'/g, "\\'")}') || {PropertyName:'${String(targetProp).replace(/'/g, "\\'")}', FlatName:'${String(targetFlat).replace(/'/g, "\\'")}'})">
@@ -10141,10 +10182,14 @@ function formatMonthLabel(rawVal) {
                 <div><span style="color:var(--text-muted);">Aadhaar Card:</span> <strong style="color:#38bdf8;">${renterAadhaar}</strong></div>
                 <div><span style="color:var(--text-muted);">Mobile No.:</span> <strong style="color:#34d399;">${primaryRenter.MobileNumber || '--'}</strong></div>
                 <div><span style="color:var(--text-muted);">My Historical Receipts:</span> <strong style="color:#fbbf24;">${myBills.length} Receipt${myBills.length === 1 ? '' : 's'}</strong></div>
+                <div><span style="color:var(--text-muted);">Help Center (${syncedSupportName}):</span> <strong style="color:#22c55e;">${syncedSupportPhone}</strong></div>
               </div>
               <div style="display:flex; gap:10px; flex-wrap:wrap;">
                 <button type="button" class="btn-primary" style="flex:1; background:linear-gradient(135deg, #6366f1, #8b5cf6);">
                   <i class="fa-solid fa-receipt"></i> View My Receipts &amp; My Profile
+                </button>
+                <button type="button" class="btn-primary" style="flex:1; background:linear-gradient(135deg, #0ea5e9, #0284c7);" onclick="event.stopPropagation(); openContactUsModal();">
+                  <i class="fa-solid fa-headset"></i> Renter Help Center (${syncedSupportPhone})
                 </button>
               </div>
             </div>
@@ -10627,6 +10672,27 @@ function formatMonthLabel(rawVal) {
           saveDbSnapshotToCache();
 
           syncServerBackgroundsToLocal(res.globalConfig || res, res.bgLoginUrl || res.userBgLogin || "", res.bgDashboardUrl || res.userBgDashboard || "", Boolean(res.globalConfig));
+          if (res.globalConfig && typeof res.globalConfig === "object") {
+            if (res.globalConfig.contactConfig && typeof res.globalConfig.contactConfig === "object") {
+              try {
+                const prevContactRaw = localStorage.getItem("portal_admin_contact_cfg") || "";
+                const nextContactRaw = JSON.stringify(res.globalConfig.contactConfig);
+                if (prevContactRaw !== nextContactRaw) {
+                  localStorage.setItem("portal_admin_contact_cfg", nextContactRaw);
+                  if (typeof initAdminContactSettingsInputs === "function") initAdminContactSettingsInputs();
+                  const contactModalEl = document.getElementById("contactUsModal");
+                  if (contactModalEl && contactModalEl.classList.contains("active") && typeof renderContactUsDynamicBody === "function") {
+                    renderContactUsDynamicBody();
+                  }
+                }
+              } catch (e) {}
+            }
+            if (res.globalConfig.privateChats && typeof res.globalConfig.privateChats === "object") {
+              if (typeof syncServerPrivateChatsToLocal === "function") {
+                syncServerPrivateChatsToLocal(res.globalConfig.privateChats);
+              }
+            }
+          }
           if (res.userAssignedProperty !== undefined) {
             activeAssignedProperty = res.userAssignedProperty || "";
             sessionStorage.setItem("active_session_assigned_prop", activeAssignedProperty);
@@ -10893,17 +10959,12 @@ function formatMonthLabel(rawVal) {
     }
 
     function selectProperty(name) {
-      if (selectedProperty === name) {
-        selectedProperty = null;
-        sessionStorage.removeItem("active_selected_property");
-      } else {
-        selectedProperty = name;
-        sessionStorage.setItem("active_selected_property", name);
-      }
+      selectedProperty = name;
+      sessionStorage.setItem("active_selected_property", name);
       renderAllDashboardUI();
     }
 
-    // 4. Render Flat Cards Strictly Filtered by Selected Property Only (and Single Assigned Flat for Viewer/Renter Accounts)
+    // 4. Render Flat Cards Strictly Filtered by Selected Property Only (Requirement 7: Directly show only the flats beneath the property without any summary banner row)
     function renderFlatsGrid(propertyName) {
       const container = document.getElementById("flatsList");
       container.innerHTML = "";
@@ -10930,36 +10991,6 @@ function formatMonthLabel(rawVal) {
         `;
         return;
       }
-
-      // Requirement 9: Display a clean summary header above the flats showing the selected property and how many flats are inside it
-      let occupiedCount = 0;
-      flats.forEach(fl => {
-        const occ = (DB.renters || []).some(r =>
-          isSamePropAndFlat(r.PropertyName, r.FlatName, fl.PropertyName, fl.FlatName) &&
-          String(r.Status || "").trim().toLowerCase() === "active"
-        );
-        if (occ) occupiedCount++;
-      });
-      const vacantCount = Math.max(0, flats.length - occupiedCount);
-      const summaryBanner = document.createElement("div");
-      summaryBanner.style.cssText = "grid-column: 1 / -1; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; padding:10px 16px; border-radius:14px; background:linear-gradient(135deg, rgba(16, 185, 129, 0.16), rgba(99, 102, 241, 0.14)); border:1.5px solid rgba(16, 185, 129, 0.45); margin-bottom:2px;";
-      summaryBanner.innerHTML = `
-        <div style="display:flex; align-items:center; gap:10px;">
-          <div style="width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg, #10b981, #059669); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.95rem;">
-            <i class="fa-solid fa-building-circle-check"></i>
-          </div>
-          <div>
-            <div style="font-size:0.92rem; font-weight:900; color:var(--text-main);">${effectivePropName}</div>
-            <div style="font-size:0.74rem; color:var(--text-muted); font-weight:700;">Showing all flats inside this property</div>
-          </div>
-        </div>
-        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-          <span class="badge-paid" style="font-size:0.75rem; padding:4px 11px;"><i class="fa-solid fa-door-open"></i> Total Flats: ${flats.length}</span>
-          <span style="font-size:0.73rem; font-weight:800; padding:4px 10px; border-radius:999px; background:rgba(56,189,248,0.16); color:#38bdf8; border:1px solid rgba(56,189,248,0.4);">Occupied: ${occupiedCount}</span>
-          <span style="font-size:0.73rem; font-weight:800; padding:4px 10px; border-radius:999px; background:rgba(245,158,11,0.16); color:#fbbf24; border:1px solid rgba(245,158,11,0.4);">Vacant: ${vacantCount}</span>
-        </div>
-      `;
-      container.appendChild(summaryBanner);
 
       flats.forEach(flat => {
         const renter = DB.renters.find(r => 
@@ -11243,8 +11274,16 @@ function formatMonthLabel(rawVal) {
       });
     }
 
-    // 5. Profile Modal
+    // 5. Profile Modal (Bug 1 Fix: Full Profile state sync, live password display, theme card sync, and safe Username/Name/Mobile/Password updates)
     async function openProfileModal() {
+      const matchedLocalUser = (DB.users || []).find(
+        u => String(u.Username || "").trim().toLowerCase() === String(activeUser || "").trim().toLowerCase()
+      );
+      if (matchedLocalUser) {
+        if (!activeUserFullName && matchedLocalUser.FullName) activeUserFullName = matchedLocalUser.FullName;
+        if (!activeUserMobile && matchedLocalUser.MobileNumber) activeUserMobile = sanitizeContactPhoneDisplay(matchedLocalUser.MobileNumber);
+      }
+
       const heroDispName = activeUserFullName || activeUser || "User Profile";
       const heroDispUser = activeUser ? `@${activeUser}` : "@username";
       const heroDispRole = (activeRole || "Admin").toUpperCase();
@@ -11265,17 +11304,29 @@ function formatMonthLabel(rawVal) {
         document.getElementById("profAvatarInitials").innerText = (heroDispName[0] || "U").toUpperCase();
       }
 
+      const isLightTheme = document.body.classList.contains("theme-white");
+      const profThemeBadge = document.getElementById("otherProfileTheme");
+      if (profThemeBadge) {
+        profThemeBadge.innerText = isLightTheme ? "White Mode" : "Dark Mode";
+      }
+      const themeCardBlack = document.getElementById("themeCardBlack");
+      const themeCardWhite = document.getElementById("themeCardWhite");
+      if (themeCardBlack) themeCardBlack.classList.toggle("active", !isLightTheme);
+      if (themeCardWhite) themeCardWhite.classList.toggle("active", isLightTheme);
+
       activeUserMobile = sanitizeContactPhoneDisplay(activeUserMobile);
       document.getElementById("profViewFullName").value = activeUserFullName || activeUser || "";
       document.getElementById("profViewMobile").value = activeUserMobile || "";
       document.getElementById("profViewUsername").value = activeUser || "";
       document.getElementById("changeNameOnlyInput").value = activeUserFullName || activeUser || "";
-      document.getElementById("changeMobileOnlyInput").value = activeUserMobile || "";
+      document.getElementById("changeMobileOnlyInput").value = activeUserMobile || "+91 ";
 
       const passInput = document.getElementById("profViewPassword");
+      const eyeIcon = document.getElementById("profPassEyeIcon");
       passInput.type = "password";
-      passInput.value = "";
-      passInput.placeholder = "Fetching live from Firebase...";
+      if (eyeIcon) eyeIcon.className = "fa-solid fa-eye";
+      passInput.value = (matchedLocalUser && matchedLocalUser.Password) ? String(matchedLocalUser.Password) : "";
+      passInput.placeholder = passInput.value ? "" : "Fetching live from Firebase...";
 
       document.getElementById("passChangeBottomMsg").className = "bottom-status-msg";
       document.getElementById("userChangeBottomMsg").className = "bottom-status-msg";
@@ -11283,7 +11334,7 @@ function formatMonthLabel(rawVal) {
       document.getElementById("oldPassInput").value = "";
       document.getElementById("newPassInput").value = "";
       document.getElementById("confirmNewPassInput").value = "";
-      document.getElementById("currentUsernameVerifyInput").value = "";
+      document.getElementById("currentUsernameVerifyInput").value = activeUser || "";
       document.getElementById("newUsernameInput").value = "";
       document.getElementById("confirmNewUsernameInput").value = "";
 
@@ -11294,9 +11345,9 @@ function formatMonthLabel(rawVal) {
 
       try {
         const res = await firebaseGetUserProfile(activeUser);
-        if (res.status === "success") {
-          activeUserFullName = res.fullName || activeUser;
-          activeUserMobile = sanitizeContactPhoneDisplay(res.mobile || "");
+        if (res && res.status === "success") {
+          activeUserFullName = res.fullName || activeUserFullName || activeUser;
+          activeUserMobile = sanitizeContactPhoneDisplay(res.mobile || activeUserMobile || "");
           if (res.role) activeRole = res.role;
 
           sessionStorage.setItem("active_session_fullname", activeUserFullName);
@@ -11320,23 +11371,26 @@ function formatMonthLabel(rawVal) {
           document.getElementById("profViewMobile").value = activeUserMobile;
           document.getElementById("profViewUsername").value = res.username || activeUser;
           document.getElementById("changeNameOnlyInput").value = activeUserFullName;
-          document.getElementById("changeMobileOnlyInput").value = activeUserMobile;
-          passInput.value = res.password || "";
+          document.getElementById("changeMobileOnlyInput").value = activeUserMobile || "+91 ";
+          passInput.value = res.password || (matchedLocalUser && matchedLocalUser.Password) || "";
+          passInput.placeholder = passInput.value ? "" : "Password not set";
         }
       } catch (e) {
+        if (!passInput.value && matchedLocalUser && matchedLocalUser.Password) {
+          passInput.value = String(matchedLocalUser.Password);
+        }
         passInput.placeholder = "Unable to load password offline";
       }
     }
     function toggleProfileDrawer(drawerId, btnId) {
       const drawer = document.getElementById(drawerId);
       const btn = document.getElementById(btnId);
+      if (!drawer || !btn) return;
       const isAlreadyActive = drawer.classList.contains("active");
 
-      // Close all drawers
       document.querySelectorAll(".profile-sub-drawer").forEach(d => d.classList.remove("active"));
       document.querySelectorAll(".btn-switch-option").forEach(b => b.classList.remove("active"));
 
-      // If it was not active, open it (toggle behavior)
       if (!isAlreadyActive) {
         drawer.classList.add("active");
         btn.classList.add("active");
@@ -11362,7 +11416,7 @@ function formatMonthLabel(rawVal) {
         return;
       }
 
-      if (currUser.toLowerCase() !== String(activeUser).toLowerCase()) {
+      if (currUser.toLowerCase() !== String(activeUser || "").trim().toLowerCase()) {
         msgBox.innerText = "Current Username entered does not match your active username.";
         msgBox.className = "bottom-status-msg error";
         triggerSideToast("Mismatch", "Current Username entered is incorrect.", false);
@@ -11377,8 +11431,8 @@ function formatMonthLabel(rawVal) {
       }
 
       if (DB.users && DB.users.some(u =>
-        String(u.Username).toLowerCase() === newUser.toLowerCase() &&
-        String(u.Username).toLowerCase() !== String(activeUser).toLowerCase()
+        String(u.Username || "").trim().toLowerCase() === newUser.toLowerCase() &&
+        String(u.Username || "").trim().toLowerCase() !== String(activeUser || "").trim().toLowerCase()
       )) {
         msgBox.innerText = "This username is already taken. Please select or write another username.";
         msgBox.className = "bottom-status-msg error";
@@ -11393,34 +11447,43 @@ function formatMonthLabel(rawVal) {
         newUsername: newUser
       });
 
-      if (res.status === "duplicate") {
+      if (res && res.status === "duplicate") {
         msgBox.innerText = "This username is already taken. Please select or write another username.";
         msgBox.className = "bottom-status-msg error";
         triggerSideToast("Username Taken", res.message, false);
-      } else if (res.status === "success") {
+      } else if (res && res.status === "success") {
         const oldUserKey = String(activeUser || "").trim().toLowerCase();
-        const authMap = getVerifiedAuthMap();
-        const oldEntry = authMap[oldUserKey];
-        if (oldEntry) {
-          removeVerifiedUserAuth(activeUser);
-          saveVerifiedUserAuth(res.newUsername, oldEntry.password, oldEntry);
-        }
-        activeUser = res.newUsername;
+        const resolvedNewUser = String(res.newUsername || newUser).trim();
+        (DB.users || []).forEach(u => {
+          if (String(u.Username || "").trim().toLowerCase() === oldUserKey) {
+            u.Username = resolvedNewUser;
+          }
+        });
+        activeUser = resolvedNewUser;
         sessionStorage.setItem("active_session_user", activeUser);
+        try {
+          if (activeSessionToken) {
+            localStorage.setItem("portal_device_session_" + String(activeUser).trim().toLowerCase(), activeSessionToken);
+          }
+        } catch (e) {}
 
         document.getElementById("profViewUsername").value = activeUser;
-        document.getElementById("currentUsernameVerifyInput").value = "";
+        if (document.getElementById("profDisplayHeroUser")) {
+          document.getElementById("profDisplayHeroUser").innerText = `@${activeUser}`;
+        }
+        document.getElementById("currentUsernameVerifyInput").value = activeUser;
         document.getElementById("newUsernameInput").value = "";
         document.getElementById("confirmNewUsernameInput").value = "";
 
+        saveDbSnapshotToCache();
         msgBox.innerText = "Username updated successfully!";
         msgBox.className = "bottom-status-msg success";
-        triggerSideToast("Username Updated", "Your username has been updated in Firebase!", true);
-        syncDataLive();
+        triggerSideToast("Username Updated", `Your username is now @${activeUser}!`, true);
+        syncDataLive(true);
       } else {
-        msgBox.innerText = res.message || "Could not update username.";
+        msgBox.innerText = (res && res.message) || "Could not update username.";
         msgBox.className = "bottom-status-msg error";
-        triggerSideToast("Update Error", res.message || "Could not update username.", false);
+        triggerSideToast("Update Error", (res && res.message) || "Could not update username.", false);
       }
     }
 
@@ -11460,6 +11523,14 @@ function formatMonthLabel(rawVal) {
       document.getElementById("profViewFullName").value = activeUserFullName;
       document.getElementById("profViewMobile").value = activeUserMobile;
 
+      (DB.users || []).forEach(u => {
+        if (String(u.Username || "").trim().toLowerCase() === String(activeUser || "").trim().toLowerCase()) {
+          u.FullName = newFullName;
+          u.MobileNumber = newMobile;
+        }
+      });
+      saveDbSnapshotToCache();
+
       const res = await sendFirebaseAction({
         action: "changeNameAndMobile",
         loggedUsername: activeUser,
@@ -11467,25 +11538,15 @@ function formatMonthLabel(rawVal) {
         newMobile: newMobile
       });
 
-      if (res.status === "success") {
-        const authMap = getVerifiedAuthMap();
-        const currEntry = authMap[String(activeUser || "").trim().toLowerCase()];
-        if (currEntry) {
-          saveVerifiedUserAuth(activeUser, currEntry.password, {
-            fullName: newFullName,
-            mobile: newMobile,
-            role: activeRole,
-            theme: activeThemePref
-          });
-        }
+      if (res && res.status === "success") {
         msgBox.innerText = "Name and Mobile No. updated successfully!";
         msgBox.className = "bottom-status-msg success";
         triggerSideToast("Profile Updated", "Name and Mobile No. saved to Firebase!", true);
-        syncDataLive();
+        syncDataLive(true);
       } else {
-        msgBox.innerText = res.message || "Could not update Name & Mobile No.";
+        msgBox.innerText = (res && res.message) || "Could not update Name & Mobile No.";
         msgBox.className = "bottom-status-msg error";
-        triggerSideToast("Error", res.message || "Update failed.", false);
+        triggerSideToast("Error", (res && res.message) || "Update failed.", false);
       }
     }
 
@@ -11517,19 +11578,22 @@ function formatMonthLabel(rawVal) {
         newPassword: newP
       });
 
-      if (res.status === "success") {
-        saveVerifiedUserAuth(activeUser, newP, {
-          fullName: activeUserFullName,
-          role: activeRole,
-          theme: activeThemePref,
-          mobile: activeUserMobile
+      if (res && res.status === "success") {
+        (DB.users || []).forEach(u => {
+          if (String(u.Username || "").trim().toLowerCase() === String(activeUser || "").trim().toLowerCase()) {
+            u.Password = newP;
+          }
         });
+        const passInput = document.getElementById("profViewPassword");
+        if (passInput) passInput.value = newP;
+        msgBox.innerText = "Password updated successfully! Logging out for security...";
+        msgBox.className = "bottom-status-msg success";
         triggerSideToast("Password Updated", "Logging out for security...", true);
         setTimeout(() => handleLogout(true), 900);
       } else {
-        msgBox.innerText = res.message || "Current Password is incorrect.";
+        msgBox.innerText = (res && res.message) || "Current Password is incorrect.";
         msgBox.className = "bottom-status-msg error";
-        triggerSideToast("Incorrect Password", res.message || "Current Password is incorrect.", false);
+        triggerSideToast("Incorrect Password", (res && res.message) || "Current Password is incorrect.", false);
       }
     }
 
@@ -15615,9 +15679,36 @@ function formatMonthLabel(rawVal) {
         propObj.UPIName = newUpiName;
       }
 
-      await saveUtilitiesLeft(true);
+      propagatePropertyWideUpiAndContactLocal(
+        selectedFlat.PropertyName,
+        newUpiName,
+        newUpiId,
+        selectedFlat.ContractMobile || ""
+      );
+      saveDbSnapshotToCache();
       refreshRentCollectionQrModal();
       triggerSideToast("UPI Details Saved", `Saved ${newUpiId} (${newUpiName}) to ${selectedFlat.PropertyName} - Flat ${selectedFlat.FlatName}.`, true);
+      await sendFirebaseAction({
+        action: "updateFlatUtilities",
+        propertyName: selectedFlat.PropertyName,
+        oldFlatName: selectedFlat.FlatName,
+        newFlatName: selectedFlat.FlatName,
+        flatName: selectedFlat.FlatName,
+        rentAmount: selectedFlat.RentAmount || 0,
+        pngNumber: selectedFlat.PNGNumber || "",
+        pngMeterNumber: selectedFlat.PNGMeterNumber || "",
+        fixedPngCost: 0,
+        pngFixedRate: selectedFlat.PNGRate ?? "",
+        waterNumber: selectedFlat.WaterNumber || "",
+        waterMeterNumber: selectedFlat.WaterMeterNumber || "",
+        fixedWaterCost: 0,
+        waterFixedRate: selectedFlat.WaterRate ?? "",
+        elecMeterNumber: selectedFlat.ElecMeterNumber || "",
+        elecFixedRate: selectedFlat.ElecRate ?? "",
+        upiName: newUpiName,
+        upiId: newUpiId,
+        contractMobile: selectedFlat.ContractMobile || ""
+      });
     }
 
     async function fetchQrCodeAsDataUrl(upiUri) {
@@ -18754,8 +18845,9 @@ function formatMonthLabel(rawVal) {
       });
     }
 
-    // 9. Profile Form Logic & Strict Flat-Isolated Rent, Rates & Flat Name Updates (Requirement 7: Never resets PNG/Water to 45 or 15)
+    // 9. Profile Form Logic & Strict Flat-Isolated Rent, Rates & Flat Name Updates (Bug 6 Fix: Never auto-save; only save when clicking Save button)
     async function saveUtilitiesLeft(isAutoSave = false) {
+      if (isAutoSave) return;
       if (activeRole === "Viewer" || !selectedFlat) return;
       rebindSelectedFlatAndRenterReferences();
 
@@ -19082,10 +19174,20 @@ function formatMonthLabel(rawVal) {
         ? currentIdentitySrc
         : (activeFlatRenterObj?.IdentityImageURL || "");
 
-      const exactRentVal = parseInputRateOrEmpty("profRent");
-      const exactPngRate = parseInputRateOrEmpty("profPngRate");
-      const exactWaterRate = parseInputRateOrEmpty("profWaterRate");
-      const exactElecRate = parseInputRateOrEmpty("profElecRate");
+      // Bug 6 Fix: Do NOT auto-save unsubmitted edits from "3. Rent & Utility Details" when saving Renter Profile on the right.
+      // Only use the already-saved values on selectedFlat (which are updated exclusively when clicking 'Save Utility & Rates').
+      const savedRentVal = selectedFlat.RentAmount !== undefined && selectedFlat.RentAmount !== "" ? selectedFlat.RentAmount : (activeFlatRenterObj?.RentAmount || 0);
+      const savedPngRate = selectedFlat.PNGRate !== undefined ? selectedFlat.PNGRate : (activeFlatRenterObj?.PNGFixedRate ?? "");
+      const savedWaterRate = selectedFlat.WaterRate !== undefined ? selectedFlat.WaterRate : (activeFlatRenterObj?.WaterFixedRate ?? "");
+      const savedElecRate = selectedFlat.ElecRate !== undefined ? selectedFlat.ElecRate : (activeFlatRenterObj?.ElecFixedRate ?? "");
+      const savedPngNum = selectedFlat.PNGNumber || activeFlatRenterObj?.PNGNumber || "";
+      const savedPngMeter = selectedFlat.PNGMeterNumber || activeFlatRenterObj?.PNGMeterNumber || "";
+      const savedWaterNum = selectedFlat.WaterNumber || activeFlatRenterObj?.WaterNumber || "";
+      const savedWaterMeter = selectedFlat.WaterMeterNumber || activeFlatRenterObj?.WaterMeterNumber || "";
+      const savedElecMeter = selectedFlat.ElecMeterNumber || activeFlatRenterObj?.ElecMeterNumber || "";
+      const savedUpiName = selectedFlat.UPIName || activeFlatRenterObj?.UPIName || "";
+      const savedUpiId = selectedFlat.UPIID || activeFlatRenterObj?.UPIID || "";
+      const savedContractMob = selectedFlat.ContractMobile || activeFlatRenterObj?.ContractMobile || "";
 
       const joinDateVal = toInputDateValue(document.getElementById("renterJoinDate").value) || toInputDateValue(activeFlatRenterObj?.JoinDate) || new Date().toISOString().split('T')[0];
       const rawEndInput = toInputDateValue(document.getElementById("renterEndDate").value);
@@ -19108,23 +19210,22 @@ function formatMonthLabel(rawVal) {
         profileImageUrl: resolvedProfileUrl,
         identityImageUrl: resolvedIdentityUrl,
         identitySheetSafeBase64: resolvedIdentityUrl.startsWith("data:image") ? resolvedIdentityUrl : "",
-        rentAmount: exactRentVal !== "" ? exactRentVal : 0,
-        pngNumber: document.getElementById("profPngNumber").value.trim(),
-        pngMeterNumber: document.getElementById("profPngMeter").value.trim(),
+        rentAmount: savedRentVal,
+        pngNumber: savedPngNum,
+        pngMeterNumber: savedPngMeter,
         fixedPngCost: 0,
-        pngFixedRate: exactPngRate,
-        waterNumber: document.getElementById("profWaterNumber").value.trim(),
-        waterMeterNumber: document.getElementById("profWaterMeter").value.trim(),
+        pngFixedRate: savedPngRate,
+        waterNumber: savedWaterNum,
+        waterMeterNumber: savedWaterMeter,
         fixedWaterCost: 0,
-        waterFixedRate: exactWaterRate,
-        elecMeterNumber: document.getElementById("profElecMeter").value.trim(),
-        elecFixedRate: exactElecRate,
-        upiName: document.getElementById("profUpiName").value.trim(),
-        upiId: document.getElementById("profUpiId").value.trim(),
-        contractMobile: cleanContractMobile
+        waterFixedRate: savedWaterRate,
+        elecMeterNumber: savedElecMeter,
+        elecFixedRate: savedElecRate,
+        upiName: savedUpiName,
+        upiId: savedUpiId,
+        contractMobile: savedContractMob
       };
 
-      // Requirement 6: Save utility numbers and dates to local metadata cache + flat record so they always display
       saveLocalFlatUtilityAndDateMeta(
         selectedFlat.PropertyName,
         selectedFlat.FlatName,
@@ -19139,25 +19240,6 @@ function formatMonthLabel(rawVal) {
           EndDate: payload.endDate
         }
       );
-
-      // Apply Rent, Utility Numbers & Fixed Utility Rates to the Flat record in DB.flats
-      DB.flats.forEach(f => {
-        if (isSamePropAndFlat(f.PropertyName, f.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName)) {
-          f.RentAmount = payload.rentAmount;
-          f.ElecRate = payload.elecFixedRate;
-          f.PNGRate = payload.pngFixedRate;
-          f.WaterRate = payload.waterFixedRate;
-          f.PNGNumber = payload.pngNumber;
-          f.PNGMeterNumber = payload.pngMeterNumber;
-          f.WaterNumber = payload.waterNumber;
-          f.WaterMeterNumber = payload.waterMeterNumber;
-          f.ElecMeterNumber = payload.elecMeterNumber;
-          f.UPIName = payload.upiName;
-          f.UPIID = payload.upiId;
-          f.ContractMobile = payload.contractMobile;
-          selectedFlat = f;
-        }
-      });
 
       // Match by RenterID first (so departed or reactivated renters update in-place), otherwise active renter in this flat
       let existingRenterRecord = DB.renters.find(r =>
@@ -20566,19 +20648,30 @@ function formatMonthLabel(rawVal) {
       });
     }
 
-    // Requirement 12: Admin-Configured Contact Details & WhatsApp Direct Chat
+    // Requirement 12 & Bug 3 Fix: Admin-Configured Contact Details & Live Sync Across All Renter Help Centers
     function getAdminContactSettings() {
+      const anyFlat = (DB.flats || []).find(f => f.ContractMobile || f.ContractNumber);
+      const anyProp = (DB.properties || [])[0];
+      const adminUserObj = (DB.users || []).find(u => String(u.Role || "").toLowerCase() === "admin");
+      const fallbackPhone = sanitizeContactPhoneDisplay(anyFlat?.ContractMobile || anyFlat?.ContractNumber || anyProp?.ContractNumber || adminUserObj?.MobileNumber || "+91 9876543210") || "+91 9876543210";
+      const fallbackName = adminUserObj?.FullName || activeUserFullName || "Property Admin";
       try {
         const raw = localStorage.getItem("portal_admin_contact_cfg");
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (parsed && typeof parsed === "object") return parsed;
+          if (parsed && typeof parsed === "object") {
+            return {
+              name: parsed.name || fallbackName,
+              phone: sanitizeContactPhoneDisplay(parsed.phone) || parsed.phone || fallbackPhone,
+              whatsapp: sanitizeContactPhoneDisplay(parsed.whatsapp || parsed.phone) || parsed.whatsapp || parsed.phone || fallbackPhone,
+              email: parsed.email !== undefined ? parsed.email : "support@apnaflat.com",
+              address: parsed.address !== undefined ? parsed.address : "Property Management Office"
+            };
+          }
         }
       } catch (e) {}
-      const anyFlat = (DB.flats || []).find(f => f.ContractMobile || f.ContractNumber);
-      const anyProp = (DB.properties || [])[0];
-      const fallbackPhone = anyFlat?.ContractMobile || anyFlat?.ContractNumber || anyProp?.ContractNumber || "+91 9876543210";
       return {
+        name: fallbackName,
         phone: fallbackPhone,
         whatsapp: fallbackPhone,
         email: "support@apnaflat.com",
@@ -20586,39 +20679,96 @@ function formatMonthLabel(rawVal) {
       };
     }
 
-    function saveAdminContactSettings() {
-      const phone = document.getElementById("cfgContactPhone")?.value.trim() || "";
-      const whatsapp = document.getElementById("cfgContactWhatsapp")?.value.trim() || "";
+    async function saveAdminContactSettings() {
+      const name = document.getElementById("cfgContactName")?.value.trim() || activeUserFullName || "Property Admin";
+      const rawPhone = document.getElementById("cfgContactPhone")?.value.trim() || "";
+      const rawWhatsapp = document.getElementById("cfgContactWhatsapp")?.value.trim() || rawPhone;
       const email = document.getElementById("cfgContactEmail")?.value.trim() || "";
       const address = document.getElementById("cfgContactAddress")?.value.trim() || "";
-      const cfg = { phone, whatsapp, email, address };
+
+      const phone = sanitizeContactPhoneDisplay(rawPhone) || rawPhone;
+      const whatsapp = sanitizeContactPhoneDisplay(rawWhatsapp) || rawWhatsapp || phone;
+
+      if (document.getElementById("cfgContactPhone") && phone) {
+        document.getElementById("cfgContactPhone").value = phone;
+      }
+      if (document.getElementById("cfgContactWhatsapp") && whatsapp) {
+        document.getElementById("cfgContactWhatsapp").value = whatsapp;
+      }
+
+      const cfg = { name, phone, whatsapp, email, address, updatedAt: Date.now() };
       localStorage.setItem("portal_admin_contact_cfg", JSON.stringify(cfg));
-      triggerSideToast("Contact Info Saved", "Contact details and WhatsApp support updated successfully.", true);
+
+      // Propagate the newly edited contact number & name across all Properties, Flats, Active Renters, and Help Centers
+      if (phone) {
+        (DB.properties || []).forEach(p => {
+          p.ContractNumber = phone;
+          p.ContractMobile = phone;
+        });
+        (DB.flats || []).forEach(f => {
+          f.ContractMobile = phone;
+          f.ContractNumber = phone;
+        });
+        (DB.renters || []).forEach(r => {
+          r.ContractMobile = phone;
+        });
+        (DB.bills || []).forEach(b => {
+          b.ContractMobile = phone;
+        });
+        const profContractEl = document.getElementById("profContractMobile");
+        if (profContractEl) profContractEl.value = phone;
+      }
+
+      saveDbSnapshotToCache();
+      renderContactUsDynamicBody();
+      renderAllDashboardUI();
+
+      triggerSideToast("Contact Info Saved & Synced", `Latest support number (${phone || 'Updated'}) synced across all Renter Help Centers!`, true);
+
+      try {
+        await sendFirebaseAction({
+          action: "saveContactConfig",
+          contactConfig: cfg
+        });
+      } catch (e) {}
     }
 
     function initAdminContactSettingsInputs() {
       const cfg = getAdminContactSettings();
+      if (document.getElementById("cfgContactName")) document.getElementById("cfgContactName").value = cfg.name || "";
       if (document.getElementById("cfgContactPhone")) document.getElementById("cfgContactPhone").value = cfg.phone || "";
       if (document.getElementById("cfgContactWhatsapp")) document.getElementById("cfgContactWhatsapp").value = cfg.whatsapp || "";
       if (document.getElementById("cfgContactEmail")) document.getElementById("cfgContactEmail").value = cfg.email || "";
       if (document.getElementById("cfgContactAddress")) document.getElementById("cfgContactAddress").value = cfg.address || "";
     }
 
-    function openContactUsModal() {
+    function renderContactUsDynamicBody() {
       const cfg = getAdminContactSettings();
       const body = document.getElementById("contactUsDynamicBody");
       if (!body) return;
 
-      const rawWa = String(cfg.whatsapp || cfg.phone || "").replace(/[^0-9]/g, "");
+      const latestPhone = cfg.phone || cfg.whatsapp || "Not Specified";
+      const latestWhatsapp = cfg.whatsapp || cfg.phone || "";
+      const supportPersonName = cfg.name || "Property Admin";
+
+      const rawWa = String(latestWhatsapp).replace(/[^0-9]/g, "");
       const waNumber = rawWa.length === 10 ? "91" + rawWa : rawWa;
-      const waUrl = waNumber ? `https://wa.me/${waNumber}?text=Hello%20Property%20Admin%2C%20I%20need%20assistance%20regarding%20my%20flat.` : "";
+      const waUrl = waNumber ? `https://wa.me/${waNumber}?text=Hello%20${encodeURIComponent(supportPersonName)}%2C%20I%20need%20assistance%20regarding%20my%20flat.` : "";
 
       body.innerHTML = `
         <div style="background:var(--bg-input); border:1px solid var(--glass-border); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:12px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding-bottom:10px; border-bottom:1px dashed var(--glass-border);">
+            <div>
+              <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Support Contact Person</div>
+              <div style="font-size:0.95rem; font-weight:800; color:var(--text-main);"><i class="fa-solid fa-user-shield" style="color:#10b981; margin-right:5px;"></i>${supportPersonName}</div>
+            </div>
+            <span class="badge-paid" style="font-size:0.68rem;">24/7 Help Center</span>
+          </div>
+
           <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
             <div>
-              <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Phone Support</div>
-              <div style="font-size:0.95rem; font-weight:800; color:var(--text-main);">${cfg.phone || 'Not Specified'}</div>
+              <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Latest Help Center Contact Number</div>
+              <div style="font-size:0.98rem; font-weight:900; color:var(--text-main);">${latestPhone}</div>
             </div>
             ${cfg.phone ? `<a href="tel:${String(cfg.phone).replace(/\s+/g, '')}" class="btn-primary" style="width:auto; padding:7px 15px; font-size:0.75rem; text-decoration:none;"><i class="fa-solid fa-phone"></i> Call</a>` : ''}
           </div>
@@ -20627,7 +20777,7 @@ function formatMonthLabel(rawVal) {
           <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding-top:10px; border-top:1px dashed var(--glass-border);">
             <div>
               <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">WhatsApp Direct Chat</div>
-              <div style="font-size:0.92rem; font-weight:800; color:#22c55e;"><i class="fa-brands fa-whatsapp"></i> ${cfg.whatsapp || cfg.phone}</div>
+              <div style="font-size:0.92rem; font-weight:800; color:#22c55e;"><i class="fa-brands fa-whatsapp"></i> ${latestWhatsapp}</div>
             </div>
             <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary" style="width:auto; padding:7px 15px; font-size:0.75rem; text-decoration:none; background:linear-gradient(135deg, #16a34a, #22c55e);"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
           </div>
@@ -20654,7 +20804,10 @@ function formatMonthLabel(rawVal) {
           </button>
         </div>
       `;
+    }
 
+    function openContactUsModal() {
+      renderContactUsDynamicBody();
       openModal("contactUsModal");
     }
 
@@ -20862,7 +21015,9 @@ function formatMonthLabel(rawVal) {
       `;
     }
 
-    // Requirement 5 & 7: Strictly Private, Isolated 1-on-1 Live Chat Between Each Individual Renter and Admin
+    // Requirement 5: Role-Based Live Chat Directory & Targeted Admin Delivery
+    // - Admin sees ALL registered accounts / user IDs.
+    // - Renter sees ONLY Admin IDs. Clicking a specific Admin and sending a message delivers it specifically to that Admin.
     function getPrivateChatStore() {
       try {
         const raw = localStorage.getItem(PRIVATE_CHAT_STORAGE_KEY);
@@ -20874,71 +21029,187 @@ function formatMonthLabel(rawVal) {
       return {};
     }
 
-    function savePrivateChatStore(store) {
+    function savePrivateChatStore(store, syncToServer = true) {
       try {
         localStorage.setItem(PRIVATE_CHAT_STORAGE_KEY, JSON.stringify(store || {}));
       } catch (e) {}
+      if (syncToServer && typeof sendFirebaseAction === "function" && activeUser) {
+        sendFirebaseAction({
+          action: "savePrivateChats",
+          privateChats: store || {}
+        }).catch(() => {});
+      }
     }
 
-    function getMyPrivateChatChannelId() {
-      // Each non-admin user (Renter/Viewer) gets their own strictly isolated channel key based on their unique login/Aadhaar
-      const cleanUser = String(activeUser || "guest").trim().toLowerCase();
-      return "channel_" + cleanUser.replace(/[^a-z0-9_-]/g, "_");
+    function syncServerPrivateChatsToLocal(serverChats) {
+      if (!serverChats || typeof serverChats !== "object") return;
+      const localStore = getPrivateChatStore();
+      let changed = false;
+
+      Object.keys(serverChats).forEach(chId => {
+        const sCh = serverChats[chId];
+        if (!sCh || typeof sCh !== "object") return;
+        const lCh = localStore[chId];
+        if (!lCh) {
+          localStore[chId] = sCh;
+          changed = true;
+        } else {
+          const lMsgs = Array.isArray(lCh.messages) ? lCh.messages : [];
+          const sMsgs = Array.isArray(sCh.messages) ? sCh.messages : [];
+          if (sMsgs.length !== lMsgs.length || (sCh.lastTimestamp || 0) > (lCh.lastTimestamp || 0)) {
+            const msgMap = new Map();
+            lMsgs.concat(sMsgs).forEach(m => {
+              if (m && m.id) msgMap.set(m.id, m);
+            });
+            localStore[chId] = {
+              ...lCh,
+              ...sCh,
+              messages: Array.from(msgMap.values()).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0))
+            };
+            changed = true;
+          }
+        }
+      });
+
+      if (changed) {
+        try {
+          localStorage.setItem(PRIVATE_CHAT_STORAGE_KEY, JSON.stringify(localStore));
+        } catch (e) {}
+        const w = document.getElementById("modularLiveChatWidget");
+        if (w && w.style.display === "flex") {
+          renderChatDirectoryRoster();
+          renderCurrentChatMessages();
+        }
+        updateLiveChatUnreadBadge();
+      }
+    }
+
+    function buildAdminRenterChannelId(adminUsername, userUsername) {
+      const cleanAdmin = String(adminUsername || "admin").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+      const cleanUser = String(userUsername || "guest").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+      return `channel_admin_${cleanAdmin}__user_${cleanUser}`;
+    }
+
+    function getMyPrivateChatChannelId(targetAdminUsername = "") {
+      const cleanUser = String(activeUser || "guest").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+      if (targetAdminUsername) {
+        return buildAdminRenterChannelId(targetAdminUsername, cleanUser);
+      }
+      return "channel_" + cleanUser;
+    }
+
+    function getRegisteredAdminAccountsList() {
+      const admins = [];
+      const seen = new Set();
+      (DB.users || []).forEach(u => {
+        if (String(u.Role || "").trim().toLowerCase() === "admin") {
+          const uname = String(u.Username || "").trim();
+          const key = uname.toLowerCase();
+          if (uname && !seen.has(key)) {
+            seen.add(key);
+            admins.push({
+              username: uname,
+              fullName: u.FullName || uname,
+              mobile: sanitizeContactPhoneDisplay(u.MobileNumber || "")
+            });
+          }
+        }
+      });
+      if (admins.length === 0) {
+        admins.push({
+          username: "admin",
+          fullName: "Property Admin",
+          mobile: ""
+        });
+      }
+      return admins;
     }
 
     function getAllAvailablePrivateChatChannelsForAdmin() {
       const store = getPrivateChatStore();
       const channelsMap = new Map();
+      const myAdminUsername = String(activeUser || "admin").trim().toLowerCase();
 
-      // Include all saved channels in store
+      // 1. Include all registered accounts / User IDs from DB.users so Admin can see every registered account/user ID
+      (DB.users || []).forEach(u => {
+        const uname = String(u.Username || "").trim();
+        if (!uname) return;
+        const unameLower = uname.toLowerCase();
+        if (unameLower === myAdminUsername) return; // Don't list self
+
+        const role = String(u.Role || "User").trim();
+        const chId = buildAdminRenterChannelId(myAdminUsername, unameLower);
+        const legacyChId = "channel_" + unameLower.replace(/[^a-z0-9_-]/g, "_");
+
+        // Merge any legacy messages into the admin-scoped channel if needed
+        const existingCh = store[chId] || store[legacyChId] || null;
+        const detailsParts = [`ID: @${uname}`, role];
+        if (u.AssignedProperty) detailsParts.push(u.AssignedProperty);
+        if (u.AssignedFlat) detailsParts.push(`Flat ${u.AssignedFlat}`);
+
+        channelsMap.set(chId, {
+          channelId: chId,
+          targetUsername: uname,
+          targetAdminUsername: myAdminUsername,
+          displayName: `${u.FullName || uname} (@${uname})`,
+          flatLabel: detailsParts.join(" • "),
+          unreadAdmin: Number(existingCh?.unreadAdmin || 0),
+          lastTimestamp: existingCh?.lastTimestamp || 0
+        });
+      });
+
+      // 2. Also include any channels in store specifically addressed to this Admin (or legacy channels)
       Object.keys(store).forEach(chId => {
         const ch = store[chId];
-        if (ch && chId) {
+        if (!ch || !chId) return;
+        const chTargetAdmin = String(ch.targetAdminUsername || "").trim().toLowerCase();
+        if (chTargetAdmin && chTargetAdmin !== myAdminUsername) return;
+        if (chId.startsWith("channel_admin_") && !chId.startsWith(`channel_admin_${myAdminUsername.replace(/[^a-z0-9_-]/g, "_")}__`)) {
+          return;
+        }
+        if (!channelsMap.has(chId)) {
+          // Check if we already mapped this user under buildAdminRenterChannelId
+          const userMatch = ch.renterUsername ? buildAdminRenterChannelId(myAdminUsername, ch.renterUsername) : "";
+          if (userMatch && channelsMap.has(userMatch)) {
+            const mapped = channelsMap.get(userMatch);
+            mapped.unreadAdmin = Math.max(mapped.unreadAdmin, Number(ch.unreadAdmin || 0));
+            mapped.lastTimestamp = Math.max(mapped.lastTimestamp, Number(ch.lastTimestamp || 0));
+            return;
+          }
           channelsMap.set(chId, {
             channelId: chId,
+            targetUsername: ch.renterUsername || chId.replace(/^channel_/, ""),
+            targetAdminUsername: myAdminUsername,
             displayName: ch.displayName || chId.replace(/^channel_/, ""),
-            flatLabel: ch.flatLabel || "Renter / User",
+            flatLabel: ch.flatLabel || "Registered User",
             unreadAdmin: Number(ch.unreadAdmin || 0),
             lastTimestamp: ch.lastTimestamp || 0
           });
         }
       });
 
-      // Also include all active renters and portal users so Admin can initiate a private 1-on-1 message anytime
+      // 3. Also include active renters without a user account yet
       (DB.renters || []).forEach(r => {
         if (String(r.Status || "").trim().toLowerCase() !== "active") return;
         const aadh = normalizeAadhaarString(r.IdentityDocNumber);
         const keyBase = aadh || String(r.RenterID || r.RenterName || "").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
         if (!keyBase) return;
-        const chId = "channel_" + keyBase;
+        const alreadyInUsers = Array.from(channelsMap.values()).some(c =>
+          (aadh && c.flatLabel && c.flatLabel.includes(aadh)) ||
+          (r.RenterName && c.displayName.toLowerCase().startsWith(String(r.RenterName).trim().toLowerCase()))
+        );
+        if (alreadyInUsers) return;
+        const chId = buildAdminRenterChannelId(myAdminUsername, keyBase);
+        const existingCh = store[chId] || store["channel_" + keyBase];
         if (!channelsMap.has(chId)) {
           channelsMap.set(chId, {
             channelId: chId,
+            targetUsername: keyBase,
+            targetAdminUsername: myAdminUsername,
             displayName: r.RenterName || "Renter",
             flatLabel: `${r.PropertyName || ''} • Flat ${r.FlatName || ''}`,
-            unreadAdmin: 0,
-            lastTimestamp: 0
-          });
-        } else {
-          const existing = channelsMap.get(chId);
-          if (r.RenterName) existing.displayName = r.RenterName;
-          if (r.PropertyName && r.FlatName) existing.flatLabel = `${r.PropertyName} • Flat ${r.FlatName}`;
-        }
-      });
-
-      (DB.users || []).forEach(u => {
-        const role = String(u.Role || "").trim();
-        if (role.toLowerCase() === "admin") return;
-        const uname = String(u.Username || "").trim().toLowerCase();
-        if (!uname) return;
-        const chId = "channel_" + uname.replace(/[^a-z0-9_-]/g, "_");
-        if (!channelsMap.has(chId)) {
-          channelsMap.set(chId, {
-            channelId: chId,
-            displayName: u.FullName || u.Username,
-            flatLabel: `${role}${u.AssignedFlat ? ' • Flat ' + u.AssignedFlat : ''}`,
-            unreadAdmin: 0,
-            lastTimestamp: 0
+            unreadAdmin: Number(existingCh?.unreadAdmin || 0),
+            lastTimestamp: existingCh?.lastTimestamp || 0
           });
         }
       });
@@ -20946,8 +21217,9 @@ function formatMonthLabel(rawVal) {
       return Array.from(channelsMap.values()).sort((a, b) => (b.lastTimestamp || 0) - (a.lastTimestamp || 0));
     }
 
-    // Live Chat State & Navigation (Requirements 7, 8 & 14)
+    // Live Chat State & Navigation (Requirement 5)
     let activeChatDirectoryFilter = "";
+    let activeSelectedTargetAdminUsername = "";
 
     function renderLiveChatChannelsAndMessages() {
       renderChatDirectoryRoster();
@@ -20972,6 +21244,7 @@ function formatMonthLabel(rawVal) {
           channels = channels.filter(c =>
             (c.displayName && c.displayName.toLowerCase().includes(q)) ||
             (c.flatLabel && c.flatLabel.toLowerCase().includes(q)) ||
+            (c.targetUsername && c.targetUsername.toLowerCase().includes(q)) ||
             (c.channelId && c.channelId.toLowerCase().includes(q))
           );
         }
@@ -20980,7 +21253,7 @@ function formatMonthLabel(rawVal) {
           rosterEl.innerHTML = `
             <div style="text-align:center; padding:32px 14px; color:var(--text-muted); font-size:0.8rem;">
               <i class="fa-solid fa-users-slash" style="font-size:1.6rem; color:var(--text-muted); margin-bottom:8px; display:block;"></i>
-              No renters or registered user IDs found.
+              No registered user IDs or accounts found.
             </div>
           `;
           return;
@@ -20988,14 +21261,15 @@ function formatMonthLabel(rawVal) {
 
         rosterEl.innerHTML = channels.map(c => {
           const unread = Number(c.unreadAdmin || 0);
-          const initials = (c.displayName || "R").trim().substring(0, 2).toUpperCase();
-          const safeName = String(c.displayName || "Renter").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-          const safeLabel = String(c.flatLabel || "User").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-          const lastMsg = (store[c.channelId]?.messages || []).slice(-1)[0];
-          const snippet = lastMsg ? String(lastMsg.text || "").slice(0, 32) : "Click to open private 1-on-1 chat...";
+          const initials = (c.displayName || "U").trim().substring(0, 2).toUpperCase();
+          const safeName = String(c.displayName || "User").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          const safeLabel = String(c.flatLabel || "Registered Account").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          const chData = store[c.channelId] || store["channel_" + String(c.targetUsername || "").toLowerCase()];
+          const lastMsg = (chData?.messages || []).slice(-1)[0];
+          const snippet = lastMsg ? String(lastMsg.text || "").slice(0, 32) : "Click to message this User ID...";
 
           return `
-            <div class="chat-roster-item" onclick="openChatWithChannel('${c.channelId}', '${encodeURIComponent(c.displayName)}', '${encodeURIComponent(c.flatLabel)}')">
+            <div class="chat-roster-item" onclick="openChatWithChannel('${c.channelId}', '${encodeURIComponent(c.displayName)}', '${encodeURIComponent(c.flatLabel)}', '${encodeURIComponent(c.targetAdminUsername || activeUser || 'admin')}')">
               <div style="width:38px; height:38px; border-radius:12px; background:linear-gradient(135deg, #059669, #0284c7); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.82rem; flex-shrink:0;">
                 ${initials}
               </div>
@@ -21007,7 +21281,7 @@ function formatMonthLabel(rawVal) {
                   ${unread > 0 ? `<span style="background:#ef4444; color:#fff; font-size:0.65rem; font-weight:900; padding:1px 6px; border-radius:999px;">${unread}</span>` : ''}
                 </div>
                 <div style="font-size:0.69rem; color:#10b981; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                  <i class="fa-solid fa-location-dot"></i> ${safeLabel}
+                  <i class="fa-solid fa-id-badge"></i> ${safeLabel}
                 </div>
                 <div style="font-size:0.66rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">
                   ${snippet}
@@ -21018,44 +21292,66 @@ function formatMonthLabel(rawVal) {
           `;
         }).join("");
       } else {
-        // STRICT ISOLATION FOR RENTERS / VIEWERS (Requirement 8):
-        // Only Property Admin appears in their roster. Never any other renter!
-        const myChannelId = getMyPrivateChatChannelId();
-        const unread = Number(store[myChannelId]?.unreadRenter || 0);
-        const lastMsg = (store[myChannelId]?.messages || []).slice(-1)[0];
-        const snippet = lastMsg ? String(lastMsg.text || "").slice(0, 36) : "Click to chat directly with Property Admin...";
+        // Requirement 5: Renter ONLY sees the Admin IDs within the chat.
+        // Clicking a specific Admin opens a direct 1-on-1 channel with that particular Admin.
+        let adminsList = getRegisteredAdminAccountsList();
+        if (activeChatDirectoryFilter) {
+          const q = activeChatDirectoryFilter;
+          adminsList = adminsList.filter(a =>
+            a.username.toLowerCase().includes(q) ||
+            (a.fullName && a.fullName.toLowerCase().includes(q))
+          );
+        }
+
+        const adminCardsHtml = adminsList.map(adm => {
+          const chId = getMyPrivateChatChannelId(adm.username);
+          const chObj = store[chId] || {};
+          const unread = Number(chObj.unreadRenter || 0);
+          const lastMsg = (chObj.messages || []).slice(-1)[0];
+          const snippet = lastMsg
+            ? String(lastMsg.text || "").slice(0, 36)
+            : `Click to send a direct message to @${adm.username}...`;
+          const displayTitle = `${adm.fullName || adm.username} (@${adm.username})`;
+          const subLabel = `Admin ID: @${adm.username} • Direct Support`;
+          const safeTitle = displayTitle.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+          return `
+            <div class="chat-roster-item" onclick="openChatWithChannel('${chId}', '${encodeURIComponent(displayTitle)}', '${encodeURIComponent(subLabel)}', '${encodeURIComponent(adm.username)}')">
+              <div style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, #059669, #0d9488); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.05rem; flex-shrink:0;">
+                <i class="fa-solid fa-user-shield"></i>
+              </div>
+              <div style="flex:1; min-width:0;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+                  <span style="font-size:0.84rem; font-weight:800; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                    ${safeTitle}
+                  </span>
+                  ${unread > 0 ? `<span style="background:#ef4444; color:#fff; font-size:0.65rem; font-weight:900; padding:1px 6px; border-radius:999px;">${unread}</span>` : ''}
+                </div>
+                <div style="font-size:0.69rem; color:#0284c7; font-weight:700;">
+                  <i class="fa-solid fa-shield-halved"></i> Admin ID: @${adm.username}
+                </div>
+                <div style="font-size:0.66rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">
+                  ${snippet}
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-right" style="color:var(--text-muted); font-size:0.75rem; flex-shrink:0;"></i>
+            </div>
+          `;
+        }).join("");
 
         rosterEl.innerHTML = `
-          <div class="chat-roster-item" onclick="openChatWithChannel('${myChannelId}', 'Property Admin', 'Official Support')">
-            <div style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, #059669, #0d9488); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;">
-              <i class="fa-solid fa-user-shield"></i>
-            </div>
-            <div style="flex:1; min-width:0;">
-              <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span style="font-size:0.84rem; font-weight:800; color:var(--text-main);">
-                  Property Admin (Support Desk)
-                </span>
-                ${unread > 0 ? `<span style="background:#ef4444; color:#fff; font-size:0.65rem; font-weight:900; padding:1px 6px; border-radius:999px;">${unread}</span>` : ''}
-              </div>
-              <div style="font-size:0.69rem; color:#0284c7; font-weight:700;">
-                <i class="fa-solid fa-shield-halved"></i> Official 1-on-1 Support Desk
-              </div>
-              <div style="font-size:0.66rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">
-                ${snippet}
-              </div>
-            </div>
-            <i class="fa-solid fa-chevron-right" style="color:var(--text-muted); font-size:0.75rem; flex-shrink:0;"></i>
-          </div>
+          ${adminCardsHtml}
           <div style="margin-top:14px; padding:12px; border-radius:12px; background:rgba(16,185,129,0.08); border:1px dashed rgba(16,185,129,0.3); font-size:0.72rem; color:var(--text-muted); line-height:1.45; text-align:center;">
             <i class="fa-solid fa-lock" style="color:#10b981; margin-right:4px;"></i>
-            <strong>End-to-End Privacy Protected:</strong> You are communicating directly with the property management. Other tenants cannot view your messages.
+            <strong>Direct Admin Routing:</strong> Select any Admin ID above to message that specific Administrator directly.
           </div>
         `;
       }
     }
 
-    function openChatWithChannel(channelId, encodedName, encodedSub) {
+    function openChatWithChannel(channelId, encodedName, encodedSub, encodedAdminUsername = "") {
       activeSelectedChatChannelId = channelId;
+      activeSelectedTargetAdminUsername = encodedAdminUsername ? decodeURIComponent(encodedAdminUsername) : "";
       const name = decodeURIComponent(encodedName || "Chat Partner");
       const sub = decodeURIComponent(encodedSub || "1-on-1 Channel");
 
@@ -21097,9 +21393,9 @@ function formatMonthLabel(rawVal) {
     function renderCurrentChatMessages() {
       const box = document.getElementById("floatingChatMessagesBox") || document.getElementById("chatWidgetMessagesArea");
       if (!box) return;
-      const channelId = activeSelectedChatChannelId || (activeRole === "Admin" ? "" : getMyPrivateChatChannelId());
+      const channelId = activeSelectedChatChannelId || (activeRole === "Admin" ? "" : getMyPrivateChatChannelId(activeSelectedTargetAdminUsername || (getRegisteredAdminAccountsList()[0]?.username || "admin")));
       if (!channelId) {
-        box.innerHTML = `<div style="text-align:center; padding:30px 14px; color:var(--text-muted); font-size:0.8rem;">Select a renter or user to view messages.</div>`;
+        box.innerHTML = `<div style="text-align:center; padding:30px 14px; color:var(--text-muted); font-size:0.8rem;">Select an account ID from the list to view messages.</div>`;
         return;
       }
       const store = getPrivateChatStore();
@@ -21112,7 +21408,7 @@ function formatMonthLabel(rawVal) {
           <div style="text-align:center; padding:30px 14px; color:var(--text-muted); font-size:0.8rem;">
             <i class="fa-solid fa-lock" style="font-size:1.5rem; color:#10b981; margin-bottom:8px; display:block;"></i>
             <strong style="color:var(--text-main); display:block; margin-bottom:4px;">Private 1-on-1 Conversation</strong>
-            Send a message to begin chatting. This channel is completely isolated and end-to-end private.
+            Send a message to begin chatting. Messages are delivered directly to this selected ID.
           </div>
         `;
         return;
@@ -21141,28 +21437,35 @@ function formatMonthLabel(rawVal) {
       const isAdmin = activeRole === "Admin";
       const store = getPrivateChatStore();
       let targetChannelId = "";
+      let targetAdminId = "";
 
       if (isAdmin) {
         targetChannelId = activeSelectedChatChannelId;
+        targetAdminId = String(activeUser || "admin").trim();
         if (!targetChannelId) {
-          return triggerSideToast("Select a User", "Please select a user from the directory list first.", false);
+          return triggerSideToast("Select a User ID", "Please select a registered account / user ID from the directory list first.", false);
         }
       } else {
-        targetChannelId = getMyPrivateChatChannelId();
+        targetAdminId = activeSelectedTargetAdminUsername || (getRegisteredAdminAccountsList()[0]?.username || "admin");
+        targetChannelId = activeSelectedChatChannelId || getMyPrivateChatChannelId(targetAdminId);
+        activeSelectedChatChannelId = targetChannelId;
       }
 
       if (!store[targetChannelId]) {
         const myFullName = sessionStorage.getItem("active_session_fullname") || activeUser || "Renter";
-        let flatInfo = activeRole;
+        let flatInfo = `ID: @${activeUser || 'user'} • ${activeRole}`;
         if (activeRole === "Renter") {
           const myProfiles = getRenterProfilesForLoggedInAadhaar();
           if (myProfiles.length > 0) {
-            flatInfo = `${myProfiles[0].PropertyName} • Flat ${myProfiles[0].FlatName}`;
+            flatInfo = `ID: @${activeUser} • ${myProfiles[0].PropertyName} • Flat ${myProfiles[0].FlatName}`;
           }
         }
+        const partnerNameEl = document.getElementById("activeChatPartnerName");
         store[targetChannelId] = {
           channelId: targetChannelId,
-          displayName: isAdmin ? targetChannelId.replace(/^channel_/, "") : myFullName,
+          targetAdminUsername: String(targetAdminId).trim().toLowerCase(),
+          renterUsername: isAdmin ? targetChannelId.replace(/^channel_admin_[^_]+__user_/, "").replace(/^channel_/, "") : String(activeUser || "").trim().toLowerCase(),
+          displayName: isAdmin ? (partnerNameEl?.innerText || targetChannelId) : `${myFullName} (@${activeUser})`,
           flatLabel: flatInfo,
           unreadAdmin: 0,
           unreadRenter: 0,
@@ -21172,13 +21475,16 @@ function formatMonthLabel(rawVal) {
       }
 
       const senderName = isAdmin
-        ? "Property Admin"
-        : (sessionStorage.getItem("active_session_fullname") || activeUser || "Renter");
+        ? `${activeUserFullName || activeUser} (@${activeUser})`
+        : `${sessionStorage.getItem("active_session_fullname") || activeUser || "Renter"} (@${activeUser})`;
       const nowStr = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
+      store[targetChannelId].targetAdminUsername = String(targetAdminId || store[targetChannelId].targetAdminUsername || "admin").trim().toLowerCase();
       store[targetChannelId].messages.push({
-        id: "msg_" + Date.now(),
+        id: "msg_" + Date.now() + "_" + Math.random().toString(36).substring(2, 6),
         senderRole: isAdmin ? "Admin" : activeRole,
+        senderUsername: String(activeUser || "").trim(),
+        targetAdminUsername: store[targetChannelId].targetAdminUsername,
         senderName: senderName,
         text: text,
         timeStr: nowStr,
@@ -21192,7 +21498,7 @@ function formatMonthLabel(rawVal) {
         store[targetChannelId].unreadAdmin = Number(store[targetChannelId].unreadAdmin || 0) + 1;
       }
 
-      savePrivateChatStore(store);
+      savePrivateChatStore(store, true);
       inputEl.value = "";
       renderCurrentChatMessages();
       updateLiveChatUnreadBadge();
@@ -21205,7 +21511,7 @@ function formatMonthLabel(rawVal) {
         store[activeSelectedChatChannelId].messages = [];
         store[activeSelectedChatChannelId].unreadAdmin = 0;
         store[activeSelectedChatChannelId].unreadRenter = 0;
-        savePrivateChatStore(store);
+        savePrivateChatStore(store, true);
         renderCurrentChatMessages();
         updateLiveChatUnreadBadge();
         triggerSideToast("Chat History Cleared", "Cleared conversation messages for this private channel.", true);
@@ -21218,12 +21524,21 @@ function formatMonthLabel(rawVal) {
       const store = getPrivateChatStore();
       let unreadCount = 0;
       if (activeRole === "Admin") {
+        const myAdminKey = String(activeUser || "admin").trim().toLowerCase();
         Object.values(store).forEach(ch => {
-          unreadCount += Number(ch?.unreadAdmin || 0);
+          if (!ch) return;
+          const targetAdm = String(ch.targetAdminUsername || "").trim().toLowerCase();
+          if (!targetAdm || targetAdm === myAdminKey) {
+            unreadCount += Number(ch.unreadAdmin || 0);
+          }
         });
       } else {
-        const myCh = store[getMyPrivateChatChannelId()];
-        unreadCount = Number(myCh?.unreadRenter || 0);
+        const myUserClean = String(activeUser || "guest").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+        Object.keys(store).forEach(chKey => {
+          if (chKey.endsWith(`__user_${myUserClean}`) || chKey === `channel_${myUserClean}`) {
+            unreadCount += Number(store[chKey]?.unreadRenter || 0);
+          }
+        });
       }
       if (unreadCount > 0) {
         badge.style.display = "inline-flex";
@@ -21239,11 +21554,7 @@ function formatMonthLabel(rawVal) {
       w.classList.remove("minimized");
       w.style.display = "flex";
 
-      // If no conversation was actively selected, always show Directory View
-      if (!activeSelectedChatChannelId && activeRole === "Admin") {
-        returnToChatDirectory();
-      } else if (activeRole !== "Admin") {
-        // Non-admin opens directory showing Admin contact (or opens direct conversation)
+      if (!activeSelectedChatChannelId) {
         returnToChatDirectory();
       } else {
         renderCurrentChatMessages();
