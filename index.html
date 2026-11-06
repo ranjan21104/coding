@@ -1308,22 +1308,27 @@
     }
     .modal-close-btn {
       position: absolute;
-      top: 14px;
-      right: 14px;
-      width: 32px;
-      height: 32px;
+      top: 12px;
+      right: 12px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: var(--bg-input);
-      border: 1px solid var(--glass-border);
+      border: 1.5px solid var(--glass-border);
       color: var(--text-main);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      z-index: 60;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+      transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
     }
     .modal-close-btn:hover {
-      background: rgba(239, 68, 68, 0.25);
-      color: var(--accent-red);
+      background: rgba(239, 68, 68, 0.9);
+      color: #ffffff;
+      border-color: #ef4444;
+      transform: scale(1.06);
     }
 
     /* Centered Visual Confirmation Modal */
@@ -3134,11 +3139,32 @@
     border: 2px solid #a5b4fc !important;
     box-shadow: 0 25px 60px rgba(15, 23, 42, 0.18), 0 0 0 4px rgba(99, 102, 241, 0.08) !important;
   }
+  #settingsModal .modal-close-btn {
+    top: 8px !important;
+    right: 8px !important;
+    width: 38px !important;
+    height: 38px !important;
+    z-index: 85 !important;
+    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+    color: #ffffff !important;
+    border: 2px solid rgba(255, 255, 255, 0.85) !important;
+    box-shadow: 0 6px 18px rgba(239, 68, 68, 0.5) !important;
+    font-size: 1.05rem !important;
+  }
+  #settingsModal .modal-close-btn:hover {
+    transform: scale(1.08) !important;
+    background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+  }
+  body.theme-white #profileModal .profile-sub-drawer {
+    background: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%) !important;
+    color: #0f172a !important;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08) !important;
+  }
   #settingsModal .settings-feature-banner {
     background: linear-gradient(135deg, rgba(79, 70, 229, 0.28) 0%, rgba(236, 72, 153, 0.22) 50%, rgba(14, 165, 233, 0.22) 100%) !important;
     border: 1.5px solid rgba(129, 140, 248, 0.55) !important;
     border-radius: 18px !important;
-    padding: 16px 18px !important;
+    padding: 16px 54px 16px 18px !important;
     box-shadow: 0 10px 26px rgba(79, 70, 229, 0.18) !important;
     position: relative;
     overflow: hidden;
@@ -4460,10 +4486,10 @@
       <span id="liveChatUnreadBadge" style="display:none; background:#ef4444; color:#ffffff; font-size:0.68rem; font-weight:900; padding:1px 7px; border-radius:999px;">0</span>
     </button>
 
-    <!-- RENTER & VIEWER ONLY: Contact Us Button (Shown alongside Live Chat when non-Admin accesses the site) -->
+    <!-- RENTER & VIEWER ONLY: Contact Us / Help Center Button (Shown alongside Live Chat when non-Admin accesses the site) -->
     <button type="button" id="fabContactUsBtn" class="fab-pill-btn fab-contact-btn" style="display:none;" onclick="openContactUsModal()">
       <i class="fa-solid fa-headset" style="font-size:1rem;"></i>
-      <span>Contact Us</span>
+      <span>Help Center / Contact Us</span>
     </button>
   </div>
 
@@ -5561,10 +5587,10 @@
                 >
                 <button
                   type="button"
-                  class="btn-ledger-action"
+                  class="btn-ledger-action admin-only"
                   style="padding:6px 12px; color:var(--accent-red); border-color:rgba(239,68,68,0.4); flex-shrink:0; font-size:0.75rem; font-weight:700;"
                   onclick="deleteCustomBgImage()"
-                  title="Delete custom image and revert Home Page to default photo"
+                  title="Admin Only: Delete custom image and apply default placeholder photo across all locations"
                 >
                   <i class="fa-solid fa-trash-can"></i> Delete
                 </button>
@@ -5581,15 +5607,15 @@
                 <img id="bgActivePreviewImg" src="" alt="Home Background Preview" style="width:92px; height:56px; object-fit:cover; border-radius:8px; border:1.5px solid #ec4899; flex-shrink:0; background:#0f172a;">
                 <div style="font-size:0.73rem; line-height:1.35;">
                   <div id="bgActivePreviewBadge" style="font-weight:800; color:#10b981;"><i class="fa-solid fa-circle-check"></i> Active Home Background Locked</div>
-                  <div style="color:var(--text-muted); font-size:0.69rem; margin-top:2px;">Protected from auto-sync overwrite — stays permanently active until you click Delete or Reset.</div>
+                  <div id="bgActivePreviewSub" style="color:var(--text-muted); font-size:0.69rem; margin-top:2px;">Admin-only deletion: deleting applies the default placeholder photo across all locations.</div>
                 </div>
               </div>
             </div>
 
-            <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; margin-top:4px;">
+            <div class="admin-only" style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; margin-top:4px;">
               <button
                 type="button"
-                class="btn-ledger-action"
+                class="btn-ledger-action admin-only"
                 style="padding:8px 16px; font-size:0.78rem; font-weight:700;"
                 onclick="resetDefaultBackgrounds()"
               >
@@ -5597,7 +5623,7 @@
               </button>
               <button
                 type="button"
-                class="btn-primary"
+                class="btn-primary admin-only"
                 style="width:auto; padding:8px 20px; font-size:0.78rem; font-weight:700; background:linear-gradient(135deg, #ec4899 0%, #db2777 100%);"
                 onclick="saveCustomBackgrounds()"
               >
@@ -5679,6 +5705,11 @@
             <span style="font-size:0.7rem; color:#f59e0b; font-weight:700; background:rgba(245,158,11,0.15); padding:3px 8px; border-radius:12px;">
               <i class="fa-solid fa-headset"></i> Live Support Sync
             </span>
+          </div>
+
+          <div class="form-group" style="margin-bottom:12px;">
+            <label>Support Contact Person / Admin Name <span class="req-star">*</span></label>
+            <input type="text" id="cfgContactName" class="form-control" placeholder="e.g. Property Admin / Help Desk">
           </div>
 
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px;">
@@ -6550,39 +6581,39 @@
             </div>
           </div>
 
-          <!-- RIGHT SIDE: NUMBER 3 (Rent & Utility Details) -->
+          <!-- RIGHT SIDE: NUMBER 3 (Rent & Utility Details — Manual Save Only via Save Button) -->
           <div class="matrix-col details-card-utility">
             <div class="col-title"><i class="fa-solid fa-bolt" style="color:#fbbf24;"></i> 3. Rent &amp; Utility Details</div>
             
             <div class="form-group">
               <label>Rent Amount (₹)</label>
-              <input type="number" id="profRent" class="form-control" oninput="syncProfileRatesToLiveCalculator()" onchange="saveUtilitiesLeft(true)">
+              <input type="number" id="profRent" class="form-control">
             </div>
             <div class="form-group">
               <label>Flat Name/Number</label>
-              <input type="text" id="profFlatNumber" class="form-control" placeholder="e.g. 101 or 2B" onchange="saveUtilitiesLeft(true)">
+              <input type="text" id="profFlatNumber" class="form-control" placeholder="e.g. 101 or 2B">
             </div>
-            <div class="form-group"><label>PNG Number</label><input type="text" id="profPngNumber" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
-            <div class="form-group"><label>PNG Meter Number</label><input type="text" id="profPngMeter" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
+            <div class="form-group"><label>PNG Number</label><input type="text" id="profPngNumber" class="form-control"></div>
+            <div class="form-group"><label>PNG Meter Number</label><input type="text" id="profPngMeter" class="form-control"></div>
             <div class="form-group">
               <label>PNG Fixed Rate (₹/Unit)</label>
-              <input type="number" id="profPngRate" class="form-control" oninput="syncProfileRatesToLiveCalculator()" onchange="saveUtilitiesLeft(true)">
+              <input type="number" id="profPngRate" class="form-control">
             </div>
-            <div class="form-group"><label>Water Number</label><input type="text" id="profWaterNumber" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
-            <div class="form-group"><label>Water Meter Number</label><input type="text" id="profWaterMeter" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
+            <div class="form-group"><label>Water Number</label><input type="text" id="profWaterNumber" class="form-control"></div>
+            <div class="form-group"><label>Water Meter Number</label><input type="text" id="profWaterMeter" class="form-control"></div>
             <div class="form-group">
               <label>Water Fixed Rate (₹/Unit)</label>
-              <input type="number" id="profWaterRate" class="form-control" oninput="syncProfileRatesToLiveCalculator()" onchange="saveUtilitiesLeft(true)">
+              <input type="number" id="profWaterRate" class="form-control">
             </div>
-            <div class="form-group"><label>Electricity Meter Number</label><input type="text" id="profElecMeter" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
+            <div class="form-group"><label>Electricity Meter Number</label><input type="text" id="profElecMeter" class="form-control"></div>
             <div class="form-group">
               <label>Electricity Fixed Rate (₹/Unit)</label>
-              <input type="number" id="profElecRate" class="form-control" oninput="syncProfileRatesToLiveCalculator()" onchange="saveUtilitiesLeft(true)">
+              <input type="number" id="profElecRate" class="form-control">
             </div>
-            <div class="form-group"><label>Property UPI Display Name</label><input type="text" id="profUpiName" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
-            <div class="form-group"><label>Property UPI ID / VPA</label><input type="text" id="profUpiId" class="form-control" onchange="saveUtilitiesLeft(true)"></div>
-            <div class="form-group"><label>Owner Contract Phone (+91)</label><input type="tel" id="profContractMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)" onchange="saveUtilitiesLeft(true)"></div>
-            <button class="btn-primary admin-only" onclick="saveUtilitiesLeft(false)">Save Utility &amp; Rates</button>
+            <div class="form-group"><label>Property UPI Display Name</label><input type="text" id="profUpiName" class="form-control"></div>
+            <div class="form-group"><label>Property UPI ID / VPA</label><input type="text" id="profUpiId" class="form-control"></div>
+            <div class="form-group"><label>Owner Contract Phone (+91)</label><input type="tel" id="profContractMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
+            <button type="button" class="btn-primary admin-only" onclick="saveUtilitiesLeft(false)"><i class="fa-solid fa-floppy-disk"></i> Save Utility &amp; Rates</button>
           </div>
 
         </div>
@@ -6969,7 +7000,7 @@
       const dbInstance = getFirestoreDb();
       if (!dbInstance) return;
 
-      const collections = ["properties", "flats", "renters", "bills", "users", "fdRecords", "khetRecords", "kharchRecords"];
+      const collections = ["properties", "flats", "renters", "bills", "users", "fdRecords", "khetRecords", "kharchRecords", "config"];
       collections.forEach(function(colName) {
         try {
           dbInstance.collection(colName).onSnapshot(function(snap) {
@@ -7267,14 +7298,18 @@
       const dbInstance = getFirestoreDb();
       const cleanUser = String(username || "").trim();
       const lowerUser = cleanUser.toLowerCase();
+      const localMatch = (DB.users || []).find(function(u) {
+        return String(u.Username || "").trim().toLowerCase() === lowerUser;
+      });
       if (!dbInstance) {
         return {
           status: "success",
-          username: cleanUser,
-          fullName: cleanUser,
-          mobile: "",
-          role: "Admin",
-          theme: "dark"
+          username: localMatch?.Username || cleanUser,
+          fullName: localMatch?.FullName || activeUserFullName || cleanUser,
+          mobile: localMatch?.MobileNumber || activeUserMobile || "",
+          role: localMatch?.Role || activeRole || "Admin",
+          theme: localMatch?.Theme || activeThemePref || "dark",
+          password: localMatch?.Password || ""
         };
       }
       try {
@@ -7288,19 +7323,29 @@
             fullName: u.FullName || cleanUser,
             mobile: u.MobileNumber || "",
             role: u.Role || "Admin",
-            theme: u.Theme || "dark"
+            theme: u.Theme || "dark",
+            password: u.Password || localMatch?.Password || ""
           };
         }
         return {
           status: "success",
-          username: cleanUser,
-          fullName: cleanUser,
-          mobile: "",
-          role: "Admin",
-          theme: "dark"
+          username: localMatch?.Username || cleanUser,
+          fullName: localMatch?.FullName || activeUserFullName || cleanUser,
+          mobile: localMatch?.MobileNumber || activeUserMobile || "",
+          role: localMatch?.Role || activeRole || "Admin",
+          theme: localMatch?.Theme || activeThemePref || "dark",
+          password: localMatch?.Password || ""
         };
       } catch (e) {
-        return { status: "error", message: e.message };
+        return {
+          status: "success",
+          username: localMatch?.Username || cleanUser,
+          fullName: localMatch?.FullName || activeUserFullName || cleanUser,
+          mobile: localMatch?.MobileNumber || activeUserMobile || "",
+          role: localMatch?.Role || activeRole || "Admin",
+          theme: localMatch?.Theme || activeThemePref || "dark",
+          password: localMatch?.Password || ""
+        };
       }
     }
 
@@ -7866,14 +7911,15 @@
           case "changePassword": {
             const uName = String(data.username || "").trim().toLowerCase();
             const userDoc = await dbInstance.collection("users").doc(uName).get();
-            if (!userDoc.exists) {
-              return { status: "error", message: "User account not found." };
-            }
-            const currentPass = userDoc.data().Password || "";
-            if (data.oldPassword && String(data.oldPassword) !== String(currentPass)) {
+            const localUser = (DB.users || []).find(function(u) {
+              return String(u.Username || "").trim().toLowerCase() === uName;
+            });
+            const currentPass = userDoc.exists ? (userDoc.data().Password || "") : (localUser?.Password || "");
+            if (data.oldPassword && currentPass && String(data.oldPassword) !== String(currentPass)) {
               return { status: "error", message: "Old password does not match." };
             }
             await dbInstance.collection("users").doc(uName).set({
+              Username: userDoc.exists ? (userDoc.data().Username || data.username) : (localUser?.Username || data.username),
               Password: String(data.newPassword || "").trim(),
               UpdatedAt: new Date().toISOString()
             }, { merge: true });
@@ -7888,19 +7934,28 @@
 
             const existingSnap = await dbInstance.collection("users").doc(lowerNew).get();
             if (existingSnap.exists && lowerNew !== oldU) {
-              return { status: "error", message: "This username is already taken in Firebase." };
+              return { status: "duplicate", message: "This username is already taken in Firebase." };
             }
 
             const oldSnap = await dbInstance.collection("users").doc(oldU).get();
             if (oldSnap.exists) {
               const oldData = oldSnap.data();
               oldData.Username = newU;
+              oldData.UpdatedAt = new Date().toISOString();
               await dbInstance.collection("users").doc(lowerNew).set(oldData);
               if (lowerNew !== oldU) {
                 await dbInstance.collection("users").doc(oldU).delete();
               }
+            } else {
+              await dbInstance.collection("users").doc(lowerNew).set({
+                Username: newU,
+                FullName: activeUserFullName || newU,
+                MobileNumber: activeUserMobile || "",
+                Role: activeRole || "Admin",
+                UpdatedAt: new Date().toISOString()
+              }, { merge: true });
             }
-            return { status: "success", message: "Username updated in Firebase." };
+            return { status: "success", newUsername: newU, message: "Username updated in Firebase." };
           }
 
           case "changeNameAndMobile": {
@@ -7927,18 +7982,34 @@
 
           case "saveBackgrounds":
           case "saveGlobalAppConfig": {
-            const bgLogin = data.bgLogin || data.bgLoginUrl || "";
-            const bgDash = data.bgDashboard || data.bgDashboardUrl || "";
-            const customBgs = data.customBackgrounds || [];
+            const isExplicitClear = Boolean(data.explicitClear);
+            const bgLogin = isExplicitClear ? DEFAULT_PORTAL_BACKGROUND_IMAGE : (data.bgLogin || data.bgLoginUrl || "");
+            const bgDash = isExplicitClear ? DEFAULT_PORTAL_BACKGROUND_IMAGE : (data.bgDashboard || data.bgDashboardUrl || "");
+            const customBgs = isExplicitClear ? [] : (data.customBackgrounds || []);
 
             await dbInstance.collection("config").doc("app_config").set({
               bgLoginUrl: bgLogin,
               bgDashboardUrl: bgDash,
+              bgCleared: isExplicitClear,
+              bgClearedAt: isExplicitClear ? Date.now() : 0,
               customBackgrounds: customBgs,
               updatedAt: new Date().toISOString()
             }, { merge: true });
 
-            if (data.username) {
+            if (isExplicitClear) {
+              const allUsersSnap = await dbInstance.collection("users").get();
+              const batch = dbInstance.batch();
+              allUsersSnap.forEach(function(uDoc) {
+                batch.set(uDoc.ref, {
+                  BgLogin: "",
+                  BgDashboard: "",
+                  BgLoginUrl: "",
+                  BgDashboardUrl: "",
+                  BackgroundURL: ""
+                }, { merge: true });
+              });
+              await batch.commit();
+            } else if (data.username) {
               const lowerU = String(data.username).trim().toLowerCase();
               await dbInstance.collection("users").doc(lowerU).set({
                 BgLogin: bgLogin,
@@ -7959,10 +8030,29 @@
 
             await dbInstance.collection("config").doc("app_config").set({
               [field]: photoUrl,
+              bgCleared: false,
               updatedAt: new Date().toISOString()
             }, { merge: true });
 
             return { status: "success", url: photoUrl, message: "Background photo uploaded to Firebase." };
+          }
+
+          case "saveContactConfig": {
+            const contactCfg = data.contactConfig || {};
+            await dbInstance.collection("config").doc("app_config").set({
+              contactConfig: contactCfg,
+              updatedAt: new Date().toISOString()
+            }, { merge: true });
+            return { status: "success", message: "Contact configuration synced to Firebase." };
+          }
+
+          case "savePrivateChats": {
+            const privateChats = data.privateChats || {};
+            await dbInstance.collection("config").doc("app_config").set({
+              privateChats: privateChats,
+              updatedAt: new Date().toISOString()
+            }, { merge: true });
+            return { status: "success", message: "Live chats synced to Firebase." };
           }
 
           case "syncAllData": {
