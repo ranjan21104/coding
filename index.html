@@ -3367,6 +3367,384 @@
     box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.2), 0 10px 22px rgba(217, 119, 6, 0.18);
   }
 
+
+  /* ==========================================================================
+     STYLISH EXECUTIVE POP-UP MODALS (ADD PROPERTY, EDIT PROPERTY, ADD FLAT, ADD RENTER)
+     & RENTER HOME PAGE THEME-ADAPTIVE TYPOGRAPHY (REQUIREMENTS 3, 4, 5, 8, 9, 12)
+     ========================================================================== */
+  .exec-modal-window {
+    max-width: 560px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border-radius: 22px !important;
+    border: 1.5px solid rgba(129, 140, 248, 0.42) !important;
+    background: linear-gradient(165deg, rgba(15, 23, 42, 0.98) 0%, rgba(23, 33, 53, 0.98) 100%) !important;
+    box-shadow: 0 28px 65px rgba(0, 0, 0, 0.65), 0 0 36px rgba(79, 70, 229, 0.22) !important;
+    color: var(--text-main) !important;
+  }
+  body.theme-white .exec-modal-window {
+    background: linear-gradient(165deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 1.5px solid #cbd5e1 !important;
+    box-shadow: 0 24px 55px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(79, 70, 229, 0.08) !important;
+    color: #0f172a !important;
+  }
+  .exec-modal-header {
+    padding: 20px 24px 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    position: relative;
+  }
+  body.theme-white .exec-modal-header {
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .exec-modal-header.header-indigo {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.28) 0%, rgba(124, 58, 237, 0.16) 100%);
+  }
+  body.theme-white .exec-modal-header.header-indigo {
+    background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 100%);
+  }
+  .exec-modal-header.header-cyan {
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.28) 0%, rgba(59, 130, 246, 0.16) 100%);
+  }
+  body.theme-white .exec-modal-header.header-cyan {
+    background: linear-gradient(135deg, #e0f2fe 0%, #eff6ff 100%);
+  }
+  .exec-modal-header.header-amber {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.28) 0%, rgba(234, 88, 12, 0.16) 100%);
+  }
+  body.theme-white .exec-modal-header.header-amber {
+    background: linear-gradient(135deg, #fef3c7 0%, #fff7ed 100%);
+  }
+  .exec-modal-header.header-emerald {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.28) 0%, rgba(5, 150, 105, 0.16) 100%);
+  }
+  body.theme-white .exec-modal-header.header-emerald {
+    background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
+  }
+  .exec-modal-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: #ffffff;
+    flex-shrink: 0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  }
+  .exec-modal-title-wrap {
+    flex: 1;
+    min-width: 0;
+    padding-right: 28px;
+  }
+  .exec-modal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    margin-bottom: 4px;
+  }
+  .exec-modal-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0;
+    line-height: 1.25;
+  }
+  body.theme-white .exec-modal-title {
+    color: #0f172a !important;
+  }
+  .exec-modal-subtitle {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+    line-height: 1.35;
+  }
+  body.theme-white .exec-modal-subtitle {
+    color: #475569 !important;
+  }
+  .exec-modal-body {
+    padding: 18px 22px 22px 22px;
+    max-height: calc(88vh - 92px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .exec-field-card {
+    background: rgba(30, 41, 59, 0.68);
+    border: 1.5px solid rgba(148, 163, 184, 0.24);
+    border-radius: 14px;
+    padding: 12px 14px;
+    transition: all 0.2s ease;
+  }
+  .exec-field-card:focus-within {
+    border-color: #6366f1;
+    background: rgba(30, 41, 59, 0.92);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  }
+  body.theme-white .exec-field-card {
+    background: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+  }
+  body.theme-white .exec-field-card:focus-within {
+    background: #ffffff;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14);
+  }
+  .exec-field-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 5px;
+  }
+  .exec-field-label {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  body.theme-white .exec-field-label {
+    color: #0f172a !important;
+  }
+  .exec-field-tag {
+    font-size: 0.64rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+  .tag-required {
+    background: rgba(239, 68, 68, 0.16);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+  }
+  body.theme-white .tag-required {
+    background: #fef2f2;
+    color: #dc2626;
+    border-color: #fecaca;
+  }
+  .tag-optional {
+    background: rgba(148, 163, 184, 0.16);
+    color: #94a3b8;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+  }
+  body.theme-white .tag-optional {
+    background: #f1f5f9;
+    color: #475569;
+    border-color: #cbd5e1;
+  }
+  .tag-locked {
+    background: rgba(245, 158, 11, 0.16);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+  }
+  body.theme-white .tag-locked {
+    background: #fffbeb;
+    color: #b45309;
+    border-color: #fde68a;
+  }
+  .exec-field-purpose {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    line-height: 1.38;
+    display: block;
+  }
+  body.theme-white .exec-field-purpose {
+    color: #475569 !important;
+  }
+  .exec-field-card .form-control {
+    background: rgba(15, 23, 42, 0.85) !important;
+    border: 1.5px solid rgba(148, 163, 184, 0.32) !important;
+    color: #ffffff !important;
+    border-radius: 10px !important;
+    padding: 10px 12px !important;
+    font-size: 0.86rem !important;
+    font-weight: 700 !important;
+  }
+  body.theme-white .exec-field-card .form-control {
+    background: #ffffff !important;
+    border: 1.5px solid #94a3b8 !important;
+    color: #0f172a !important;
+  }
+  .exec-field-card .form-control::placeholder {
+    color: #64748b !important;
+    font-weight: 500 !important;
+  }
+  .exec-field-card .form-control[readonly] {
+    opacity: 0.85;
+    cursor: not-allowed;
+    border-style: dashed !important;
+  }
+  .exec-submit-btn {
+    width: 100%;
+    padding: 13px 18px !important;
+    border-radius: 13px !important;
+    font-size: 0.92rem !important;
+    font-weight: 800 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    border: none !important;
+    color: #ffffff !important;
+    cursor: pointer !important;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28) !important;
+    transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+    margin-top: 4px;
+  }
+  .exec-submit-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Requirement 8 & 9: Renter Home Page Card & Renter Theme-Adaptive Text Readability */
+  .renter-home-portal-card {
+    grid-column: 1 / -1;
+    max-width: 780px;
+    margin: 10px auto;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 22px;
+    padding: 22px;
+    background: linear-gradient(145deg, rgba(17, 24, 39, 0.92) 0%, rgba(30, 41, 59, 0.90) 100%);
+    border: 2px solid rgba(192, 132, 252, 0.6) !important;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+    color: #f8fafc;
+    transition: all 0.25s ease;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+  .renter-home-portal-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 24px 52px rgba(139, 92, 246, 0.28);
+  }
+  body.theme-white .renter-home-portal-card {
+    background: linear-gradient(145deg, #ffffff 0%, #f5f3ff 100%) !important;
+    border: 2px solid #8b5cf6 !important;
+    box-shadow: 0 16px 38px rgba(79, 70, 229, 0.14) !important;
+    color: #0f172a !important;
+  }
+  .renter-home-portal-tag {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #c084fc;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  body.theme-white .renter-home-portal-tag {
+    color: #6d28d9 !important;
+  }
+  .renter-home-portal-title {
+    margin: 2px 0 0 0;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #ffffff;
+  }
+  body.theme-white .renter-home-portal-title {
+    color: #0f172a !important;
+  }
+  .renter-home-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+    gap: 10px;
+    background: rgba(15, 23, 42, 0.72);
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    font-size: 0.82rem;
+    margin-bottom: 14px;
+  }
+  body.theme-white .renter-home-info-grid {
+    background: #ffffff !important;
+    border: 1.5px solid #cbd5e1 !important;
+    box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+  .renter-home-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+  body.theme-white .renter-home-info-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+  }
+  .renter-home-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  body.theme-white .renter-home-label {
+    color: #475569 !important;
+  }
+  .renter-home-val {
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: #ffffff;
+  }
+  body.theme-white .renter-home-val {
+    color: #0f172a !important;
+  }
+  .renter-home-val.val-cyan { color: #38bdf8; }
+  body.theme-white .renter-home-val.val-cyan { color: #0369a1 !important; }
+  .renter-home-val.val-emerald { color: #34d399; }
+  body.theme-white .renter-home-val.val-emerald { color: #047857 !important; }
+  .renter-home-val.val-amber { color: #fbbf24; }
+  body.theme-white .renter-home-val.val-amber { color: #b45309 !important; }
+  .renter-home-val.val-green { color: #22c55e; }
+  body.theme-white .renter-home-val.val-green { color: #15803d !important; }
+
+  /* Ensure all text inside Renter Profile, Ledger, and Empty Prompt adapts cleanly in Light Mode */
+  body.theme-white .empty-flats-prompt {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: #8b5cf6 !important;
+    color: #0f172a !important;
+  }
+  body.theme-white .empty-flats-prompt h3 {
+    color: #0f172a !important;
+  }
+  body.theme-white .empty-flats-prompt p {
+    color: #334155 !important;
+  }
+  body.theme-white .photo-card-renter,
+  body.theme-white .photo-card-aadhaar,
+  body.theme-white #renterTenureTypeIndicatorBox {
+    background: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06) !important;
+  }
+  body.theme-white #tabProfile label,
+  body.theme-white #tabHistory h4,
+  body.theme-white .ledger-table th,
+  body.theme-white .ledger-table td {
+    color: #0f172a !important;
+  }
+  body.theme-white #tabProfile .form-control,
+  body.theme-white #tabHistory .form-control {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border-color: #94a3b8 !important;
+  }
+
   /* ==========================================================================
      REQUIREMENTS 6, 7 & 8: MODULAR & MOVABLE AI ASSISTANT + PRIVATE LIVE CHAT
      ========================================================================== */
@@ -4399,12 +4777,6 @@
       <i class="fa-solid fa-arrows-left-right"></i> Switch Side
     </button>
 
-    <!-- ADMIN ONLY: Custom Website-Data AI Assistant Button (Strictly Hidden for Renter & Viewer) -->
-    <button type="button" id="fabAiAssistantBtn" class="fab-pill-btn fab-ai-btn admin-only" onclick="toggleModularAiWidget()">
-      <i class="fa-solid fa-robot" style="font-size:1rem;"></i>
-      <span>Website AI Assistant</span>
-    </button>
-
     <!-- ALL ROLES: Private Secure Live Chat Button -->
     <button type="button" id="fabLiveChatBtn" class="fab-pill-btn fab-chat-btn" onclick="openModularLiveChatWidget()">
       <i class="fa-solid fa-comments" style="font-size:1rem;"></i>
@@ -4417,57 +4789,6 @@
       <i class="fa-solid fa-headset" style="font-size:1rem;"></i>
       <span>Help Center / Contact Us</span>
     </button>
-  </div>
-
-  <!-- MODULAR & MOVABLE WEBSITE-DATA AI ASSISTANT WIDGET (STRICTLY ADMIN ONLY) -->
-  <div id="modularAiWidget" class="modular-floating-widget admin-only">
-    <div id="modularAiWidgetHeader" class="modular-widget-header" style="background:linear-gradient(135deg, #4f46e5 0%, #7c3aed 55%, #ec4899 100%);">
-      <div style="display:flex; align-items:center; gap:9px; min-width:0;">
-        <div style="width:32px; height:32px; border-radius:10px; background:rgba(255,255,255,0.22); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.95rem; flex-shrink:0;">
-          <i class="fa-solid fa-brain"></i>
-        </div>
-        <div style="min-width:0;">
-          <div style="font-size:0.84rem; font-weight:900; color:#ffffff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-            Portal Data AI Assistant
-          </div>
-          <div style="font-size:0.65rem; color:rgba(255,255,255,0.88); font-weight:700;">
-            <i class="fa-solid fa-lock"></i> 100% Isolated to Website Data • Drag to Move
-          </div>
-        </div>
-      </div>
-      <div style="display:flex; align-items:center; gap:5px; flex-shrink:0;">
-        <button type="button" class="widget-ctrl-btn" onclick="switchWidgetScreenSide('modularAiWidget')" title="Switch Window Between Left & Right Side">
-          <i class="fa-solid fa-arrows-left-right"></i>
-        </button>
-        <button type="button" class="widget-ctrl-btn" onclick="toggleMinimizeFloatingWidget('modularAiWidget')" title="Minimize / Expand">
-          <i class="fa-solid fa-window-minimize"></i>
-        </button>
-        <button type="button" class="widget-ctrl-btn" onclick="closeModularAiWidget()" title="Close AI Assistant">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- Quick Admin Data Query Chips -->
-    <div style="padding:8px 10px; border-bottom:1px solid var(--glass-border); display:flex; gap:6px; overflow-x:auto; flex-shrink:0; scrollbar-width:thin;">
-      <button type="button" class="ai-chip-btn" onclick="runAdminWebsiteAiPrompt('Full website executive report')"><i class="fa-solid fa-chart-pie"></i> Full Report</button>
-      <button type="button" class="ai-chip-btn" onclick="runAdminWebsiteAiPrompt('Pending dues and defaulters report')"><i class="fa-solid fa-triangle-exclamation"></i> Pending Dues</button>
-      <button type="button" class="ai-chip-btn" onclick="runAdminWebsiteAiPrompt('Vacant and occupied flats list')"><i class="fa-solid fa-door-open"></i> Vacant vs Occupied</button>
-      <button type="button" class="ai-chip-btn" onclick="runAdminWebsiteAiPrompt('All active and past renters summary')"><i class="fa-solid fa-users"></i> Renters Report</button>
-      <button type="button" class="ai-chip-btn" onclick="runAdminWebsiteAiPrompt('Kharch expenses and extra balance report')"><i class="fa-solid fa-wallet"></i> Kharch &amp; Funds</button>
-      <button type="button" class="ai-chip-btn" onclick="runAdminWebsiteAiPrompt('FD and Khet farmland portfolio report')"><i class="fa-solid fa-building-columns"></i> FD &amp; Khet</button>
-    </div>
-
-    <!-- AI Messages Output Area -->
-    <div id="modularAiMessagesBox" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:10px;"></div>
-
-    <!-- AI Query Input Bar -->
-    <div style="padding:10px; border-top:1px solid var(--glass-border); display:flex; gap:8px; background:var(--bg-input); flex-shrink:0;">
-      <input type="text" id="modularAiQueryInput" class="form-control" style="padding:9px 12px; font-size:0.79rem;" placeholder="Ask about any property, flat, renter, bill, FD, Khet..." onkeydown="if(event.key==='Enter'){event.preventDefault(); submitAdminWebsiteAiQuery();}">
-      <button type="button" class="btn-primary" style="width:auto; padding:0 15px; border-radius:10px; background:linear-gradient(135deg, #4f46e5, #ec4899);" onclick="submitAdminWebsiteAiQuery()">
-        <i class="fa-solid fa-paper-plane"></i>
-      </button>
-    </div>
   </div>
 
   <!-- MODULAR & MOVABLE PRIVATE LIVE CHAT WIDGET (1-ON-1 ISOLATED RENTER <-> ADMIN CHANNEL) -->
@@ -4517,7 +4838,7 @@
       <!-- Conversation Header Bar with [← Back to List] and Active Partner Info -->
       <div style="padding:8px 12px; border-bottom:1px solid var(--glass-border); background:var(--bg-input); display:flex; align-items:center; justify-content:space-between; gap:8px; flex-shrink:0;">
         <div style="display:flex; align-items:center; gap:8px; min-width:0;">
-          <button type="button" class="btn-ledger-action" style="padding:5px 9px; font-size:0.72rem; color:var(--accent-cyan); display:flex; align-items:center; gap:5px; flex-shrink:0; border:1px solid rgba(6,182,212,0.4); border-radius:8px;" onclick="returnToChatDirectory()" title="Return to users list">
+          <button type="button" id="btnBackToChatDirectory" class="btn-ledger-action admin-only" style="padding:5px 9px; font-size:0.72rem; color:var(--accent-cyan); display:flex; align-items:center; gap:5px; flex-shrink:0; border:1px solid rgba(6,182,212,0.4); border-radius:8px;" onclick="returnToChatDirectory()" title="Return to registered users list">
             <i class="fa-solid fa-arrow-left"></i> <span>All Users</span>
           </button>
           <div style="min-width:0;">
@@ -4530,7 +4851,7 @@
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
-          <button type="button" class="btn-ledger-action" style="padding:4px 8px; font-size:0.68rem; color:var(--accent-red);" onclick="clearCurrentAdminChatChannel()" title="Clear this chat history for both sides">
+          <button type="button" id="btnClearCurrentChat" class="btn-ledger-action admin-only" style="padding:4px 8px; font-size:0.68rem; color:var(--accent-red);" onclick="clearCurrentAdminChatChannel()" title="Admin Only: Clear this chat history for both sides">
             <i class="fa-solid fa-trash-can"></i> Clear
           </button>
         </div>
@@ -5679,93 +6000,204 @@
     </div>
   </div>
 
-  <!-- Add Property Modal -->
-  <div id="addPropertyModal" class="modal-overlay">
-    <div class="modal-window">
+  <!-- Add Property Modal (Requirement 3: Stylish & Well-Designed Executive Modal) -->
+  <div id="addPropertyModal" class="modal-overlay" onclick="if(event.target===this) closeModal('addPropertyModal')">
+    <div class="modal-window exec-modal-window">
       <button class="modal-close-btn" onclick="closeModal('addPropertyModal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 20px;">Add New Property</h3>
-      <div class="form-group">
-        <label>Property Name <span class="req-star">*</span> (Mandatory)</label>
-        <input type="text" id="newPropName" class="form-control" placeholder="e.g. Sunrise Enclave">
-      </div>
-      <div class="form-group">
-        <label>UPI Name (Optional)</label>
-        <input type="text" id="newPropUpiName" class="form-control" placeholder="Account Holder Name">
-      </div>
-      <div class="form-group">
-        <label>UPI ID (Optional)</label>
-        <input type="text" id="newPropUpiId" class="form-control" placeholder="e.g. name@okhdfcbank">
-      </div>
-      <div class="form-group">
-        <label>Contract Mobile Number <span class="req-star">*</span> (Max 10 Digits)</label>
-        <div style="display:flex; gap:8px;">
-          <select id="newPropCountryCode" class="form-control" style="width:115px; flex-shrink:0;">
-            <option value="+91" selected>🇮🇳 +91 (IN)</option>
-            <option value="+1">🇺🇸 +1 (US)</option>
-            <option value="+44">🇬🇧 +44 (UK)</option>
-            <option value="+971">🇦🇪 +971 (UAE)</option>
-            <option value="+61">🇦🇺 +61 (AU)</option>
-            <option value="+65">🇸🇬 +65 (SG)</option>
-            <option value="+966">🇸🇦 +966 (SA)</option>
-            <option value="+974">🇶🇦 +974 (QA)</option>
-            <option value="+1">🇨🇦 +1 (CA)</option>
-          </select>
-          <input
-            type="tel"
-            id="newPropContract"
-            class="form-control"
-            maxlength="10"
-            placeholder="10-digit mobile number"
-            oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10);"
-          >
+      <div class="exec-modal-header header-indigo">
+        <div class="exec-modal-icon" style="background:linear-gradient(135deg, #4f46e5, #7c3aed);">
+          <i class="fa-solid fa-building-circle-check"></i>
         </div>
-        <span style="font-size:0.72rem; color:var(--text-muted); margin-top:3px; display:block;">
-          Country code is automatically prefixed according to selection. Strictly max 10 digits.
-        </span>
+        <div class="exec-modal-title-wrap">
+          <span class="exec-modal-badge" style="background:rgba(99,102,241,0.2); color:#818cf8; border:1px solid rgba(99,102,241,0.4);">
+            <i class="fa-solid fa-plus-circle"></i> Portfolio Expansion
+          </span>
+          <h3 class="exec-modal-title">Add New Property</h3>
+          <p class="exec-modal-subtitle">Register a new residential or commercial building with default UPI &amp; support contact details.</p>
+        </div>
       </div>
-      <button class="btn-primary admin-only" onclick="submitAddProperty()">Save Property</button>
+
+      <div class="exec-modal-body">
+        <div class="exec-field-card">
+          <div class="exec-field-label-row">
+            <label class="exec-field-label" for="newPropName">
+              <i class="fa-solid fa-hotel" style="color:#6366f1;"></i> 1. Property / Building Name <span class="req-star">*</span>
+            </label>
+            <span class="exec-field-tag tag-required">Compulsory</span>
+          </div>
+          <span class="exec-field-purpose">Enter the official title of the building or apartment complex (displayed on your home page &amp; bills).</span>
+          <input type="text" id="newPropName" class="form-control" placeholder="e.g. Sunrise Enclave or Royal Residency">
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:12px;">
+          <div class="exec-field-card">
+            <div class="exec-field-label-row">
+              <label class="exec-field-label" for="newPropUpiName">
+                <i class="fa-solid fa-user-check" style="color:#10b981;"></i> 2. Receiver UPI Name
+              </label>
+              <span class="exec-field-tag tag-optional">Optional</span>
+            </div>
+            <span class="exec-field-purpose">Bank/UPI account holder name shown when tenants scan the rent QR code.</span>
+            <input type="text" id="newPropUpiName" class="form-control" placeholder="e.g. Rajesh Sharma">
+          </div>
+
+          <div class="exec-field-card">
+            <div class="exec-field-label-row">
+              <label class="exec-field-label" for="newPropUpiId">
+                <i class="fa-solid fa-qrcode" style="color:#06b6d4;"></i> 3. UPI ID (VPA)
+              </label>
+              <span class="exec-field-tag tag-optional">Optional</span>
+            </div>
+            <span class="exec-field-purpose">Your active UPI ID used to generate instant rent collection QR codes.</span>
+            <input type="text" id="newPropUpiId" class="form-control" placeholder="e.g. name@okhdfcbank">
+          </div>
+        </div>
+
+        <div class="exec-field-card">
+          <div class="exec-field-label-row">
+            <label class="exec-field-label" for="newPropContract">
+              <i class="fa-solid fa-phone-volume" style="color:#f59e0b;"></i> 4. Property Contact Mobile Number <span class="req-star">*</span>
+            </label>
+            <span class="exec-field-tag tag-required">Max 10 Digits</span>
+          </div>
+          <span class="exec-field-purpose">Primary contact number printed on tenant rent receipts for this property.</span>
+          <div style="display:flex; gap:8px;">
+            <select id="newPropCountryCode" class="form-control" style="width:122px; flex-shrink:0;">
+              <option value="+91" selected>🇮🇳 +91 (IN)</option>
+              <option value="+1">🇺🇸 +1 (US)</option>
+              <option value="+44">🇬🇧 +44 (UK)</option>
+              <option value="+971">🇦🇪 +971 (UAE)</option>
+              <option value="+61">🇦🇺 +61 (AU)</option>
+              <option value="+65">🇸🇬 +65 (SG)</option>
+              <option value="+966">🇸🇦 +966 (SA)</option>
+              <option value="+974">🇶🇦 +974 (QA)</option>
+              <option value="+1">🇨🇦 +1 (CA)</option>
+            </select>
+            <input
+              type="tel"
+              id="newPropContract"
+              class="form-control"
+              maxlength="10"
+              placeholder="Enter 10-digit mobile number"
+              oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10);"
+            >
+          </div>
+        </div>
+
+        <button class="exec-submit-btn admin-only" style="background:linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);" onclick="submitAddProperty()">
+          <i class="fa-solid fa-circle-check"></i> Save &amp; Create Property
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- Edit Property Modal (Requirement 7: Includes Select Property, Current Name, New Name, UPI Name, UPI ID & Contact Mobile Number) -->
-  <div id="editPropertyModal" class="modal-overlay">
-    <div class="modal-window">
+  <!-- Edit Property Modal (Requirement 4: Stylish Fields with Crystal-Clear Explanations for Every Box) -->
+  <div id="editPropertyModal" class="modal-overlay" onclick="if(event.target===this) closeModal('editPropertyModal')">
+    <div class="modal-window exec-modal-window">
       <button class="modal-close-btn" onclick="closeModal('editPropertyModal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 18px;"><i class="fa-solid fa-pen-to-square" style="color:var(--primary);"></i> Edit Property Details</h3>
-      <div class="form-group">
-        <label>Select Property</label>
-        <select id="editPropDropdown" class="form-control" onchange="syncEditPropDisplay()"></select>
+      <div class="exec-modal-header header-amber">
+        <div class="exec-modal-icon" style="background:linear-gradient(135deg, #f59e0b, #ea580c);">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </div>
+        <div class="exec-modal-title-wrap">
+          <span class="exec-modal-badge" style="background:rgba(245,158,11,0.2); color:#fbbf24; border:1px solid rgba(245,158,11,0.4);">
+            <i class="fa-solid fa-sliders"></i> Property Configuration
+          </span>
+          <h3 class="exec-modal-title">Edit Property Details</h3>
+          <p class="exec-modal-subtitle">Each box below is clearly labeled so you know exactly what information it controls across your flats &amp; receipts.</p>
+        </div>
       </div>
-      <div class="form-group">
-        <label>Current Name (Locked)</label>
-        <input type="text" id="editPropCurrentName" class="form-control" readonly>
+
+      <div class="exec-modal-body">
+        <!-- Box 1: Select Property -->
+        <div class="exec-field-card">
+          <div class="exec-field-label-row">
+            <label class="exec-field-label" for="editPropDropdown">
+              <i class="fa-solid fa-building-user" style="color:#f59e0b;"></i> 1. Select Property to Edit
+            </label>
+            <span class="exec-field-tag tag-required">Step 1</span>
+          </div>
+          <span class="exec-field-purpose">Choose which existing property from your portfolio you want to update. Selecting a property automatically loads its saved details below.</span>
+          <select id="editPropDropdown" class="form-control" onchange="syncEditPropDisplay()"></select>
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:12px;">
+          <!-- Box 2: Current Name (Locked) -->
+          <div class="exec-field-card">
+            <div class="exec-field-label-row">
+              <label class="exec-field-label" for="editPropCurrentName">
+                <i class="fa-solid fa-lock" style="color:#94a3b8;"></i> 2. Current Saved Name
+              </label>
+              <span class="exec-field-tag tag-locked">Read-Only</span>
+            </div>
+            <span class="exec-field-purpose">Displays the existing name currently stored in your database for reference.</span>
+            <input type="text" id="editPropCurrentName" class="form-control" readonly>
+          </div>
+
+          <!-- Box 3: New Name -->
+          <div class="exec-field-card">
+            <div class="exec-field-label-row">
+              <label class="exec-field-label" for="editPropNewName">
+                <i class="fa-solid fa-signature" style="color:#6366f1;"></i> 3. New / Updated Property Name <span class="req-star">*</span>
+              </label>
+              <span class="exec-field-tag tag-required">Compulsory</span>
+            </div>
+            <span class="exec-field-purpose">Type a new building name here to rename this property across all flats &amp; bills (or keep the same name).</span>
+            <input type="text" id="editPropNewName" class="form-control" placeholder="Enter updated property name">
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:12px;">
+          <!-- Box 4: UPI Name -->
+          <div class="exec-field-card">
+            <div class="exec-field-label-row">
+              <label class="exec-field-label" for="editPropUpiName">
+                <i class="fa-solid fa-id-badge" style="color:#10b981;"></i> 4. UPI Receiver / Payee Name
+              </label>
+              <span class="exec-field-tag tag-optional">Payment Info</span>
+            </div>
+            <span class="exec-field-purpose">The bank/UPI account holder name shown to renters when paying rent via QR code for this property.</span>
+            <input type="text" id="editPropUpiName" class="form-control" placeholder="Account Holder / Payee Name">
+          </div>
+
+          <!-- Box 5: UPI ID -->
+          <div class="exec-field-card">
+            <div class="exec-field-label-row">
+              <label class="exec-field-label" for="editPropUpiId">
+                <i class="fa-solid fa-qrcode" style="color:#06b6d4;"></i> 5. Property UPI ID (VPA)
+              </label>
+              <span class="exec-field-tag tag-optional">QR Generator</span>
+            </div>
+            <span class="exec-field-purpose">The UPI ID (e.g. name@okhdfcbank) used to generate scannable UPI QR codes on all bills for this property.</span>
+            <input type="text" id="editPropUpiId" class="form-control" placeholder="e.g. name@okhdfcbank">
+          </div>
+        </div>
+
+        <!-- Box 6: Contact Mobile Number -->
+        <div class="exec-field-card">
+          <div class="exec-field-label-row">
+            <label class="exec-field-label" for="editPropContractMobile">
+              <i class="fa-solid fa-phone" style="color:#ec4899;"></i> 6. Official Property Contact Mobile (+91 &amp; 10 Digits)
+            </label>
+            <span class="exec-field-tag tag-optional">Support Line</span>
+          </div>
+          <span class="exec-field-purpose">Landlord / manager mobile number printed on monthly rent receipts for all flats inside this property.</span>
+          <input
+            type="tel"
+            id="editPropContractMobile"
+            class="form-control"
+            maxlength="14"
+            inputmode="tel"
+            placeholder="+91 9876543210"
+            onfocus="ensurePlus91Prefix(this)"
+            oninput="this.value = formatIndianMobilePlus91(this.value)"
+          >
+        </div>
+
+        <button class="exec-submit-btn admin-only" style="background:linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);" onclick="submitEditProperty()">
+          <i class="fa-solid fa-floppy-disk"></i> Update Property Details
+        </button>
       </div>
-      <div class="form-group">
-        <label>New Name <span class="req-star">*</span></label>
-        <input type="text" id="editPropNewName" class="form-control" placeholder="Enter updated property name">
-      </div>
-      <div class="form-group">
-        <label>UPI Name</label>
-        <input type="text" id="editPropUpiName" class="form-control" placeholder="Account Holder / Payee Name">
-      </div>
-      <div class="form-group">
-        <label>UPI ID</label>
-        <input type="text" id="editPropUpiId" class="form-control" placeholder="e.g. name@okhdfcbank">
-      </div>
-      <div class="form-group">
-        <label>Contact Mobile Number (+91 &amp; 10 Digits)</label>
-        <input
-          type="tel"
-          id="editPropContractMobile"
-          class="form-control"
-          maxlength="14"
-          inputmode="tel"
-          placeholder="+91 9876543210"
-          onfocus="ensurePlus91Prefix(this)"
-          oninput="this.value = formatIndianMobilePlus91(this.value)"
-        >
-      </div>
-      <button class="btn-primary admin-only" onclick="submitEditProperty()">Update Property Details</button>
     </div>
   </div>
 
@@ -5785,66 +6217,154 @@
     </div>
   </div>
 
-  <!-- Add Flat Modal (Requirement 1: Strictly ONLY Property Section * and Flat Name * compulsory fields) -->
-  <div id="addFlatModal" class="modal-overlay">
-    <div class="modal-window">
+  <!-- Add Flat Modal (Requirement 5: Stylish & Beautifully Designed Pop-Up) -->
+  <div id="addFlatModal" class="modal-overlay" onclick="if(event.target===this) closeModal('addFlatModal')">
+    <div class="modal-window exec-modal-window" style="max-width: 500px !important;">
       <button class="modal-close-btn" onclick="closeModal('addFlatModal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 20px;"><i class="fa-solid fa-door-open" style="color:var(--primary);"></i> Add New Flat</h3>
-      <div class="form-group">
-        <label>Property Section <span class="req-star">*</span></label>
-        <select id="addFlatPropDropdown" class="form-control" required></select>
+      <div class="exec-modal-header header-cyan">
+        <div class="exec-modal-icon" style="background:linear-gradient(135deg, #0ea5e9, #2563eb);">
+          <i class="fa-solid fa-door-open"></i>
+        </div>
+        <div class="exec-modal-title-wrap">
+          <span class="exec-modal-badge" style="background:rgba(14,165,233,0.2); color:#38bdf8; border:1px solid rgba(14,165,233,0.4);">
+            <i class="fa-solid fa-layer-group"></i> Unit Creation
+          </span>
+          <h3 class="exec-modal-title">Add New Flat / Unit</h3>
+          <p class="exec-modal-subtitle">Create a new flat unit inside a selected property so you can assign renters and generate monthly bills.</p>
+        </div>
       </div>
-      <div class="form-group">
-        <label>Flat Name <span class="req-star">*</span></label>
-        <input type="text" id="addFlatNumber" class="form-control" placeholder="e.g. 101 or 3B" required>
+
+      <div class="exec-modal-body">
+        <div class="exec-field-card">
+          <div class="exec-field-label-row">
+            <label class="exec-field-label" for="addFlatPropDropdown">
+              <i class="fa-solid fa-building" style="color:#0ea5e9;"></i> 1. Property Location <span class="req-star">*</span>
+            </label>
+            <span class="exec-field-tag tag-required">Compulsory</span>
+          </div>
+          <span class="exec-field-purpose">Select the building/property where this new flat is located.</span>
+          <select id="addFlatPropDropdown" class="form-control" required></select>
+        </div>
+
+        <div class="exec-field-card">
+          <div class="exec-field-label-row">
+            <label class="exec-field-label" for="addFlatNumber">
+              <i class="fa-solid fa-hashtag" style="color:#6366f1;"></i> 2. Flat Name / Unit Number <span class="req-star">*</span>
+            </label>
+            <span class="exec-field-tag tag-required">Compulsory</span>
+          </div>
+          <span class="exec-field-purpose">Enter the unit identifier (such as 101, 202, G-1, or 3B).</span>
+          <input type="text" id="addFlatNumber" class="form-control" placeholder="e.g. 101, 204, or 3B" required>
+        </div>
+
+        <button class="exec-submit-btn admin-only" style="background:linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);" onclick="submitAddFlat()">
+          <i class="fa-solid fa-plus-circle"></i> Create &amp; Add Flat
+        </button>
       </div>
-      <button class="btn-primary admin-only" onclick="submitAddFlat()">Add Flat</button>
     </div>
   </div>
 
-  <!-- Add Renter Modal (Requirement 2 & 3: Location *, Flat Name *, Renter Name *, optional Mobile & Aadhaar + Live Aadhaar Lookup & In-Page Reactivation/Details) -->
-  <div id="addRenterModal" class="modal-overlay">
-    <div class="modal-window" style="max-width: 560px; max-height: 90vh; overflow-y: auto;">
+  <!-- Add Renter Modal (Requirements 2, 5 & 6: Stylish Design + Mobile Replaced with Compulsory Flat Rate + Electricity Rate Per Unit Added) -->
+  <div id="addRenterModal" class="modal-overlay" onclick="if(event.target===this) closeModal('addRenterModal')">
+    <div class="modal-window exec-modal-window" style="max-width: 600px !important;">
       <button class="modal-close-btn" onclick="closeModal('addRenterModal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 6px; display:flex; align-items:center; gap:8px;">
-        <i class="fa-solid fa-user-plus" style="color:#10b981;"></i> Add Renter
-      </h3>
-      <p style="font-size:0.76rem; color:var(--text-muted); margin-bottom:16px;">
-        Select the Property Location and Flat Name, then enter the Renter's Name. Only Location, Flat Name, and Renter Name (<span class="req-star">*</span>) are compulsory.
-      </p>
-
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-        <div class="form-group">
-          <label>Location (Property) <span class="req-star">*</span></label>
-          <select id="addRenterPropDropdown" class="form-control" onchange="populateAddRenterFlatsDropdown()" required></select>
+      <div class="exec-modal-header header-emerald">
+        <div class="exec-modal-icon" style="background:linear-gradient(135deg, #059669, #10b981);">
+          <i class="fa-solid fa-user-plus"></i>
         </div>
-        <div class="form-group">
-          <label>Flat Name / Number <span class="req-star">*</span></label>
-          <select id="addRenterFlatDropdown" class="form-control" required></select>
+        <div class="exec-modal-title-wrap">
+          <span class="exec-modal-badge" style="background:rgba(16,185,129,0.2); color:#34d399; border:1px solid rgba(16,185,129,0.4);">
+            <i class="fa-solid fa-id-card-clip"></i> Tenant Onboarding
+          </span>
+          <h3 class="exec-modal-title">Add New Renter</h3>
+          <p class="exec-modal-subtitle">Assign a renter to a vacant flat and configure their compulsory Flat Rate and Electricity Rate Per Unit.</p>
         </div>
       </div>
 
-      <div class="form-group">
-        <label>Renter Name <span class="req-star">*</span></label>
-        <input type="text" id="addRenterNameInput" class="form-control" placeholder="Enter Renter Full Name" required>
-      </div>
+      <div class="exec-modal-body">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
+          <div class="exec-field-card">
+            <div class="exec-field-label-row">
+              <label class="exec-field-label" for="addRenterPropDropdown">
+                <i class="fa-solid fa-location-dot" style="color:#10b981;"></i> 1. Location (Property) <span class="req-star">*</span>
+              </label>
+              <span class="exec-field-tag tag-required">Compulsory</span>
+            </div>
+            <span class="exec-field-purpose">Choose the property building for placement.</span>
+            <select id="addRenterPropDropdown" class="form-control" onchange="populateAddRenterFlatsDropdown()" required></select>
+          </div>
 
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-        <div class="form-group">
-          <label>Mobile Number (Optional)</label>
-          <input
-            type="tel"
-            id="addRenterMobileInput"
-            class="form-control"
-            maxlength="14"
-            inputmode="tel"
-            placeholder="+91 9876543210"
-            onfocus="ensurePlus91Prefix(this)"
-            oninput="this.value = formatIndianMobilePlus91(this.value)"
-          >
+          <div class="exec-field-card">
+            <div class="exec-field-label-row">
+              <label class="exec-field-label" for="addRenterFlatDropdown">
+                <i class="fa-solid fa-door-open" style="color:#06b6d4;"></i> 2. Vacant Flat Number <span class="req-star">*</span>
+              </label>
+              <span class="exec-field-tag tag-required">Compulsory</span>
+            </div>
+            <span class="exec-field-purpose">Only currently vacant flats are listed here.</span>
+            <select id="addRenterFlatDropdown" class="form-control" onchange="handleAddRenterFlatSelectionChange()" required></select>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Aadhaar Number (Optional)</label>
+
+        <div class="exec-field-card">
+          <div class="exec-field-label-row">
+            <label class="exec-field-label" for="addRenterNameInput">
+              <i class="fa-solid fa-user" style="color:#8b5cf6;"></i> 3. Renter Full Name <span class="req-star">*</span>
+            </label>
+            <span class="exec-field-tag tag-required">Compulsory</span>
+          </div>
+          <span class="exec-field-purpose">Full legal name of the tenant moving into the selected flat.</span>
+          <input type="text" id="addRenterNameInput" class="form-control" placeholder="Enter Renter Full Name" required>
+        </div>
+
+        <!-- Requirement 2 & 6: Compulsory Flat Rate (Monthly Rent) + Electricity Rate Per Unit -->
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
+          <div class="exec-field-card">
+            <div class="exec-field-label-row">
+              <label class="exec-field-label" for="addRenterFlatRateInput">
+                <i class="fa-solid fa-indian-rupee-sign" style="color:#10b981;"></i> 4. Flat Rate (Monthly Rent ₹) <span class="req-star">*</span>
+              </label>
+              <span class="exec-field-tag tag-required">Compulsory</span>
+            </div>
+            <span class="exec-field-purpose">Monthly base rent amount for this flat (required).</span>
+            <input
+              type="number"
+              id="addRenterFlatRateInput"
+              class="form-control"
+              min="1"
+              step="1"
+              placeholder="e.g. 8500"
+              required
+            >
+          </div>
+
+          <div class="exec-field-card">
+            <div class="exec-field-label-row">
+              <label class="exec-field-label" for="addRenterElecRateInput">
+                <i class="fa-solid fa-bolt" style="color:#f59e0b;"></i> 5. Electricity Rate Per Unit (₹)
+              </label>
+              <span class="exec-field-tag tag-optional">₹ / Unit</span>
+            </div>
+            <span class="exec-field-purpose">Per-unit electricity charge applied during monthly billing.</span>
+            <input
+              type="number"
+              id="addRenterElecRateInput"
+              class="form-control"
+              min="0"
+              step="0.01"
+              placeholder="e.g. 9 or 10.5"
+            >
+          </div>
+        </div>
+
+        <div class="exec-field-card">
+          <div class="exec-field-label-row">
+            <label class="exec-field-label" for="addRenterAadhaarInput">
+              <i class="fa-solid fa-address-card" style="color:#38bdf8;"></i> 6. Aadhaar Number (Auto-Fills Past Renter Record)
+            </label>
+            <span class="exec-field-tag tag-optional">Optional</span>
+          </div>
+          <span class="exec-field-purpose">12-digit Aadhaar (XXXX-XXXX-XXXX). If returning tenant, auto-loads their saved profile &amp; photos.</span>
           <input
             type="text"
             id="addRenterAadhaarInput"
@@ -5856,76 +6376,76 @@
             onchange="this.value = formatAadhaarWithHyphens(this.value); handleAddRenterModalAadhaarLookup(this.value)"
           >
         </div>
+
+        <!-- Live Aadhaar Match Display & Reactivate Button Right Inside Add Renter Modal -->
+        <div id="addRenterAadhaarMatchBox" style="display:none; margin-bottom:4px;"></div>
+
+        <!-- In-Page Complete Details Form (Appears when Reactivate is clicked on the Add Renter page itself) -->
+        <div id="addRenterExpandedDetailsBox" style="display:none; background:var(--bg-input); border:1.5px solid var(--accent-green); border-radius:14px; padding:14px; margin-bottom:4px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--glass-border);">
+            <span style="font-size:0.8rem; font-weight:800; color:var(--accent-green); display:flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-id-card-clip"></i> Complete Renter Details (Reactivate / Edit Here)
+            </span>
+            <span class="badge-paid" style="font-size:0.66rem;">Active Placement</span>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div class="form-group" style="margin-bottom:8px;">
+              <label style="font-size:0.74rem;">Alternate Mobile Number</label>
+              <input
+                type="tel"
+                id="addRenterAltMobileInput"
+                class="form-control"
+                maxlength="14"
+                inputmode="tel"
+                placeholder="+91 9876543210"
+                onfocus="ensurePlus91Prefix(this)"
+                oninput="this.value = formatIndianMobilePlus91(this.value)"
+              >
+            </div>
+            <div class="form-group" style="margin-bottom:8px;">
+              <label style="font-size:0.74rem;">Total Family Members</label>
+              <input type="number" id="addRenterFamilyInput" class="form-control" value="1" min="1">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:8px;">
+            <label style="font-size:0.74rem;">Permanent Address</label>
+            <input type="text" id="addRenterAddressInput" class="form-control" placeholder="Enter complete permanent address">
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div class="form-group" style="margin-bottom:8px;">
+              <label style="font-size:0.74rem;">Join Date</label>
+              <input type="date" id="addRenterJoinDateInput" class="form-control">
+            </div>
+            <div class="form-group" style="margin-bottom:8px;">
+              <label style="font-size:0.74rem;">Renter Status</label>
+              <select id="addRenterStatusInput" class="form-control">
+                <option value="Active" selected>Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:4px;">
+            <div style="background:rgba(56,189,248,0.08); border:1px dashed rgba(56,189,248,0.4); border-radius:10px; padding:8px; text-align:center;">
+              <div style="font-size:0.7rem; font-weight:800; color:#38bdf8; margin-bottom:4px;"><i class="fa-solid fa-user"></i> Renter Profile Photo</div>
+              <img id="addRenterProfilePicPreview" src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22150%22%20height%3D%22150%22%20viewBox%3D%220%200%20150%20150%22%3E%3Crect%20width%3D%22150%22%20height%3D%22150%22%20fill%3D%22%231e293b%22%2F%3E%3Ccircle%20cx%3D%2275%22%20cy%3D%2254%22%20r%3D%2226%22%20fill%3D%22%23475569%22%2F%3E%3Cpath%20d%3D%22M30%20132c0-25%2020-42%2045-42s45%2017%2045%2042%22%20fill%3D%22%23475569%22%2F%3E%3Ctext%20x%3D%2275%22%20y%3D%22144%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-weight%3D%22bold%22%20fill%3D%22%2394a3b8%22%20text-anchor%3D%22middle%22%3ENo%20Profile%20Photo%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Profile" style="width:64px; height:64px; object-fit:cover; border-radius:10px; margin-bottom:6px; border:1px solid var(--glass-border);">
+              <input type="file" id="addRenterProfilePicFile" accept="image/*" class="form-control" style="font-size:0.68rem; padding:4px;" onchange="handleAddRenterModalPhotoSelect(this, 'profile')">
+            </div>
+            <div style="background:rgba(16,185,129,0.08); border:1px dashed rgba(16,185,129,0.4); border-radius:10px; padding:8px; text-align:center;">
+              <div style="font-size:0.7rem; font-weight:800; color:#10b981; margin-bottom:4px;"><i class="fa-solid fa-id-card"></i> Aadhaar Card Photo</div>
+              <img id="addRenterIdentityPicPreview" src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22300%22%20height%3D%22150%22%20viewBox%3D%220%200%20300%20150%22%3E%3Crect%20width%3D%22300%22%20height%3D%22150%22%20rx%3D%228%22%20fill%3D%22%231e293b%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%2225%22%20width%3D%2270%22%20height%3D%2275%22%20rx%3D%226%22%20fill%3D%22%23334155%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2252%22%20r%3D%2214%22%20fill%3D%22%2364748b%22%2F%3E%3Cpath%20d%3D%22M35%2090c0-11%209-18%2020-18s20%207%2020%2018%22%20fill%3D%22%2364748b%22%2F%3E%3Crect%20x%3D%22108%22%20y%3D%2232%22%20width%3D%22165%22%20height%3D%2212%22%20rx%3D%224%22%20fill%3D%22%23475569%22%2F%3E%3Crect%20x%3D%22108%22%20y%3D%2254%22%20width%3D%22130%22%20height%3D%2210%22%20rx%3D%224%22%20fill%3D%22%23334155%22%2F%3E%3Crect%20x%3D%22108%22%20y%3D%2274%22%20width%3D%22150%22%20height%3D%2210%22%20rx%3D%224%22%20fill%3D%22%23334155%22%2F%3E%3Ctext%20x%3D%22150%22%20y%3D%22130%22%20font-family%3D%22sans-serif%22%20font-size%3D%2212%22%20font-weight%3D%22bold%22%20fill%3D%22%2394a3b8%22%20text-anchor%3D%22middle%22%3ENo%20Aadhaar%20Uploaded%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Aadhaar" style="width:96px; height:64px; object-fit:cover; border-radius:10px; margin-bottom:6px; border:1px solid var(--glass-border);">
+              <input type="file" id="addRenterIdentityPicFile" accept="image/*" class="form-control" style="font-size:0.68rem; padding:4px;" onchange="handleAddRenterModalPhotoSelect(this, 'identity')">
+            </div>
+          </div>
+        </div>
+
+        <button class="exec-submit-btn admin-only" style="background:linear-gradient(135deg, #059669 0%, #10b981 100%);" onclick="submitAddRenterModal()">
+          <i class="fa-solid fa-user-check"></i> Save &amp; Add Renter
+        </button>
       </div>
-
-      <!-- Requirement 3: Live Aadhaar Match Display & Reactivate Button Right Inside Add Renter Modal -->
-      <div id="addRenterAadhaarMatchBox" style="display:none; margin-bottom:14px;"></div>
-
-      <!-- Requirement 3: In-Page Complete Details Form (Appears when Reactivate is clicked on the Add Renter page itself) -->
-      <div id="addRenterExpandedDetailsBox" style="display:none; background:var(--bg-input); border:1.5px solid var(--accent-green); border-radius:14px; padding:14px; margin-bottom:14px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--glass-border);">
-          <span style="font-size:0.8rem; font-weight:800; color:var(--accent-green); display:flex; align-items:center; gap:6px;">
-            <i class="fa-solid fa-id-card-clip"></i> Complete Renter Details (Reactivate / Edit Here)
-          </span>
-          <span class="badge-paid" style="font-size:0.66rem;">Active Placement</span>
-        </div>
-
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-          <div class="form-group" style="margin-bottom:8px;">
-            <label style="font-size:0.74rem;">Alternate Mobile Number</label>
-            <input
-              type="tel"
-              id="addRenterAltMobileInput"
-              class="form-control"
-              maxlength="14"
-              inputmode="tel"
-              placeholder="+91 9876543210"
-              onfocus="ensurePlus91Prefix(this)"
-              oninput="this.value = formatIndianMobilePlus91(this.value)"
-            >
-          </div>
-          <div class="form-group" style="margin-bottom:8px;">
-            <label style="font-size:0.74rem;">Total Family Members</label>
-            <input type="number" id="addRenterFamilyInput" class="form-control" value="1" min="1">
-          </div>
-        </div>
-
-        <div class="form-group" style="margin-bottom:8px;">
-          <label style="font-size:0.74rem;">Permanent Address</label>
-          <input type="text" id="addRenterAddressInput" class="form-control" placeholder="Enter complete permanent address">
-        </div>
-
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-          <div class="form-group" style="margin-bottom:8px;">
-            <label style="font-size:0.74rem;">Join Date</label>
-            <input type="date" id="addRenterJoinDateInput" class="form-control">
-          </div>
-          <div class="form-group" style="margin-bottom:8px;">
-            <label style="font-size:0.74rem;">Renter Status</label>
-            <select id="addRenterStatusInput" class="form-control">
-              <option value="Active" selected>Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
-          </div>
-        </div>
-
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:4px;">
-          <div style="background:rgba(56,189,248,0.08); border:1px dashed rgba(56,189,248,0.4); border-radius:10px; padding:8px; text-align:center;">
-            <div style="font-size:0.7rem; font-weight:800; color:#38bdf8; margin-bottom:4px;"><i class="fa-solid fa-user"></i> Renter Profile Photo</div>
-            <img id="addRenterProfilePicPreview" src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22150%22%20height%3D%22150%22%20viewBox%3D%220%200%20150%20150%22%3E%3Crect%20width%3D%22150%22%20height%3D%22150%22%20fill%3D%22%231e293b%22%2F%3E%3Ccircle%20cx%3D%2275%22%20cy%3D%2254%22%20r%3D%2226%22%20fill%3D%22%23475569%22%2F%3E%3Cpath%20d%3D%22M30%20132c0-25%2020-42%2045-42s45%2017%2045%2042%22%20fill%3D%22%23475569%22%2F%3E%3Ctext%20x%3D%2275%22%20y%3D%22144%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-weight%3D%22bold%22%20fill%3D%22%2394a3b8%22%20text-anchor%3D%22middle%22%3ENo%20Profile%20Photo%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Profile" style="width:64px; height:64px; object-fit:cover; border-radius:10px; margin-bottom:6px; border:1px solid var(--glass-border);">
-            <input type="file" id="addRenterProfilePicFile" accept="image/*" class="form-control" style="font-size:0.68rem; padding:4px;" onchange="handleAddRenterModalPhotoSelect(this, 'profile')">
-          </div>
-          <div style="background:rgba(16,185,129,0.08); border:1px dashed rgba(16,185,129,0.4); border-radius:10px; padding:8px; text-align:center;">
-            <div style="font-size:0.7rem; font-weight:800; color:#10b981; margin-bottom:4px;"><i class="fa-solid fa-id-card"></i> Aadhaar Card Photo</div>
-            <img id="addRenterIdentityPicPreview" src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22300%22%20height%3D%22150%22%20viewBox%3D%220%200%20300%20150%22%3E%3Crect%20width%3D%22300%22%20height%3D%22150%22%20rx%3D%228%22%20fill%3D%22%231e293b%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%2225%22%20width%3D%2270%22%20height%3D%2275%22%20rx%3D%226%22%20fill%3D%22%23334155%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2252%22%20r%3D%2214%22%20fill%3D%22%2364748b%22%2F%3E%3Cpath%20d%3D%22M35%2090c0-11%209-18%2020-18s20%207%2020%2018%22%20fill%3D%22%2364748b%22%2F%3E%3Crect%20x%3D%22108%22%20y%3D%2232%22%20width%3D%22165%22%20height%3D%2212%22%20rx%3D%224%22%20fill%3D%22%23475569%22%2F%3E%3Crect%20x%3D%22108%22%20y%3D%2254%22%20width%3D%22130%22%20height%3D%2210%22%20rx%3D%224%22%20fill%3D%22%23334155%22%2F%3E%3Crect%20x%3D%22108%22%20y%3D%2274%22%20width%3D%22150%22%20height%3D%2210%22%20rx%3D%224%22%20fill%3D%22%23334155%22%2F%3E%3Ctext%20x%3D%22150%22%20y%3D%22130%22%20font-family%3D%22sans-serif%22%20font-size%3D%2212%22%20font-weight%3D%22bold%22%20fill%3D%22%2394a3b8%22%20text-anchor%3D%22middle%22%3ENo%20Aadhaar%20Uploaded%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Aadhaar" style="width:96px; height:64px; object-fit:cover; border-radius:10px; margin-bottom:6px; border:1px solid var(--glass-border);">
-            <input type="file" id="addRenterIdentityPicFile" accept="image/*" class="form-control" style="font-size:0.68rem; padding:4px;" onchange="handleAddRenterModalPhotoSelect(this, 'identity')">
-          </div>
-        </div>
-      </div>
-
-      <button class="btn-primary admin-only" style="background:linear-gradient(135deg, #059669, #10b981);" onclick="submitAddRenterModal()">
-        <i class="fa-solid fa-user-check"></i> Save &amp; Add Renter
-      </button>
     </div>
   </div>
 
@@ -8590,6 +9110,15 @@
           saveDbSnapshotToCache();
           renderRegisteredUsersList();
           renderAllDashboardUI();
+          if (typeof renderChatDirectoryRoster === "function") {
+            if (isBlocking && activeSelectedChatChannelId && activeSelectedChatChannelId.toLowerCase().includes(targetClean.replace(/[^a-z0-9_-]/g, "_"))) {
+              activeSelectedChatChannelId = "";
+              if (typeof returnToChatDirectory === "function") returnToChatDirectory();
+            } else {
+              renderChatDirectoryRoster();
+            }
+          }
+          if (typeof updateLiveChatUnreadBadge === "function") updateLiveChatUnreadBadge();
 
           triggerSideToast(
             isBlocking ? "Account Blocked" : "Account Unblocked",
@@ -9870,8 +10399,7 @@ function formatMonthLabel(rawVal) {
         }
         /* Requirement 5: Automatically hide Live Chat & Website AI widgets whenever Flat Details Modal is open */
         body.flat-details-open #bottomRightFloatingDock,
-        body.flat-details-open #modularLiveChatWidget,
-        body.flat-details-open #modularAiWidget {
+        body.flat-details-open #modularLiveChatWidget {
           display: none !important;
           visibility: hidden !important;
           pointer-events: none !important;
@@ -10169,7 +10697,7 @@ function formatMonthLabel(rawVal) {
         if (!renterAadhaar || !primaryRenter) {
           if (flatsContainer) {
             flatsContainer.innerHTML = `
-              <div class="empty-flats-prompt" style="border:1.5px solid rgba(192,132,252,0.5); background:linear-gradient(135deg, rgba(15,23,42,0.9), rgba(49,46,129,0.65));">
+              <div class="empty-flats-prompt" style="border:1.5px solid rgba(192,132,252,0.55);">
                 <i class="fa-solid fa-id-card-clip" style="color:#c084fc;"></i>
                 <h3>No Renter Profile Linked to Your Aadhaar Card</h3>
                 <p>Your Renter account ${renterAadhaar ? `(Aadhaar: ${renterAadhaar})` : ""} does not match any tenant Aadhaar record yet. Please ask the Admin to link your 12-digit Aadhaar number in Settings.</p>
@@ -10191,40 +10719,55 @@ function formatMonthLabel(rawVal) {
           WaterRate: primaryRenter.WaterFixedRate || 0
         };
 
-        // Render a dedicated Aadhaar-scoped Renter Portal Card on the dashboard with synced Help Center Contact Info
+        // Render a dedicated Aadhaar-scoped Renter Portal Card on the dashboard (Requirements 8 & 9: Theme-Adaptive Typography + No Duplicate Help Center Button)
         const myBills = (DB.bills || []).filter(b => isBillLinkedToLoggedInRenterAadhaar(b));
-        const helpCfg = typeof getAdminContactSettings === "function" ? getAdminContactSettings() : { name: "", phone: "", whatsapp: "", mobile: "", email: "", address: "" };
-        const syncedSupportPhone = helpCfg.phone || helpCfg.whatsapp || helpCfg.mobile || "N/A";
-        const syncedSupportName = helpCfg.name || "N/A";
+        const safePropArg = String(targetProp).replace(/'/g, "\\'");
+        const safeFlatArg = String(targetFlat).replace(/'/g, "\\'");
+        const flatRentDisplay = Number(assignedFlatObj.RentAmount || primaryRenter.RentAmount || 0).toLocaleString("en-IN");
         if (flatsContainer) {
           flatsContainer.style.display = "";
           flatsContainer.innerHTML = `
-            <div class="flat-card" style="grid-column: 1 / -1; max-width: 760px; margin: 0 auto; width: 100%; cursor: pointer; border: 2px solid rgba(192, 132, 252, 0.55) !important;" onclick="openFlatDetailsModal(findFlatObject('${String(targetProp).replace(/'/g, "\\'")}', '${String(targetFlat).replace(/'/g, "\\'")}') || {PropertyName:'${String(targetProp).replace(/'/g, "\\'")}', FlatName:'${String(targetFlat).replace(/'/g, "\\'")}'})">
-              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+            <div class="renter-home-portal-card" onclick="openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'})">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
                 <div style="display:flex; align-items:center; gap:12px;">
-                  <div style="width:48px; height:48px; border-radius:14px; background:linear-gradient(135deg, #8b5cf6, #ec4899); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.3rem;">
+                  <div style="width:48px; height:48px; border-radius:14px; background:linear-gradient(135deg, #8b5cf6, #ec4899); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.3rem; flex-shrink:0;">
                     <i class="fa-solid fa-id-card-clip"></i>
                   </div>
                   <div>
-                    <div style="font-size:0.72rem; font-weight:800; color:#c084fc; text-transform:uppercase; letter-spacing:0.5px;">Aadhaar-Verified Renter Portal</div>
-                    <h3 style="margin:2px 0 0 0; font-size:1.18rem; color:#fff;">${primaryRenter.RenterName || activeUserFullName} — ${targetProp} (Flat ${targetFlat})</h3>
+                    <div class="renter-home-portal-tag">Aadhaar-Verified Renter Portal</div>
+                    <h3 class="renter-home-portal-title">${primaryRenter.RenterName || activeUserFullName} — ${targetProp} (Flat ${targetFlat})</h3>
                   </div>
                 </div>
                 <span class="badge-paid" style="font-size:0.75rem;"><i class="fa-solid fa-shield-halved"></i> Aadhaar: ${renterAadhaar}</span>
               </div>
-              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap:10px; background:rgba(15,23,42,0.65); padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); font-size:0.8rem; margin-bottom:12px;">
-                <div><span style="color:var(--text-muted);">Renter Name:</span> <strong style="color:#fff;">${primaryRenter.RenterName || '--'}</strong></div>
-                <div><span style="color:var(--text-muted);">Aadhaar Card:</span> <strong style="color:#38bdf8;">${renterAadhaar}</strong></div>
-                <div><span style="color:var(--text-muted);">Mobile No.:</span> <strong style="color:#34d399;">${primaryRenter.MobileNumber || '--'}</strong></div>
-                <div><span style="color:var(--text-muted);">My Historical Receipts:</span> <strong style="color:#fbbf24;">${myBills.length} Receipt${myBills.length === 1 ? '' : 's'}</strong></div>
-                <div><span style="color:var(--text-muted);">Help Center (${syncedSupportName}):</span> <strong style="color:#22c55e;">${syncedSupportPhone}</strong></div>
+              <div class="renter-home-info-grid">
+                <div class="renter-home-info-item">
+                  <span class="renter-home-label">Renter Name</span>
+                  <strong class="renter-home-val">${primaryRenter.RenterName || "--"}</strong>
+                </div>
+                <div class="renter-home-info-item">
+                  <span class="renter-home-label">Property &amp; Flat</span>
+                  <strong class="renter-home-val val-emerald">${targetProp} • Flat ${targetFlat}</strong>
+                </div>
+                <div class="renter-home-info-item">
+                  <span class="renter-home-label">Aadhaar Card Number</span>
+                  <strong class="renter-home-val val-cyan">${renterAadhaar}</strong>
+                </div>
+                <div class="renter-home-info-item">
+                  <span class="renter-home-label">Monthly Flat Rate</span>
+                  <strong class="renter-home-val val-green">₹${flatRentDisplay}</strong>
+                </div>
+                <div class="renter-home-info-item">
+                  <span class="renter-home-label">Historical Receipts</span>
+                  <strong class="renter-home-val val-amber">${myBills.length} Receipt${myBills.length === 1 ? "" : "s"}</strong>
+                </div>
               </div>
               <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <button type="button" class="btn-primary" style="flex:1; background:linear-gradient(135deg, #6366f1, #8b5cf6);">
-                  <i class="fa-solid fa-receipt"></i> View My Receipts &amp; My Profile
+                <button type="button" class="btn-primary" style="flex:1; background:linear-gradient(135deg, #6366f1, #8b5cf6);" onclick="event.stopPropagation(); openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'});">
+                  <i class="fa-solid fa-receipt"></i> View My Receipt (${myBills.length})
                 </button>
-                <button type="button" class="btn-primary" style="flex:1; background:linear-gradient(135deg, #0ea5e9, #0284c7);" onclick="event.stopPropagation(); openContactUsModal();">
-                  <i class="fa-solid fa-headset"></i> Renter Help Center (${syncedSupportPhone})
+                <button type="button" class="btn-primary" style="flex:1; background:linear-gradient(135deg, #059669, #10b981);" onclick="event.stopPropagation(); openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'}); setTimeout(() => { if (typeof switchFlatTabToProfile === 'function') switchFlatTabToProfile(); }, 30);">
+                  <i class="fa-solid fa-user-check"></i> My Profile
                 </button>
               </div>
             </div>
@@ -10991,8 +11534,24 @@ function formatMonthLabel(rawVal) {
     }
 
     function selectProperty(name) {
-      selectedProperty = name;
+      const clickedClean = String(name || "").trim().toLowerCase();
+      const currentClean = String(selectedProperty || "").trim().toLowerCase();
       const flatsContainer = document.getElementById("flatsList");
+
+      // Requirement 12: If this property is already selected, tapping it one more time collapses/hides all its flats
+      if (selectedProperty && clickedClean === currentClean) {
+        selectedProperty = null;
+        sessionStorage.removeItem("active_selected_property");
+        if (flatsContainer) {
+          flatsContainer.innerHTML = "";
+          flatsContainer.style.display = "none";
+        }
+        renderAllDashboardUI();
+        return;
+      }
+
+      selectedProperty = name;
+      sessionStorage.setItem("active_selected_property", name);
       if (flatsContainer) flatsContainer.style.display = "";
       renderAllDashboardUI();
     }
@@ -19621,13 +20180,15 @@ function formatMonthLabel(rawVal) {
       addRenterModalIdUrl = "";
 
       const nameEl = document.getElementById("addRenterNameInput");
-      const mobEl = document.getElementById("addRenterMobileInput");
+      const flatRateEl = document.getElementById("addRenterFlatRateInput");
+      const elecRateEl = document.getElementById("addRenterElecRateInput");
       const aadhEl = document.getElementById("addRenterAadhaarInput");
       const matchBox = document.getElementById("addRenterAadhaarMatchBox");
       const expBox = document.getElementById("addRenterExpandedDetailsBox");
 
       if (nameEl) nameEl.value = "";
-      if (mobEl) mobEl.value = "+91";
+      if (flatRateEl) flatRateEl.value = "";
+      if (elecRateEl) elecRateEl.value = "";
       if (aadhEl) aadhEl.value = "";
       if (matchBox) {
         matchBox.style.display = "none";
@@ -19656,7 +20217,7 @@ function formatMonthLabel(rawVal) {
       openModal("addRenterModal");
     }
 
-    // Requirement 2: Inside "Add Renter" under Plus (+), ONLY display flats that are currently VACANT
+    // Inside "Add Renter" under Plus (+), ONLY display flats that are currently VACANT
     function populateAddRenterFlatsDropdown() {
       const propName = document.getElementById("addRenterPropDropdown")?.value || "";
       const flatSelect = document.getElementById("addRenterFlatDropdown");
@@ -19691,7 +20252,24 @@ function formatMonthLabel(rawVal) {
       ).join("");
     }
 
-    // Requirement 3: Auto-hyphenate Aadhaar (XXXX-XXXX-XXXX) & Auto-Fill Name + Mobile Number when a previous renter's Aadhaar is entered
+    // Auto-fill Flat Rate & Electricity Rate Per Unit if the selected flat already has saved rates
+    function handleAddRenterFlatSelectionChange() {
+      const propName = (document.getElementById("addRenterPropDropdown")?.value || "").trim();
+      const flatName = (document.getElementById("addRenterFlatDropdown")?.value || "").trim();
+      if (!propName || !flatName) return;
+      const flatObj = findFlatObject(propName, flatName);
+      if (!flatObj) return;
+      const flatRateEl = document.getElementById("addRenterFlatRateInput");
+      const elecRateEl = document.getElementById("addRenterElecRateInput");
+      if (flatRateEl && !flatRateEl.value && Number(flatObj.RentAmount) > 0) {
+        flatRateEl.value = Number(flatObj.RentAmount);
+      }
+      if (elecRateEl && !elecRateEl.value && flatObj.ElecRate !== undefined && flatObj.ElecRate !== "") {
+        elecRateEl.value = flatObj.ElecRate;
+      }
+    }
+
+    // Auto-hyphenate Aadhaar (XXXX-XXXX-XXXX) & Auto-Fill Name, Flat Rate, Electricity Rate when a previous renter's Aadhaar is entered
     function handleAddRenterModalAadhaarLookup(rawVal) {
       const aadhInput = document.getElementById("addRenterAadhaarInput");
       const digits = String(rawVal !== undefined ? rawVal : (aadhInput ? aadhInput.value : "")).replace(/\D/g, "").slice(0, 12);
@@ -19711,7 +20289,6 @@ function formatMonthLabel(rawVal) {
         return;
       }
 
-      // Find all renter records matching this Aadhaar number (prioritizing previous / departed renters, or active renters)
       const matchingRecords = (DB.renters || []).filter(r => {
         const rAadhaar = String(r.IdentityDocNumber || "").replace(/\D/g, "");
         if (!rAadhaar) return false;
@@ -19726,7 +20303,6 @@ function formatMonthLabel(rawVal) {
         return;
       }
 
-      // Prefer exact 12-digit match or the most complete/recent record
       matchingRecords.sort((a, b) => {
         const aExact = String(a.IdentityDocNumber || "").replace(/\D/g, "") === digits ? 1 : 0;
         const bExact = String(b.IdentityDocNumber || "").replace(/\D/g, "") === digits ? 1 : 0;
@@ -19740,9 +20316,9 @@ function formatMonthLabel(rawVal) {
       addRenterModalMatchedRecord = best;
       addRenterModalIsReactivating = true;
 
-      // Requirement 1 & 3: Automatically fill Name, Mobile, Alternate Mobile, Address, Family Members, and Photos immediately when a previous renter's Aadhaar matches!
       const nameEl = document.getElementById("addRenterNameInput");
-      const mobEl = document.getElementById("addRenterMobileInput");
+      const flatRateEl = document.getElementById("addRenterFlatRateInput");
+      const elecRateEl = document.getElementById("addRenterElecRateInput");
       const altMobEl = document.getElementById("addRenterAltMobileInput");
       const addrEl = document.getElementById("addRenterAddressInput");
       const famEl = document.getElementById("addRenterFamilyInput");
@@ -19752,8 +20328,11 @@ function formatMonthLabel(rawVal) {
       if (nameEl && best.RenterName) {
         nameEl.value = best.RenterName;
       }
-      if (mobEl && best.MobileNumber) {
-        mobEl.value = formatIndianMobilePlus91(best.MobileNumber);
+      if (flatRateEl && !flatRateEl.value && Number(best.RentAmount) > 0) {
+        flatRateEl.value = Number(best.RentAmount);
+      }
+      if (elecRateEl && !elecRateEl.value && best.ElecFixedRate !== undefined && best.ElecFixedRate !== "") {
+        elecRateEl.value = best.ElecFixedRate;
       }
       if (altMobEl && best.AltMobileNumber) {
         altMobEl.value = best.AltMobileNumber;
@@ -19776,7 +20355,7 @@ function formatMonthLabel(rawVal) {
         : `<span class="badge-unpaid" style="font-size:0.68rem; padding:3px 9px;"><i class="fa-solid fa-clock-rotate-left"></i> Past / Returning Renter</span>`;
 
       const allStaysText = matchingRecords
-        .map(r => `${r.PropertyName || '--'} (Flat ${r.FlatName || '--'} • ${String(r.Status || 'Active')})`)
+        .map(r => `${r.PropertyName || "--"} (Flat ${r.FlatName || "--"} • ${String(r.Status || "Active")})`)
         .filter((v, idx, arr) => arr.indexOf(v) === idx)
         .join(" | ");
 
@@ -19789,7 +20368,7 @@ function formatMonthLabel(rawVal) {
             <img src="${profSrc}" alt="Renter" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid #10b981; flex-shrink:0;" />
             <div>
               <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <strong style="font-size:0.95rem; color:var(--text-main);">${best.RenterName || 'Saved Renter'}</strong>
+                <strong style="font-size:0.95rem; color:var(--text-main);">${best.RenterName || "Saved Renter"}</strong>
                 ${statusBadgeHtml}
               </div>
               <div style="font-size:0.74rem; color:#10b981; font-weight:800; margin-top:2px;">
@@ -19808,10 +20387,10 @@ function formatMonthLabel(rawVal) {
         </div>
 
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(155px, 1fr)); gap:8px; font-size:0.76rem; background:var(--bg-input); padding:10px; border-radius:10px; border:1px solid var(--glass-border);">
-          <div><span style="color:var(--text-muted);">Auto-Filled Name:</span> <strong style="color:var(--text-main);">${best.RenterName || '--'}</strong></div>
-          <div><span style="color:var(--text-muted);">Auto-Filled Mobile:</span> <strong style="color:#10b981;">${best.MobileNumber || '--'}</strong></div>
+          <div><span style="color:var(--text-muted);">Auto-Filled Name:</span> <strong style="color:var(--text-main);">${best.RenterName || "--"}</strong></div>
+          <div><span style="color:var(--text-muted);">Previous Rent:</span> <strong style="color:#10b981;">₹${Number(best.RentAmount || 0).toLocaleString("en-IN")}</strong></div>
           <div><span style="color:var(--text-muted);">Aadhaar No.:</span> <strong style="color:#38bdf8;">${formatAadhaarWithHyphens(best.IdentityDocNumber || digits)}</strong></div>
-          <div><span style="color:var(--text-muted);">Photos &amp; Docs:</span> <strong style="color:#10b981;">${(addRenterModalProfUrl || addRenterModalIdUrl) ? 'Loaded Automatically' : 'Standard'}</strong></div>
+          <div><span style="color:var(--text-muted);">Photos &amp; Docs:</span> <strong style="color:#10b981;">${(addRenterModalProfUrl || addRenterModalIdUrl) ? "Loaded Automatically" : "Standard"}</strong></div>
           <div><span style="color:var(--text-muted);">Previous Stays:</span> <strong style="color:#a78bfa;">${allStaysText}</strong></div>
         </div>
       `;
@@ -19824,7 +20403,8 @@ function formatMonthLabel(rawVal) {
       addRenterModalIsReactivating = true;
 
       const nameEl = document.getElementById("addRenterNameInput");
-      const mobEl = document.getElementById("addRenterMobileInput");
+      const flatRateEl = document.getElementById("addRenterFlatRateInput");
+      const elecRateEl = document.getElementById("addRenterElecRateInput");
       const aadhEl = document.getElementById("addRenterAadhaarInput");
       const altMobEl = document.getElementById("addRenterAltMobileInput");
       const addrEl = document.getElementById("addRenterAddressInput");
@@ -19836,7 +20416,8 @@ function formatMonthLabel(rawVal) {
       const expBox = document.getElementById("addRenterExpandedDetailsBox");
 
       if (nameEl) nameEl.value = rec.RenterName || "";
-      if (mobEl) mobEl.value = rec.MobileNumber ? formatIndianMobilePlus91(rec.MobileNumber) : "+91";
+      if (flatRateEl && !flatRateEl.value && Number(rec.RentAmount) > 0) flatRateEl.value = Number(rec.RentAmount);
+      if (elecRateEl && !elecRateEl.value && rec.ElecFixedRate !== undefined && rec.ElecFixedRate !== "") elecRateEl.value = rec.ElecFixedRate;
       if (aadhEl && rec.IdentityDocNumber) aadhEl.value = formatAadhaarWithHyphens(rec.IdentityDocNumber);
       if (altMobEl) altMobEl.value = rec.AltMobileNumber || "";
       if (addrEl) addrEl.value = rec.Address || "";
@@ -19854,7 +20435,7 @@ function formatMonthLabel(rawVal) {
         expBox.style.display = "block";
         expBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
-      triggerSideToast("Renter Details Loaded", "Complete profile & photos loaded right here on the Add Renter page. Select Location & Vacant Flat and click Save!", true);
+      triggerSideToast("Renter Details Loaded", "Complete profile & photos loaded right here on the Add Renter page. Select Location, Vacant Flat & Flat Rate and click Save!", true);
     }
 
     async function handleAddRenterModalPhotoSelect(inputEl, docType) {
@@ -19881,11 +20462,12 @@ function formatMonthLabel(rawVal) {
       const targetProp = (document.getElementById("addRenterPropDropdown")?.value || "").trim();
       const targetFlat = (document.getElementById("addRenterFlatDropdown")?.value || "").trim();
       const rName = (document.getElementById("addRenterNameInput")?.value || "").trim();
-      const rawMob = (document.getElementById("addRenterMobileInput")?.value || "").trim();
+      const rawFlatRateStr = (document.getElementById("addRenterFlatRateInput")?.value || "").trim();
+      const rawElecRateStr = (document.getElementById("addRenterElecRateInput")?.value || "").trim();
       const rawAadhaar = (document.getElementById("addRenterAadhaarInput")?.value || "").replace(/\D/g, "").slice(0, 12);
       const formattedAadhaar = rawAadhaar.length === 12 ? formatAadhaarWithHyphens(rawAadhaar) : "";
 
-      // Compulsory validation: ONLY Location, Flat Name, and Renter Name are compulsory
+      // Compulsory validation: Location, Vacant Flat, Renter Name, and Flat Rate (*) are compulsory
       if (!targetProp) {
         return triggerSideToast("Location Required", "Please select a Location / Property (*).", false);
       }
@@ -19895,13 +20477,10 @@ function formatMonthLabel(rawVal) {
       if (!rName) {
         return triggerSideToast("Renter Name Required", "Renter Name (*) is compulsory.", false);
       }
-
-      // Optional Mobile & Aadhaar validation (only if user entered digits beyond "+91")
-      const mobDigits = extractIndianMobile10Digits(rawMob);
-      if (rawMob && rawMob !== "+91" && mobDigits.length > 0 && mobDigits.length !== 10) {
-        return triggerSideToast("Invalid Mobile Number", "If entering a mobile number, please enter 10 digits.", false);
+      const flatRateNum = parseFloat(rawFlatRateStr);
+      if (!rawFlatRateStr || isNaN(flatRateNum) || flatRateNum <= 0) {
+        return triggerSideToast("Flat Rate Required", "Flat Rate (Monthly Rent ₹) (*) is compulsory. Please enter a valid amount.", false);
       }
-      const formattedMob = mobDigits.length === 10 ? ("+91 " + mobDigits) : "";
 
       if (rawAadhaar.length > 0 && rawAadhaar.length !== 12) {
         return triggerSideToast("Invalid Aadhaar Number", "If entering an Aadhaar number, please enter all 12 digits (XXXX-XXXX-XXXX).", false);
@@ -19931,8 +20510,20 @@ function formatMonthLabel(rawVal) {
 
       const flatObj = findFlatObject(targetProp, targetFlat);
       const propObj = findPropertyObject(targetProp);
-      const inheritedRent = flatObj?.RentAmount || consolidatedRec?.RentAmount || 0;
-      const inheritedElec = flatObj?.ElecRate !== undefined && flatObj?.ElecRate !== "" ? flatObj.ElecRate : (consolidatedRec?.ElecFixedRate !== undefined ? consolidatedRec.ElecFixedRate : "");
+
+      const finalRentAmount = flatRateNum;
+      const finalElecRate = rawElecRateStr !== "" && !isNaN(parseFloat(rawElecRateStr))
+        ? parseFloat(rawElecRateStr)
+        : (flatObj?.ElecRate !== undefined && flatObj?.ElecRate !== "" ? flatObj.ElecRate : (consolidatedRec?.ElecFixedRate !== undefined ? consolidatedRec.ElecFixedRate : ""));
+
+      // Update the flat object in DB.flats with the newly entered Flat Rate and Electricity Rate Per Unit
+      if (flatObj) {
+        flatObj.RentAmount = finalRentAmount;
+        if (finalElecRate !== "") {
+          flatObj.ElecRate = finalElecRate;
+        }
+      }
+
       const inheritedPng = flatObj?.PNGRate !== undefined && flatObj?.PNGRate !== "" ? flatObj.PNGRate : (consolidatedRec?.PNGFixedRate !== undefined ? consolidatedRec.PNGFixedRate : "");
       const inheritedWater = flatObj?.WaterRate !== undefined && flatObj?.WaterRate !== "" ? flatObj.WaterRate : (consolidatedRec?.WaterFixedRate !== undefined ? consolidatedRec.WaterFixedRate : "");
       const inheritedUpiName = propObj?.UPIName || flatObj?.UPIName || consolidatedRec?.UPIName || "";
@@ -19954,8 +20545,8 @@ function formatMonthLabel(rawVal) {
         PropertyName: targetProp,
         FlatName: targetFlat,
         RenterName: rName,
-        RentAmount: inheritedRent,
-        ElecFixedRate: inheritedElec,
+        RentAmount: finalRentAmount,
+        ElecFixedRate: finalElecRate,
         PNGFixedRate: inheritedPng,
         WaterFixedRate: inheritedWater,
         UPIName: inheritedUpiName,
@@ -19966,7 +20557,7 @@ function formatMonthLabel(rawVal) {
         IdentityDocNumber: formattedAadhaar,
         ProfileImageURL: profUrl,
         IdentityImageURL: idUrl,
-        MobileNumber: formattedMob || (consolidatedRec?.MobileNumber ? formatIndianMobilePlus91(consolidatedRec.MobileNumber) : ""),
+        MobileNumber: consolidatedRec?.MobileNumber ? formatIndianMobilePlus91(consolidatedRec.MobileNumber) : "",
         AltMobileNumber: altMob,
         Address: addr,
         TotalFamilyMembers: famCount,
@@ -20014,7 +20605,7 @@ function formatMonthLabel(rawVal) {
 
       triggerSideToast(
         addRenterModalIsReactivating ? "Renter Reactivated & Saved" : "Renter Added",
-        `${rName} has been assigned to ${targetProp} — Flat ${targetFlat}!`,
+        `${rName} assigned to ${targetProp} — Flat ${targetFlat} (Rent: ₹${finalRentAmount.toLocaleString("en-IN")})`,
         true
       );
 
@@ -20024,11 +20615,11 @@ function formatMonthLabel(rawVal) {
         propertyName: targetProp,
         flatName: targetFlat,
         renterName: rName,
-        rentAmount: inheritedRent,
-        elecFixedRate: inheritedElec,
+        rentAmount: finalRentAmount,
+        elecFixedRate: finalElecRate,
         pngFixedRate: inheritedPng,
         waterFixedRate: inheritedWater,
-        elecRate: inheritedElec,
+        elecRate: finalElecRate,
         pngRate: inheritedPng,
         waterRate: inheritedWater,
         upiName: inheritedUpiName,
@@ -20339,8 +20930,6 @@ function formatMonthLabel(rawVal) {
       document.querySelectorAll(".modal-overlay").forEach(m => m.classList.remove("active"));
       const dockEl = document.getElementById("bottomRightFloatingDock");
       if (dockEl) dockEl.style.display = "none";
-      const aiWidgetEl = document.getElementById("modularAiWidget");
-      if (aiWidgetEl) aiWidgetEl.style.display = "none";
       const chatWidgetEl = document.getElementById("modularLiveChatWidget");
       if (chatWidgetEl) chatWidgetEl.style.display = "none";
       applyCustomBackgrounds();
@@ -20677,10 +21266,8 @@ function formatMonthLabel(rawVal) {
 
     function syncFloatingCornerButtonsByRole() {
       const dock = document.getElementById("bottomRightFloatingDock");
-      const btnAi = document.getElementById("fabAiAssistantBtn");
       const btnChat = document.getElementById("fabLiveChatBtn");
       const btnContact = document.getElementById("fabContactUsBtn");
-      const aiWidget = document.getElementById("modularAiWidget");
       const chatWidget = document.getElementById("modularLiveChatWidget");
 
       const isDashboardActive = document.getElementById("dashboardScreen")?.classList.contains("active");
@@ -20691,7 +21278,6 @@ function formatMonthLabel(rawVal) {
 
       if (!isDashboardActive || !activeUser || isFlatModalOpen) {
         dock.style.display = "none";
-        if (aiWidget) aiWidget.style.display = "none";
         if (chatWidget && isFlatModalOpen) chatWidget.style.display = "none";
         return;
       }
@@ -20700,20 +21286,19 @@ function formatMonthLabel(rawVal) {
       dock.classList.toggle("dock-left", floatingDockSide === "left");
 
       const isAdmin = activeRole === "Admin";
-      if (btnAi) {
-        // Requirement 6: Admin sees AI Assistant; Renter/Viewer MUST NOT see the AI Assistant at all
-        btnAi.style.display = isAdmin ? "inline-flex" : "none";
-      }
-      if (!isAdmin && aiWidget) {
-        aiWidget.style.display = "none";
-      }
       if (btnChat) {
         btnChat.style.display = "inline-flex";
       }
       if (btnContact) {
-        // Requirement 6: For Renter/Viewer, show Live Chat & Contact Us in bottom-right corner
+        // Requirement 9: Keep both Live Chat and Help Center Contact Us at the bottom-right side for Renter/Viewer
         btnContact.style.display = isAdmin ? "none" : "inline-flex";
       }
+
+      // Requirement 7 & 10: Ensure Clear Chat and Back to All Users buttons are strictly visible only to Admin
+      const btnBackDir = document.getElementById("btnBackToChatDirectory");
+      const btnClearChat = document.getElementById("btnClearCurrentChat");
+      if (btnBackDir) btnBackDir.style.display = isAdmin ? "inline-flex" : "none";
+      if (btnClearChat) btnClearChat.style.display = isAdmin ? "inline-flex" : "none";
 
       initModularDraggableWidgets();
       updateLiveChatUnreadBadge();
@@ -20726,7 +21311,7 @@ function formatMonthLabel(rawVal) {
       if (dock) {
         dock.classList.toggle("dock-left", floatingDockSide === "left");
       }
-      ["modularAiWidget", "modularLiveChatWidget"].forEach(wId => {
+      ["modularLiveChatWidget"].forEach(wId => {
         const w = document.getElementById(wId);
         if (w && !w.dataset.customDragged) {
           w.classList.toggle("docked-left", floatingDockSide === "left");
@@ -20756,7 +21341,7 @@ function formatMonthLabel(rawVal) {
     }
 
     function initModularDraggableWidgets() {
-      ["modularAiWidget", "modularLiveChatWidget"].forEach(widgetId => {
+      ["modularLiveChatWidget"].forEach(widgetId => {
         const widget = document.getElementById(widgetId);
         const header = document.getElementById(widgetId + "Header");
         if (!widget || !header || header.dataset.dragBound === "true") return;
@@ -20816,7 +21401,7 @@ function formatMonthLabel(rawVal) {
       });
     }
 
-    // Requirement 1: Admin-Configured Contact Details & Live Sync Across All Renter Help Centers (Displays "N/A" when any detail is missing)
+    // Admin-Configured Contact Details & Live Sync Across All Renter Help Centers
     function normalizeCleanContactPhone(rawVal) {
       const str = String(rawVal || "").trim();
       if (!str || str === "+91" || str === "+91 ") return "";
@@ -20942,7 +21527,7 @@ function formatMonthLabel(rawVal) {
 
       const rawWa = cfg.whatsapp ? String(cfg.whatsapp).replace(/[^0-9]/g, "") : "";
       const waNumber = rawWa.length === 10 ? "91" + rawWa : rawWa;
-      const waUrl = waNumber ? `https://wa.me/${waNumber}?text=Hello%20${encodeURIComponent(cfg.name || 'Admin')}%2C%20I%20need%20assistance%20regarding%20my%20flat.` : "";
+      const waUrl = waNumber ? `https://wa.me/${waNumber}?text=Hello%20${encodeURIComponent(cfg.name || "Admin")}%2C%20I%20need%20assistance%20regarding%20my%20flat.` : "";
 
       body.innerHTML = `
         <div style="background:var(--bg-input); border:1px solid var(--glass-border); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:12px;">
@@ -20959,7 +21544,7 @@ function formatMonthLabel(rawVal) {
               <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Support Phone Number</div>
               <div style="font-size:0.95rem; font-weight:900; color:var(--text-main);"><i class="fa-solid fa-phone" style="color:#38bdf8; margin-right:5px;"></i>${supportPhone}</div>
             </div>
-            ${cfg.phone ? `<a href="tel:${String(cfg.phone).replace(/\s+/g, '')}" class="btn-primary" style="width:auto; padding:7px 15px; font-size:0.75rem; text-decoration:none;"><i class="fa-solid fa-phone"></i> Call</a>` : `<span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">N/A</span>`}
+            ${cfg.phone ? `<a href="tel:${String(cfg.phone).replace(/\s+/g, "")}" class="btn-primary" style="width:auto; padding:7px 15px; font-size:0.75rem; text-decoration:none;"><i class="fa-solid fa-phone"></i> Call</a>` : `<span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">N/A</span>`}
           </div>
 
           <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding-bottom:10px; border-bottom:1px dashed var(--glass-border);">
@@ -20975,7 +21560,7 @@ function formatMonthLabel(rawVal) {
               <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Mobile Number</div>
               <div style="font-size:0.92rem; font-weight:800; color:var(--text-main);"><i class="fa-solid fa-mobile-screen-button" style="color:#a855f7; margin-right:5px;"></i>${mobilePhone}</div>
             </div>
-            ${cfg.mobile ? `<a href="tel:${String(cfg.mobile).replace(/\s+/g, '')}" class="btn-primary" style="width:auto; padding:7px 15px; font-size:0.75rem; text-decoration:none; background:linear-gradient(135deg, #8b5cf6, #6366f1);"><i class="fa-solid fa-phone"></i> Call</a>` : `<span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">N/A</span>`}
+            ${cfg.mobile ? `<a href="tel:${String(cfg.mobile).replace(/\s+/g, "")}" class="btn-primary" style="width:auto; padding:7px 15px; font-size:0.75rem; text-decoration:none; background:linear-gradient(135deg, #8b5cf6, #6366f1);"><i class="fa-solid fa-phone"></i> Call</a>` : `<span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">N/A</span>`}
           </div>
 
           <div style="padding-bottom:10px; border-bottom:1px dashed var(--glass-border);">
@@ -21002,222 +21587,10 @@ function formatMonthLabel(rawVal) {
       openModal("contactUsModal");
     }
 
-    // Requirement 6: Strictly Isolated Website-Data AI Assistant (Admin Only)
-    function toggleModularAiWidget() {
-      if (activeRole !== "Admin") {
-        return triggerSideToast("Admin Exclusive Tool", "The Website Data AI Assistant is strictly restricted to Administrators.", false);
-      }
-      const w = document.getElementById("modularAiWidget");
-      if (!w) return;
-      const isVisible = w.style.display === "flex";
-      if (isVisible) {
-        w.style.display = "none";
-      } else {
-        w.classList.remove("minimized");
-        w.style.display = "flex";
-        setTimeout(() => {
-          (document.getElementById("modularAiQueryInput") || document.getElementById("aiWidgetInput"))?.focus();
-        }, 60);
-      }
-    }
-
-    function closeModularAiWidget() {
-      const w = document.getElementById("modularAiWidget");
-      if (w) w.style.display = "none";
-    }
-
-    function runAdminWebsiteAiPrompt(promptText) {
-      const inputEl = document.getElementById("modularAiQueryInput") || document.getElementById("aiWidgetInput");
-      if (inputEl) inputEl.value = promptText;
-      submitAdminWebsiteAiQuery();
-    }
-
-    function submitAdminWebsiteAiQuery() {
-      if (activeRole !== "Admin") return;
-      const inputEl = document.getElementById("modularAiQueryInput") || document.getElementById("aiWidgetInput");
-      const msgArea = document.getElementById("modularAiMessagesBox") || document.getElementById("aiWidgetMessagesArea");
-      if (!inputEl || !msgArea) return;
-
-      const query = inputEl.value.trim();
-      if (!query) return;
-      inputEl.value = "";
-
-      const nowStr = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-      const safeUserHtml = query.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-      msgArea.insertAdjacentHTML("beforeend", `
-        <div class="chat-msg-bubble sent">
-          <div>${safeUserHtml}</div>
-          <span class="chat-msg-meta">Admin • ${nowStr}</span>
-        </div>
-      `);
-
-      const answerHtml = generateIsolatedWebsiteDataAiResponse(query);
-      msgArea.insertAdjacentHTML("beforeend", `
-        <div class="chat-msg-bubble received" style="max-width:95%;">
-          <div style="font-size:0.7rem; font-weight:900; color:#818cf8; margin-bottom:5px; text-transform:uppercase; letter-spacing:0.04em;">
-            <i class="fa-solid fa-database"></i> Website Internal Data Report
-          </div>
-          <div>${answerHtml}</div>
-          <span class="chat-msg-meta">Website Data AI • ${nowStr} • 100% Local Portal Records</span>
-        </div>
-      `);
-      msgArea.scrollTop = msgArea.scrollHeight;
-    }
-
-    function generateIsolatedWebsiteDataAiResponse(rawQuery) {
-      const q = String(rawQuery || "").toLowerCase().trim();
-      const props = DB.properties || [];
-      const flats = DB.flats || [];
-      const renters = DB.renters || [];
-      const bills = DB.bills || [];
-      const fds = DB.fdRecords || [];
-      const khets = DB.khetRecords || [];
-      const kharch = DB.kharchRecords || [];
-
-      const activeRenters = renters.filter(r => String(r.Status || "").trim().toLowerCase() === "active");
-      const departedRenters = renters.filter(r => String(r.Status || "").trim().toLowerCase() !== "active");
-
-      const occupiedFlats = flats.filter(f =>
-        activeRenters.some(r => isSamePropAndFlat(r.PropertyName, r.FlatName, f.PropertyName, f.FlatName))
-      );
-      const vacantFlats = flats.filter(f =>
-        !activeRenters.some(r => isSamePropAndFlat(r.PropertyName, r.FlatName, f.PropertyName, f.FlatName))
-      );
-
-      const getBillTotalVal = (b) => Number(b.TotalBilled !== undefined && b.TotalBilled !== "" ? b.TotalBilled : (b.TotalAmount || 0));
-      const getBillPaidVal = (b) => Number(b.PaidAmount || 0);
-      const getBillDueVal = (b) => {
-        if (b.DueAmount !== undefined && b.DueAmount !== "") return Math.max(0, Number(b.DueAmount));
-        return Math.max(0, getBillTotalVal(b) - getBillPaidVal(b));
-      };
-
-      let totalBilled = 0;
-      let totalCollected = 0;
-      let totalPendingDue = 0;
-      bills.forEach(b => {
-        const tot = getBillTotalVal(b);
-        const paid = getBillPaidVal(b);
-        const due = getBillDueVal(b);
-        totalBilled += tot;
-        totalCollected += paid;
-        if (due > 0) totalPendingDue += due;
-      });
-
-      const totalKharch = kharch.reduce((acc, k) => acc + (Number(k.Amount !== undefined ? k.Amount : k.amount) || 0), 0);
-      const totalFdPrincipal = fds.reduce((acc, f) => acc + (Number(f.PrincipalAmount || f.amount || f.Amount) || 0), 0);
-      const totalKhetAmount = khets.reduce((acc, k) => acc + (Number(k.totalLandValue || k.TotalLandValue || k.amountPaid || k.AmountPaid || k.TotalAmount || k.Amount) || 0), 0);
-
-      // 1. Check if asking about a specific flat or renter name
-      const matchedRenter = renters.find(r => r.RenterName && q.includes(String(r.RenterName).toLowerCase()));
-      if (matchedRenter && !q.includes("summary") && !q.includes("all")) {
-        const tenure = resolveRenterTenureStatus(matchedRenter, matchedRenter.IdentityDocNumber);
-        const rBills = getBillsForSpecificRenter(matchedRenter.PropertyName, matchedRenter.FlatName, matchedRenter);
-        const rPaid = rBills.reduce((s, b) => s + getBillPaidVal(b), 0);
-        const rDue = rBills.reduce((s, b) => s + getBillDueVal(b), 0);
-        return `
-          <div style="line-height:1.5;">
-            <div><strong>Renter Record Found:</strong> ${matchedRenter.RenterName} (${matchedRenter.Status || 'Active'})</div>
-            <div>• <strong>Location:</strong> ${matchedRenter.PropertyName} — Flat ${matchedRenter.FlatName}</div>
-            <div>• <strong>Origin Status:</strong> ${tenure.badge || tenure.badgeText || 'NEW RENTER'} (${tenure.title || tenure.titleText || 'First-Time Stay'})</div>
-            <div>• <strong>Aadhaar:</strong> ${formatAadhaarWithHyphens(matchedRenter.IdentityDocNumber) || 'Not Recorded'}</div>
-            <div>• <strong>Mobile:</strong> ${matchedRenter.MobileNumber || 'Not Recorded'}</div>
-            <div>• <strong>Stay Period:</strong> ${formatDateOnly(matchedRenter.JoinDate)} to ${formatDateOnly(matchedRenter.EndDate) || 'Present'}</div>
-            <div>• <strong>Billing Summary:</strong> ${rBills.length} bills | Paid: <span style="color:#10b981;font-weight:800;">₹${rPaid.toLocaleString('en-IN')}</span> | Pending Due: <span style="color:#f43f5e;font-weight:800;">₹${rDue.toLocaleString('en-IN')}</span></div>
-          </div>
-        `;
-      }
-
-      // 2. Vacant vs Occupied Flats Query
-      if (q.includes("vacant") || q.includes("occupied") || q.includes("empty") || q.includes("flat")) {
-        const byPropHtml = props.map(p => {
-          const pFlats = flats.filter(f => String(f.PropertyName || "").trim().toLowerCase() === String(p.PropertyName || "").trim().toLowerCase());
-          const pVac = pFlats.filter(f => !activeRenters.some(r => isSamePropAndFlat(r.PropertyName, r.FlatName, f.PropertyName, f.FlatName)));
-          const vacNames = pVac.map(f => f.FlatName).join(", ") || "None (100% Occupied)";
-          return `<div style="margin-top:4px;">• <strong>${p.PropertyName}:</strong> ${pFlats.length} Total (${pFlats.length - pVac.length} Occupied, <span style="color:#10b981;font-weight:800;">${pVac.length} Vacant</span> — Vacant Flats: ${vacNames})</div>`;
-        }).join("");
-
-        return `
-          <div style="line-height:1.5;">
-            <div><strong>Website Occupancy Report:</strong></div>
-            <div>• Total Properties: <strong>${props.length}</strong> | Total Flats: <strong>${flats.length}</strong></div>
-            <div>• Occupied Flats: <strong style="color:#38bdf8;">${occupiedFlats.length}</strong> | Vacant Flats: <strong style="color:#10b981;">${vacantFlats.length}</strong></div>
-            <div style="margin-top:6px; border-top:1px dashed var(--glass-border); padding-top:6px;">${byPropHtml || 'No properties added yet.'}</div>
-          </div>
-        `;
-      }
-
-      // 3. Pending Dues / Unpaid Bills Query
-      if (q.includes("due") || q.includes("unpaid") || q.includes("pending") || q.includes("arrears")) {
-        const allUnpaidBills = bills.filter(b => getBillDueVal(b) > 0);
-        const unpaidList = allUnpaidBills.slice(0, 8);
-        const rowsHtml = unpaidList.map(b =>
-          `<div>• <strong>${b.PropertyName} (Flat ${b.FlatName})</strong> — ${b.TenantName || 'Renter'} (${b.MonthYear}): <span style="color:#f43f5e;font-weight:800;">₹${getBillDueVal(b).toLocaleString('en-IN')} Due</span></div>`
-        ).join("");
-        return `
-          <div style="line-height:1.5;">
-            <div><strong>Pending Dues Report (From Website Bills):</strong></div>
-            <div>• Total Outstanding Dues: <strong style="color:#f43f5e;">₹${totalPendingDue.toLocaleString('en-IN')}</strong> across ${allUnpaidBills.length} bill records</div>
-            <div>• Total Collected So Far: <strong style="color:#10b981;">₹${totalCollected.toLocaleString('en-IN')}</strong></div>
-            <div style="margin-top:6px; border-top:1px dashed var(--glass-border); padding-top:6px;">
-              ${rowsHtml || '<span style="color:#10b981;font-weight:800;">All recorded bills are 100% paid! Zero pending dues.</span>'}
-            </div>
-          </div>
-        `;
-      }
-
-      // 4. Returning / Shifted / Renter History Query
-      if (q.includes("renter") || q.includes("tenant") || q.includes("returning") || q.includes("shifted") || q.includes("aadhaar")) {
-        const returningOrShifted = activeRenters.filter(r => {
-          const t = resolveRenterTenureStatus(r, r.IdentityDocNumber);
-          const code = t.code || t.type;
-          return code === "RETURNING" || code === "SHIFTED";
-        });
-        const listHtml = returningOrShifted.map(r => {
-          const t = resolveRenterTenureStatus(r, r.IdentityDocNumber);
-          return `<div>• <strong>${r.RenterName}</strong> (${r.PropertyName} - Flat ${r.FlatName}): <span style="font-weight:800; color:#f59e0b;">${t.badge || t.badgeText}</span></div>`;
-        }).join("");
-        return `
-          <div style="line-height:1.5;">
-            <div><strong>Renter &amp; Tenure Analytics:</strong></div>
-            <div>• Active Renters: <strong style="color:#10b981;">${activeRenters.length}</strong> | Past/Departed Records: <strong>${departedRenters.length}</strong></div>
-            <div>• Returning / Shifted Active Renters: <strong>${returningOrShifted.length}</strong></div>
-            <div style="margin-top:6px; border-top:1px dashed var(--glass-border); padding-top:6px;">
-              ${listHtml || 'All currently active renters are in their first recorded flat stay (New Renters).'}
-            </div>
-          </div>
-        `;
-      }
-
-      // 5. Expense / Kharch / FD / Khet Query
-      if (q.includes("expense") || q.includes("kharch") || q.includes("fd") || q.includes("khet") || q.includes("fund")) {
-        return `
-          <div style="line-height:1.5;">
-            <div><strong>Expense (Kharch), FD &amp; Khet Summary:</strong></div>
-            <div>• <strong>Property Expenses (Kharch):</strong> ${kharch.length} entries | Total Spent: <strong style="color:#f43f5e;">₹${totalKharch.toLocaleString('en-IN')}</strong></div>
-            <div>• <strong>Fixed Deposits (FD):</strong> ${fds.length} records | Principal Total: <strong style="color:#38bdf8;">₹${totalFdPrincipal.toLocaleString('en-IN')}</strong></div>
-            <div>• <strong>Farmland (Khet):</strong> ${khets.length} records | Total Recorded: <strong style="color:#10b981;">₹${totalKhetAmount.toLocaleString('en-IN')}</strong></div>
-          </div>
-        `;
-      }
-
-      // Default: Complete Full Website Executive Report
-      return `
-        <div style="line-height:1.55;">
-          <div><strong>Complete Website Data Executive Summary:</strong></div>
-          <div>• <strong>Properties &amp; Flats:</strong> ${props.length} Properties | ${flats.length} Total Flats (${occupiedFlats.length} Occupied, ${vacantFlats.length} Vacant)</div>
-          <div>• <strong>Renters:</strong> ${activeRenters.length} Active Tenants | ${departedRenters.length} Historical/Departed Records</div>
-          <div>• <strong>Rent &amp; Utility Billing:</strong> ${bills.length} Bills | Total Billed: <strong>₹${totalBilled.toLocaleString('en-IN')}</strong> | Collected: <strong style="color:#10b981;">₹${totalCollected.toLocaleString('en-IN')}</strong> | Pending Due: <strong style="color:#f43f5e;">₹${totalPendingDue.toLocaleString('en-IN')}</strong></div>
-          <div>• <strong>Kharch (Expenses):</strong> ₹${totalKharch.toLocaleString('en-IN')} (${kharch.length} items) | <strong>FD:</strong> ${fds.length} records | <strong>Khet:</strong> ${khets.length} records</div>
-          <div style="margin-top:6px; font-size:0.72rem; color:var(--text-muted);">
-            <em>Tip: Ask about a specific renter by name, "Vacant vs Occupied Flats", "Pending Dues", or "Expenses &amp; FD". (Strictly isolated to this portal's internal data).</em>
-          </div>
-        </div>
-      `;
-    }
-
-    // Requirement 5: Role-Based Live Chat Directory & Targeted Admin Delivery
-    // - Admin sees ALL registered accounts / user IDs.
-    // - Renter sees ONLY Admin IDs. Clicking a specific Admin and sending a message delivers it specifically to that Admin.
+    // ==========================================================================
+    // REQUIREMENTS 7, 10 & 11: LIVE CHAT WITHOUT USERNAMES, ADMIN-ONLY CLEAR,
+    // ADMIN-EXCLUSIVE REGISTERED USERS LIST, AND AUTOMATIC BLOCKED USER REMOVAL
+    // ==========================================================================
     function getPrivateChatStore() {
       try {
         const raw = localStorage.getItem(PRIVATE_CHAT_STORAGE_KEY);
@@ -21304,7 +21677,9 @@ function formatMonthLabel(rawVal) {
         } catch (e) {}
         const w = document.getElementById("modularLiveChatWidget");
         if (w && w.style.display === "flex") {
-          renderChatDirectoryRoster();
+          if (activeRole === "Admin") {
+            renderChatDirectoryRoster();
+          }
           renderCurrentChatMessages();
         }
         updateLiveChatUnreadBadge();
@@ -21325,52 +21700,134 @@ function formatMonthLabel(rawVal) {
       return "channel_" + cleanUser;
     }
 
+    // Requirement 7: Resolve clean Actual Name and Role ("Admin" or "Renter") without ever exposing @username
+    function formatCleanChatRoleLabel(rawRole) {
+      const r = String(rawRole || "").trim().toLowerCase();
+      if (r === "admin") return "Admin";
+      return "Renter";
+    }
+
+    function resolveUserActualFullNameAndRole(usernameOrObj) {
+      let userObj = null;
+      let uname = "";
+      if (usernameOrObj && typeof usernameOrObj === "object") {
+        userObj = usernameOrObj;
+        uname = String(userObj.Username || "").trim();
+      } else {
+        uname = String(usernameOrObj || "").trim();
+        userObj = (DB.users || []).find(u => String(u.Username || "").trim().toLowerCase() === uname.toLowerCase()) || null;
+      }
+
+      const roleLabel = formatCleanChatRoleLabel(userObj?.Role || (uname.toLowerCase() === "admin" ? "Admin" : "Renter"));
+      let actualName = String(userObj?.FullName || "").trim();
+
+      // If no FullName on user record, check linked Aadhaar renter record for actual RenterName
+      if (!actualName && userObj?.AadhaarNumber) {
+        const cleanAadh = normalizeAadhaarString(userObj.AadhaarNumber);
+        const matchedRenter = (DB.renters || []).find(r => normalizeAadhaarString(r.IdentityDocNumber) === cleanAadh);
+        if (matchedRenter && matchedRenter.RenterName) {
+          actualName = String(matchedRenter.RenterName).trim();
+        }
+      }
+      if (!actualName && userObj?.AssignedProperty && userObj?.AssignedFlat) {
+        const matchedRenter = (DB.renters || []).find(r =>
+          isSamePropAndFlat(r.PropertyName, r.FlatName, userObj.AssignedProperty, userObj.AssignedFlat)
+        );
+        if (matchedRenter && matchedRenter.RenterName) {
+          actualName = String(matchedRenter.RenterName).trim();
+        }
+      }
+      if (!actualName) {
+        actualName = roleLabel === "Admin" ? "Property Admin" : (uname || "Registered Renter");
+      }
+      // Strip any accidental (@username) suffix
+      actualName = actualName.replace(/\s*\(@[^)]+\)/g, "").trim();
+
+      return {
+        actualName,
+        roleLabel,
+        displayWithRole: `${actualName} (${roleLabel})`
+      };
+    }
+
+    // Requirement 11: Check if a registered user is blocked
+    function isRegisteredUserBlockedForChat(userObj) {
+      if (!userObj) return true;
+      const unameClean = String(userObj.Username || "").trim().toLowerCase();
+      if (!unameClean) return true;
+
+      if (String(userObj.Status || "").trim().toLowerCase() === "blocked") return true;
+      if (String(userObj.AccountStatus || "").trim().toLowerCase() === "blocked") return true;
+
+      try {
+        const blockedList = JSON.parse(localStorage.getItem("portal_blocked_users") || "[]");
+        if (Array.isArray(blockedList) && blockedList.some(b => String(b || "").trim().toLowerCase() === unameClean)) {
+          return true;
+        }
+      } catch (e) {}
+
+      try {
+        const authMap = typeof getVerifiedAuthMap === "function" ? getVerifiedAuthMap() : {};
+        if (authMap && authMap[unameClean] && String(authMap[unameClean].status || "").trim().toLowerCase() === "blocked") {
+          return true;
+        }
+      } catch (e) {}
+
+      return false;
+    }
+
     function getRegisteredAdminAccountsList() {
       const admins = [];
       const seen = new Set();
       (DB.users || []).forEach(u => {
-        if (String(u.Role || "").trim().toLowerCase() === "admin") {
+        if (String(u.Role || "").trim().toLowerCase() === "admin" && !isRegisteredUserBlockedForChat(u)) {
           const uname = String(u.Username || "").trim();
           const key = uname.toLowerCase();
           if (uname && !seen.has(key)) {
             seen.add(key);
+            const info = resolveUserActualFullNameAndRole(u);
             admins.push({
               username: uname,
-              fullName: u.FullName || uname,
+              fullName: info.actualName,
+              roleLabel: "Admin",
               mobile: sanitizeContactPhoneDisplay(u.MobileNumber || "")
             });
           }
         }
       });
       if (admins.length === 0) {
+        const cfg = typeof getAdminContactSettings === "function" ? getAdminContactSettings() : {};
         admins.push({
           username: "admin",
-          fullName: "Property Admin",
+          fullName: cfg.name || "Property Admin",
+          roleLabel: "Admin",
           mobile: ""
         });
       }
       return admins;
     }
 
+    // Requirement 10 & 11: Admin ONLY sees users who have successfully registered (DB.users) AND are NOT blocked
     function getAllAvailablePrivateChatChannelsForAdmin() {
       const store = getPrivateChatStore();
       const channelsMap = new Map();
       const myAdminUsername = String(activeUser || "admin").trim().toLowerCase();
 
-      // 1. Include all registered accounts / User IDs from DB.users so Admin can see every registered account/user ID
       (DB.users || []).forEach(u => {
         const uname = String(u.Username || "").trim();
         if (!uname) return;
         const unameLower = uname.toLowerCase();
-        if (unameLower === myAdminUsername) return; // Don't list self
+        if (unameLower === myAdminUsername) return; // Do not list self
 
-        const role = String(u.Role || "User").trim();
+        // Requirement 11: Automatically exclude any blocked user ID from the live chat list
+        if (isRegisteredUserBlockedForChat(u)) return;
+
+        const info = resolveUserActualFullNameAndRole(u);
         const chId = buildAdminRenterChannelId(myAdminUsername, unameLower);
         const legacyChId = "channel_" + unameLower.replace(/[^a-z0-9_-]/g, "_");
 
-        // Merge any legacy messages into the admin-scoped channel if needed
         const existingCh = store[chId] || store[legacyChId] || null;
-        const detailsParts = [`ID: @${uname}`, role];
+        const detailsParts = [info.roleLabel];
         if (u.AssignedProperty) detailsParts.push(u.AssignedProperty);
         if (u.AssignedFlat) detailsParts.push(`Flat ${u.AssignedFlat}`);
 
@@ -21378,78 +21835,24 @@ function formatMonthLabel(rawVal) {
           channelId: chId,
           targetUsername: uname,
           targetAdminUsername: myAdminUsername,
-          displayName: `${u.FullName || uname} (@${uname})`,
+          displayName: info.actualName,
+          roleLabel: info.roleLabel,
           flatLabel: detailsParts.join(" • "),
           unreadAdmin: Number(existingCh?.unreadAdmin || 0),
           lastTimestamp: existingCh?.lastTimestamp || 0
         });
       });
 
-      // 2. Also include any channels in store specifically addressed to this Admin (or legacy channels)
-      Object.keys(store).forEach(chId => {
-        const ch = store[chId];
-        if (!ch || !chId) return;
-        const chTargetAdmin = String(ch.targetAdminUsername || "").trim().toLowerCase();
-        if (chTargetAdmin && chTargetAdmin !== myAdminUsername) return;
-        if (chId.startsWith("channel_admin_") && !chId.startsWith(`channel_admin_${myAdminUsername.replace(/[^a-z0-9_-]/g, "_")}__`)) {
-          return;
-        }
-        if (!channelsMap.has(chId)) {
-          // Check if we already mapped this user under buildAdminRenterChannelId
-          const userMatch = ch.renterUsername ? buildAdminRenterChannelId(myAdminUsername, ch.renterUsername) : "";
-          if (userMatch && channelsMap.has(userMatch)) {
-            const mapped = channelsMap.get(userMatch);
-            mapped.unreadAdmin = Math.max(mapped.unreadAdmin, Number(ch.unreadAdmin || 0));
-            mapped.lastTimestamp = Math.max(mapped.lastTimestamp, Number(ch.lastTimestamp || 0));
-            return;
-          }
-          channelsMap.set(chId, {
-            channelId: chId,
-            targetUsername: ch.renterUsername || chId.replace(/^channel_/, ""),
-            targetAdminUsername: myAdminUsername,
-            displayName: ch.displayName || chId.replace(/^channel_/, ""),
-            flatLabel: ch.flatLabel || "Registered User",
-            unreadAdmin: Number(ch.unreadAdmin || 0),
-            lastTimestamp: ch.lastTimestamp || 0
-          });
-        }
-      });
-
-      // 3. Also include active renters without a user account yet
-      (DB.renters || []).forEach(r => {
-        if (String(r.Status || "").trim().toLowerCase() !== "active") return;
-        const aadh = normalizeAadhaarString(r.IdentityDocNumber);
-        const keyBase = aadh || String(r.RenterID || r.RenterName || "").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
-        if (!keyBase) return;
-        const alreadyInUsers = Array.from(channelsMap.values()).some(c =>
-          (aadh && c.flatLabel && c.flatLabel.includes(aadh)) ||
-          (r.RenterName && c.displayName.toLowerCase().startsWith(String(r.RenterName).trim().toLowerCase()))
-        );
-        if (alreadyInUsers) return;
-        const chId = buildAdminRenterChannelId(myAdminUsername, keyBase);
-        const existingCh = store[chId] || store["channel_" + keyBase];
-        if (!channelsMap.has(chId)) {
-          channelsMap.set(chId, {
-            channelId: chId,
-            targetUsername: keyBase,
-            targetAdminUsername: myAdminUsername,
-            displayName: r.RenterName || "Renter",
-            flatLabel: `${r.PropertyName || ''} • Flat ${r.FlatName || ''}`,
-            unreadAdmin: Number(existingCh?.unreadAdmin || 0),
-            lastTimestamp: existingCh?.lastTimestamp || 0
-          });
-        }
-      });
-
       return Array.from(channelsMap.values()).sort((a, b) => (b.lastTimestamp || 0) - (a.lastTimestamp || 0));
     }
 
-    // Live Chat State & Navigation (Requirement 5)
     let activeChatDirectoryFilter = "";
     let activeSelectedTargetAdminUsername = "";
 
     function renderLiveChatChannelsAndMessages() {
-      renderChatDirectoryRoster();
+      if (activeRole === "Admin") {
+        renderChatDirectoryRoster();
+      }
       renderCurrentChatMessages();
     }
 
@@ -21458,145 +21861,99 @@ function formatMonthLabel(rawVal) {
       renderChatDirectoryRoster();
     }
 
+    // Requirement 7, 10 & 11: Registered Users List is exclusively visible to Admin, shows Actual Name + Role (no username), and excludes blocked users
     function renderChatDirectoryRoster() {
       const rosterEl = document.getElementById("chatRosterList");
+      const dirView = document.getElementById("chatDirectoryView");
       if (!rosterEl) return;
-      const isAdmin = activeRole === "Admin";
+
+      if (activeRole !== "Admin") {
+        // Requirement 10: This list must be visible exclusively to the Admin
+        if (dirView) dirView.style.display = "none";
+        return;
+      }
+
       const store = getPrivateChatStore();
+      let channels = getAllAvailablePrivateChatChannelsForAdmin();
+      if (activeChatDirectoryFilter) {
+        const q = activeChatDirectoryFilter;
+        channels = channels.filter(c =>
+          (c.displayName && c.displayName.toLowerCase().includes(q)) ||
+          (c.roleLabel && c.roleLabel.toLowerCase().includes(q)) ||
+          (c.flatLabel && c.flatLabel.toLowerCase().includes(q))
+        );
+      }
 
-      if (isAdmin) {
-        let channels = getAllAvailablePrivateChatChannelsForAdmin();
-        if (activeChatDirectoryFilter) {
-          const q = activeChatDirectoryFilter;
-          channels = channels.filter(c =>
-            (c.displayName && c.displayName.toLowerCase().includes(q)) ||
-            (c.flatLabel && c.flatLabel.toLowerCase().includes(q)) ||
-            (c.targetUsername && c.targetUsername.toLowerCase().includes(q)) ||
-            (c.channelId && c.channelId.toLowerCase().includes(q))
-          );
-        }
-
-        if (channels.length === 0) {
-          rosterEl.innerHTML = `
-            <div style="text-align:center; padding:32px 14px; color:var(--text-muted); font-size:0.8rem;">
-              <i class="fa-solid fa-users-slash" style="font-size:1.6rem; color:var(--text-muted); margin-bottom:8px; display:block;"></i>
-              No registered user IDs or accounts found.
-            </div>
-          `;
-          return;
-        }
-
-        rosterEl.innerHTML = channels.map(c => {
-          const unread = Number(c.unreadAdmin || 0);
-          const initials = (c.displayName || "U").trim().substring(0, 2).toUpperCase();
-          const safeName = String(c.displayName || "User").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-          const safeLabel = String(c.flatLabel || "Registered Account").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-          const chData = store[c.channelId] || store["channel_" + String(c.targetUsername || "").toLowerCase()];
-          const clearedAt = Number(chData?.clearedAt || 0);
-          const visibleMsgs = (chData?.messages || []).filter(m => m && Number(m.timestamp || 0) > clearedAt);
-          const lastMsg = visibleMsgs.slice(-1)[0];
-          const snippet = lastMsg ? String(lastMsg.text || "").slice(0, 32).replace(/</g, "&lt;").replace(/>/g, "&gt;") : "Click to message this User ID...";
-
-          return `
-            <div class="chat-roster-item" onclick="openChatWithChannel('${c.channelId}', '${encodeURIComponent(c.displayName)}', '${encodeURIComponent(c.flatLabel)}', '${encodeURIComponent(c.targetAdminUsername || activeUser || 'admin')}')">
-              <div style="width:38px; height:38px; border-radius:12px; background:linear-gradient(135deg, #059669, #0284c7); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.82rem; flex-shrink:0;">
-                ${initials}
-              </div>
-              <div style="flex:1; min-width:0;">
-                <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                  <span style="font-size:0.82rem; font-weight:800; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                    ${safeName}
-                  </span>
-                  ${unread > 0 ? `<span style="background:#ef4444; color:#fff; font-size:0.65rem; font-weight:900; padding:1px 6px; border-radius:999px;">${unread}</span>` : ''}
-                </div>
-                <div style="font-size:0.69rem; color:#10b981; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                  <i class="fa-solid fa-id-badge"></i> ${safeLabel}
-                </div>
-                <div style="font-size:0.66rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">
-                  ${snippet}
-                </div>
-              </div>
-              <i class="fa-solid fa-chevron-right" style="color:var(--text-muted); font-size:0.75rem; flex-shrink:0;"></i>
-            </div>
-          `;
-        }).join("");
-      } else {
-        // Requirement 5: Renter ONLY sees the Admin IDs within the chat.
-        // Clicking a specific Admin opens a direct 1-on-1 channel with that particular Admin.
-        let adminsList = getRegisteredAdminAccountsList();
-        if (activeChatDirectoryFilter) {
-          const q = activeChatDirectoryFilter;
-          adminsList = adminsList.filter(a =>
-            a.username.toLowerCase().includes(q) ||
-            (a.fullName && a.fullName.toLowerCase().includes(q))
-          );
-        }
-
-        const adminCardsHtml = adminsList.map(adm => {
-          const chId = getMyPrivateChatChannelId(adm.username);
-          const chObj = store[chId] || {};
-          const unread = Number(chObj.unreadRenter || 0);
-          const clearedAt = Number(chObj.clearedAt || 0);
-          const visibleMsgs = (chObj.messages || []).filter(m => m && Number(m.timestamp || 0) > clearedAt);
-          const lastMsg = visibleMsgs.slice(-1)[0];
-          const snippet = lastMsg
-            ? String(lastMsg.text || "").slice(0, 36).replace(/</g, "&lt;").replace(/>/g, "&gt;")
-            : `Click to send a direct message to @${adm.username}...`;
-          const displayTitle = `${adm.fullName || adm.username} (@${adm.username})`;
-          const subLabel = `Admin ID: @${adm.username} • Direct Support`;
-          const safeTitle = displayTitle.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-          return `
-            <div class="chat-roster-item" onclick="openChatWithChannel('${chId}', '${encodeURIComponent(displayTitle)}', '${encodeURIComponent(subLabel)}', '${encodeURIComponent(adm.username)}')">
-              <div style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, #059669, #0d9488); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.05rem; flex-shrink:0;">
-                <i class="fa-solid fa-user-shield"></i>
-              </div>
-              <div style="flex:1; min-width:0;">
-                <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                  <span style="font-size:0.84rem; font-weight:800; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                    ${safeTitle}
-                  </span>
-                  ${unread > 0 ? `<span style="background:#ef4444; color:#fff; font-size:0.65rem; font-weight:900; padding:1px 6px; border-radius:999px;">${unread}</span>` : ''}
-                </div>
-                <div style="font-size:0.69rem; color:#0284c7; font-weight:700;">
-                  <i class="fa-solid fa-shield-halved"></i> Admin ID: @${adm.username}
-                </div>
-                <div style="font-size:0.66rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">
-                  ${snippet}
-                </div>
-              </div>
-              <i class="fa-solid fa-chevron-right" style="color:var(--text-muted); font-size:0.75rem; flex-shrink:0;"></i>
-            </div>
-          `;
-        }).join("");
-
+      if (channels.length === 0) {
         rosterEl.innerHTML = `
-          ${adminCardsHtml}
-          <div style="margin-top:14px; padding:12px; border-radius:12px; background:rgba(16,185,129,0.08); border:1px dashed rgba(16,185,129,0.3); font-size:0.72rem; color:var(--text-muted); line-height:1.45; text-align:center;">
-            <i class="fa-solid fa-lock" style="color:#10b981; margin-right:4px;"></i>
-            <strong>Direct Admin Routing:</strong> Select any Admin ID above to message that specific Administrator directly.
+          <div style="text-align:center; padding:32px 14px; color:var(--text-muted); font-size:0.8rem;">
+            <i class="fa-solid fa-users-slash" style="font-size:1.6rem; color:var(--text-muted); margin-bottom:8px; display:block;"></i>
+            No active registered users available for chat.
           </div>
         `;
+        return;
       }
+
+      rosterEl.innerHTML = channels.map(c => {
+        const unread = Number(c.unreadAdmin || 0);
+        const initials = (c.displayName || "R").trim().substring(0, 2).toUpperCase();
+        const safeName = String(c.displayName || "Renter").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const safeRole = String(c.roleLabel || "Renter").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const safeLabel = String(c.flatLabel || safeRole).replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const chData = store[c.channelId] || store["channel_" + String(c.targetUsername || "").toLowerCase()];
+        const clearedAt = Number(chData?.clearedAt || 0);
+        const visibleMsgs = (chData?.messages || []).filter(m => m && Number(m.timestamp || 0) > clearedAt);
+        const lastMsg = visibleMsgs.slice(-1)[0];
+        const snippet = lastMsg ? String(lastMsg.text || "").slice(0, 34).replace(/</g, "&lt;").replace(/>/g, "&gt;") : `Tap to chat with ${safeName} (${safeRole})...`;
+        const headerTitle = `${c.displayName} • ${c.roleLabel}`;
+
+        return `
+          <div class="chat-roster-item" onclick="openChatWithChannel('${c.channelId}', '${encodeURIComponent(headerTitle)}', '${encodeURIComponent(c.flatLabel)}', '${encodeURIComponent(c.targetAdminUsername || activeUser || "admin")}')">
+            <div style="width:38px; height:38px; border-radius:12px; background:linear-gradient(135deg, #059669, #0284c7); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.82rem; flex-shrink:0;">
+              ${initials}
+            </div>
+            <div style="flex:1; min-width:0;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+                <span style="font-size:0.83rem; font-weight:800; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                  ${safeName} <span style="font-size:0.68rem; font-weight:800; padding:2px 7px; border-radius:999px; background:rgba(16,185,129,0.16); color:#10b981; margin-left:4px;">${safeRole}</span>
+                </span>
+                ${unread > 0 ? `<span style="background:#ef4444; color:#fff; font-size:0.65rem; font-weight:900; padding:1px 6px; border-radius:999px;">${unread}</span>` : ""}
+              </div>
+              <div style="font-size:0.69rem; color:#10b981; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">
+                <i class="fa-solid fa-user-check"></i> ${safeLabel}
+              </div>
+              <div style="font-size:0.66rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">
+                ${snippet}
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="color:var(--text-muted); font-size:0.75rem; flex-shrink:0;"></i>
+          </div>
+        `;
+      }).join("");
     }
 
     function openChatWithChannel(channelId, encodedName, encodedSub, encodedAdminUsername = "") {
       activeSelectedChatChannelId = channelId;
       activeSelectedTargetAdminUsername = encodedAdminUsername ? decodeURIComponent(encodedAdminUsername) : "";
-      const name = decodeURIComponent(encodedName || "Chat Partner");
-      const sub = decodeURIComponent(encodedSub || "1-on-1 Channel");
+      const name = decodeURIComponent(encodedName || "Chat Partner").replace(/\s*\(@[^)]+\)/g, "");
+      const sub = decodeURIComponent(encodedSub || "1-on-1 Channel").replace(/ID:\s*@[^•]+•\s*/gi, "");
 
+      const isAdmin = activeRole === "Admin";
       const dirView = document.getElementById("chatDirectoryView");
       const convView = document.getElementById("chatConversationView");
       if (dirView) dirView.style.display = "none";
       if (convView) convView.style.display = "flex";
+
+      const btnBackDir = document.getElementById("btnBackToChatDirectory");
+      const btnClearChat = document.getElementById("btnClearCurrentChat");
+      if (btnBackDir) btnBackDir.style.display = isAdmin ? "inline-flex" : "none";
+      if (btnClearChat) btnClearChat.style.display = isAdmin ? "inline-flex" : "none";
 
       const nameEl = document.getElementById("activeChatPartnerName");
       const subEl = document.getElementById("activeChatPartnerSub");
       if (nameEl) nameEl.innerText = name;
       if (subEl) subEl.innerText = sub;
 
-      const isAdmin = activeRole === "Admin";
       const store = getPrivateChatStore();
       if (store[channelId]) {
         if (isAdmin) store[channelId].unreadAdmin = 0;
@@ -21613,6 +21970,19 @@ function formatMonthLabel(rawVal) {
     }
 
     function returnToChatDirectory() {
+      const isAdmin = activeRole === "Admin";
+      if (!isAdmin) {
+        // Requirement 10: Renters do not see the registered users directory list; open direct conversation with Admin
+        const primaryAdmin = getRegisteredAdminAccountsList()[0] || { username: "admin", fullName: "Property Admin", roleLabel: "Admin" };
+        const chId = getMyPrivateChatChannelId(primaryAdmin.username);
+        openChatWithChannel(
+          chId,
+          encodeURIComponent(`${primaryAdmin.fullName} • Admin`),
+          encodeURIComponent("Admin • Direct Support Channel"),
+          encodeURIComponent(primaryAdmin.username)
+        );
+        return;
+      }
       const dirView = document.getElementById("chatDirectoryView");
       const convView = document.getElementById("chatConversationView");
       if (dirView) dirView.style.display = "flex";
@@ -21626,7 +21996,7 @@ function formatMonthLabel(rawVal) {
       if (!box) return;
       const channelId = activeSelectedChatChannelId || (activeRole === "Admin" ? "" : getMyPrivateChatChannelId(activeSelectedTargetAdminUsername || (getRegisteredAdminAccountsList()[0]?.username || "admin")));
       if (!channelId) {
-        box.innerHTML = `<div style="text-align:center; padding:30px 14px; color:var(--text-muted); font-size:0.8rem;">Select an account ID from the list to view messages.</div>`;
+        box.innerHTML = `<div style="text-align:center; padding:30px 14px; color:var(--text-muted); font-size:0.8rem;">Select a registered user from the list to view messages.</div>`;
         return;
       }
       const store = getPrivateChatStore();
@@ -21640,7 +22010,7 @@ function formatMonthLabel(rawVal) {
           <div style="text-align:center; padding:30px 14px; color:var(--text-muted); font-size:0.8rem;">
             <i class="fa-solid fa-lock" style="font-size:1.5rem; color:#10b981; margin-bottom:8px; display:block;"></i>
             <strong style="color:var(--text-main); display:block; margin-bottom:4px;">Private 1-on-1 Conversation</strong>
-            Send a message to begin chatting. Messages are delivered in real time to this selected ID.
+            Send a message below to start chatting.
           </div>
         `;
         return;
@@ -21652,10 +22022,20 @@ function formatMonthLabel(rawVal) {
           ? String(m.senderUsername).trim().toLowerCase() === myLowerUser
           : ((isAdmin && m.senderRole === "Admin") || (!isAdmin && m.senderRole !== "Admin"));
         const safeText = String(m.text || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        // Requirement 7: Strip any legacy (@username) and show Actual Name + Role ("Admin" or "Renter")
+        const cleanSenderRole = formatCleanChatRoleLabel(m.senderRole);
+        let cleanSenderName = String(m.senderName || "").replace(/\s*\(@[^)]+\)/g, "").trim();
+        if (!cleanSenderName && m.senderUsername) {
+          cleanSenderName = resolveUserActualFullNameAndRole(m.senderUsername).actualName;
+        }
+        const senderHeaderLabel = cleanSenderName
+          ? (cleanSenderName.toLowerCase().includes(cleanSenderRole.toLowerCase()) ? cleanSenderName : `${cleanSenderName} (${cleanSenderRole})`)
+          : cleanSenderRole;
+
         return `
-          <div class="chat-msg-bubble ${isMine ? 'sent' : 'received'}">
+          <div class="chat-msg-bubble ${isMine ? "sent" : "received"}">
             <div>${safeText}</div>
-            <span class="chat-msg-meta">${m.senderName || m.senderRole} • ${m.timeStr || ''}</span>
+            <span class="chat-msg-meta">${senderHeaderLabel} • ${m.timeStr || ""}</span>
           </div>
         `;
       }).join("");
@@ -21678,7 +22058,7 @@ function formatMonthLabel(rawVal) {
         targetChannelId = activeSelectedChatChannelId;
         targetAdminId = String(activeUser || "admin").trim();
         if (!targetChannelId) {
-          return triggerSideToast("Select a User ID", "Please select a registered account / user ID from the directory list first.", false);
+          return triggerSideToast("Select a User", "Please select a registered user from the list first.", false);
         }
       } else {
         targetAdminId = activeSelectedTargetAdminUsername || (getRegisteredAdminAccountsList()[0]?.username || "admin");
@@ -21686,13 +22066,14 @@ function formatMonthLabel(rawVal) {
         activeSelectedChatChannelId = targetChannelId;
       }
 
+      const myInfo = resolveUserActualFullNameAndRole(activeUser);
+
       if (!store[targetChannelId]) {
-        const myFullName = sessionStorage.getItem("active_session_fullname") || activeUser || "Renter";
-        let flatInfo = `ID: @${activeUser || 'user'} • ${activeRole}`;
+        let flatInfo = myInfo.roleLabel;
         if (activeRole === "Renter") {
           const myProfiles = getRenterProfilesForLoggedInAadhaar();
           if (myProfiles.length > 0) {
-            flatInfo = `ID: @${activeUser} • ${myProfiles[0].PropertyName} • Flat ${myProfiles[0].FlatName}`;
+            flatInfo = `Renter • ${myProfiles[0].PropertyName} • Flat ${myProfiles[0].FlatName}`;
           }
         }
         const partnerNameEl = document.getElementById("activeChatPartnerName");
@@ -21700,7 +22081,7 @@ function formatMonthLabel(rawVal) {
           channelId: targetChannelId,
           targetAdminUsername: String(targetAdminId).trim().toLowerCase(),
           renterUsername: isAdmin ? targetChannelId.replace(/^channel_admin_[^_]+__user_/, "").replace(/^channel_/, "") : String(activeUser || "").trim().toLowerCase(),
-          displayName: isAdmin ? (partnerNameEl?.innerText || targetChannelId) : `${myFullName} (@${activeUser})`,
+          displayName: isAdmin ? (partnerNameEl?.innerText || myInfo.actualName) : myInfo.actualName,
           flatLabel: flatInfo,
           unreadAdmin: 0,
           unreadRenter: 0,
@@ -21710,9 +22091,13 @@ function formatMonthLabel(rawVal) {
         };
       }
 
-      const senderName = isAdmin
-        ? `${activeUserFullName || activeUser} (@${activeUser})`
-        : `${sessionStorage.getItem("active_session_fullname") || activeUser || "Renter"} (@${activeUser})`;
+      // Requirement 7: Save Actual Name and Role ("Admin" or "Renter"), never @username
+      const senderRoleLabel = isAdmin ? "Admin" : "Renter";
+      const senderActualName = isAdmin
+        ? (activeUserFullName || myInfo.actualName || "Admin")
+        : (sessionStorage.getItem("active_session_fullname") || myInfo.actualName || "Renter");
+      const cleanSenderDisplay = `${String(senderActualName).replace(/\s*\(@[^)]+\)/g, "").trim()} (${senderRoleLabel})`;
+
       const nowTs = Date.now();
       const nowStr = new Date(nowTs).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
@@ -21722,10 +22107,10 @@ function formatMonthLabel(rawVal) {
       }
       store[targetChannelId].messages.push({
         id: "msg_" + nowTs + "_" + Math.random().toString(36).substring(2, 6),
-        senderRole: isAdmin ? "Admin" : activeRole,
+        senderRole: senderRoleLabel,
         senderUsername: String(activeUser || "").trim(),
         targetAdminUsername: store[targetChannelId].targetAdminUsername,
-        senderName: senderName,
+        senderName: cleanSenderDisplay,
         text: text,
         timeStr: nowStr,
         timestamp: nowTs
@@ -21744,8 +22129,12 @@ function formatMonthLabel(rawVal) {
       updateLiveChatUnreadBadge();
     }
 
+    // Requirement 7: A renter is NEVER allowed to clear the chat; only the Admin has authority to clear the chat
     function clearCurrentAdminChatChannel() {
-      const channelId = activeSelectedChatChannelId || (activeRole === "Admin" ? "" : getMyPrivateChatChannelId(activeSelectedTargetAdminUsername || (getRegisteredAdminAccountsList()[0]?.username || "admin")));
+      if (activeRole !== "Admin") {
+        return triggerSideToast("Admin Authority Required", "Only the Admin has authority to clear the chat.", false);
+      }
+      const channelId = activeSelectedChatChannelId;
       if (!channelId) return;
       const store = getPrivateChatStore();
       const nowTs = Date.now();
@@ -21769,7 +22158,7 @@ function formatMonthLabel(rawVal) {
       renderChatDirectoryRoster();
       renderCurrentChatMessages();
       updateLiveChatUnreadBadge();
-      triggerSideToast("Chat History Cleared", "Entire chat history wiped out in real time for both sides.", true);
+      triggerSideToast("Chat History Cleared", "Entire chat history cleared by Admin for both sides.", true);
     }
 
     function updateLiveChatUnreadBadge() {
@@ -21778,13 +22167,9 @@ function formatMonthLabel(rawVal) {
       const store = getPrivateChatStore();
       let unreadCount = 0;
       if (activeRole === "Admin") {
-        const myAdminKey = String(activeUser || "admin").trim().toLowerCase();
-        Object.values(store).forEach(ch => {
-          if (!ch) return;
-          const targetAdm = String(ch.targetAdminUsername || "").trim().toLowerCase();
-          if (!targetAdm || targetAdm === myAdminKey) {
-            unreadCount += Number(ch.unreadAdmin || 0);
-          }
+        const validChannels = getAllAvailablePrivateChatChannelsForAdmin();
+        validChannels.forEach(c => {
+          unreadCount += Number(c.unreadAdmin || 0);
         });
       } else {
         const myUserClean = String(activeUser || "guest").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
@@ -21808,7 +22193,16 @@ function formatMonthLabel(rawVal) {
       w.classList.remove("minimized");
       w.style.display = "flex";
 
-      if (!activeSelectedChatChannelId) {
+      const isAdmin = activeRole === "Admin";
+      const btnBackDir = document.getElementById("btnBackToChatDirectory");
+      const btnClearChat = document.getElementById("btnClearCurrentChat");
+      if (btnBackDir) btnBackDir.style.display = isAdmin ? "inline-flex" : "none";
+      if (btnClearChat) btnClearChat.style.display = isAdmin ? "inline-flex" : "none";
+
+      if (!isAdmin) {
+        // Requirement 10: Registered users list is exclusively visible to Admin; Renter opens direct chat with Admin
+        returnToChatDirectory();
+      } else if (!activeSelectedChatChannelId) {
         returnToChatDirectory();
       } else {
         renderCurrentChatMessages();
