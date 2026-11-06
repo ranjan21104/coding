@@ -4604,7 +4604,7 @@
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
-          <button type="button" class="btn-ledger-action admin-only" style="padding:4px 8px; font-size:0.68rem; color:var(--accent-red);" onclick="clearCurrentAdminChatChannel()" title="Clear this chat history">
+          <button type="button" class="btn-ledger-action" style="padding:4px 8px; font-size:0.68rem; color:var(--accent-red);" onclick="clearCurrentAdminChatChannel()" title="Clear this chat history for both sides">
             <i class="fa-solid fa-trash-can"></i> Clear
           </button>
         </div>
@@ -5657,14 +5657,14 @@
           </div>
         </div>
 
-        <!-- Option 2 Panel: Last Login History (12 Users Per Page, Non-Editable, Strictly Admin-Only) -->
+        <!-- Option 2 Panel: Last Login History (15 Users Per Page, Max 30 Entries, Non-Editable, Strictly Admin-Only) -->
         <div id="otherPanelLoginHistory" class="stat-pill admin-only" style="text-align: left; display: none; user-select: none;">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 6px;">
-            <span><i class="fa-solid fa-lock" style="margin-right: 4px; color: var(--primary);"></i> CONTINUOUS LAST LOGIN HISTORY (12 PER PAGE • NON-EDITABLE • ADMIN ONLY)</span>
+            <span><i class="fa-solid fa-lock" style="margin-right: 4px; color: var(--primary);"></i> CONTINUOUS LAST LOGIN HISTORY (15 PER PAGE • MAX 30 ENTRIES • ADMIN ONLY)</span>
             <span id="loginHistTotalBadge" style="font-size: 0.72rem; color: var(--primary); font-weight: 700;">0 Logins</span>
           </div>
           <div id="otherLoginHistoryList" style="margin-top: 6px; font-size: 0.8rem; max-height: 270px; overflow-y: auto;">
-            <!-- Populated dynamically (12 per page, read-only) -->
+            <!-- Populated dynamically (15 per page, max 30, read-only) -->
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--glass-border);">
             <button
@@ -5691,7 +5691,7 @@
           </div>
         </div>
 
-        <!-- Option 5 Panel: Contact Info Configuration (Requirement 12) -->
+        <!-- Option 5 Panel: Contact Info Configuration (Live Sync to All Renter Help Centers with N/A Fallback) -->
         <div id="otherPanelContactSettings" class="stat-pill admin-only" style="text-align: left; display: none;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--glass-border);">
             <div>
@@ -5699,7 +5699,7 @@
                 <i class="fa-solid fa-address-book"></i> Contact Us Details &amp; WhatsApp Support Configuration
               </span>
               <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">
-                Configure the phone numbers, WhatsApp chat link, email, and address that Renters and Viewers see when they click the "Contact Us" button.
+                Configure support phone, WhatsApp support phone, mobile number, email ID, and official property address. Updates live across all Renter Help Centers (missing fields display "N/A").
               </div>
             </div>
             <span style="font-size:0.7rem; color:#f59e0b; font-weight:700; background:rgba(245,158,11,0.15); padding:3px 8px; border-radius:12px;">
@@ -5707,29 +5707,35 @@
             </span>
           </div>
 
-          <div class="form-group" style="margin-bottom:12px;">
-            <label>Support Contact Person / Admin Name <span class="req-star">*</span></label>
-            <input type="text" id="cfgContactName" class="form-control" placeholder="e.g. Property Admin / Help Desk">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Support Contact Person / Admin Name</label>
+              <input type="text" id="cfgContactName" class="form-control" placeholder="e.g. Property Admin / Help Desk">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Mobile Number</label>
+              <input type="tel" id="cfgContactMobile" class="form-control" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)">
+            </div>
           </div>
 
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px;">
             <div class="form-group" style="margin-bottom:0;">
-              <label>Support Phone Number <span class="req-star">*</span></label>
+              <label>Support Phone Number</label>
               <input type="tel" id="cfgContactPhone" class="form-control" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)">
             </div>
             <div class="form-group" style="margin-bottom:0;">
-              <label>WhatsApp Support Mobile Number <span class="req-star">*</span></label>
+              <label>WhatsApp Support Phone</label>
               <input type="tel" id="cfgContactWhatsapp" class="form-control" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)">
             </div>
           </div>
 
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px;">
             <div class="form-group" style="margin-bottom:0;">
-              <label>Support Email Address</label>
+              <label>Support Email ID</label>
               <input type="email" id="cfgContactEmail" class="form-control" placeholder="support@apnaflat.com">
             </div>
             <div class="form-group" style="margin-bottom:0;">
-              <label>Office / Property Address</label>
+              <label>Official Property Address</label>
               <input type="text" id="cfgContactAddress" class="form-control" placeholder="Management Office, Main Gate">
             </div>
           </div>
@@ -6468,7 +6474,19 @@
             <div class="form-group"><label>Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
             <div class="form-group"><label>Alternative Mobile Number (+91 &amp; 10 Digits)</label><input type="tel" id="renterAltMobile" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)"></div>
             <div class="form-group"><label>Address</label><input type="text" id="renterAddress" class="form-control"></div>
-            <div class="form-group"><label>Total Family Members</label><input type="number" id="renterFamily" class="form-control" value="1"></div>
+            <div class="form-group">
+              <label style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+                <span>Total Family Member</span>
+                <span style="font-size:0.68rem; color:var(--accent-cyan); font-weight:700;">Click (+) to add member details</span>
+              </label>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <input type="number" id="renterFamily" class="form-control" value="1" min="1" style="flex:1;">
+                <button type="button" id="btnAddFamilyMemberRow" class="btn-primary admin-only" style="width:42px; height:42px; padding:0; border-radius:10px; display:inline-flex; align-items:center; justify-content:center; font-size:1.05rem; flex-shrink:0; background:linear-gradient(135deg, #10b981, #059669);" onclick="addRenterFamilyMemberRow()" title="Add Family Member Details (Name, Mobile, Aadhaar)">
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+              </div>
+              <div id="renterFamilyMembersListContainer" style="display:flex; flex-direction:column; gap:8px; margin-top:8px;"></div>
+            </div>
             <div class="form-group">
               <label>Renter Status</label>
               <select id="renterStatus" class="form-control" onchange="syncProfileReactivateButtonVisibility()">
@@ -6952,16 +6970,33 @@
 
         // Record entry in login history
         try {
+          const nowTs = Date.now();
+          const nowIso = new Date(nowTs).toISOString();
           await dbInstance.collection("loginHistory").add({
             Username: userDocData.Username || cleanUser,
             FullName: userDocData.FullName || cleanUser,
             Role: userDocData.Role || "Admin",
-            LoginTime: new Date().toLocaleString(),
-            Timestamp: Date.now(),
+            LoginTime: new Date(nowTs).toLocaleString(),
+            LoginTimestamp: nowIso,
+            Timestamp: nowTs,
             Status: "Success",
             SessionToken: sessionToken,
             UserAgent: navigator.userAgent
           });
+
+          // Requirement 4: Keep a maximum of 30 login history entries; as soon as a 31st login occurs, delete the oldest entry at the bottom
+          const allLhSnap = await dbInstance.collection("loginHistory").get();
+          const lhDocs = [];
+          allLhSnap.forEach(function(d) {
+            lhDocs.push({ id: d.id, ts: Number(d.data()?.Timestamp || 0) });
+          });
+          lhDocs.sort(function(a, b) { return b.ts - a.ts; });
+          if (lhDocs.length > 30) {
+            const toDelete = lhDocs.slice(30);
+            await Promise.all(toDelete.map(function(item) {
+              return dbInstance.collection("loginHistory").doc(item.id).delete().catch(function() {});
+            }));
+          }
         } catch (lhErr) {}
 
         // Fetch full fresh data from Firebase so DB is completely loaded on login
@@ -7000,7 +7035,30 @@
       const dbInstance = getFirestoreDb();
       if (!dbInstance) return;
 
-      const collections = ["properties", "flats", "renters", "bills", "users", "fdRecords", "khetRecords", "kharchRecords", "config"];
+      // Dedicated real-time listener on config/app_config for instant Live Chat delivery, mutual Clear, and live Contact Info updates
+      try {
+        dbInstance.collection("config").doc("app_config").onSnapshot(function(docSnap) {
+          if (!docSnap || !docSnap.exists) return;
+          const cfgData = docSnap.data() || {};
+          if (cfgData.privateChats && typeof syncServerPrivateChatsToLocal === "function") {
+            syncServerPrivateChatsToLocal(cfgData.privateChats, true);
+          }
+          if (cfgData.contactConfig && typeof cfgData.contactConfig === "object") {
+            try {
+              const nextContactRaw = JSON.stringify(cfgData.contactConfig);
+              const prevContactRaw = localStorage.getItem("portal_admin_contact_cfg") || "";
+              if (nextContactRaw !== prevContactRaw) {
+                localStorage.setItem("portal_admin_contact_cfg", nextContactRaw);
+                if (typeof initAdminContactSettingsInputs === "function") initAdminContactSettingsInputs();
+                if (typeof renderContactUsDynamicBody === "function") renderContactUsDynamicBody();
+                if (typeof renderAllDashboardUI === "function" && activeUser) renderAllDashboardUI();
+              }
+            } catch (e) {}
+          }
+        }, function() {});
+      } catch (e) {}
+
+      const collections = ["properties", "flats", "renters", "bills", "users", "fdRecords", "khetRecords", "kharchRecords", "loginHistory"];
       collections.forEach(function(colName) {
         try {
           dbInstance.collection(colName).onSnapshot(function(snap) {
@@ -7103,12 +7161,22 @@
         }
 
         const rawLh = [];
+        const rawLhDocs = [];
         lhSnap.forEach(function(d) {
           const item = d.data();
-          if (item) rawLh.push(item);
+          if (item) {
+            rawLh.push(item);
+            rawLhDocs.push({ id: d.id, ts: Number(item.Timestamp || 0) });
+          }
         });
         rawLh.sort(function(a, b) { return (b.Timestamp || 0) - (a.Timestamp || 0); });
-        const loginHistory = rawLh.slice(0, 120);
+        rawLhDocs.sort(function(a, b) { return b.ts - a.ts; });
+        if (rawLhDocs.length > 30) {
+          rawLhDocs.slice(30).forEach(function(oldDoc) {
+            dbInstance.collection("loginHistory").doc(oldDoc.id).delete().catch(function() {});
+          });
+        }
+        const loginHistory = rawLh.slice(0, 30);
 
         const fdRecords = [];
         fdSnap.forEach(function(d) {
@@ -7590,6 +7658,7 @@
               AltMobileNumber: cleanPhoneStr(data.altMobileNumber || ""),
               Address: String(data.address || "").trim(),
               TotalFamilyMembers: data.familyMembers || 1,
+              FamilyMembersList: Array.isArray(data.familyMembersList) ? data.familyMembersList : [],
               Status: status,
               JoinDate: data.joinDate || "",
               EndDate: data.endDate || "",
@@ -8117,7 +8186,8 @@
 
     const EMPTY_PROFILE_PLACEHOLDER = "https://via.placeholder.com/150?text=No+Profile+Photo";
     const EMPTY_IDENTITY_PLACEHOLDER = "https://via.placeholder.com/300x150?text=No+Aadhaar+Uploaded";
-    const LOGIN_HISTORY_PAGE_SIZE = 12;
+    const LOGIN_HISTORY_PAGE_SIZE = 15;
+    const MAX_LOGIN_HISTORY_ENTRIES = 30;
     let currentLoginHistoryPage = 1;
 
     let activeUser = null;
@@ -9843,6 +9913,15 @@ function formatMonthLabel(rawVal) {
         body.role-renter button[onclick="openSettingsModal()"] {
           display: none !important;
         }
+        /* Requirement 5: Automatically hide Live Chat & Website AI widgets whenever Flat Details Modal is open */
+        body.flat-details-open #bottomRightFloatingDock,
+        body.flat-details-open #modularLiveChatWidget,
+        body.flat-details-open #modularAiWidget {
+          display: none !important;
+          visibility: hidden !important;
+          pointer-events: none !important;
+          z-index: -1 !important;
+        }
         @media (max-width: 640px) {
           .wa-checklist-grid {
             grid-template-columns: 1fr;
@@ -9929,9 +10008,9 @@ function formatMonthLabel(rawVal) {
       const savedAssignedFlat = sessionStorage.getItem("active_session_assigned_flat") || "";
       const savedAssignedAadhaar = sessionStorage.getItem("active_session_assigned_aadhaar") || "";
       const savedSessionToken = sessionStorage.getItem("active_session_token") || "";
-      const savedSelectedProp = sessionStorage.getItem("active_selected_property");
-
-      if (savedSelectedProp) selectedProperty = savedSelectedProp;
+      // Requirement 2: When the homepage is opened, flats must remain hidden until the user taps on a specific property
+      selectedProperty = null;
+      sessionStorage.removeItem("active_selected_property");
 
       // Requirement 1: Listen for concurrent login in another tab/window on the same browser immediately
       window.addEventListener("storage", (ev) => {
@@ -10159,10 +10238,11 @@ function formatMonthLabel(rawVal) {
 
         // Render a dedicated Aadhaar-scoped Renter Portal Card on the dashboard with synced Help Center Contact Info
         const myBills = (DB.bills || []).filter(b => isBillLinkedToLoggedInRenterAadhaar(b));
-        const helpCfg = typeof getAdminContactSettings === "function" ? getAdminContactSettings() : { name: "Property Admin", phone: "", whatsapp: "" };
-        const syncedSupportPhone = helpCfg.phone || helpCfg.whatsapp || primaryRenter.ContractMobile || "--";
-        const syncedSupportName = helpCfg.name || "Property Admin";
+        const helpCfg = typeof getAdminContactSettings === "function" ? getAdminContactSettings() : { name: "", phone: "", whatsapp: "", mobile: "", email: "", address: "" };
+        const syncedSupportPhone = helpCfg.phone || helpCfg.whatsapp || helpCfg.mobile || "N/A";
+        const syncedSupportName = helpCfg.name || "N/A";
         if (flatsContainer) {
+          flatsContainer.style.display = "";
           flatsContainer.innerHTML = `
             <div class="flat-card" style="grid-column: 1 / -1; max-width: 760px; margin: 0 auto; width: 100%; cursor: pointer; border: 2px solid rgba(192, 132, 252, 0.55) !important;" onclick="openFlatDetailsModal(findFlatObject('${String(targetProp).replace(/'/g, "\\'")}', '${String(targetFlat).replace(/'/g, "\\'")}') || {PropertyName:'${String(targetProp).replace(/'/g, "\\'")}', FlatName:'${String(targetFlat).replace(/'/g, "\\'")}'})">
               <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
@@ -10209,6 +10289,7 @@ function formatMonthLabel(rawVal) {
         if (viewerScope && viewerScope.mode === "FLAT") {
           if (propsBar) propsBar.style.display = "none";
           selectedProperty = viewerScope.prop;
+          if (flatsContainer) flatsContainer.style.display = "";
           renderFlatsGrid(viewerScope.prop);
           const assignedFlatObj = findFlatObject(viewerScope.prop, viewerScope.flat);
           if (assignedFlatObj && !hasAutoOpenedViewerFlatOnce) {
@@ -10223,24 +10304,17 @@ function formatMonthLabel(rawVal) {
           if (propsBar) propsBar.style.display = "flex";
           renderPropertiesRow();
           if (selectedProperty && isPropertyAllowedForViewer(selectedProperty, viewerScope)) {
+            if (flatsContainer) flatsContainer.style.display = "";
             renderFlatsGrid(selectedProperty);
           } else {
-            const firstAllowedProp = (DB.properties || []).find(p => isPropertyAllowedForViewer(p.PropertyName, viewerScope));
-            if (firstAllowedProp) {
-              selectedProperty = firstAllowedProp.PropertyName;
-              renderPropertiesRow();
-              renderFlatsGrid(selectedProperty);
-            } else if (flatsContainer) {
-              flatsContainer.innerHTML = `
-                <div class="empty-flats-prompt">
-                  <i class="fa-solid fa-door-closed"></i>
-                  <h3>No Properties Found</h3>
-                  <p>No properties match your ${activeRole} access scope yet.</p>
-                </div>
-              `;
+            selectedProperty = null;
+            if (flatsContainer) {
+              flatsContainer.innerHTML = "";
+              flatsContainer.style.display = "none";
             }
           }
         } else if (flatsContainer) {
+          flatsContainer.style.display = "";
           flatsContainer.innerHTML = `
             <div class="empty-flats-prompt">
               <i class="fa-solid fa-door-closed"></i>
@@ -10261,24 +10335,15 @@ function formatMonthLabel(rawVal) {
 
       const flatsContainer = document.getElementById("flatsList");
       if (selectedProperty && DB.properties.some(p => String(p.PropertyName).trim() === String(selectedProperty).trim())) {
-        renderFlatsGrid(selectedProperty);
-      } else if (DB.properties.length > 0) {
-        selectedProperty = DB.properties[0].PropertyName;
-        sessionStorage.setItem("active_selected_property", selectedProperty);
-        renderPropertiesRow();
+        if (flatsContainer) flatsContainer.style.display = "";
         renderFlatsGrid(selectedProperty);
       } else {
+        // Requirement 2: Keep all flats hidden until the user explicitly taps on a property card
         selectedProperty = null;
         sessionStorage.removeItem("active_selected_property");
-        if (false) {
-        } else {
-          flatsContainer.innerHTML = `
-            <div class="empty-flats-prompt">
-              <i class="fa-solid fa-building-circle-exclamation"></i>
-              <h3>No Properties Added Yet</h3>
-              <p>Click the (+) icon in the top right header to add your first property.</p>
-            </div>
-          `;
+        if (flatsContainer) {
+          flatsContainer.innerHTML = "";
+          flatsContainer.style.display = "none";
         }
       }
     }
@@ -10503,8 +10568,23 @@ function formatMonthLabel(rawVal) {
       applyVisualTheme(sheetTheme);
       applyRolePermissions(activeRole);
 
-      const liveLogs = Array.isArray(res.loginHistory) ? res.loginHistory : [];
+      const liveLogs = Array.isArray(res.loginHistory) ? res.loginHistory.slice(0, 30) : [];
       DB.loginHistory = (String(activeRole).toLowerCase() === "admin") ? liveLogs : [];
+
+      if (res.globalConfig && typeof res.globalConfig === "object") {
+        if (res.globalConfig.contactConfig && typeof res.globalConfig.contactConfig === "object") {
+          try {
+            localStorage.setItem("portal_admin_contact_cfg", JSON.stringify(res.globalConfig.contactConfig));
+            if (typeof initAdminContactSettingsInputs === "function") initAdminContactSettingsInputs();
+            if (typeof renderContactUsDynamicBody === "function") renderContactUsDynamicBody();
+          } catch (e) {}
+        }
+        if (res.globalConfig.privateChats && typeof res.globalConfig.privateChats === "object") {
+          if (typeof syncServerPrivateChatsToLocal === "function") {
+            syncServerPrivateChatsToLocal(res.globalConfig.privateChats, true);
+          }
+        }
+      }
 
       rebindSelectedFlatAndRenterReferences();
       saveDbSnapshotToCache();
@@ -10938,9 +11018,6 @@ function formatMonthLabel(rawVal) {
 
       visibleProps.forEach(prop => {
         const isSelected = selectedProperty === prop.PropertyName;
-        const propFlatsCount = (DB.flats || []).filter(f =>
-          String(f.PropertyName || "").trim().toLowerCase() === String(prop.PropertyName || "").trim().toLowerCase()
-        ).length;
         const div = document.createElement("div");
         div.className = `prop-card ${isSelected ? 'active' : ''}`;
         div.setAttribute("role", "button");
@@ -10950,7 +11027,7 @@ function formatMonthLabel(rawVal) {
           <div class="prop-icon"><i class="fa-solid ${isSelected ? 'fa-building-circle-check' : 'fa-hotel'}"></i></div>
           <div class="prop-info">
             <h4>${prop.PropertyName}</h4>
-            <span>UPI: ${prop.UPIID || 'Not set'} • <strong>${propFlatsCount} Flat${propFlatsCount === 1 ? '' : 's'}</strong></span>
+            <span>UPI: ${prop.UPIID || 'Not set'}</span>
           </div>
         `;
         container.appendChild(div);
@@ -10960,7 +11037,8 @@ function formatMonthLabel(rawVal) {
 
     function selectProperty(name) {
       selectedProperty = name;
-      sessionStorage.setItem("active_selected_property", name);
+      const flatsContainer = document.getElementById("flatsList");
+      if (flatsContainer) flatsContainer.style.display = "";
       renderAllDashboardUI();
     }
 
@@ -11615,7 +11693,7 @@ function formatMonthLabel(rawVal) {
 
     function changeLoginHistoryPage(delta) {
       if (String(activeRole || "").trim().toLowerCase() !== "admin") return;
-      const logs = Array.isArray(DB.loginHistory) ? DB.loginHistory : [];
+      const logs = (Array.isArray(DB.loginHistory) ? DB.loginHistory : []).slice(0, MAX_LOGIN_HISTORY_ENTRIES);
       const totalPages = Math.max(1, Math.ceil(logs.length / LOGIN_HISTORY_PAGE_SIZE));
       const nextPage = currentLoginHistoryPage + delta;
       if (nextPage < 1 || nextPage > totalPages) return;
@@ -11637,7 +11715,7 @@ function formatMonthLabel(rawVal) {
         return;
       }
 
-      const logs = Array.isArray(DB.loginHistory) ? DB.loginHistory : [];
+      const logs = (Array.isArray(DB.loginHistory) ? DB.loginHistory : []).slice(0, MAX_LOGIN_HISTORY_ENTRIES);
       const totalRecords = logs.length;
       const totalPages = Math.max(1, Math.ceil(totalRecords / LOGIN_HISTORY_PAGE_SIZE));
 
@@ -11648,7 +11726,7 @@ function formatMonthLabel(rawVal) {
       const pageSlice = logs.slice(startIdx, startIdx + LOGIN_HISTORY_PAGE_SIZE);
 
       if (totalBadge) {
-        totalBadge.innerText = `${totalRecords} Login${totalRecords === 1 ? "" : "s"}`;
+        totalBadge.innerText = `${totalRecords} / ${MAX_LOGIN_HISTORY_ENTRIES} Login${totalRecords === 1 ? "" : "s"}`;
       }
       if (pageIndicator) {
         pageIndicator.innerText = `Page ${currentLoginHistoryPage} of ${totalPages}`;
@@ -11674,7 +11752,7 @@ function formatMonthLabel(rawVal) {
         const fullName = entry.FullName || entry.Username || "User";
         const uName = entry.Username || "--";
         const role = entry.Role || "Admin";
-        const timeStr = formatLoginTimestampDisplay(entry.LoginTimestamp);
+        const timeStr = formatLoginTimestampDisplay(entry.LoginTimestamp || entry.LoginTime || entry.Timestamp);
         return `
           <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; padding:7px 4px; border-bottom:1px solid var(--glass-border); user-select:none;">
             <div style="display:flex; align-items:center; gap:8px;">
@@ -14709,6 +14787,9 @@ function formatMonthLabel(rawVal) {
       document.getElementById("renterAltMobile").value = sanitizeContactPhoneDisplay(targetRenter.AltMobileNumber) || "";
       document.getElementById("renterAddress").value = targetRenter.Address || "";
       document.getElementById("renterFamily").value = targetRenter.TotalFamilyMembers || 1;
+      if (typeof renderRenterFamilyMembersRows === "function") {
+        renderRenterFamilyMembersRows(targetRenter.FamilyMembersList || []);
+      }
       document.getElementById("renterStatus").value = String(targetRenter.Status || "Active").trim().toLowerCase() === "active" ? "Active" : "Inactive";
       document.getElementById("renterJoinDate").value = resolvedMeta.joinDate;
       document.getElementById("renterEndDate").value = resolvedMeta.endDate;
@@ -14788,6 +14869,9 @@ function formatMonthLabel(rawVal) {
           if (!renter.AltMobileNumber && consolidated.AltMobileNumber) renter.AltMobileNumber = consolidated.AltMobileNumber;
           if (!renter.Address && consolidated.Address) renter.Address = consolidated.Address;
           if (!renter.TotalFamilyMembers && consolidated.TotalFamilyMembers) renter.TotalFamilyMembers = consolidated.TotalFamilyMembers;
+          if ((!Array.isArray(renter.FamilyMembersList) || renter.FamilyMembersList.length === 0) && Array.isArray(consolidated.FamilyMembersList)) {
+            renter.FamilyMembersList = consolidated.FamilyMembersList;
+          }
         }
         document.getElementById("renterName").value = renter.RenterName || "";
         document.getElementById("renterIdentityNum").value = formatAadhaarWithHyphens(renter.IdentityDocNumber || "");
@@ -14795,6 +14879,9 @@ function formatMonthLabel(rawVal) {
         document.getElementById("renterAltMobile").value = sanitizeContactPhoneDisplay(renter.AltMobileNumber) || "";
         document.getElementById("renterAddress").value = renter.Address || "";
         document.getElementById("renterFamily").value = renter.TotalFamilyMembers || 1;
+        if (typeof renderRenterFamilyMembersRows === "function") {
+          renderRenterFamilyMembersRows(renter.FamilyMembersList || []);
+        }
         document.getElementById("renterStatus").value = String(renter.Status || "Active").trim().toLowerCase() === "active" ? "Active" : "Inactive";
         document.getElementById("renterJoinDate").value = resolvedMeta.joinDate;
         document.getElementById("renterEndDate").value = resolvedMeta.endDate;
@@ -19096,6 +19183,91 @@ function formatMonthLabel(rawVal) {
       }
     }
 
+    // Requirement 6: Dynamic Family Member Rows (+) and (-) inside Flat Details -> Profile
+    function addRenterFamilyMemberRow(memberData = null) {
+      const container = document.getElementById("renterFamilyMembersListContainer");
+      if (!container) return;
+      const mName = memberData && memberData.name ? String(memberData.name).replace(/"/g, "&quot;") : "";
+      const mMobile = memberData && memberData.mobile ? String(memberData.mobile).replace(/"/g, "&quot;") : "";
+      const mAadhaar = memberData && memberData.aadhaar ? formatAadhaarWithHyphens(String(memberData.aadhaar)) : "";
+      const isReadOnly = activeRole !== "Admin";
+
+      const row = document.createElement("div");
+      row.className = "family-member-dynamic-row";
+      row.style.cssText = "background:rgba(15,23,42,0.55); border:1px solid var(--glass-border); border-radius:12px; padding:10px; display:flex; flex-direction:column; gap:8px; position:relative;";
+      row.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+          <span class="family-member-row-label" style="font-size:0.72rem; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.4px;">
+            <i class="fa-solid fa-user-plus"></i> Family Member
+          </span>
+          ${!isReadOnly ? `
+          <button type="button" class="btn-ledger-action admin-only" style="width:28px; height:28px; padding:0; border-radius:8px; background:rgba(239,68,68,0.18); border:1px solid rgba(239,68,68,0.5); color:#f87171; display:inline-flex; align-items:center; justify-content:center; font-size:0.85rem; cursor:pointer;" onclick="removeRenterFamilyMemberRow(this)" title="Delete this family member row">
+            <i class="fa-solid fa-minus"></i>
+          </button>
+          ` : ''}
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr; gap:7px;">
+          <input type="text" class="form-control fam-member-name" placeholder="Family Member Name" value="${mName}" ${isReadOnly ? 'readonly' : ''} style="padding:7px 10px; font-size:0.78rem;">
+          <input type="tel" class="form-control fam-member-mobile" maxlength="14" inputmode="tel" placeholder="Mobile Number (+91 9876543210)" value="${mMobile}" ${isReadOnly ? 'readonly' : ''} onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)" style="padding:7px 10px; font-size:0.78rem;">
+          <input type="text" class="form-control fam-member-aadhaar" maxlength="14" inputmode="numeric" placeholder="Aadhaar Card No (XXXX-XXXX-XXXX)" value="${mAadhaar}" ${isReadOnly ? 'readonly' : ''} oninput="formatAadhaarInputLive(this)" style="padding:7px 10px; font-size:0.78rem;">
+        </div>
+      `;
+      container.appendChild(row);
+      renumberRenterFamilyMemberRows();
+    }
+
+    function removeRenterFamilyMemberRow(btnEl) {
+      const row = btnEl ? btnEl.closest(".family-member-dynamic-row") : null;
+      if (row) {
+        row.remove();
+        renumberRenterFamilyMemberRows();
+      }
+    }
+
+    function renumberRenterFamilyMemberRows() {
+      const container = document.getElementById("renterFamilyMembersListContainer");
+      if (!container) return;
+      const rows = container.querySelectorAll(".family-member-dynamic-row");
+      rows.forEach((r, idx) => {
+        const lbl = r.querySelector(".family-member-row-label");
+        if (lbl) {
+          lbl.innerHTML = `<i class="fa-solid fa-users"></i> Family Member #${idx + 1}`;
+        }
+      });
+    }
+
+    function renderRenterFamilyMembersRows(membersList = []) {
+      const container = document.getElementById("renterFamilyMembersListContainer");
+      if (!container) return;
+      container.innerHTML = "";
+      if (!Array.isArray(membersList)) return;
+      membersList.forEach(m => {
+        if (m && (m.name || m.mobile || m.aadhaar)) {
+          addRenterFamilyMemberRow(m);
+        }
+      });
+    }
+
+    function collectRenterFamilyMembersFromDOM() {
+      const container = document.getElementById("renterFamilyMembersListContainer");
+      if (!container) return [];
+      const rows = container.querySelectorAll(".family-member-dynamic-row");
+      const list = [];
+      rows.forEach(r => {
+        const name = (r.querySelector(".fam-member-name")?.value || "").trim();
+        const rawMob = (r.querySelector(".fam-member-mobile")?.value || "").trim();
+        const mobDigits = extractIndianMobile10Digits(rawMob);
+        const mobile = mobDigits.length === 10 ? ("+91 " + mobDigits) : (rawMob === "+91" ? "" : rawMob);
+        const rawAadhaar = (r.querySelector(".fam-member-aadhaar")?.value || "").trim();
+        const aadhDigits = sanitizeAadhaar12Digits(rawAadhaar);
+        const aadhaar = aadhDigits.length === 12 ? formatAadhaarWithHyphens(aadhDigits) : rawAadhaar;
+        if (name || mobile || aadhaar) {
+          list.push({ name, mobile, aadhaar });
+        }
+      });
+      return list;
+    }
+
     async function submitRenterProfileRight() {
       if (activeRole === "Viewer" || !selectedFlat) return;
       rebindSelectedFlatAndRenterReferences();
@@ -19149,6 +19321,7 @@ function formatMonthLabel(rawVal) {
       }
       document.getElementById("profContractMobile").value = cleanContractMobile;
 
+      const collectedFamilyMembers = collectRenterFamilyMembersFromDOM();
       const targetRenterId = activeFlatRenterObj?.RenterID || ("R-" + Date.now());
       const wasAlreadyInactive = activeFlatRenterObj && String(activeFlatRenterObj.Status || "").trim().toLowerCase() === "inactive";
 
@@ -19160,6 +19333,7 @@ function formatMonthLabel(rawVal) {
         activeFlatRenterObj.AltMobileNumber = cleanAltMobile;
         activeFlatRenterObj.Address = document.getElementById("renterAddress").value.trim();
         activeFlatRenterObj.TotalFamilyMembers = document.getElementById("renterFamily").value || 1;
+        activeFlatRenterObj.FamilyMembersList = collectedFamilyMembers;
         document.getElementById("renterStatus").value = "Inactive";
         reactivatePreviousRenterProfile(activeFlatRenterObj.RenterID);
         return;
@@ -19204,6 +19378,7 @@ function formatMonthLabel(rawVal) {
         altMobileNumber: cleanAltMobile,
         address: document.getElementById("renterAddress").value.trim(),
         familyMembers: document.getElementById("renterFamily").value || 1,
+        familyMembersList: collectedFamilyMembers,
         renterStatus: statusVal,
         joinDate: joinDateVal,
         endDate: endDateVal,
@@ -19260,6 +19435,7 @@ function formatMonthLabel(rawVal) {
           existingRenterRecord.AltMobileNumber = payload.altMobileNumber;
           existingRenterRecord.Address = payload.address;
           existingRenterRecord.TotalFamilyMembers = payload.familyMembers;
+          existingRenterRecord.FamilyMembersList = payload.familyMembersList;
           existingRenterRecord.JoinDate = payload.joinDate;
           existingRenterRecord.EndDate = payload.endDate;
           existingRenterRecord.ProfileImageURL = payload.profileImageUrl;
@@ -19313,6 +19489,7 @@ function formatMonthLabel(rawVal) {
           existingRenterRecord.AltMobileNumber = payload.altMobileNumber;
           existingRenterRecord.Address = payload.address;
           existingRenterRecord.TotalFamilyMembers = payload.familyMembers;
+          existingRenterRecord.FamilyMembersList = payload.familyMembersList;
           existingRenterRecord.JoinDate = payload.joinDate;
           existingRenterRecord.ProfileImageURL = payload.profileImageUrl;
           existingRenterRecord.IdentityImageURL = payload.identityImageUrl;
@@ -19340,6 +19517,7 @@ function formatMonthLabel(rawVal) {
             AltMobileNumber: payload.altMobileNumber,
             Address: payload.address,
             TotalFamilyMembers: payload.familyMembers,
+            FamilyMembersList: payload.familyMembersList,
             JoinDate: payload.joinDate,
             EndDate: payload.endDate,
             ProfileImageURL: payload.profileImageUrl,
@@ -19365,7 +19543,7 @@ function formatMonthLabel(rawVal) {
         document.getElementById("renterEndDate").value = payload.endDate;
         updateRenterTenureStatusUI(activeFlatRenterObj, payload.identityDocNumber);
         syncProfileReactivateButtonVisibility();
-        triggerSideToast("Profile & Utility Details Saved", "Renter profile, dates & utility meter numbers saved and displayed!", true);
+        triggerSideToast("Profile & Utility Details Saved", "Renter profile, family members, dates & utility meter numbers saved!", true);
       }
 
       propagatePropertyWideUpiAndContactLocal(
@@ -19390,6 +19568,7 @@ function formatMonthLabel(rawVal) {
       document.getElementById("renterAltMobile").value = "";
       document.getElementById("renterAddress").value = "";
       document.getElementById("renterFamily").value = "1";
+      renderRenterFamilyMembersRows([]);
       document.getElementById("renterStatus").value = "Active";
       document.getElementById("renterJoinDate").value = new Date().toISOString().split('T')[0];
       document.getElementById("renterEndDate").value = "";
@@ -19422,12 +19601,21 @@ function formatMonthLabel(rawVal) {
       if (el) {
         el.classList.add("active");
         document.getElementById("actionMenu")?.classList.remove("show");
+        if (el.id === "flatDetailsModal") {
+          document.body.classList.add("flat-details-open");
+          if (typeof closeModularLiveChatWidget === "function") closeModularLiveChatWidget();
+          if (typeof closeModularAiWidget === "function") closeModularAiWidget();
+        }
       }
     }
     function closeModal(id) {
       const el = typeof id === "string" ? document.getElementById(id) : id;
       if (el) {
         el.classList.remove("active");
+        if (el.id === "flatDetailsModal") {
+          document.body.classList.remove("flat-details-open");
+          if (typeof syncFloatingCornerButtonsByRole === "function") syncFloatingCornerButtonsByRole();
+        }
       }
     }
 
@@ -20518,13 +20706,18 @@ function formatMonthLabel(rawVal) {
       const btnChat = document.getElementById("fabLiveChatBtn");
       const btnContact = document.getElementById("fabContactUsBtn");
       const aiWidget = document.getElementById("modularAiWidget");
+      const chatWidget = document.getElementById("modularLiveChatWidget");
 
       const isDashboardActive = document.getElementById("dashboardScreen")?.classList.contains("active");
+      const isFlatModalOpen = document.getElementById("flatDetailsModal")?.classList.contains("active");
       if (!dock) return;
 
-      if (!isDashboardActive || !activeUser) {
+      document.body.classList.toggle("flat-details-open", Boolean(isFlatModalOpen));
+
+      if (!isDashboardActive || !activeUser || isFlatModalOpen) {
         dock.style.display = "none";
         if (aiWidget) aiWidget.style.display = "none";
+        if (chatWidget && isFlatModalOpen) chatWidget.style.display = "none";
         return;
       }
 
@@ -20648,88 +20841,105 @@ function formatMonthLabel(rawVal) {
       });
     }
 
-    // Requirement 12 & Bug 3 Fix: Admin-Configured Contact Details & Live Sync Across All Renter Help Centers
+    // Requirement 1: Admin-Configured Contact Details & Live Sync Across All Renter Help Centers (Displays "N/A" when any detail is missing)
+    function normalizeCleanContactPhone(rawVal) {
+      const str = String(rawVal || "").trim();
+      if (!str || str === "+91" || str === "+91 ") return "";
+      const cleaned = sanitizeContactPhoneDisplay(str) || str;
+      return (cleaned === "+91" || cleaned === "+91 ") ? "" : cleaned.trim();
+    }
+
     function getAdminContactSettings() {
-      const anyFlat = (DB.flats || []).find(f => f.ContractMobile || f.ContractNumber);
-      const anyProp = (DB.properties || [])[0];
-      const adminUserObj = (DB.users || []).find(u => String(u.Role || "").toLowerCase() === "admin");
-      const fallbackPhone = sanitizeContactPhoneDisplay(anyFlat?.ContractMobile || anyFlat?.ContractNumber || anyProp?.ContractNumber || adminUserObj?.MobileNumber || "+91 9876543210") || "+91 9876543210";
-      const fallbackName = adminUserObj?.FullName || activeUserFullName || "Property Admin";
       try {
         const raw = localStorage.getItem("portal_admin_contact_cfg");
         if (raw) {
           const parsed = JSON.parse(raw);
           if (parsed && typeof parsed === "object") {
             return {
-              name: parsed.name || fallbackName,
-              phone: sanitizeContactPhoneDisplay(parsed.phone) || parsed.phone || fallbackPhone,
-              whatsapp: sanitizeContactPhoneDisplay(parsed.whatsapp || parsed.phone) || parsed.whatsapp || parsed.phone || fallbackPhone,
-              email: parsed.email !== undefined ? parsed.email : "support@apnaflat.com",
-              address: parsed.address !== undefined ? parsed.address : "Property Management Office"
+              name: String(parsed.name || "").trim(),
+              phone: normalizeCleanContactPhone(parsed.phone),
+              whatsapp: normalizeCleanContactPhone(parsed.whatsapp),
+              mobile: normalizeCleanContactPhone(parsed.mobile),
+              email: String(parsed.email || "").trim(),
+              address: String(parsed.address || "").trim()
             };
           }
         }
       } catch (e) {}
       return {
-        name: fallbackName,
-        phone: fallbackPhone,
-        whatsapp: fallbackPhone,
-        email: "support@apnaflat.com",
-        address: "Property Management Office"
+        name: "",
+        phone: "",
+        whatsapp: "",
+        mobile: "",
+        email: "",
+        address: ""
       };
     }
 
     async function saveAdminContactSettings() {
-      const name = document.getElementById("cfgContactName")?.value.trim() || activeUserFullName || "Property Admin";
-      const rawPhone = document.getElementById("cfgContactPhone")?.value.trim() || "";
-      const rawWhatsapp = document.getElementById("cfgContactWhatsapp")?.value.trim() || rawPhone;
-      const email = document.getElementById("cfgContactEmail")?.value.trim() || "";
-      const address = document.getElementById("cfgContactAddress")?.value.trim() || "";
+      const name = (document.getElementById("cfgContactName")?.value || "").trim();
+      const rawPhone = (document.getElementById("cfgContactPhone")?.value || "").trim();
+      const rawWhatsapp = (document.getElementById("cfgContactWhatsapp")?.value || "").trim();
+      const rawMobile = (document.getElementById("cfgContactMobile")?.value || "").trim();
+      const email = (document.getElementById("cfgContactEmail")?.value || "").trim();
+      const address = (document.getElementById("cfgContactAddress")?.value || "").trim();
 
-      const phone = sanitizeContactPhoneDisplay(rawPhone) || rawPhone;
-      const whatsapp = sanitizeContactPhoneDisplay(rawWhatsapp) || rawWhatsapp || phone;
+      const phone = normalizeCleanContactPhone(rawPhone);
+      const whatsapp = normalizeCleanContactPhone(rawWhatsapp);
+      const mobile = normalizeCleanContactPhone(rawMobile);
 
-      if (document.getElementById("cfgContactPhone") && phone) {
+      if (document.getElementById("cfgContactPhone")) {
         document.getElementById("cfgContactPhone").value = phone;
       }
-      if (document.getElementById("cfgContactWhatsapp") && whatsapp) {
+      if (document.getElementById("cfgContactWhatsapp")) {
         document.getElementById("cfgContactWhatsapp").value = whatsapp;
       }
+      if (document.getElementById("cfgContactMobile")) {
+        document.getElementById("cfgContactMobile").value = mobile;
+      }
 
-      const cfg = { name, phone, whatsapp, email, address, updatedAt: Date.now() };
+      const cfg = { name, phone, whatsapp, mobile, email, address, updatedAt: Date.now() };
       localStorage.setItem("portal_admin_contact_cfg", JSON.stringify(cfg));
 
-      // Propagate the newly edited contact number & name across all Properties, Flats, Active Renters, and Help Centers
-      if (phone) {
+      const primaryNumber = phone || mobile || whatsapp || "";
+      if (primaryNumber) {
         (DB.properties || []).forEach(p => {
-          p.ContractNumber = phone;
-          p.ContractMobile = phone;
+          p.ContractNumber = primaryNumber;
+          p.ContractMobile = primaryNumber;
         });
         (DB.flats || []).forEach(f => {
-          f.ContractMobile = phone;
-          f.ContractNumber = phone;
+          f.ContractMobile = primaryNumber;
+          f.ContractNumber = primaryNumber;
         });
         (DB.renters || []).forEach(r => {
-          r.ContractMobile = phone;
+          r.ContractMobile = primaryNumber;
         });
         (DB.bills || []).forEach(b => {
-          b.ContractMobile = phone;
+          b.ContractMobile = primaryNumber;
         });
         const profContractEl = document.getElementById("profContractMobile");
-        if (profContractEl) profContractEl.value = phone;
+        if (profContractEl) profContractEl.value = primaryNumber;
       }
 
       saveDbSnapshotToCache();
       renderContactUsDynamicBody();
       renderAllDashboardUI();
 
-      triggerSideToast("Contact Info Saved & Synced", `Latest support number (${phone || 'Updated'}) synced across all Renter Help Centers!`, true);
+      triggerSideToast("Contact Info Saved & Synced", "All Contact Info details synced live across all Renter Help Centers!", true);
 
       try {
-        await sendFirebaseAction({
-          action: "saveContactConfig",
-          contactConfig: cfg
-        });
+        const dbInstance = getFirestoreDb();
+        if (dbInstance) {
+          await dbInstance.collection("config").doc("app_config").set({
+            contactConfig: cfg,
+            updatedAt: new Date().toISOString()
+          }, { merge: true });
+        } else {
+          await sendFirebaseAction({
+            action: "saveContactConfig",
+            contactConfig: cfg
+          });
+        }
       } catch (e) {}
     }
 
@@ -20738,6 +20948,7 @@ function formatMonthLabel(rawVal) {
       if (document.getElementById("cfgContactName")) document.getElementById("cfgContactName").value = cfg.name || "";
       if (document.getElementById("cfgContactPhone")) document.getElementById("cfgContactPhone").value = cfg.phone || "";
       if (document.getElementById("cfgContactWhatsapp")) document.getElementById("cfgContactWhatsapp").value = cfg.whatsapp || "";
+      if (document.getElementById("cfgContactMobile")) document.getElementById("cfgContactMobile").value = cfg.mobile || "";
       if (document.getElementById("cfgContactEmail")) document.getElementById("cfgContactEmail").value = cfg.email || "";
       if (document.getElementById("cfgContactAddress")) document.getElementById("cfgContactAddress").value = cfg.address || "";
     }
@@ -20747,13 +20958,16 @@ function formatMonthLabel(rawVal) {
       const body = document.getElementById("contactUsDynamicBody");
       if (!body) return;
 
-      const latestPhone = cfg.phone || cfg.whatsapp || "Not Specified";
-      const latestWhatsapp = cfg.whatsapp || cfg.phone || "";
-      const supportPersonName = cfg.name || "Property Admin";
+      const supportPersonName = cfg.name || "N/A";
+      const supportPhone = cfg.phone || "N/A";
+      const whatsappPhone = cfg.whatsapp || "N/A";
+      const mobilePhone = cfg.mobile || "N/A";
+      const supportEmail = cfg.email || "N/A";
+      const officialAddress = cfg.address || "N/A";
 
-      const rawWa = String(latestWhatsapp).replace(/[^0-9]/g, "");
+      const rawWa = cfg.whatsapp ? String(cfg.whatsapp).replace(/[^0-9]/g, "") : "";
       const waNumber = rawWa.length === 10 ? "91" + rawWa : rawWa;
-      const waUrl = waNumber ? `https://wa.me/${waNumber}?text=Hello%20${encodeURIComponent(supportPersonName)}%2C%20I%20need%20assistance%20regarding%20my%20flat.` : "";
+      const waUrl = waNumber ? `https://wa.me/${waNumber}?text=Hello%20${encodeURIComponent(cfg.name || 'Admin')}%2C%20I%20need%20assistance%20regarding%20my%20flat.` : "";
 
       body.innerHTML = `
         <div style="background:var(--bg-input); border:1px solid var(--glass-border); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:12px;">
@@ -20765,37 +20979,39 @@ function formatMonthLabel(rawVal) {
             <span class="badge-paid" style="font-size:0.68rem;">24/7 Help Center</span>
           </div>
 
-          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding-bottom:10px; border-bottom:1px dashed var(--glass-border);">
             <div>
-              <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Latest Help Center Contact Number</div>
-              <div style="font-size:0.98rem; font-weight:900; color:var(--text-main);">${latestPhone}</div>
+              <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Support Phone Number</div>
+              <div style="font-size:0.95rem; font-weight:900; color:var(--text-main);"><i class="fa-solid fa-phone" style="color:#38bdf8; margin-right:5px;"></i>${supportPhone}</div>
             </div>
-            ${cfg.phone ? `<a href="tel:${String(cfg.phone).replace(/\s+/g, '')}" class="btn-primary" style="width:auto; padding:7px 15px; font-size:0.75rem; text-decoration:none;"><i class="fa-solid fa-phone"></i> Call</a>` : ''}
+            ${cfg.phone ? `<a href="tel:${String(cfg.phone).replace(/\s+/g, '')}" class="btn-primary" style="width:auto; padding:7px 15px; font-size:0.75rem; text-decoration:none;"><i class="fa-solid fa-phone"></i> Call</a>` : `<span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">N/A</span>`}
           </div>
 
-          ${waUrl ? `
-          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding-top:10px; border-top:1px dashed var(--glass-border);">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding-bottom:10px; border-bottom:1px dashed var(--glass-border);">
             <div>
-              <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">WhatsApp Direct Chat</div>
-              <div style="font-size:0.92rem; font-weight:800; color:#22c55e;"><i class="fa-brands fa-whatsapp"></i> ${latestWhatsapp}</div>
+              <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">WhatsApp Support Phone</div>
+              <div style="font-size:0.92rem; font-weight:800; color:#22c55e;"><i class="fa-brands fa-whatsapp"></i> ${whatsappPhone}</div>
             </div>
-            <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary" style="width:auto; padding:7px 15px; font-size:0.75rem; text-decoration:none; background:linear-gradient(135deg, #16a34a, #22c55e);"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+            ${waUrl ? `<a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary" style="width:auto; padding:7px 15px; font-size:0.75rem; text-decoration:none; background:linear-gradient(135deg, #16a34a, #22c55e);"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>` : `<span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">N/A</span>`}
           </div>
-          ` : ''}
 
-          ${cfg.email ? `
-          <div style="padding-top:10px; border-top:1px dashed var(--glass-border);">
-            <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Email Support</div>
-            <div style="font-size:0.86rem; font-weight:700; color:var(--accent-cyan);"><i class="fa-solid fa-envelope"></i> ${cfg.email}</div>
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding-bottom:10px; border-bottom:1px dashed var(--glass-border);">
+            <div>
+              <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Mobile Number</div>
+              <div style="font-size:0.92rem; font-weight:800; color:var(--text-main);"><i class="fa-solid fa-mobile-screen-button" style="color:#a855f7; margin-right:5px;"></i>${mobilePhone}</div>
+            </div>
+            ${cfg.mobile ? `<a href="tel:${String(cfg.mobile).replace(/\s+/g, '')}" class="btn-primary" style="width:auto; padding:7px 15px; font-size:0.75rem; text-decoration:none; background:linear-gradient(135deg, #8b5cf6, #6366f1);"><i class="fa-solid fa-phone"></i> Call</a>` : `<span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">N/A</span>`}
           </div>
-          ` : ''}
 
-          ${cfg.address ? `
-          <div style="padding-top:10px; border-top:1px dashed var(--glass-border);">
-            <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Management Office Address</div>
-            <div style="font-size:0.84rem; color:var(--text-main);"><i class="fa-solid fa-location-dot" style="color:#ef4444;"></i> ${cfg.address}</div>
+          <div style="padding-bottom:10px; border-bottom:1px dashed var(--glass-border);">
+            <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Support Email ID</div>
+            <div style="font-size:0.86rem; font-weight:700; color:var(--accent-cyan); margin-top:2px;"><i class="fa-solid fa-envelope"></i> ${supportEmail}</div>
           </div>
-          ` : ''}
+
+          <div>
+            <div style="font-size:0.7rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Official Property Address</div>
+            <div style="font-size:0.84rem; color:var(--text-main); margin-top:2px;"><i class="fa-solid fa-location-dot" style="color:#ef4444;"></i> ${officialAddress}</div>
+          </div>
         </div>
 
         <div style="text-align:center; margin-top:4px;">
@@ -21033,15 +21249,23 @@ function formatMonthLabel(rawVal) {
       try {
         localStorage.setItem(PRIVATE_CHAT_STORAGE_KEY, JSON.stringify(store || {}));
       } catch (e) {}
-      if (syncToServer && typeof sendFirebaseAction === "function" && activeUser) {
-        sendFirebaseAction({
-          action: "savePrivateChats",
-          privateChats: store || {}
-        }).catch(() => {});
+      if (syncToServer && activeUser) {
+        const dbInstance = typeof getFirestoreDb === "function" ? getFirestoreDb() : null;
+        if (dbInstance) {
+          dbInstance.collection("config").doc("app_config").set({
+            privateChats: store || {},
+            updatedAt: new Date().toISOString()
+          }, { merge: true }).catch(() => {});
+        } else if (typeof sendFirebaseAction === "function") {
+          sendFirebaseAction({
+            action: "savePrivateChats",
+            privateChats: store || {}
+          }).catch(() => {});
+        }
       }
     }
 
-    function syncServerPrivateChatsToLocal(serverChats) {
+    function syncServerPrivateChatsToLocal(serverChats, forceImmediateUI = false) {
       if (!serverChats || typeof serverChats !== "object") return;
       const localStore = getPrivateChatStore();
       let changed = false;
@@ -21050,28 +21274,47 @@ function formatMonthLabel(rawVal) {
         const sCh = serverChats[chId];
         if (!sCh || typeof sCh !== "object") return;
         const lCh = localStore[chId];
+        const sClearedAt = Number(sCh.clearedAt || 0);
+        const lClearedAt = Number(lCh?.clearedAt || 0);
+        const effectiveClearedAt = Math.max(sClearedAt, lClearedAt);
+
         if (!lCh) {
-          localStore[chId] = sCh;
+          const filteredServerMsgs = (Array.isArray(sCh.messages) ? sCh.messages : []).filter(m => m && (Number(m.timestamp || 0) > effectiveClearedAt));
+          localStore[chId] = {
+            ...sCh,
+            clearedAt: effectiveClearedAt,
+            messages: filteredServerMsgs
+          };
           changed = true;
         } else {
-          const lMsgs = Array.isArray(lCh.messages) ? lCh.messages : [];
-          const sMsgs = Array.isArray(sCh.messages) ? sCh.messages : [];
-          if (sMsgs.length !== lMsgs.length || (sCh.lastTimestamp || 0) > (lCh.lastTimestamp || 0)) {
-            const msgMap = new Map();
-            lMsgs.concat(sMsgs).forEach(m => {
-              if (m && m.id) msgMap.set(m.id, m);
-            });
+          const lMsgs = (Array.isArray(lCh.messages) ? lCh.messages : []).filter(m => m && (Number(m.timestamp || 0) > effectiveClearedAt));
+          const sMsgs = (Array.isArray(sCh.messages) ? sCh.messages : []).filter(m => m && (Number(m.timestamp || 0) > effectiveClearedAt));
+          const msgMap = new Map();
+          lMsgs.concat(sMsgs).forEach(m => {
+            if (m && m.id) msgMap.set(m.id, m);
+          });
+          const mergedMsgs = Array.from(msgMap.values()).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+          const prevLocalCount = Array.isArray(lCh.messages) ? lCh.messages.length : 0;
+
+          if (
+            sClearedAt > lClearedAt ||
+            mergedMsgs.length !== prevLocalCount ||
+            (sCh.lastTimestamp || 0) > (lCh.lastTimestamp || 0) ||
+            Number(sCh.unreadAdmin || 0) !== Number(lCh.unreadAdmin || 0) ||
+            Number(sCh.unreadRenter || 0) !== Number(lCh.unreadRenter || 0)
+          ) {
             localStore[chId] = {
               ...lCh,
               ...sCh,
-              messages: Array.from(msgMap.values()).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0))
+              clearedAt: effectiveClearedAt,
+              messages: mergedMsgs
             };
             changed = true;
           }
         }
       });
 
-      if (changed) {
+      if (changed || forceImmediateUI) {
         try {
           localStorage.setItem(PRIVATE_CHAT_STORAGE_KEY, JSON.stringify(localStore));
         } catch (e) {}
@@ -21400,7 +21643,8 @@ function formatMonthLabel(rawVal) {
       }
       const store = getPrivateChatStore();
       const channelObj = store[channelId] || { messages: [] };
-      const msgs = Array.isArray(channelObj.messages) ? channelObj.messages : [];
+      const clearedAt = Number(channelObj.clearedAt || 0);
+      const msgs = (Array.isArray(channelObj.messages) ? channelObj.messages : []).filter(m => m && Number(m.timestamp || 0) > clearedAt);
       const isAdmin = activeRole === "Admin";
 
       if (msgs.length === 0) {
@@ -21408,7 +21652,7 @@ function formatMonthLabel(rawVal) {
           <div style="text-align:center; padding:30px 14px; color:var(--text-muted); font-size:0.8rem;">
             <i class="fa-solid fa-lock" style="font-size:1.5rem; color:#10b981; margin-bottom:8px; display:block;"></i>
             <strong style="color:var(--text-main); display:block; margin-bottom:4px;">Private 1-on-1 Conversation</strong>
-            Send a message to begin chatting. Messages are delivered directly to this selected ID.
+            Send a message to begin chatting. Messages are delivered in real time to this selected ID.
           </div>
         `;
         return;
@@ -21469,6 +21713,7 @@ function formatMonthLabel(rawVal) {
           flatLabel: flatInfo,
           unreadAdmin: 0,
           unreadRenter: 0,
+          clearedAt: 0,
           lastTimestamp: Date.now(),
           messages: []
         };
@@ -21477,20 +21722,24 @@ function formatMonthLabel(rawVal) {
       const senderName = isAdmin
         ? `${activeUserFullName || activeUser} (@${activeUser})`
         : `${sessionStorage.getItem("active_session_fullname") || activeUser || "Renter"} (@${activeUser})`;
-      const nowStr = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      const nowTs = Date.now();
+      const nowStr = new Date(nowTs).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
       store[targetChannelId].targetAdminUsername = String(targetAdminId || store[targetChannelId].targetAdminUsername || "admin").trim().toLowerCase();
+      if (!Array.isArray(store[targetChannelId].messages)) {
+        store[targetChannelId].messages = [];
+      }
       store[targetChannelId].messages.push({
-        id: "msg_" + Date.now() + "_" + Math.random().toString(36).substring(2, 6),
+        id: "msg_" + nowTs + "_" + Math.random().toString(36).substring(2, 6),
         senderRole: isAdmin ? "Admin" : activeRole,
         senderUsername: String(activeUser || "").trim(),
         targetAdminUsername: store[targetChannelId].targetAdminUsername,
         senderName: senderName,
         text: text,
         timeStr: nowStr,
-        timestamp: Date.now()
+        timestamp: nowTs
       });
-      store[targetChannelId].lastTimestamp = Date.now();
+      store[targetChannelId].lastTimestamp = nowTs;
 
       if (isAdmin) {
         store[targetChannelId].unreadRenter = Number(store[targetChannelId].unreadRenter || 0) + 1;
@@ -21505,17 +21754,31 @@ function formatMonthLabel(rawVal) {
     }
 
     function clearCurrentAdminChatChannel() {
-      if (activeRole !== "Admin" || !activeSelectedChatChannelId) return;
+      const channelId = activeSelectedChatChannelId || (activeRole === "Admin" ? "" : getMyPrivateChatChannelId(activeSelectedTargetAdminUsername || (getRegisteredAdminAccountsList()[0]?.username || "admin")));
+      if (!channelId) return;
       const store = getPrivateChatStore();
-      if (store[activeSelectedChatChannelId]) {
-        store[activeSelectedChatChannelId].messages = [];
-        store[activeSelectedChatChannelId].unreadAdmin = 0;
-        store[activeSelectedChatChannelId].unreadRenter = 0;
-        savePrivateChatStore(store, true);
-        renderCurrentChatMessages();
-        updateLiveChatUnreadBadge();
-        triggerSideToast("Chat History Cleared", "Cleared conversation messages for this private channel.", true);
+      const nowTs = Date.now();
+      if (!store[channelId]) {
+        store[channelId] = {
+          channelId: channelId,
+          messages: [],
+          unreadAdmin: 0,
+          unreadRenter: 0,
+          clearedAt: nowTs,
+          lastTimestamp: nowTs
+        };
+      } else {
+        store[channelId].messages = [];
+        store[channelId].unreadAdmin = 0;
+        store[channelId].unreadRenter = 0;
+        store[channelId].clearedAt = nowTs;
+        store[channelId].lastTimestamp = nowTs;
       }
+      savePrivateChatStore(store, true);
+      renderChatDirectoryRoster();
+      renderCurrentChatMessages();
+      updateLiveChatUnreadBadge();
+      triggerSideToast("Chat History Cleared", "Entire chat history wiped out in real time for both sides.", true);
     }
 
     function updateLiveChatUnreadBadge() {
