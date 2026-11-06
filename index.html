@@ -6935,23 +6935,54 @@
           });
         } catch (lhErr) {}
 
+        // Fetch full fresh data from Firebase so DB is completely loaded on login
+        const dbPayload = await firebaseGetInitialData(cleanUser, sessionToken);
+
         return {
+          ...dbPayload,
           status: "success",
+          username: userDocData.Username || cleanUser,
           sessionToken: sessionToken,
           role: userDocData.Role || "Admin",
           fullName: userDocData.FullName || cleanUser,
+          mobile: userDocData.MobileNumber || "",
           mobileNumber: userDocData.MobileNumber || "",
           theme: userDocData.Theme || "dark",
+          assignedProperty: userDocData.AssignedProperty || "",
+          assignedFlat: userDocData.AssignedFlat || "",
+          assignedAadhaar: userDocData.AssignedAadhaar || "",
           userAssignedProperty: userDocData.AssignedProperty || "",
           userAssignedFlat: userDocData.AssignedFlat || "",
           userAssignedAadhaar: userDocData.AssignedAadhaar || "",
-          bgDashboardUrl: userDocData.BgDashboardUrl || userDocData.BgDashboard || "",
-          bgLoginUrl: userDocData.BgLoginUrl || userDocData.BgLogin || ""
+          accountStatus: "Active",
+          userStatus: "Active",
+          userExists: true,
+          userDeleted: false
         };
       } catch (err) {
         console.error("Firebase login error:", err);
         return { status: "error", message: err.message || "Failed to authenticate with Firebase." };
       }
+    }
+
+    let hasInitializedFirestoreLive = false;
+    function initFirestoreLiveListeners() {
+      if (hasInitializedFirestoreLive) return;
+      const dbInstance = getFirestoreDb();
+      if (!dbInstance) return;
+
+      const collections = ["properties", "flats", "renters", "bills", "users", "fdRecords", "khetRecords", "kharchRecords"];
+      collections.forEach(function(colName) {
+        try {
+          dbInstance.collection(colName).onSnapshot(function(snap) {
+            if (!snap || snap.metadata?.hasPendingWrites) return;
+            if (activeUser && activeUser !== "undefined") {
+              if (typeof syncDataLive === "function") syncDataLive(true);
+            }
+          }, function() {});
+        } catch (e) {}
+      });
+      hasInitializedFirestoreLive = true;
     }
 
     /**
@@ -9785,8 +9816,7 @@ function formatMonthLabel(rawVal) {
         }
       });
 
-      if (savedSessionUser) {
-        // Verify active session user and load fresh data directly from Firebase Cloud Firestore / Firebase Firestore
+      if (savedSessionUser && savedSessionUser !== "undefined") {
         activeUser = savedSessionUser;
         activeRole = savedRole;
         activeUserFullName = savedFullName;
@@ -9797,8 +9827,11 @@ function formatMonthLabel(rawVal) {
         activeSessionToken = savedSessionToken;
         applyRolePermissions(activeRole);
         unlockDashboardInstant(false);
+        if (typeof syncDataLive === "function") syncDataLive(true);
+        if (typeof initFirestoreLiveListeners === "function") initFirestoreLiveListeners();
         return;
       } else {
+        sessionStorage.removeItem("active_session_user");
         prewarmServerInBackground();
       }
     });
@@ -10096,17 +10129,15 @@ function formatMonthLabel(rawVal) {
       const flatsContainer = document.getElementById("flatsList");
       if (selectedProperty && DB.properties.some(p => String(p.PropertyName).trim() === String(selectedProperty).trim())) {
         renderFlatsGrid(selectedProperty);
+      } else if (DB.properties.length > 0) {
+        selectedProperty = DB.properties[0].PropertyName;
+        sessionStorage.setItem("active_selected_property", selectedProperty);
+        renderPropertiesRow();
+        renderFlatsGrid(selectedProperty);
       } else {
         selectedProperty = null;
         sessionStorage.removeItem("active_selected_property");
-        if (DB.properties.length > 0) {
-          flatsContainer.innerHTML = `
-            <div class="empty-flats-prompt">
-              <i class="fa-solid fa-hand-pointer"></i>
-              <h3>Select a Property Above</h3>
-              <p>Click on any property card above to view its flats and current renter payment status.</p>
-            </div>
-          `;
+        if (false) {
         } else {
           flatsContainer.innerHTML = `
             <div class="empty-flats-prompt">
@@ -10181,6 +10212,7 @@ function formatMonthLabel(rawVal) {
       if (!skipImmediateSync) {
         syncDataLive(true);
       }
+      if (typeof initFirestoreLiveListeners === "function") initFirestoreLiveListeners();
 
       if (syncTimer) clearInterval(syncTimer);
       // Poll every 6 seconds so second-device logins & sheet changes are detected rapidly
@@ -20286,6 +20318,9 @@ function formatMonthLabel(rawVal) {
       pendingWriteCount++;
       try {
         const result = await handleFirebaseAction(data);
+        setTimeout(() => {
+          if (typeof syncDataLive === "function") syncDataLive(true);
+        }, 60);
         return result || { status: "success", message: "Saved in Firebase." };
       } catch (err) {
         console.warn("Firebase action warning:", err);
