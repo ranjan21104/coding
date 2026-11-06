@@ -3644,7 +3644,7 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
   }
 </style>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script><script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body class="theme-black">
 
   <!-- PERMANENT HOUSE BACKGROUND CANVAS FOR HOME PAGE & LOGIN -->
@@ -5151,8 +5151,39 @@
               <i class="fa-solid fa-user-pen" style="font-size:0.85rem; margin-bottom:3px; display:block;"></i>
               Name &amp; Mobile
             </button>
-            
+            <button
+              type="button"
+              id="btnShowChangeTheme"
+              class="btn-switch-option"
+              style="border-radius:12px; padding:9px 6px; font-size:0.75rem; font-weight:700; border:1px solid rgba(129,140,248,0.3); background:rgba(129,140,248,0.08); color:#818cf8;"
+              onclick="toggleProfileDrawer('drawerChangeTheme', 'btnShowChangeTheme')"
+            >
+              <i class="fa-solid fa-palette" style="font-size:0.85rem; margin-bottom:3px; display:block;"></i>
+              Theme (<span id="otherProfileTheme">DARK</span>)
+            </button>
           </div>
+        </div>
+
+        <!-- Option D: Theme Switcher Drawer -->
+        <div id="drawerChangeTheme" class="profile-sub-drawer" style="border:1.5px solid rgba(129,140,248,0.4); border-radius:16px; background:linear-gradient(145deg, rgba(129,140,248,0.08) 0%, rgba(15,23,42,0.7) 100%);">
+          <h4 style="margin-bottom: 12px; font-size: 0.92rem; color: #818cf8; font-weight:800; display:flex; align-items:center; gap:7px;">
+            <i class="fa-solid fa-palette"></i> Select Portal Visual Theme
+          </h4>
+          <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-bottom:8px;">
+            <div id="themeCardBlack" class="theme-card active" onclick="selectAndSaveTheme('black')" style="cursor:pointer; padding:12px 8px; text-align:center; border-radius:12px; border:1.5px solid rgba(255,255,255,0.15); background:#090d16;">
+              <i class="fa-solid fa-moon" style="font-size:1.2rem; color:#60a5fa; margin-bottom:6px; display:block;"></i>
+              <strong style="font-size:0.78rem; color:#fff;">Black / Dark</strong>
+            </div>
+            <div id="themeCardWhite" class="theme-card" onclick="selectAndSaveTheme('white')" style="cursor:pointer; padding:12px 8px; text-align:center; border-radius:12px; border:1.5px solid rgba(255,255,255,0.15); background:#f8fafc;">
+              <i class="fa-solid fa-sun" style="font-size:1.2rem; color:#f59e0b; margin-bottom:6px; display:block;"></i>
+              <strong style="font-size:0.78rem; color:#0f172a;">White / Light</strong>
+            </div>
+            <div id="themeCardSystem" class="theme-card" onclick="selectAndSaveTheme('system')" style="cursor:pointer; padding:12px 8px; text-align:center; border-radius:12px; border:1.5px solid rgba(255,255,255,0.15); background:#1e293b;">
+              <i class="fa-solid fa-desktop" style="font-size:1.2rem; color:#a855f7; margin-bottom:6px; display:block;"></i>
+              <strong style="font-size:0.78rem; color:#e2e8f0;">System Auto</strong>
+            </div>
+          </div>
+        </div>
         </div>
 
         <!-- Option A: Change Password Drawer -->
@@ -5235,7 +5266,6 @@
           <div id="nameChangeBottomMsg" class="bottom-status-msg"></div>
         </div>
 
-        </div>
       </div>
     </div>
   </div>
@@ -7636,17 +7666,17 @@
 
       const todayStr = new Date().toISOString().split("T")[0];
       const currentAadhaar = formatAadhaarWithHyphens(document.getElementById("renterIdentityNum")?.value || activeFlatRenterObj?.IdentityDocNumber || "");
-      const summaryEl = document.getElementById("shiftCurrentRenterSummary");
+      const summaryEl = document.getElementById("shiftCurrentRenterDisplay") || document.getElementById("shiftCurrentRenterSummary");
       if (summaryEl) {
         summaryEl.value = `${rName || 'Current Renter'}${currentAadhaar ? ' (Aadhaar: ' + currentAadhaar + ')' : ''} • From ${selectedFlat.PropertyName} - Flat ${selectedFlat.FlatName}`;
       }
-      const dateEl = document.getElementById("shiftDateInput");
+      const dateEl = document.getElementById("shiftEffectiveDate") || (document.getElementById("shiftEffectiveDate") || (document.getElementById("shiftEffectiveDate") || document.getElementById("shiftDateInput")));
       if (dateEl) dateEl.value = todayStr;
       const rentEl = document.getElementById("shiftTargetRentAmount");
       if (rentEl) rentEl.value = document.getElementById("profRent")?.value || selectedFlat.RentAmount || 0;
 
       sortPropertiesAlphabetically(DB.properties);
-      const propSelect = document.getElementById("shiftTargetPropertySelect");
+      const propSelect = document.getElementById("shiftTargetPropSelect") || (document.getElementById("shiftTargetPropSelect") || (document.getElementById("shiftTargetPropSelect") || document.getElementById("shiftTargetPropertySelect")));
       if (propSelect) {
         propSelect.innerHTML = ['<option value="">-- Select Target Property --</option>'].concat(
           (DB.properties || []).map(p => `<option value="${p.PropertyName}">${p.PropertyName}</option>`)
@@ -7658,7 +7688,7 @@
     }
 
     function populateShiftRenterFlatsDropdown() {
-      const propName = document.getElementById("shiftTargetPropertySelect")?.value || "";
+      const propName = (document.getElementById("shiftTargetPropSelect") || (document.getElementById("shiftTargetPropSelect") || document.getElementById("shiftTargetPropertySelect")))?.value || "";
       const flatSelect = document.getElementById("shiftTargetFlatSelect");
       if (!flatSelect) return;
       if (!propName) {
@@ -7687,7 +7717,7 @@
     }
 
     function handleShiftTargetFlatChange() {
-      const propName = document.getElementById("shiftTargetPropertySelect")?.value || "";
+      const propName = (document.getElementById("shiftTargetPropSelect") || (document.getElementById("shiftTargetPropSelect") || document.getElementById("shiftTargetPropertySelect")))?.value || "";
       const flatName = document.getElementById("shiftTargetFlatSelect")?.value || "";
       if (!propName || !flatName) return;
       const targetFlatObj = findFlatObject(propName, flatName);
@@ -7699,9 +7729,9 @@
 
     async function confirmShiftRenterToFlat() {
       if (!selectedFlat) return;
-      const destProp = (document.getElementById("shiftTargetPropertySelect")?.value || "").trim();
+      const destProp = ((document.getElementById("shiftTargetPropSelect") || (document.getElementById("shiftTargetPropSelect") || document.getElementById("shiftTargetPropertySelect")))?.value || "").trim();
       const destFlat = (document.getElementById("shiftTargetFlatSelect")?.value || "").trim();
-      const shiftDate = document.getElementById("shiftDateInput")?.value || new Date().toISOString().split("T")[0];
+      const shiftDate = (document.getElementById("shiftEffectiveDate") || (document.getElementById("shiftEffectiveDate") || document.getElementById("shiftDateInput")))?.value || new Date().toISOString().split("T")[0];
       const newRentAmt = parseFloat(document.getElementById("shiftTargetRentAmount")?.value) || 0;
 
       if (!destProp || !destFlat) {
@@ -11101,6 +11131,7 @@ function formatMonthLabel(rawVal) {
           theme: themePref
         });
       }
+    }
     // Live Username Availability Checker (Requirement 4)
     function checkCreateUsernameAvailabilityLive(rawVal) {
       const val = String(rawVal || "").trim().toLowerCase();
@@ -18043,8 +18074,8 @@ function formatMonthLabel(rawVal) {
       const famEl = document.getElementById("addRenterFamilyInput");
       const joinEl = document.getElementById("addRenterJoinDateInput");
       const statEl = document.getElementById("addRenterStatusInput");
-      const profImg = document.getElementById("addRenterProfPreview");
-      const idImg = document.getElementById("addRenterIdPreview");
+      const profImg = document.getElementById("addRenterProfilePicPreview") || document.getElementById("addRenterProfPreview");
+      const idImg = document.getElementById("addRenterIdentityPicPreview") || document.getElementById("addRenterIdPreview");
 
       if (altMobEl) altMobEl.value = "";
       if (addrEl) addrEl.value = "";
@@ -18147,8 +18178,8 @@ function formatMonthLabel(rawVal) {
       const altMobEl = document.getElementById("addRenterAltMobileInput");
       const addrEl = document.getElementById("addRenterAddressInput");
       const famEl = document.getElementById("addRenterFamilyInput");
-      const profImg = document.getElementById("addRenterProfPreview");
-      const idImg = document.getElementById("addRenterIdPreview");
+      const profImg = document.getElementById("addRenterProfilePicPreview") || document.getElementById("addRenterProfPreview");
+      const idImg = document.getElementById("addRenterIdentityPicPreview") || document.getElementById("addRenterIdPreview");
 
       if (nameEl && best.RenterName) {
         nameEl.value = best.RenterName;
@@ -18232,8 +18263,8 @@ function formatMonthLabel(rawVal) {
       const famEl = document.getElementById("addRenterFamilyInput");
       const joinEl = document.getElementById("addRenterJoinDateInput");
       const statEl = document.getElementById("addRenterStatusInput");
-      const profImg = document.getElementById("addRenterProfPreview");
-      const idImg = document.getElementById("addRenterIdPreview");
+      const profImg = document.getElementById("addRenterProfilePicPreview") || document.getElementById("addRenterProfPreview");
+      const idImg = document.getElementById("addRenterIdentityPicPreview") || document.getElementById("addRenterIdPreview");
       const expBox = document.getElementById("addRenterExpandedDetailsBox");
 
       if (nameEl) nameEl.value = rec.RenterName || "";
@@ -18265,11 +18296,11 @@ function formatMonthLabel(rawVal) {
         const sheetSafeBase64 = await compressImageFileToDataUrl(file, 760, 0.78);
         if (docType === "identity") {
           addRenterModalIdUrl = sheetSafeBase64;
-          const idImg = document.getElementById("addRenterIdPreview");
+          const idImg = document.getElementById("addRenterIdentityPicPreview") || document.getElementById("addRenterIdPreview");
           if (idImg) idImg.src = sheetSafeBase64;
         } else {
           addRenterModalProfUrl = sheetSafeBase64;
-          const profImg = document.getElementById("addRenterProfPreview");
+          const profImg = document.getElementById("addRenterProfilePicPreview") || document.getElementById("addRenterProfPreview");
           if (profImg) profImg.src = sheetSafeBase64;
         }
         triggerSideToast("Photo Attached", `${docType === "identity" ? "Aadhaar Card" : "Profile"} photo ready to save with renter.`, true);
