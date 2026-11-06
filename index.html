@@ -11101,6 +11101,52 @@ function formatMonthLabel(rawVal) {
           theme: themePref
         });
       }
+    // Live Username Availability Checker (Requirement 4)
+    function checkCreateUsernameAvailabilityLive(rawVal) {
+      const val = String(rawVal || "").trim().toLowerCase();
+      const badge = document.getElementById("createUsernameAvailabilityBadge");
+      const icon = document.getElementById("createUsernameInlineIcon");
+      if (!badge && !icon) return;
+
+      if (!val) {
+        if (badge) { badge.style.display = "none"; badge.innerHTML = ""; }
+        if (icon) { icon.style.display = "none"; icon.innerHTML = ""; }
+        return;
+      }
+
+      // Check against all registered users
+      const allUsers = DB.users || [];
+      const isTaken = allUsers.some(u => String(u.Username || "").trim().toLowerCase() === val);
+
+      if (isTaken) {
+        if (badge) {
+          badge.style.display = "inline-flex";
+          badge.style.alignItems = "center";
+          badge.style.gap = "4px";
+          badge.style.background = "rgba(239, 68, 68, 0.16)";
+          badge.style.color = "#f87171";
+          badge.style.border = "1px solid rgba(239, 68, 68, 0.4)";
+          badge.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Username Taken';
+        }
+        if (icon) {
+          icon.style.display = "block";
+          icon.innerHTML = '<i class="fa-solid fa-circle-xmark" style="color:#ef4444;"></i>';
+        }
+      } else {
+        if (badge) {
+          badge.style.display = "inline-flex";
+          badge.style.alignItems = "center";
+          badge.style.gap = "4px";
+          badge.style.background = "rgba(16, 185, 129, 0.16)";
+          badge.style.color = "#34d399";
+          badge.style.border = "1px solid rgba(16, 185, 129, 0.4)";
+          badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Available';
+        }
+        if (icon) {
+          icon.style.display = "block";
+          icon.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#10b981;"></i>';
+        }
+      }
     }
 
     async function submitCreateNewUser() {
@@ -19540,7 +19586,6 @@ function formatMonthLabel(rawVal) {
     }
 
     // Live Chat State & Navigation (Requirements 7, 8 & 14)
-    let activeSelectedChatChannelId = "";
     let activeChatDirectoryFilter = "";
 
     function renderLiveChatChannelsAndMessages() {
