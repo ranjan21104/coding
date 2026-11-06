@@ -3368,6 +3368,106 @@
   }
 
 
+
+  /* Renter Dashboard Top Balance (Advance / Loss / Profit) & Notification Styles */
+  .renter-pnl-balanced {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-input);
+    border: 1.5px solid var(--glass-border);
+    padding: 6px 12px;
+    border-radius: 14px;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+  .renter-pnl-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    border-radius: 8px;
+  }
+  .renter-pnl-advance {
+    background: rgba(16, 185, 129, 0.16);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+  }
+  .renter-pnl-loss {
+    background: rgba(239, 68, 68, 0.16);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+  }
+  .renter-pnl-settled {
+    background: rgba(148, 163, 184, 0.14);
+    color: #94a3b8;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+  }
+  body.theme-white .renter-pnl-balanced {
+    background: #ffffff !important;
+    border-color: #cbd5e1 !important;
+  }
+  .notification-icon-btn {
+    position: relative;
+    width: 42px;
+    height: 38px;
+    border-radius: 12px;
+    background: var(--bg-input);
+    border: 1.5px solid var(--glass-border);
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .notification-icon-btn:hover {
+    border-color: #f59e0b;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
+  }
+  .notification-badge-dot {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: #ef4444;
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #0f172a;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.5);
+  }
+  body.theme-white .notification-badge-dot {
+    border-color: #ffffff;
+  }
+  /* Renter Bill Warning Banner */
+  .renter-due-warning-box {
+    margin-top: 14px;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.18) 0%, rgba(185, 28, 28, 0.28) 100%);
+    border: 2px solid #ef4444;
+    border-radius: 16px;
+    padding: 16px;
+    color: #ffffff;
+    box-shadow: 0 10px 28px rgba(239, 68, 68, 0.25);
+    animation: pulseDueBorder 2s infinite ease-in-out;
+  }
+  @keyframes pulseDueBorder {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0.12); }
+  }
+  body.theme-white .renter-due-warning-box {
+    background: #fef2f2 !important;
+    border-color: #dc2626 !important;
+    color: #991b1b !important;
+  }
+
   /* ==========================================================================
      STYLISH EXECUTIVE POP-UP MODALS (ADD PROPERTY, EDIT PROPERTY, ADD FLAT, ADD RENTER)
      & RENTER HOME PAGE THEME-ADAPTIVE TYPOGRAPHY (REQUIREMENTS 3, 4, 5, 8, 9, 12)
@@ -4079,7 +4179,7 @@
         <!-- Populated dynamically when Receipt button is clicked -->
       </div>
 
-      <div class="no-print" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:10px; margin-top:14px;">
+      <div id="receiptActionButtonsRow" class="no-print" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:10px; margin-top:14px;">
         <button type="button" class="btn-confirm-cancel" onclick="closeModal('receiptViewModal')">Close</button>
         <button type="button" class="btn-primary" style="background:linear-gradient(135deg, #0284c7, #2563eb);" onclick="downloadCurrentReceiptImage()">
           <i class="fa-solid fa-download"></i> Download Image
@@ -4745,6 +4845,11 @@
           <button type="button" class="nav-btn profile-icon-box-btn" onclick="openProfileModal()" title="My Profile" aria-label="My Profile">
             <i class="fa-solid fa-user" style="color:#ec4899; font-size:1.05rem;"></i>
           </button>
+          <!-- 5B. Notification Bell Icon (Requirement 4: Next to profile right on dashboard) -->
+          <button type="button" id="btnDashboardNotification" class="notification-icon-btn" onclick="openNotificationsModal()" title="Admin Notifications & Announcements" aria-label="Notifications">
+            <i class="fa-solid fa-bell" style="color:#f59e0b; font-size:1.05rem;"></i>
+            <span id="navNotificationBadge" class="notification-badge-dot" style="display:none;">0</span>
+          </button>
           <!-- 6. Settings Box Button -->
           <button type="button" class="nav-btn settings-icon-box-btn" onclick="openSettingsModal()" title="Settings" aria-label="Settings">
             <i class="fa-solid fa-gear" style="color:#a855f7; font-size:1.05rem;"></i>
@@ -5312,6 +5417,62 @@
           <button type="button" class="btn-confirm-cancel" onclick="closeModal('editLeftRenterModal')">Cancel</button>
           <button type="button" class="btn-primary admin-only" style="width:auto; padding:10px 24px;" onclick="saveDepartedRenterChanges()">
             <i class="fa-solid fa-floppy-disk"></i> Save Profile Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==========================================================================
+       ADMIN NOTIFICATIONS & BROADCASTS MODAL (Requirement 4)
+       ========================================================================== -->
+  <div id="notificationsModal" class="modal-overlay" onclick="if(event.target===this) closeModal('notificationsModal')">
+    <div class="modal-window exec-modal-window" style="max-width: 520px !important;">
+      <button class="modal-close-btn" onclick="closeModal('notificationsModal')"><i class="fa-solid fa-xmark"></i></button>
+      <div class="exec-modal-header header-amber">
+        <div class="exec-modal-icon" style="background:linear-gradient(135deg, #f59e0b, #d97706);">
+          <i class="fa-solid fa-bell"></i>
+        </div>
+        <div class="exec-modal-title-wrap">
+          <span class="exec-modal-badge" style="background:rgba(245,158,11,0.2); color:#fbbf24; border:1px solid rgba(245,158,11,0.4);">
+            <i class="fa-solid fa-bullhorn"></i> Official Notice Board
+          </span>
+          <h3 class="exec-modal-title">Admin Notifications</h3>
+          <p class="exec-modal-subtitle">Important announcements, rent updates, and maintenance alerts sent by your Administrator.</p>
+        </div>
+      </div>
+      <div class="exec-modal-body">
+        <!-- Admin Compose Box (Strictly visible to Admin only) -->
+        <div id="adminNotificationComposeCard" class="exec-field-card admin-only" style="border:1.5px solid rgba(245,158,11,0.4); background:rgba(245,158,11,0.06); display:none;">
+          <div class="exec-field-label-row">
+            <label class="exec-field-label" style="color:#f59e0b;">
+              <i class="fa-solid fa-paper-plane"></i> Send New Notification to Renters
+            </label>
+            <span class="exec-field-tag tag-required">Admin Only</span>
+          </div>
+          <span class="exec-field-purpose">Compose an announcement or alert. It will immediately pop up on renters' dashboards and light up the notification bell.</span>
+          <input type="text" id="adminNoticeTitleInput" class="form-control" style="margin-bottom:8px;" placeholder="Notice Title (e.g. Water Tank Cleaning / Rent Due Reminder)">
+          <textarea id="adminNoticeBodyInput" class="form-control" rows="3" style="margin-bottom:8px;" placeholder="Type complete announcement message details here..."></textarea>
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+            <select id="adminNoticeTargetSelect" class="form-control" style="width:auto; padding:7px 10px; font-size:0.75rem;">
+              <option value="ALL">All Renters &amp; Users</option>
+              <option value="RENTERS">Active Renters Only</option>
+            </select>
+            <button type="button" class="btn-primary" style="background:linear-gradient(135deg, #f59e0b, #d97706); width:auto; padding:8px 16px; font-size:0.78rem;" onclick="submitAdminBroadcastNotification()">
+              <i class="fa-solid fa-broadcast-tower"></i> Broadcast Notice
+            </button>
+          </div>
+        </div>
+
+        <div id="notificationsListContainer" style="display:flex; flex-direction:column; gap:10px; max-height:360px; overflow-y:auto;">
+          <!-- Dynamically populated notices -->
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:4px; padding-top:8px; border-top:1px solid var(--glass-border);">
+          <span id="notificationsCountSub" style="font-size:0.72rem; color:var(--text-muted);">0 notifications</span>
+          <button type="button" class="btn-ledger-action" style="padding:5px 12px; font-size:0.74rem;" onclick="markAllNotificationsAsRead()">
+            <i class="fa-solid fa-check-double"></i> Mark All as Read
           </button>
         </div>
       </div>
@@ -10389,7 +10550,6 @@ function formatMonthLabel(rawVal) {
         body.role-viewer button[onclick="openKhetModal()"],
         body.role-viewer button[onclick="openSettingsModal()"],
         body.role-renter #searchContainer,
-        body.role-renter .pnl-tracker,
         body.role-renter .properties-bar,
         body.role-renter button[onclick="openFdModal()"],
         body.role-renter button[onclick="openKharchModal()"],
@@ -10681,6 +10841,245 @@ function formatMonthLabel(rawVal) {
       return String(viewerScope.prop || "").trim().toLowerCase() === target;
     }
 
+
+    // Requirement 4: Top Dashboard Advance / Loss Balance for Renter
+    function updateRenterTopDashboardBalance(totalPaid, netBalance) {
+      const pnlTracker = document.querySelector(".pnl-tracker");
+      if (!pnlTracker) return;
+
+      const isAdvance = netBalance < 0;
+      const isDue = netBalance > 0;
+      const absNet = Math.abs(netBalance);
+
+      pnlTracker.innerHTML = `
+        <div class="renter-pnl-balanced" title="Your Payment &amp; Closing Balance Status">
+          <div class="renter-pnl-pill" style="color:var(--accent-green); background:rgba(16,185,129,0.12);">
+            <i class="fa-solid fa-money-bill-wave"></i>
+            <span>Paid: <strong>₹${Math.round(totalPaid).toLocaleString("en-IN")}</strong></span>
+          </div>
+          <div style="width:1px; height:16px; background:var(--glass-border);"></div>
+          ${isAdvance ? `
+            <div class="renter-pnl-pill renter-pnl-advance">
+              <i class="fa-solid fa-arrow-up-right-dots"></i>
+              <span>Advance: <strong>₹${Math.round(absNet).toLocaleString("en-IN")}</strong></span>
+            </div>
+          ` : (isDue ? `
+            <div class="renter-pnl-pill renter-pnl-loss">
+              <i class="fa-solid fa-arrow-down-long"></i>
+              <span>Due/Loss: <strong>₹${Math.round(absNet).toLocaleString("en-IN")}</strong></span>
+            </div>
+          ` : `
+            <div class="renter-pnl-pill renter-pnl-settled">
+              <i class="fa-solid fa-circle-check"></i>
+              <span>Settled: <strong>₹0</strong></span>
+            </div>
+          `)}
+        </div>
+      `;
+      pnlTracker.style.display = "flex";
+      syncNotificationsBadgeUI();
+    }
+
+    // ==========================================================================
+    // NOTIFICATIONS SYSTEM (Requirement 4: Bell icon next to profile on dashboard)
+    // ==========================================================================
+    const PORTAL_NOTIFICATIONS_KEY = "portal_broadcast_notifications";
+    const PORTAL_READ_NOTIFICATIONS_KEY = "portal_read_notifications_ids";
+
+    function getStoredBroadcastNotifications() {
+      try {
+        const raw = localStorage.getItem(PORTAL_NOTIFICATIONS_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      } catch (e) {}
+
+      // Default system welcome notice
+      const defaultNotices = [
+        {
+          id: "notice_welcome_01",
+          title: "Welcome to Rental Portal",
+          body: "You can view your monthly bills, pay rent via instant UPI QR, and chat directly with your administrators from your dashboard.",
+          target: "ALL",
+          sender: "Administrator",
+          timestamp: Date.now() - 3600000 * 24
+        }
+      ];
+      try {
+        localStorage.setItem(PORTAL_NOTIFICATIONS_KEY, JSON.stringify(defaultNotices));
+      } catch (e) {}
+      return defaultNotices;
+    }
+
+    function getReadNotificationIds() {
+      try {
+        const raw = localStorage.getItem(PORTAL_READ_NOTIFICATIONS_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      } catch (e) {}
+      return [];
+    }
+
+    function syncNotificationsBadgeUI() {
+      const badge = document.getElementById("navNotificationBadge");
+      if (!badge) return;
+      const allNotices = getStoredBroadcastNotifications();
+      const readIds = getReadNotificationIds();
+
+      const userRole = String(activeRole || "").trim().toLowerCase();
+      const relevantNotices = allNotices.filter(n => {
+        if (!n || !n.id) return false;
+        if (n.target === "RENTERS" && userRole !== "renter") return false;
+        return true;
+      });
+
+      const unreadCount = relevantNotices.filter(n => !readIds.includes(n.id)).length;
+      if (unreadCount > 0) {
+        badge.innerText = unreadCount > 9 ? "9+" : String(unreadCount);
+        badge.style.display = "flex";
+      } else {
+        badge.style.display = "none";
+      }
+    }
+
+    function openNotificationsModal() {
+      const composeBox = document.getElementById("adminNotificationComposeCard");
+      if (composeBox) {
+        composeBox.style.display = activeRole === "Admin" ? "block" : "none";
+      }
+
+      renderNotificationsListUI();
+      openModal("notificationsModal");
+    }
+
+    function renderNotificationsListUI() {
+      const container = document.getElementById("notificationsListContainer");
+      const countSub = document.getElementById("notificationsCountSub");
+      if (!container) return;
+
+      const allNotices = getStoredBroadcastNotifications();
+      const readIds = getReadNotificationIds();
+      const userRole = String(activeRole || "").trim().toLowerCase();
+
+      const relevant = allNotices.filter(n => {
+        if (!n || !n.id) return false;
+        if (n.target === "RENTERS" && userRole !== "renter") return false;
+        return true;
+      });
+
+      relevant.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+      if (countSub) {
+        countSub.innerText = `${relevant.length} notification${relevant.length === 1 ? "" : "s"}`;
+      }
+
+      if (relevant.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:32px 14px; color:var(--text-muted); font-size:0.8rem;">
+            <i class="fa-solid fa-bell-slash" style="font-size:1.8rem; color:var(--text-muted); margin-bottom:8px; display:block;"></i>
+            No notifications at this time.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = relevant.map(n => {
+        const isRead = readIds.includes(n.id);
+        const timeStr = n.timestamp ? new Date(n.timestamp).toLocaleDateString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "";
+        const safeTitle = String(n.title || "Announcement").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const safeBody = String(n.body || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const safeSender = String(n.sender || "Admin").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+        return `
+          <div style="background:${isRead ? "var(--bg-input)" : "rgba(245,158,11,0.08)"}; border:1.5px solid ${isRead ? "var(--glass-border)" : "rgba(245,158,11,0.4)"}; border-radius:14px; padding:12px 14px; position:relative; transition:all 0.2s ease;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:4px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="width:8px; height:8px; border-radius:50%; background:${isRead ? "#64748b" : "#f59e0b"}; flex-shrink:0;"></span>
+                <strong style="font-size:0.88rem; color:var(--text-main);">${safeTitle}</strong>
+              </div>
+              <span style="font-size:0.68rem; color:var(--text-muted); font-weight:600; white-space:nowrap;">${timeStr}</span>
+            </div>
+            <p style="font-size:0.78rem; color:var(--text-main); margin:6px 0 8px 16px; line-height:1.45; white-space:pre-wrap;">${safeBody}</p>
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.68rem; color:var(--text-muted); margin-left:16px;">
+              <span><i class="fa-solid fa-user-shield" style="color:#f59e0b; margin-right:4px;"></i>From: ${safeSender}</span>
+              ${activeRole === "Admin" ? `
+                <button type="button" class="btn-ledger-action" style="padding:2px 6px; font-size:0.65rem; color:#ef4444;" onclick="deleteAdminBroadcastNotice('${n.id}')">
+                  <i class="fa-solid fa-trash-can"></i> Delete
+                </button>
+              ` : ""}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function markAllNotificationsAsRead() {
+      const allNotices = getStoredBroadcastNotifications();
+      const allIds = allNotices.map(n => n.id).filter(Boolean);
+      localStorage.setItem(PORTAL_READ_NOTIFICATIONS_KEY, JSON.stringify(allIds));
+      syncNotificationsBadgeUI();
+      renderNotificationsListUI();
+      triggerSideToast("Notifications Read", "All notices marked as read.", true);
+    }
+
+    async function submitAdminBroadcastNotification() {
+      if (activeRole !== "Admin") return;
+      const titleInput = document.getElementById("adminNoticeTitleInput");
+      const bodyInput = document.getElementById("adminNoticeBodyInput");
+      const targetSelect = document.getElementById("adminNoticeTargetSelect");
+
+      const title = (titleInput?.value || "").trim();
+      const body = (bodyInput?.value || "").trim();
+      const target = targetSelect?.value || "ALL";
+
+      if (!title || !body) {
+        return triggerSideToast("Required Fields", "Please enter both Title and Message for the notice.", false);
+      }
+
+      const newNotice = {
+        id: "notice_" + Date.now() + "_" + Math.random().toString(36).substring(2, 6),
+        title,
+        body,
+        target,
+        sender: activeUserFullName || activeUser || "Admin",
+        timestamp: Date.now()
+      };
+
+      const existing = getStoredBroadcastNotifications();
+      existing.unshift(newNotice);
+      localStorage.setItem(PORTAL_NOTIFICATIONS_KEY, JSON.stringify(existing));
+
+      if (titleInput) titleInput.value = "";
+      if (bodyInput) bodyInput.value = "";
+
+      syncNotificationsBadgeUI();
+      renderNotificationsListUI();
+      triggerSideToast("Broadcast Sent", `Notice "${title}" broadcast to renters!`, true);
+
+      try {
+        const dbInstance = typeof getFirestoreDb === "function" ? getFirestoreDb() : null;
+        if (dbInstance) {
+          await dbInstance.collection("config").doc("app_config").set({
+            broadcastNotices: existing,
+            updatedAt: new Date().toISOString()
+          }, { merge: true });
+        }
+      } catch (e) {}
+    }
+
+    function deleteAdminBroadcastNotice(noticeId) {
+      if (activeRole !== "Admin" || !noticeId) return;
+      let existing = getStoredBroadcastNotifications();
+      existing = existing.filter(n => n.id !== noticeId);
+      localStorage.setItem(PORTAL_NOTIFICATIONS_KEY, JSON.stringify(existing));
+      syncNotificationsBadgeUI();
+      renderNotificationsListUI();
+      triggerSideToast("Notice Deleted", "Broadcast notice removed.", true);
+    }
+
     function renderAllDashboardUI() {
       const viewerScope = resolveViewerAssignedScope();
       if (activeRole === "Renter") {
@@ -10719,57 +11118,133 @@ function formatMonthLabel(rawVal) {
           WaterRate: primaryRenter.WaterFixedRate || 0
         };
 
-        // Render a dedicated Aadhaar-scoped Renter Portal Card on the dashboard (Requirements 8 & 9: Theme-Adaptive Typography + No Duplicate Help Center Button)
+        // Requirement 1 & 4: Renter Home Page Header, Name at top, Property & Flat below, View My Receipt & View My Profile,
+        // and Latest Month Rent Bill (invisible if paid; visible with warning to pay quickly if unpaid)
         const myBills = (DB.bills || []).filter(b => isBillLinkedToLoggedInRenterAadhaar(b));
+        // Sort bills newest first
+        myBills.sort((a, b) => (new Date(b.BillDate || b.MonthYear || 0).getTime()) - (new Date(a.BillDate || a.MonthYear || 0).getTime()));
+        const latestBill = myBills[0] || null;
+
+        // Calculate Renter-specific financial balance (Advance vs Loss/Due)
+        const netRenterSummary = calculateCurrentNetBalanceForRenter(targetProp, targetFlat, primaryRenter);
+        const renterClosingBal = netRenterSummary.netBalance; // > 0 is Due/Loss, < 0 is Advance, === 0 is Settled
+        const renterProfitPaid = netRenterSummary.totalPaid;
+
+        // Update Top Dashboard Header for Renter (Requirement 4)
+        updateRenterTopDashboardBalance(renterProfitPaid, renterClosingBal);
+
         const safePropArg = String(targetProp).replace(/'/g, "\\'");
         const safeFlatArg = String(targetFlat).replace(/'/g, "\\'");
-        const flatRentDisplay = Number(assignedFlatObj.RentAmount || primaryRenter.RentAmount || 0).toLocaleString("en-IN");
+        const renterNameDisplay = primaryRenter.RenterName || activeUserFullName || "Valued Renter";
+
+        // Check latest bill status (Requirement 1: If paid, invisible; if unpaid, visible with warning)
+        let latestBillCardHtml = "";
+        if (latestBill) {
+          const billTotal = parseFloat(latestBill.TotalBilled !== undefined ? latestBill.TotalBilled : latestBill.TotalAmount) || 0;
+          const billPaid = parseFloat(latestBill.PaidAmount) || 0;
+          const billDue = (latestBill.DueAmount !== undefined && latestBill.DueAmount !== "")
+            ? Math.max(0, parseFloat(latestBill.DueAmount))
+            : Math.max(0, billTotal - billPaid);
+          const isBillFullyPaid = billDue <= 0 || String(latestBill.Status || "").trim().toLowerCase() === "paid";
+
+          if (!isBillFullyPaid) {
+            // UNPAID: Display receipt summary with warning to make payment quickly
+            const billMonthName = formatMonthLabel(latestBill.MonthYear || latestBill.BillDate);
+            const billDateStr = formatDateOnly(latestBill.BillDate || latestBill.PaymentDate);
+            latestBillCardHtml = `
+              <div class="renter-due-warning-box">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <div style="width:40px; height:40px; border-radius:12px; background:#ef4444; color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0;">
+                      <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div>
+                      <span style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#fca5a5;">
+                        New Month Rent Bill Due
+                      </span>
+                      <h4 style="margin:2px 0 0 0; font-size:1.05rem; font-weight:800;">
+                        ${billMonthName} Rent Bill — Pending Payment
+                      </h4>
+                    </div>
+                  </div>
+                  <span class="badge-unpaid" style="font-size:0.75rem; padding:4px 10px; font-weight:900;">
+                    <i class="fa-solid fa-clock"></i> Unpaid • Due: ₹${billDue.toLocaleString("en-IN")}
+                  </span>
+                </div>
+
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap:8px; background:rgba(0,0,0,0.25); padding:10px; border-radius:10px; font-size:0.78rem; margin-bottom:12px;">
+                  <div><span style="opacity:0.8;">Billing Date:</span> <strong>${billDateStr}</strong></div>
+                  <div><span style="opacity:0.8;">Total Billed:</span> <strong>₹${billTotal.toLocaleString("en-IN")}</strong></div>
+                  <div><span style="opacity:0.8;">Paid So Far:</span> <strong style="color:#34d399;">₹${billPaid.toLocaleString("en-IN")}</strong></div>
+                  <div><span style="opacity:0.8;">Outstanding Due:</span> <strong style="color:#f87171; font-weight:900;">₹${billDue.toLocaleString("en-IN")}</strong></div>
+                </div>
+
+                <!-- Requirement 1: Explicit Warning to make payment quickly -->
+                <div style="display:flex; align-items:center; gap:8px; font-size:0.8rem; font-weight:800; color:#fee2e2; margin-bottom:12px; background:rgba(239,68,68,0.2); padding:8px 12px; border-radius:8px;">
+                  <i class="fa-solid fa-circle-exclamation" style="font-size:1rem; color:#f87171;"></i>
+                  <span>Warning: Please make the payment quickly to avoid any late fees or penalty.</span>
+                </div>
+
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                  <button type="button" class="btn-primary" style="flex:1; background:linear-gradient(135deg, #10b981, #059669); font-weight:800; border-radius:10px;" onclick="event.stopPropagation(); openBillReceiptModal('${latestBill.BillID || ""}', '${latestBill.MonthYear || ""}');">
+                    <i class="fa-solid fa-file-invoice-dollar"></i> View Due Bill &amp; UPI QR
+                  </button>
+                  <button type="button" class="btn-primary" style="flex:1; background:linear-gradient(135deg, #6366f1, #4f46e5); font-weight:800; border-radius:10px;" onclick="event.stopPropagation(); openRentCollectionQrModal();">
+                    <i class="fa-solid fa-qrcode"></i> Pay Now via UPI QR
+                  </button>
+                </div>
+              </div>
+            `;
+          }
+        }
+
         if (flatsContainer) {
           flatsContainer.style.display = "";
           flatsContainer.innerHTML = `
-            <div class="renter-home-portal-card" onclick="openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'})">
-              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
-                <div style="display:flex; align-items:center; gap:12px;">
-                  <div style="width:48px; height:48px; border-radius:14px; background:linear-gradient(135deg, #8b5cf6, #ec4899); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.3rem; flex-shrink:0;">
-                    <i class="fa-solid fa-id-card-clip"></i>
-                  </div>
-                  <div>
-                    <div class="renter-home-portal-tag">Aadhaar-Verified Renter Portal</div>
-                    <h3 class="renter-home-portal-title">${primaryRenter.RenterName || activeUserFullName} — ${targetProp} (Flat ${targetFlat})</h3>
-                  </div>
+            <div class="renter-home-portal-card" style="cursor:default;">
+              <!-- Requirement 1: Renter Name at the very top -->
+              <div style="border-bottom:1px solid var(--glass-border); padding-bottom:14px; margin-bottom:16px;">
+                <div style="font-size:0.74rem; font-weight:800; color:#c084fc; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:3px;">
+                  <i class="fa-solid fa-house-user"></i> Resident Tenant Home
                 </div>
-                <span class="badge-paid" style="font-size:0.75rem;"><i class="fa-solid fa-shield-halved"></i> Aadhaar: ${renterAadhaar}</span>
-              </div>
-              <div class="renter-home-info-grid">
-                <div class="renter-home-info-item">
-                  <span class="renter-home-label">Renter Name</span>
-                  <strong class="renter-home-val">${primaryRenter.RenterName || "--"}</strong>
-                </div>
-                <div class="renter-home-info-item">
-                  <span class="renter-home-label">Property &amp; Flat</span>
-                  <strong class="renter-home-val val-emerald">${targetProp} • Flat ${targetFlat}</strong>
-                </div>
-                <div class="renter-home-info-item">
-                  <span class="renter-home-label">Aadhaar Card Number</span>
-                  <strong class="renter-home-val val-cyan">${renterAadhaar}</strong>
-                </div>
-                <div class="renter-home-info-item">
-                  <span class="renter-home-label">Monthly Flat Rate</span>
-                  <strong class="renter-home-val val-green">₹${flatRentDisplay}</strong>
-                </div>
-                <div class="renter-home-info-item">
-                  <span class="renter-home-label">Historical Receipts</span>
-                  <strong class="renter-home-val val-amber">${myBills.length} Receipt${myBills.length === 1 ? "" : "s"}</strong>
+                <h2 style="margin:0; font-size:1.55rem; font-weight:900; color:var(--text-main); letter-spacing:-0.3px;">
+                  ${renterNameDisplay}
+                </h2>
+                <!-- Below dashboard: Name, followed by Property, then Flat -->
+                <div style="font-size:0.88rem; color:var(--text-muted); margin-top:5px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                  <span style="font-weight:800; color:var(--text-main);"><i class="fa-solid fa-user-check" style="color:#10b981;"></i> ${renterNameDisplay}</span>
+                  <span style="opacity:0.5;">•</span>
+                  <span><i class="fa-solid fa-hotel" style="color:#38bdf8;"></i> Property: <strong style="color:var(--text-main);">${targetProp}</strong></span>
+                  <span style="opacity:0.5;">•</span>
+                  <span><i class="fa-solid fa-door-open" style="color:#fbbf24;"></i> Flat: <strong style="color:var(--text-main);">Flat ${targetFlat}</strong></span>
+                  <span style="opacity:0.5;">•</span>
+                  <span class="badge-paid" style="font-size:0.68rem; padding:2px 8px;"><i class="fa-solid fa-shield-halved"></i> Aadhaar: ${renterAadhaar}</span>
                 </div>
               </div>
-              <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <button type="button" class="btn-primary" style="flex:1; background:linear-gradient(135deg, #6366f1, #8b5cf6);" onclick="event.stopPropagation(); openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'});">
+
+              <!-- Requirement 1: Underneath that, two options: "View My Receipt" and "View My Profile" -->
+              <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:4px;">
+                <button
+                  type="button"
+                  class="btn-primary"
+                  style="flex:1; padding:13px 18px; font-size:0.92rem; font-weight:800; border-radius:14px; background:linear-gradient(135deg, #6366f1, #8b5cf6); box-shadow:0 8px 22px rgba(99,102,241,0.35);"
+                  onclick="openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'});"
+                >
                   <i class="fa-solid fa-receipt"></i> View My Receipt (${myBills.length})
                 </button>
-                <button type="button" class="btn-primary" style="flex:1; background:linear-gradient(135deg, #059669, #10b981);" onclick="event.stopPropagation(); openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'}); setTimeout(() => { if (typeof switchFlatTabToProfile === 'function') switchFlatTabToProfile(); }, 30);">
-                  <i class="fa-solid fa-user-check"></i> My Profile
+                <button
+                  type="button"
+                  class="btn-primary"
+                  style="flex:1; padding:13px 18px; font-size:0.92rem; font-weight:800; border-radius:14px; background:linear-gradient(135deg, #059669, #10b981); box-shadow:0 8px 22px rgba(16,185,129,0.35);"
+                  onclick="openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'}); setTimeout(() => { if (typeof switchFlatTabToProfile === 'function') switchFlatTabToProfile(); }, 40);"
+                >
+                  <i class="fa-solid fa-user-check"></i> View My Profile
                 </button>
               </div>
+
+              <!-- Requirement 1: Below these options, the new month's receipt is displayed.
+                   If it is paid, it is invisible. If unpaid, it is visible with a warning to pay quickly! -->
+              ${latestBillCardHtml}
             </div>
           `;
         }
@@ -16514,6 +16989,25 @@ function formatMonthLabel(rawVal) {
       `;
 
       recalculateReceiptSelection();
+
+      // Requirement 2: When the renter opens their profile and goes to history, remove "Share to WhatsApp", "Download Image", and "Save as PDF" options
+      const isRenterUser = String(activeRole || "").trim().toLowerCase() === "renter";
+      const btnWa = document.getElementById("btnOpenWaChecklist");
+      const waDrawer = document.getElementById("waShareChecklistDrawer");
+      const actionRow = document.getElementById("receiptActionButtonsRow");
+
+      if (btnWa) btnWa.style.display = isRenterUser ? "none" : "";
+      if (waDrawer) {
+        waDrawer.style.display = isRenterUser ? "none" : "";
+        waDrawer.classList.remove("open");
+      }
+      if (actionRow) {
+        const downloadBtn = actionRow.querySelector("button[onclick*='downloadCurrentReceiptImage']");
+        const printPdfBtn = actionRow.querySelector("button[onclick*='printCurrentReceipt']");
+        if (downloadBtn) downloadBtn.style.display = isRenterUser ? "none" : "";
+        if (printPdfBtn) printPdfBtn.style.display = isRenterUser ? "none" : "";
+      }
+
       openModal("receiptViewModal");
     }
 
@@ -21297,7 +21791,7 @@ function formatMonthLabel(rawVal) {
       // Requirement 7 & 10: Ensure Clear Chat and Back to All Users buttons are strictly visible only to Admin
       const btnBackDir = document.getElementById("btnBackToChatDirectory");
       const btnClearChat = document.getElementById("btnClearCurrentChat");
-      if (btnBackDir) btnBackDir.style.display = isAdmin ? "inline-flex" : "none";
+      if (btnBackDir) btnBackDir.style.display = "inline-flex";
       if (btnClearChat) btnClearChat.style.display = isAdmin ? "inline-flex" : "none";
 
       initModularDraggableWidgets();
@@ -21866,70 +22360,136 @@ function formatMonthLabel(rawVal) {
       const rosterEl = document.getElementById("chatRosterList");
       const dirView = document.getElementById("chatDirectoryView");
       if (!rosterEl) return;
-
-      if (activeRole !== "Admin") {
-        // Requirement 10: This list must be visible exclusively to the Admin
-        if (dirView) dirView.style.display = "none";
-        return;
-      }
+      if (dirView) dirView.style.display = "flex";
 
       const store = getPrivateChatStore();
-      let channels = getAllAvailablePrivateChatChannelsForAdmin();
-      if (activeChatDirectoryFilter) {
-        const q = activeChatDirectoryFilter;
-        channels = channels.filter(c =>
-          (c.displayName && c.displayName.toLowerCase().includes(q)) ||
-          (c.roleLabel && c.roleLabel.toLowerCase().includes(q)) ||
-          (c.flatLabel && c.flatLabel.toLowerCase().includes(q))
-        );
-      }
+      const isAdmin = activeRole === "Admin";
 
-      if (channels.length === 0) {
+      if (isAdmin) {
+        let channels = getAllAvailablePrivateChatChannelsForAdmin();
+        if (activeChatDirectoryFilter) {
+          const q = activeChatDirectoryFilter;
+          channels = channels.filter(c =>
+            (c.displayName && c.displayName.toLowerCase().includes(q)) ||
+            (c.roleLabel && c.roleLabel.toLowerCase().includes(q)) ||
+            (c.flatLabel && c.flatLabel.toLowerCase().includes(q))
+          );
+        }
+
+        if (channels.length === 0) {
+          rosterEl.innerHTML = `
+            <div style="text-align:center; padding:32px 14px; color:var(--text-muted); font-size:0.8rem;">
+              <i class="fa-solid fa-users-slash" style="font-size:1.6rem; color:var(--text-muted); margin-bottom:8px; display:block;"></i>
+              No active registered users available for chat.
+            </div>
+          `;
+          return;
+        }
+
+        rosterEl.innerHTML = channels.map(c => {
+          const unread = Number(c.unreadAdmin || 0);
+          const initials = (c.displayName || "R").trim().substring(0, 2).toUpperCase();
+          const safeName = String(c.displayName || "Renter").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          const safeRole = String(c.roleLabel || "Renter").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          const safeLabel = String(c.flatLabel || safeRole).replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          const chData = store[c.channelId] || store["channel_" + String(c.targetUsername || "").toLowerCase()];
+          const clearedAt = Number(chData?.clearedAt || 0);
+          const visibleMsgs = (chData?.messages || []).filter(m => m && Number(m.timestamp || 0) > clearedAt);
+          const lastMsg = visibleMsgs.slice(-1)[0];
+          const snippet = lastMsg ? String(lastMsg.text || "").slice(0, 34).replace(/</g, "&lt;").replace(/>/g, "&gt;") : `Tap to chat with ${safeName} (${safeRole})...`;
+          const headerTitle = `${c.displayName} • ${c.roleLabel}`;
+
+          return `
+            <div class="chat-roster-item" onclick="openChatWithChannel('${c.channelId}', '${encodeURIComponent(headerTitle)}', '${encodeURIComponent(c.flatLabel)}', '${encodeURIComponent(c.targetAdminUsername || activeUser || "admin")}')">
+              <div style="width:38px; height:38px; border-radius:12px; background:linear-gradient(135deg, #059669, #0284c7); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.82rem; flex-shrink:0;">
+                ${initials}
+              </div>
+              <div style="flex:1; min-width:0;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+                  <span style="font-size:0.83rem; font-weight:800; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                    ${safeName} <span style="font-size:0.68rem; font-weight:800; padding:2px 7px; border-radius:999px; background:rgba(16,185,129,0.16); color:#10b981; margin-left:4px;">${safeRole}</span>
+                  </span>
+                  ${unread > 0 ? `<span style="background:#ef4444; color:#fff; font-size:0.65rem; font-weight:900; padding:1px 6px; border-radius:999px;">${unread}</span>` : ""}
+                </div>
+                <div style="font-size:0.69rem; color:#10b981; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">
+                  <i class="fa-solid fa-user-check"></i> ${safeLabel}
+                </div>
+                <div style="font-size:0.66rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">
+                  ${snippet}
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-right" style="color:var(--text-muted); font-size:0.75rem; flex-shrink:0;"></i>
+            </div>
+          `;
+        }).join("");
+      } else {
+        // Requirement 3: When the renter opens live chat, it will FIRST provide an option to select which admin they want to talk to.
+        // It will display all the available admins related to that renter. The renter can click on a specific admin to start talking directly!
+        let adminsList = getRegisteredAdminAccountsList();
+        if (activeChatDirectoryFilter) {
+          const q = activeChatDirectoryFilter;
+          adminsList = adminsList.filter(a =>
+            a.fullName.toLowerCase().includes(q) ||
+            a.username.toLowerCase().includes(q)
+          );
+        }
+
+        if (adminsList.length === 0) {
+          rosterEl.innerHTML = `
+            <div style="text-align:center; padding:32px 14px; color:var(--text-muted); font-size:0.8rem;">
+              <i class="fa-solid fa-headset" style="font-size:1.6rem; color:var(--text-muted); margin-bottom:8px; display:block;"></i>
+              No active Admin support accounts found.
+            </div>
+          `;
+          return;
+        }
+
+        const myUserClean = String(activeUser || "guest").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+        const listHtml = adminsList.map(adm => {
+          const chId = buildAdminRenterChannelId(adm.username, myUserClean);
+          const chData = store[chId] || store["channel_" + myUserClean] || {};
+          const unread = Number(chData.unreadRenter || 0);
+          const clearedAt = Number(chData.clearedAt || 0);
+          const visibleMsgs = (chData.messages || []).filter(m => m && Number(m.timestamp || 0) > clearedAt);
+          const lastMsg = visibleMsgs.slice(-1)[0];
+          const snippet = lastMsg ? String(lastMsg.text || "").slice(0, 36).replace(/</g, "&lt;").replace(/>/g, "&gt;") : `Click to chat directly with ${adm.fullName} (Admin)...`;
+          const headerTitle = `${adm.fullName} • Admin`;
+          const subTitle = "Admin • Direct Support Channel";
+          const initials = (adm.fullName || "AD").trim().substring(0, 2).toUpperCase();
+
+          return `
+            <div class="chat-roster-item" onclick="openChatWithChannel('${chId}', '${encodeURIComponent(headerTitle)}', '${encodeURIComponent(subTitle)}', '${encodeURIComponent(adm.username)}')">
+              <div style="width:42px; height:42px; border-radius:14px; background:linear-gradient(135deg, #4f46e5, #7c3aed); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.86rem; flex-shrink:0;">
+                <i class="fa-solid fa-user-shield"></i>
+              </div>
+              <div style="flex:1; min-width:0;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+                  <span style="font-size:0.85rem; font-weight:800; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                    ${adm.fullName}
+                  </span>
+                  <span style="font-size:0.68rem; font-weight:800; padding:2px 8px; border-radius:999px; background:rgba(79,70,229,0.18); color:#818cf8; border:1px solid rgba(79,70,229,0.35);">
+                    Admin
+                  </span>
+                </div>
+                <div style="font-size:0.7rem; color:#10b981; font-weight:700; margin-top:2px;">
+                  <i class="fa-solid fa-circle-check"></i> Available Administrator • Direct 1-on-1
+                </div>
+                <div style="font-size:0.67rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">
+                  ${snippet}
+                </div>
+              </div>
+              ${unread > 0 ? `<span style="background:#ef4444; color:#fff; font-size:0.65rem; font-weight:900; padding:1px 6px; border-radius:999px;">${unread}</span>` : `<i class="fa-solid fa-chevron-right" style="color:var(--text-muted); font-size:0.75rem; flex-shrink:0;"></i>`}
+            </div>
+          `;
+        }).join("");
+
         rosterEl.innerHTML = `
-          <div style="text-align:center; padding:32px 14px; color:var(--text-muted); font-size:0.8rem;">
-            <i class="fa-solid fa-users-slash" style="font-size:1.6rem; color:var(--text-muted); margin-bottom:8px; display:block;"></i>
-            No active registered users available for chat.
+          <div style="padding:6px 4px 8px 4px; font-size:0.74rem; font-weight:800; color:var(--accent-cyan); display:flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-users"></i> Select an Admin to start chatting:
           </div>
+          ${listHtml}
         `;
-        return;
       }
-
-      rosterEl.innerHTML = channels.map(c => {
-        const unread = Number(c.unreadAdmin || 0);
-        const initials = (c.displayName || "R").trim().substring(0, 2).toUpperCase();
-        const safeName = String(c.displayName || "Renter").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        const safeRole = String(c.roleLabel || "Renter").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        const safeLabel = String(c.flatLabel || safeRole).replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        const chData = store[c.channelId] || store["channel_" + String(c.targetUsername || "").toLowerCase()];
-        const clearedAt = Number(chData?.clearedAt || 0);
-        const visibleMsgs = (chData?.messages || []).filter(m => m && Number(m.timestamp || 0) > clearedAt);
-        const lastMsg = visibleMsgs.slice(-1)[0];
-        const snippet = lastMsg ? String(lastMsg.text || "").slice(0, 34).replace(/</g, "&lt;").replace(/>/g, "&gt;") : `Tap to chat with ${safeName} (${safeRole})...`;
-        const headerTitle = `${c.displayName} • ${c.roleLabel}`;
-
-        return `
-          <div class="chat-roster-item" onclick="openChatWithChannel('${c.channelId}', '${encodeURIComponent(headerTitle)}', '${encodeURIComponent(c.flatLabel)}', '${encodeURIComponent(c.targetAdminUsername || activeUser || "admin")}')">
-            <div style="width:38px; height:38px; border-radius:12px; background:linear-gradient(135deg, #059669, #0284c7); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.82rem; flex-shrink:0;">
-              ${initials}
-            </div>
-            <div style="flex:1; min-width:0;">
-              <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-                <span style="font-size:0.83rem; font-weight:800; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                  ${safeName} <span style="font-size:0.68rem; font-weight:800; padding:2px 7px; border-radius:999px; background:rgba(16,185,129,0.16); color:#10b981; margin-left:4px;">${safeRole}</span>
-                </span>
-                ${unread > 0 ? `<span style="background:#ef4444; color:#fff; font-size:0.65rem; font-weight:900; padding:1px 6px; border-radius:999px;">${unread}</span>` : ""}
-              </div>
-              <div style="font-size:0.69rem; color:#10b981; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">
-                <i class="fa-solid fa-user-check"></i> ${safeLabel}
-              </div>
-              <div style="font-size:0.66rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;">
-                ${snippet}
-              </div>
-            </div>
-            <i class="fa-solid fa-chevron-right" style="color:var(--text-muted); font-size:0.75rem; flex-shrink:0;"></i>
-          </div>
-        `;
-      }).join("");
     }
 
     function openChatWithChannel(channelId, encodedName, encodedSub, encodedAdminUsername = "") {
@@ -21970,19 +22530,6 @@ function formatMonthLabel(rawVal) {
     }
 
     function returnToChatDirectory() {
-      const isAdmin = activeRole === "Admin";
-      if (!isAdmin) {
-        // Requirement 10: Renters do not see the registered users directory list; open direct conversation with Admin
-        const primaryAdmin = getRegisteredAdminAccountsList()[0] || { username: "admin", fullName: "Property Admin", roleLabel: "Admin" };
-        const chId = getMyPrivateChatChannelId(primaryAdmin.username);
-        openChatWithChannel(
-          chId,
-          encodeURIComponent(`${primaryAdmin.fullName} • Admin`),
-          encodeURIComponent("Admin • Direct Support Channel"),
-          encodeURIComponent(primaryAdmin.username)
-        );
-        return;
-      }
       const dirView = document.getElementById("chatDirectoryView");
       const convView = document.getElementById("chatConversationView");
       if (dirView) dirView.style.display = "flex";
@@ -22199,10 +22746,7 @@ function formatMonthLabel(rawVal) {
       if (btnBackDir) btnBackDir.style.display = isAdmin ? "inline-flex" : "none";
       if (btnClearChat) btnClearChat.style.display = isAdmin ? "inline-flex" : "none";
 
-      if (!isAdmin) {
-        // Requirement 10: Registered users list is exclusively visible to Admin; Renter opens direct chat with Admin
-        returnToChatDirectory();
-      } else if (!activeSelectedChatChannelId) {
+      if (!activeSelectedChatChannelId || !isAdmin) {
         returnToChatDirectory();
       } else {
         renderCurrentChatMessages();
