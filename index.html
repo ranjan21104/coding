@@ -2825,107 +2825,33 @@
     background: rgba(239, 68, 68, 0.15) !important;
   }
 
-  
-  /* REQUIREMENT 1: Unified 42px Outline-Box Buttons for FD, Khet, Kharch, Plus (+), Profile, Settings & Logout */
-  .fd-icon-only-btn,
-  .khet-icon-only-btn,
-  .kharch-icon-only-btn,
-  .plus-icon-box-btn,
-  .profile-icon-box-btn,
-  .settings-icon-box-btn,
-  .logout-icon-box-btn {
-    width: 42px !important;
-    height: 42px !important;
-    min-width: 42px !important;
-    min-height: 42px !important;
-    padding: 0 !important;
-    border-radius: 12px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background: var(--bg-input) !important;
-    border: 1.5px solid var(--glass-border) !important;
-    cursor: pointer !important;
-    transition: all 0.22s ease !important;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12) !important;
-  }
-  .fd-icon-only-btn:hover,
-  .khet-icon-only-btn:hover,
-  .kharch-icon-only-btn:hover,
-  .plus-icon-box-btn:hover,
-  .profile-icon-box-btn:hover,
-  .settings-icon-box-btn:hover,
-  .logout-icon-box-btn:hover {
-    transform: translateY(-2px) !important;
-    border-color: var(--primary) !important;
-    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.25) !important;
-  }
-  .plus-icon-box-btn {
-    border-color: rgba(56, 189, 248, 0.45) !important;
-    background: rgba(56, 189, 248, 0.1) !important;
-  }
-  .profile-icon-box-btn {
-    border-color: rgba(236, 72, 153, 0.4) !important;
-  }
-  .settings-icon-box-btn {
-    border-color: rgba(168, 85, 247, 0.4) !important;
-  }
-  .logout-icon-box-btn {
-    border-color: rgba(239, 68, 68, 0.35) !important;
-  }
-  .logout-icon-box-btn:hover {
-    border-color: #ef4444 !important;
-    background: rgba(239, 68, 68, 0.15) !important;
-  }
-
-  .fd-icon-only-btn,
-  .kharch-icon-only-btn,
-  .khet-icon-only-btn {
-    width: 42px !important;
-    height: 42px !important;
-    padding: 0 !important;
-    border-radius: 12px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background: var(--bg-input) !important;
-    border: 1.5px solid var(--glass-border) !important;
-    transition: all 0.2s ease !important;
-  }
-  .fd-icon-only-btn:hover,
-  .kharch-icon-only-btn:hover,
-  .khet-icon-only-btn:hover {
-    transform: translateY(-2px) !important;
-    border-color: var(--primary) !important;
-  }
-
-  /* Requirement 9: White Background for FD Modal & Modern Stylish Outline-Only Inner Boxes */
-  #fdModal .modal-window {
+  /* Requirement 9: White Background for FD Modal in Light Theme & Outline-Only Inner Boxes */
+  body.theme-white #fdModal .modal-window {
     background: #ffffff !important;
     color: #0f172a !important;
     border: 1.5px solid #cbd5e1 !important;
     box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28) !important;
   }
-  #fdModal .modal-close-btn {
+  body.theme-white #fdModal .modal-close-btn {
     background: #f8fafc !important;
     color: #0f172a !important;
     border: 1.5px solid #cbd5e1 !important;
   }
-  #fdModal label {
+  body.theme-white #fdModal label {
     color: #334155 !important;
     font-weight: 700 !important;
   }
-  #fdModal .form-control {
+  body.theme-white #fdModal .form-control {
     background: #ffffff !important;
     color: #0f172a !important;
     border: 1.5px solid #cbd5e1 !important;
     box-shadow: none !important;
   }
-  #fdModal .form-control:focus {
+  body.theme-white #fdModal .form-control:focus {
     border-color: #4f46e5 !important;
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12) !important;
   }
-  #fdModal .btn-ledger-action {
+  body.theme-white #fdModal .btn-ledger-action {
     background: #ffffff !important;
     color: #1e293b !important;
     border: 1.5px solid #cbd5e1 !important;
@@ -3673,7 +3599,7 @@
   <!-- Firebase SDK (Compat v10 for rock-solid standalone browser runtime) -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-</head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body class="theme-black">
 
   <!-- PERMANENT HOUSE BACKGROUND CANVAS FOR HOME PAGE & LOGIN -->
@@ -4971,7 +4897,7 @@
             <i class="fa-solid fa-camera-retro"></i> 1. Past Renter Profile Photo
           </div>
           <div class="image-frame-container zoomable-photo-frame" style="height:125px; margin-bottom:6px;" onclick="openPhotoZoomModal(document.getElementById('editLeftProfilePreview')?.src, (document.getElementById('editLeftName')?.value || 'Past Renter') + ' — Profile Photo')">
-            <img id="editLeftProfilePreview" src="https://via.placeholder.com/150?text=No+Profile+Photo" alt="Past Renter Profile Photo">
+            <img id="editLeftProfilePreview" src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22150%22%20height%3D%22150%22%20viewBox%3D%220%200%20150%20150%22%3E%3Crect%20width%3D%22150%22%20height%3D%22150%22%20fill%3D%22%231e293b%22%2F%3E%3Ccircle%20cx%3D%2275%22%20cy%3D%2254%22%20r%3D%2226%22%20fill%3D%22%23475569%22%2F%3E%3Cpath%20d%3D%22M30%20132c0-25%2020-42%2045-42s45%2017%2045%2042%22%20fill%3D%22%23475569%22%2F%3E%3Ctext%20x%3D%2275%22%20y%3D%22144%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-weight%3D%22bold%22%20fill%3D%22%2394a3b8%22%20text-anchor%3D%22middle%22%3ENo%20Profile%20Photo%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Past Renter Profile Photo">
             <span class="zoomable-photo-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Click to Zoom</span>
           </div>
           <div id="editLeftProfileStatusBadge" style="font-size:0.7rem; color:var(--text-muted); margin-bottom:6px;">No profile photo uploaded</div>
@@ -4995,7 +4921,7 @@
             <i class="fa-solid fa-id-card"></i> 2. Past Renter Aadhaar Card Photo
           </div>
           <div class="image-frame-container zoomable-photo-frame" style="height:125px; margin-bottom:6px;" onclick="openPhotoZoomModal(document.getElementById('editLeftIdentityPreview')?.src, (document.getElementById('editLeftName')?.value || 'Past Renter') + ' — Aadhaar Card Photo')">
-            <img id="editLeftIdentityPreview" src="https://via.placeholder.com/300x150?text=No+Aadhaar+Uploaded" alt="Past Renter Aadhaar Card Photo">
+            <img id="editLeftIdentityPreview" src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22300%22%20height%3D%22150%22%20viewBox%3D%220%200%20300%20150%22%3E%3Crect%20width%3D%22300%22%20height%3D%22150%22%20rx%3D%228%22%20fill%3D%22%231e293b%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%2225%22%20width%3D%2270%22%20height%3D%2275%22%20rx%3D%226%22%20fill%3D%22%23334155%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2252%22%20r%3D%2214%22%20fill%3D%22%2364748b%22%2F%3E%3Cpath%20d%3D%22M35%2090c0-11%209-18%2020-18s20%207%2020%2018%22%20fill%3D%22%2364748b%22%2F%3E%3Crect%20x%3D%22108%22%20y%3D%2232%22%20width%3D%22165%22%20height%3D%2212%22%20rx%3D%224%22%20fill%3D%22%23475569%22%2F%3E%3Crect%20x%3D%22108%22%20y%3D%2254%22%20width%3D%22130%22%20height%3D%2210%22%20rx%3D%224%22%20fill%3D%22%23334155%22%2F%3E%3Crect%20x%3D%22108%22%20y%3D%2274%22%20width%3D%22150%22%20height%3D%2210%22%20rx%3D%224%22%20fill%3D%22%23334155%22%2F%3E%3Ctext%20x%3D%22150%22%20y%3D%22130%22%20font-family%3D%22sans-serif%22%20font-size%3D%2212%22%20font-weight%3D%22bold%22%20fill%3D%22%2394a3b8%22%20text-anchor%3D%22middle%22%3ENo%20Aadhaar%20Uploaded%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Past Renter Aadhaar Card Photo">
             <span class="zoomable-photo-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Click to Zoom</span>
           </div>
           <div id="editLeftIdentityStatusBadge" style="font-size:0.7rem; color:var(--text-muted); margin-bottom:6px;">No Aadhaar photo uploaded</div>
@@ -5138,7 +5064,7 @@
             <div class="password-field-wrapper" style="margin:0;">
               <input type="password" id="profViewPassword" class="form-control" readonly placeholder="Fetching live..." style="background:transparent; border:none; padding:0; font-weight:800; font-size:0.92rem; color:var(--text-main); cursor:default; box-shadow:none;">
               <button type="button" class="eye-toggle-btn" style="color:#fbbf24; opacity:0.9;" onclick="togglePasswordVisibility('profViewPassword', this)" title="Show / Hide Password">
-                <i class="fa-solid fa-eye"></i>
+                <i id="profPassEyeIcon" class="fa-solid fa-eye"></i>
               </button>
             </div>
           </div>
@@ -5587,6 +5513,7 @@
                 >
                 <button
                   type="button"
+                  id="btnDeleteCustomBgPhoto"
                   class="btn-ledger-action admin-only"
                   style="padding:6px 12px; color:var(--accent-red); border-color:rgba(239,68,68,0.4); flex-shrink:0; font-size:0.75rem; font-weight:700;"
                   onclick="deleteCustomBgImage()"
@@ -5615,6 +5542,7 @@
             <div class="admin-only" style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; margin-top:4px;">
               <button
                 type="button"
+                id="btnResetDefaultBgPhoto"
                 class="btn-ledger-action admin-only"
                 style="padding:8px 16px; font-size:0.78rem; font-weight:700;"
                 onclick="resetDefaultBackgrounds()"
@@ -5623,6 +5551,7 @@
               </button>
               <button
                 type="button"
+                id="btnSaveCustomBgPhoto"
                 class="btn-primary admin-only"
                 style="width:auto; padding:8px 20px; font-size:0.78rem; font-weight:700; background:linear-gradient(135deg, #ec4899 0%, #db2777 100%);"
                 onclick="saveCustomBackgrounds()"
@@ -5983,12 +5912,12 @@
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:4px;">
           <div style="background:rgba(56,189,248,0.08); border:1px dashed rgba(56,189,248,0.4); border-radius:10px; padding:8px; text-align:center;">
             <div style="font-size:0.7rem; font-weight:800; color:#38bdf8; margin-bottom:4px;"><i class="fa-solid fa-user"></i> Renter Profile Photo</div>
-            <img id="addRenterProfilePicPreview" src="https://via.placeholder.com/150?text=No+Photo" alt="Profile" style="width:64px; height:64px; object-fit:cover; border-radius:10px; margin-bottom:6px; border:1px solid var(--glass-border);">
+            <img id="addRenterProfilePicPreview" src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22150%22%20height%3D%22150%22%20viewBox%3D%220%200%20150%20150%22%3E%3Crect%20width%3D%22150%22%20height%3D%22150%22%20fill%3D%22%231e293b%22%2F%3E%3Ccircle%20cx%3D%2275%22%20cy%3D%2254%22%20r%3D%2226%22%20fill%3D%22%23475569%22%2F%3E%3Cpath%20d%3D%22M30%20132c0-25%2020-42%2045-42s45%2017%2045%2042%22%20fill%3D%22%23475569%22%2F%3E%3Ctext%20x%3D%2275%22%20y%3D%22144%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-weight%3D%22bold%22%20fill%3D%22%2394a3b8%22%20text-anchor%3D%22middle%22%3ENo%20Profile%20Photo%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Profile" style="width:64px; height:64px; object-fit:cover; border-radius:10px; margin-bottom:6px; border:1px solid var(--glass-border);">
             <input type="file" id="addRenterProfilePicFile" accept="image/*" class="form-control" style="font-size:0.68rem; padding:4px;" onchange="handleAddRenterModalPhotoSelect(this, 'profile')">
           </div>
           <div style="background:rgba(16,185,129,0.08); border:1px dashed rgba(16,185,129,0.4); border-radius:10px; padding:8px; text-align:center;">
             <div style="font-size:0.7rem; font-weight:800; color:#10b981; margin-bottom:4px;"><i class="fa-solid fa-id-card"></i> Aadhaar Card Photo</div>
-            <img id="addRenterIdentityPicPreview" src="https://via.placeholder.com/300x150?text=No+Aadhaar" alt="Aadhaar" style="width:96px; height:64px; object-fit:cover; border-radius:10px; margin-bottom:6px; border:1px solid var(--glass-border);">
+            <img id="addRenterIdentityPicPreview" src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22300%22%20height%3D%22150%22%20viewBox%3D%220%200%20300%20150%22%3E%3Crect%20width%3D%22300%22%20height%3D%22150%22%20rx%3D%228%22%20fill%3D%22%231e293b%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%2225%22%20width%3D%2270%22%20height%3D%2275%22%20rx%3D%226%22%20fill%3D%22%23334155%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2252%22%20r%3D%2214%22%20fill%3D%22%2364748b%22%2F%3E%3Cpath%20d%3D%22M35%2090c0-11%209-18%2020-18s20%207%2020%2018%22%20fill%3D%22%2364748b%22%2F%3E%3Crect%20x%3D%22108%22%20y%3D%2232%22%20width%3D%22165%22%20height%3D%2212%22%20rx%3D%224%22%20fill%3D%22%23475569%22%2F%3E%3Crect%20x%3D%22108%22%20y%3D%2254%22%20width%3D%22130%22%20height%3D%2210%22%20rx%3D%224%22%20fill%3D%22%23334155%22%2F%3E%3Crect%20x%3D%22108%22%20y%3D%2274%22%20width%3D%22150%22%20height%3D%2210%22%20rx%3D%224%22%20fill%3D%22%23334155%22%2F%3E%3Ctext%20x%3D%22150%22%20y%3D%22130%22%20font-family%3D%22sans-serif%22%20font-size%3D%2212%22%20font-weight%3D%22bold%22%20fill%3D%22%2394a3b8%22%20text-anchor%3D%22middle%22%3ENo%20Aadhaar%20Uploaded%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Aadhaar" style="width:96px; height:64px; object-fit:cover; border-radius:10px; margin-bottom:6px; border:1px solid var(--glass-border);">
             <input type="file" id="addRenterIdentityPicFile" accept="image/*" class="form-control" style="font-size:0.68rem; padding:4px;" onchange="handleAddRenterModalPhotoSelect(this, 'identity')">
           </div>
         </div>
@@ -6521,7 +6450,7 @@
                 <span id="profileCloudStatusBadge" style="font-size:0.7rem; font-weight:700; color:var(--text-muted);">No Photo</span>
               </div>
               <div class="image-frame-container zoomable-photo-frame" style="height: 165px; margin-bottom: 10px;" onclick="openPhotoZoomModal(document.getElementById('profilePicturePreview')?.src, (document.getElementById('renterName')?.value || 'Renter') + ' — Profile Photo')">
-                <img id="profilePicturePreview" src="https://via.placeholder.com/150?text=No+Photo" alt="Renter Profile Photo">
+                <img id="profilePicturePreview" src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22150%22%20height%3D%22150%22%20viewBox%3D%220%200%20150%20150%22%3E%3Crect%20width%3D%22150%22%20height%3D%22150%22%20fill%3D%22%231e293b%22%2F%3E%3Ccircle%20cx%3D%2275%22%20cy%3D%2254%22%20r%3D%2226%22%20fill%3D%22%23475569%22%2F%3E%3Cpath%20d%3D%22M30%20132c0-25%2020-42%2045-42s45%2017%2045%2042%22%20fill%3D%22%23475569%22%2F%3E%3Ctext%20x%3D%2275%22%20y%3D%22144%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-weight%3D%22bold%22%20fill%3D%22%2394a3b8%22%20text-anchor%3D%22middle%22%3ENo%20Profile%20Photo%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Renter Profile Photo">
                 <span class="zoomable-photo-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Click Photo to Zoom</span>
               </div>
               <div style="display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap;">
@@ -6555,7 +6484,7 @@
                 <span id="identityCloudStatusBadge" style="font-size:0.7rem; font-weight:700; color:var(--text-muted);">No Aadhaar</span>
               </div>
               <div class="image-frame-container zoomable-photo-frame" style="height: 165px; margin-bottom: 10px;" onclick="openPhotoZoomModal(document.getElementById('identityPicturePreview')?.src, (document.getElementById('renterName')?.value || 'Renter') + ' — Aadhaar Card Document')">
-                <img id="identityPicturePreview" src="https://via.placeholder.com/300x150?text=No+Aadhaar+Uploaded" alt="Aadhaar / ID Document">
+                <img id="identityPicturePreview" src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22300%22%20height%3D%22150%22%20viewBox%3D%220%200%20300%20150%22%3E%3Crect%20width%3D%22300%22%20height%3D%22150%22%20rx%3D%228%22%20fill%3D%22%231e293b%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%2225%22%20width%3D%2270%22%20height%3D%2275%22%20rx%3D%226%22%20fill%3D%22%23334155%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2252%22%20r%3D%2214%22%20fill%3D%22%2364748b%22%2F%3E%3Cpath%20d%3D%22M35%2090c0-11%209-18%2020-18s20%207%2020%2018%22%20fill%3D%22%2364748b%22%2F%3E%3Crect%20x%3D%22108%22%20y%3D%2232%22%20width%3D%22165%22%20height%3D%2212%22%20rx%3D%224%22%20fill%3D%22%23475569%22%2F%3E%3Crect%20x%3D%22108%22%20y%3D%2254%22%20width%3D%22130%22%20height%3D%2210%22%20rx%3D%224%22%20fill%3D%22%23334155%22%2F%3E%3Crect%20x%3D%22108%22%20y%3D%2274%22%20width%3D%22150%22%20height%3D%2210%22%20rx%3D%224%22%20fill%3D%22%23334155%22%2F%3E%3Ctext%20x%3D%22150%22%20y%3D%22130%22%20font-family%3D%22sans-serif%22%20font-size%3D%2212%22%20font-weight%3D%22bold%22%20fill%3D%22%2394a3b8%22%20text-anchor%3D%22middle%22%3ENo%20Aadhaar%20Uploaded%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Aadhaar / ID Document">
                 <span class="zoomable-photo-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Click Photo to Zoom</span>
               </div>
               <div style="display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap;">
@@ -6772,7 +6701,7 @@
             </button>
           </div>
 
-          <button type="button" class="modal-close" style="position: static; width: 38px; height: 38px;" onclick="closeModal('flatGraphZoomModal')" title="Close Large Graph View">
+          <button type="button" class="modal-close-btn" style="position: static; width: 38px; height: 38px;" onclick="closeModal('flatGraphZoomModal')" title="Close Large Graph View">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
@@ -7646,33 +7575,36 @@
             const pName = String(data.propertyName || "").trim();
             const fName = String(data.flatName || "").trim();
             const rId = String(data.renterId || ("R-" + Date.now())).trim();
-            const status = String(data.renterStatus || "Active").trim();
+            const status = String(data.renterStatus || data.status || "Active").trim();
+            const resolvedElecRate = parseFloat(data.elecFixedRate !== undefined ? data.elecFixedRate : data.elecRate) || 0;
+            const resolvedPngRate = parseFloat(data.pngFixedRate !== undefined ? data.pngFixedRate : data.pngRate) || 0;
+            const resolvedWaterRate = parseFloat(data.waterFixedRate !== undefined ? data.waterFixedRate : data.waterRate) || 0;
 
             const renterDoc = {
               RenterID: rId,
               PropertyName: pName,
               FlatName: fName,
               RenterName: String(data.renterName || "").trim(),
-              IdentityDocNumber: cleanPhoneStr(data.identityDocNumber || ""),
-              MobileNumber: cleanPhoneStr(data.mobileNumber || ""),
-              AltMobileNumber: cleanPhoneStr(data.altMobileNumber || ""),
+              IdentityDocNumber: cleanPhoneStr(data.identityDocNumber || data.identityNumber || ""),
+              MobileNumber: cleanPhoneStr(data.mobileNumber || data.mobile || ""),
+              AltMobileNumber: cleanPhoneStr(data.altMobileNumber || data.altMobile || ""),
               Address: String(data.address || "").trim(),
               TotalFamilyMembers: data.familyMembers || 1,
               FamilyMembersList: Array.isArray(data.familyMembersList) ? data.familyMembersList : [],
               Status: status,
               JoinDate: data.joinDate || "",
               EndDate: data.endDate || "",
-              ProfileImageURL: data.profileImageUrl || "",
-              IdentityImageURL: data.identityImageUrl || "",
+              ProfileImageURL: data.profileImageUrl || data.profileImg || "",
+              IdentityImageURL: data.identityImageUrl || data.identityImg || "",
               RentAmount: parseFloat(data.rentAmount) || 0,
               PNGNumber: String(data.pngNumber || "").trim(),
               PNGMeterNumber: String(data.pngMeterNumber || "").trim(),
-              PNGFixedRate: parseFloat(data.pngFixedRate) || 0,
+              PNGFixedRate: resolvedPngRate,
               WaterNumber: String(data.waterNumber || "").trim(),
               WaterMeterNumber: String(data.waterMeterNumber || "").trim(),
-              WaterFixedRate: parseFloat(data.waterFixedRate) || 0,
+              WaterFixedRate: resolvedWaterRate,
               ElecMeterNumber: String(data.elecMeterNumber || "").trim(),
-              ElecFixedRate: parseFloat(data.elecFixedRate) || 0,
+              ElecFixedRate: resolvedElecRate,
               UPIName: String(data.upiName || "").trim(),
               UPIID: String(data.upiId || "").trim(),
               ContractMobile: cleanPhoneStr(data.contractMobile || ""),
@@ -7686,9 +7618,9 @@
             await dbInstance.collection("flats").doc(flatDocId).set({
               Status: status === "Active" ? "Occupied" : "Vacant",
               RentAmount: parseFloat(data.rentAmount) || 0,
-              ElecRate: parseFloat(data.elecFixedRate) || 0,
-              PNGRate: parseFloat(data.pngFixedRate) || 0,
-              WaterRate: parseFloat(data.waterFixedRate) || 0,
+              ElecRate: resolvedElecRate,
+              PNGRate: resolvedPngRate,
+              WaterRate: resolvedWaterRate,
               PNGNumber: String(data.pngNumber || "").trim(),
               PNGMeterNumber: String(data.pngMeterNumber || "").trim(),
               WaterNumber: String(data.waterNumber || "").trim(),
@@ -7812,12 +7744,15 @@
               PurposeType: data.PurposeType || data.purposeType || "Saving / Fixed Deposit (FD)",
               usedPurpose: data.UsedPurpose || data.usedPurpose || "",
               UsedPurpose: data.UsedPurpose || data.usedPurpose || "",
-              accountNo: cleanPhoneStr(data.AccountNumber || data.accountNo || ""),
-              AccountNumber: cleanPhoneStr(data.AccountNumber || data.accountNo || ""),
+              accountNumber: cleanPhoneStr(data.AccountNumber || data.accountNumber || data.accountNo || ""),
+              accountNo: cleanPhoneStr(data.AccountNumber || data.accountNumber || data.accountNo || ""),
+              AccountNumber: cleanPhoneStr(data.AccountNumber || data.accountNumber || data.accountNo || ""),
               maturityAmount: matAmt,
               MaturityAmount: matAmt,
               usageDate: data.UsageDate || data.usageDate || "",
               UsageDate: data.UsageDate || data.usageDate || "",
+              createdAt: data.CreatedAt || data.createdAt || new Date().toISOString().split("T")[0],
+              CreatedAt: data.CreatedAt || data.createdAt || new Date().toISOString().split("T")[0],
               UpdatedAt: new Date().toISOString()
             };
             await dbInstance.collection("fdRecords").doc(fdId).set(fdDoc, { merge: true });
@@ -7836,15 +7771,25 @@
             const khetId = String(data.id || data.KhetID || ("KHET-" + Date.now())).trim();
             const paidAmt = parseFloat(data.AmountPaid !== undefined ? data.AmountPaid : (data.amountPaid !== undefined ? data.amountPaid : data.income)) || 0;
             const adjAmt = parseFloat(data.AdjustedAmount !== undefined ? data.AdjustedAmount : (data.adjustedAmount !== undefined ? data.adjustedAmount : data.expense)) || 0;
+            const resolvedPlace = String(data.Place || data.place || data.KhetName || data.name || "").trim();
+            const resolvedPartner = String(data.PartnerName || data.partnerName || data.HolderName || data.holderName || data.crop || "").trim();
+            const decArea = parseFloat(data.DecimalArea !== undefined ? data.DecimalArea : data.decimalArea) || 0;
+            const survDec = parseFloat(data.NewDecimalSurvey !== undefined ? data.NewDecimalSurvey : data.newDecimalSurvey) || 0;
             const khetDoc = {
               id: khetId,
               KhetID: khetId,
-              name: String(data.KhetName || data.name || "").trim(),
-              KhetName: String(data.KhetName || data.name || "").trim(),
+              place: resolvedPlace,
+              Place: resolvedPlace,
+              name: resolvedPlace,
+              KhetName: resolvedPlace,
               registeredName: String(data.RegisteredName || data.registeredName || "").trim(),
               RegisteredName: String(data.RegisteredName || data.registeredName || "").trim(),
-              partnerName: String(data.PartnerName || data.partnerName || "").trim(),
-              PartnerName: String(data.PartnerName || data.partnerName || "").trim(),
+              partnerName: resolvedPartner,
+              PartnerName: resolvedPartner,
+              holderName: resolvedPartner,
+              HolderName: resolvedPartner,
+              crop: resolvedPartner,
+              CropOrPurpose: resolvedPartner,
               partnerAadhaar: cleanPhoneStr(data.PartnerAadhaar || data.partnerAadhaar || ""),
               PartnerAadhaar: cleanPhoneStr(data.PartnerAadhaar || data.partnerAadhaar || ""),
               partnerMobile: cleanPhoneStr(data.PartnerMobile || data.partnerMobile || ""),
@@ -7855,6 +7800,10 @@
               KhataNo: String(data.KhataNo || data.khataNo || "").trim(),
               keshraNo: String(data.KeshraNo || data.keshraNo || "").trim(),
               KeshraNo: String(data.KeshraNo || data.keshraNo || "").trim(),
+              decimalArea: decArea,
+              DecimalArea: decArea,
+              newDecimalSurvey: survDec,
+              NewDecimalSurvey: survDec,
               bigha: data.FieldSizeBigha !== undefined ? data.FieldSizeBigha : (data.bigha || ""),
               FieldSizeBigha: data.FieldSizeBigha !== undefined ? data.FieldSizeBigha : (data.bigha || ""),
               katha: data.Katha !== undefined ? data.Katha : (data.katha || ""),
@@ -7865,10 +7814,16 @@
               TotalLandValue: parseFloat(data.TotalLandValue || data.totalLandValue) || 0,
               amountPaid: paidAmt,
               AmountPaid: paidAmt,
+              income: paidAmt,
+              IncomeAmount: paidAmt,
               adjustedAmount: adjAmt,
               AdjustedAmount: adjAmt,
+              expense: adjAmt,
+              ExpenseAmount: adjAmt,
               paymentDate: data.PaymentDate || data.paymentDate || "",
               PaymentDate: data.PaymentDate || data.paymentDate || "",
+              createdAt: data.CreatedAt || data.createdAt || new Date().toISOString().split("T")[0],
+              CreatedAt: data.CreatedAt || data.createdAt || new Date().toISOString().split("T")[0],
               notes: data.Notes || data.notes || "",
               Notes: data.Notes || data.notes || "",
               UpdatedAt: new Date().toISOString()
@@ -8097,7 +8052,7 @@
 
           case "uploadBackgroundPhoto": {
             const photoUrl = data.base64Data || data.imageUrl || "";
-            const slot = data.slot || "dashboard";
+            const slot = data.slot || data.type || "dashboard";
             const field = slot === "login" ? "bgLoginUrl" : "bgDashboardUrl";
 
             await dbInstance.collection("config").doc("app_config").set({
@@ -8184,8 +8139,8 @@
       kharchRecords: []
     };
 
-    const EMPTY_PROFILE_PLACEHOLDER = "https://via.placeholder.com/150?text=No+Profile+Photo";
-    const EMPTY_IDENTITY_PLACEHOLDER = "https://via.placeholder.com/300x150?text=No+Aadhaar+Uploaded";
+    const EMPTY_PROFILE_PLACEHOLDER = "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22150%22%20height%3D%22150%22%20viewBox%3D%220%200%20150%20150%22%3E%3Crect%20width%3D%22150%22%20height%3D%22150%22%20fill%3D%22%231e293b%22%2F%3E%3Ccircle%20cx%3D%2275%22%20cy%3D%2254%22%20r%3D%2226%22%20fill%3D%22%23475569%22%2F%3E%3Cpath%20d%3D%22M30%20132c0-25%2020-42%2045-42s45%2017%2045%2042%22%20fill%3D%22%23475569%22%2F%3E%3Ctext%20x%3D%2275%22%20y%3D%22144%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-weight%3D%22bold%22%20fill%3D%22%2394a3b8%22%20text-anchor%3D%22middle%22%3ENo%20Profile%20Photo%3C%2Ftext%3E%3C%2Fsvg%3E";
+    const EMPTY_IDENTITY_PLACEHOLDER = "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22300%22%20height%3D%22150%22%20viewBox%3D%220%200%20300%20150%22%3E%3Crect%20width%3D%22300%22%20height%3D%22150%22%20rx%3D%228%22%20fill%3D%22%231e293b%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%2225%22%20width%3D%2270%22%20height%3D%2275%22%20rx%3D%226%22%20fill%3D%22%23334155%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2252%22%20r%3D%2214%22%20fill%3D%22%2364748b%22%2F%3E%3Cpath%20d%3D%22M35%2090c0-11%209-18%2020-18s20%207%2020%2018%22%20fill%3D%22%2364748b%22%2F%3E%3Crect%20x%3D%22108%22%20y%3D%2232%22%20width%3D%22165%22%20height%3D%2212%22%20rx%3D%224%22%20fill%3D%22%23475569%22%2F%3E%3Crect%20x%3D%22108%22%20y%3D%2254%22%20width%3D%22130%22%20height%3D%2210%22%20rx%3D%224%22%20fill%3D%22%23334155%22%2F%3E%3Crect%20x%3D%22108%22%20y%3D%2274%22%20width%3D%22150%22%20height%3D%2210%22%20rx%3D%224%22%20fill%3D%22%23334155%22%2F%3E%3Ctext%20x%3D%22150%22%20y%3D%22130%22%20font-family%3D%22sans-serif%22%20font-size%3D%2212%22%20font-weight%3D%22bold%22%20fill%3D%22%2394a3b8%22%20text-anchor%3D%22middle%22%3ENo%20Aadhaar%20Uploaded%3C%2Ftext%3E%3C%2Fsvg%3E";
     const LOGIN_HISTORY_PAGE_SIZE = 15;
     const MAX_LOGIN_HISTORY_ENTRIES = 30;
     let currentLoginHistoryPage = 1;
@@ -11138,7 +11093,7 @@ function formatMonthLabel(rawVal) {
             </div>
             <div class="renter-identity">
               <div class="renter-avatar">
-                <img src="${renter?.ProfileImageURL || 'https://via.placeholder.com/80'}" alt="Avatar">
+                <img src="${renter?.ProfileImageURL || 'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22150%22%20height%3D%22150%22%20viewBox%3D%220%200%20150%20150%22%3E%3Crect%20width%3D%22150%22%20height%3D%22150%22%20fill%3D%22%231e293b%22%2F%3E%3Ccircle%20cx%3D%2275%22%20cy%3D%2254%22%20r%3D%2226%22%20fill%3D%22%23475569%22%2F%3E%3Cpath%20d%3D%22M30%20132c0-25%2020-42%2045-42s45%2017%2045%2042%22%20fill%3D%22%23475569%22%2F%3E%3Ctext%20x%3D%2275%22%20y%3D%22144%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-weight%3D%22bold%22%20fill%3D%22%2394a3b8%22%20text-anchor%3D%22middle%22%3ENo%20Profile%20Photo%3C%2Ftext%3E%3C%2Fsvg%3E'}" alt="Avatar">
               </div>
               <div class="renter-name">${renter ? renter.RenterName : 'Vacant / Ready'}</div>
             </div>
@@ -11207,7 +11162,7 @@ function formatMonthLabel(rawVal) {
             const statusClass = isAct ? "badge-paid" : "badge-unpaid";
             const avatarSrc = (!isPlaceholderImageUrl(r.ProfileImageURL))
               ? r.ProfileImageURL
-              : "https://via.placeholder.com/80?text=Tenant";
+              : "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22150%22%20height%3D%22150%22%20viewBox%3D%220%200%20150%20150%22%3E%3Crect%20width%3D%22150%22%20height%3D%22150%22%20fill%3D%22%231e293b%22%2F%3E%3Ccircle%20cx%3D%2275%22%20cy%3D%2254%22%20r%3D%2226%22%20fill%3D%22%23475569%22%2F%3E%3Cpath%20d%3D%22M30%20132c0-25%2020-42%2045-42s45%2017%2045%2042%22%20fill%3D%22%23475569%22%2F%3E%3Ctext%20x%3D%2275%22%20y%3D%22144%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-weight%3D%22bold%22%20fill%3D%22%2394a3b8%22%20text-anchor%3D%22middle%22%3ENo%20Profile%20Photo%3C%2Ftext%3E%3C%2Fsvg%3E";
             const summary = calculateCurrentNetBalanceForRenter(r.PropertyName, r.FlatName, r);
             const balLabel = summary.netBalance > 0
               ? `Due: ₹${summary.netBalance.toLocaleString('en-IN')}`
@@ -11335,7 +11290,7 @@ function formatMonthLabel(rawVal) {
             </div>
             <div class="renter-identity">
               <div class="renter-avatar">
-                <img src="${renter?.ProfileImageURL || 'https://via.placeholder.com/80'}" alt="Avatar">
+                <img src="${renter?.ProfileImageURL || 'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22150%22%20height%3D%22150%22%20viewBox%3D%220%200%20150%20150%22%3E%3Crect%20width%3D%22150%22%20height%3D%22150%22%20fill%3D%22%231e293b%22%2F%3E%3Ccircle%20cx%3D%2275%22%20cy%3D%2254%22%20r%3D%2226%22%20fill%3D%22%23475569%22%2F%3E%3Cpath%20d%3D%22M30%20132c0-25%2020-42%2045-42s45%2017%2045%2042%22%20fill%3D%22%23475569%22%2F%3E%3Ctext%20x%3D%2275%22%20y%3D%22144%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-weight%3D%22bold%22%20fill%3D%22%2394a3b8%22%20text-anchor%3D%22middle%22%3ENo%20Profile%20Photo%3C%2Ftext%3E%3C%2Fsvg%3E'}" alt="Avatar">
               </div>
               <div class="renter-name">${renter ? renter.RenterName : 'Vacant / Ready'}</div>
             </div>
@@ -11387,10 +11342,10 @@ function formatMonthLabel(rawVal) {
       if (profThemeBadge) {
         profThemeBadge.innerText = isLightTheme ? "White Mode" : "Dark Mode";
       }
-      const themeCardBlack = document.getElementById("themeCardBlack");
-      const themeCardWhite = document.getElementById("themeCardWhite");
-      if (themeCardBlack) themeCardBlack.classList.toggle("active", !isLightTheme);
-      if (themeCardWhite) themeCardWhite.classList.toggle("active", isLightTheme);
+      const normalizedPref = (activeThemePref === "dark" || !activeThemePref) ? "black" : (activeThemePref === "light" ? "white" : activeThemePref);
+      document.getElementById("themeCardBlack")?.classList.toggle("active", normalizedPref === "black");
+      document.getElementById("themeCardWhite")?.classList.toggle("active", normalizedPref === "white");
+      document.getElementById("themeCardSystem")?.classList.toggle("active", normalizedPref === "system");
 
       activeUserMobile = sanitizeContactPhoneDisplay(activeUserMobile);
       document.getElementById("profViewFullName").value = activeUserFullName || activeUser || "";
@@ -12572,7 +12527,8 @@ function formatMonthLabel(rawVal) {
     }
 
     function applyVisualTheme(themePref) {
-      activeThemePref = (themePref || "black").toLowerCase();
+      const rawPref = (themePref || "black").toLowerCase();
+      activeThemePref = rawPref === "dark" ? "black" : (rawPref === "light" ? "white" : rawPref);
       localStorage.setItem("app_visual_theme", activeThemePref);
 
       let effectiveTheme = activeThemePref;
@@ -13067,7 +13023,7 @@ function formatMonthLabel(rawVal) {
     function isPlaceholderImageUrl(url) {
       if (!url) return true;
       const s = String(url).trim();
-      return !s || s.includes("via.placeholder.com") || s === EMPTY_PROFILE_PLACEHOLDER || s === EMPTY_IDENTITY_PLACEHOLDER;
+      return !s || s.includes("via.placeholder.com") || s.startsWith("data:image/svg+xml") || s === EMPTY_PROFILE_PLACEHOLDER || s === EMPTY_IDENTITY_PLACEHOLDER;
     }
 
     function updateRenterImageSlotUI(docType, imageUrl) {
@@ -14861,7 +14817,8 @@ function formatMonthLabel(rawVal) {
 
       if (renter) {
         // Requirement 1: If this renter is a returning/shifted renter with an Aadhaar number, ensure any missing profile/Aadhaar photos or details from their previous flat stays are consolidated automatically
-        const consolidated = consolidateRenterHistoryDetailsByAadhaar(renter);
+        const consolidatedRes = consolidateRenterHistoryDetailsByAadhaar(renter);
+        const consolidated = consolidatedRes?.merged || null;
         if (consolidated) {
           if (!renter.ProfileImageURL && consolidated.ProfileImageURL) renter.ProfileImageURL = consolidated.ProfileImageURL;
           if (!renter.IdentityImageURL && consolidated.IdentityImageURL) renter.IdentityImageURL = consolidated.IdentityImageURL;
@@ -16676,7 +16633,7 @@ function formatMonthLabel(rawVal) {
                   const statusCls = isAct ? "badge-paid" : "badge-unpaid";
                   const avatarSrc = (!isPlaceholderImageUrl(r.ProfileImageURL))
                     ? r.ProfileImageURL
-                    : "https://via.placeholder.com/80?text=Tenant";
+                    : "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22150%22%20height%3D%22150%22%20viewBox%3D%220%200%20150%20150%22%3E%3Crect%20width%3D%22150%22%20height%3D%22150%22%20fill%3D%22%231e293b%22%2F%3E%3Ccircle%20cx%3D%2275%22%20cy%3D%2254%22%20r%3D%2226%22%20fill%3D%22%23475569%22%2F%3E%3Cpath%20d%3D%22M30%20132c0-25%2020-42%2045-42s45%2017%2045%2042%22%20fill%3D%22%23475569%22%2F%3E%3Ctext%20x%3D%2275%22%20y%3D%22144%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-weight%3D%22bold%22%20fill%3D%22%2394a3b8%22%20text-anchor%3D%22middle%22%3ENo%20Profile%20Photo%3C%2Ftext%3E%3C%2Fsvg%3E";
                   const safeId = String(item.rId || "").replace(/'/g, "\\'");
                   const safeProp = String(prop || "").replace(/'/g, "\\'");
                   const safeFlat = String(flat || "").replace(/'/g, "\\'");
@@ -16748,7 +16705,7 @@ function formatMonthLabel(rawVal) {
         const statusBadgeClass = isAct ? "badge-paid" : "badge-unpaid";
         const avatarSrc = (!isPlaceholderImageUrl(targetRenter.ProfileImageURL))
           ? targetRenter.ProfileImageURL
-          : "https://via.placeholder.com/150?text=Tenant";
+          : "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22150%22%20height%3D%22150%22%20viewBox%3D%220%200%20150%20150%22%3E%3Crect%20width%3D%22150%22%20height%3D%22150%22%20fill%3D%22%231e293b%22%2F%3E%3Ccircle%20cx%3D%2275%22%20cy%3D%2254%22%20r%3D%2226%22%20fill%3D%22%23475569%22%2F%3E%3Cpath%20d%3D%22M30%20132c0-25%2020-42%2045-42s45%2017%2045%2042%22%20fill%3D%22%23475569%22%2F%3E%3Ctext%20x%3D%2275%22%20y%3D%22144%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-weight%3D%22bold%22%20fill%3D%22%2394a3b8%22%20text-anchor%3D%22middle%22%3ENo%20Profile%20Photo%3C%2Ftext%3E%3C%2Fsvg%3E";
 
         const allBills = getBillsForSpecificRenter(prop, flat, targetRenter);
         const renterMetaMatchesQuery = searchQuery && (
@@ -19216,6 +19173,11 @@ function formatMonthLabel(rawVal) {
       renumberRenterFamilyMemberRows();
     }
 
+    function formatAadhaarInputLive(inputEl) {
+      if (!inputEl) return;
+      inputEl.value = formatAadhaarWithHyphens(inputEl.value);
+    }
+
     function removeRenterFamilyMemberRow(btnEl) {
       const row = btnEl ? btnEl.closest(".family-member-dynamic-row") : null;
       if (row) {
@@ -19774,7 +19736,7 @@ function formatMonthLabel(rawVal) {
         return bScore - aScore;
       });
 
-      const best = consolidateRenterHistoryDetailsByAadhaar(matchingRecords[0]) || matchingRecords[0];
+      const best = consolidateRenterHistoryDetailsByAadhaar(matchingRecords[0])?.merged || matchingRecords[0];
       addRenterModalMatchedRecord = best;
       addRenterModalIsReactivating = true;
 
@@ -19856,7 +19818,7 @@ function formatMonthLabel(rawVal) {
     }
 
     function activateInPageRenterDetailsFromAadhaar() {
-      const rec = consolidateRenterHistoryDetailsByAadhaar(addRenterModalMatchedRecord) || addRenterModalMatchedRecord;
+      const rec = consolidateRenterHistoryDetailsByAadhaar(addRenterModalMatchedRecord)?.merged || addRenterModalMatchedRecord;
       if (!rec) return;
       addRenterModalMatchedRecord = rec;
       addRenterModalIsReactivating = true;
@@ -19948,7 +19910,7 @@ function formatMonthLabel(rawVal) {
       const expBox = document.getElementById("addRenterExpandedDetailsBox");
       const isExpandedVisible = expBox && expBox.style.display !== "none";
 
-      const consolidatedRec = consolidateRenterHistoryDetailsByAadhaar(addRenterModalMatchedRecord || { IdentityDocNumber: rawAadhaar }) || addRenterModalMatchedRecord;
+      const consolidatedRec = consolidateRenterHistoryDetailsByAadhaar(addRenterModalMatchedRecord || { IdentityDocNumber: rawAadhaar })?.merged || addRenterModalMatchedRecord;
 
       const altMob = isExpandedVisible
         ? (document.getElementById("addRenterAltMobileInput")?.value || "").trim()
@@ -20014,13 +19976,17 @@ function formatMonthLabel(rawVal) {
 
       if (profUrl) savePermanentRenterPhoto(targetProp, targetFlat, newRenterId, "profile", profUrl);
       if (idUrl) savePermanentRenterPhoto(targetProp, targetFlat, newRenterId, "identity", idUrl);
-      saveRenterTenureMeta(newRenterId, rawAadhaar, isReturningMatch ? "RETURNING" : "NEW", {
-        fromProp: consolidatedRec?.PropertyName || "",
-        fromFlat: consolidatedRec?.FlatName || "",
-        toProp: targetProp,
-        toFlat: targetFlat,
-        date: joinDate
-      });
+      const tenureDetailText = isReturningMatch && consolidatedRec?.PropertyName
+        ? `Returned from ${consolidatedRec.PropertyName} (Flat ${consolidatedRec.FlatName || "--"}) on ${formatDateOnly(joinDate)}`
+        : `Assigned to ${targetProp} - Flat ${targetFlat} on ${formatDateOnly(joinDate)}`;
+      saveRenterTenureMeta(
+        newRenterId,
+        targetProp,
+        targetFlat,
+        rawAadhaar,
+        isReturningMatch ? "RETURNING" : "NEW",
+        tenureDetailText
+      );
 
       DB.renters.push(newRenterObj);
 
@@ -20059,6 +20025,9 @@ function formatMonthLabel(rawVal) {
         flatName: targetFlat,
         renterName: rName,
         rentAmount: inheritedRent,
+        elecFixedRate: inheritedElec,
+        pngFixedRate: inheritedPng,
+        waterFixedRate: inheritedWater,
         elecRate: inheritedElec,
         pngRate: inheritedPng,
         waterRate: inheritedWater,
@@ -20067,11 +20036,17 @@ function formatMonthLabel(rawVal) {
         contractMobile: inheritedContract,
         joinDate: joinDate,
         endDate: "",
+        renterStatus: statusVal,
         status: statusVal,
+        identityDocNumber: formattedAadhaar || rawAadhaar,
         identityNumber: rawAadhaar,
+        profileImageUrl: profUrl,
         profileImg: profUrl,
+        identityImageUrl: idUrl,
         identityImg: idUrl,
-        mobile: formattedMob,
+        mobileNumber: newRenterObj.MobileNumber,
+        mobile: newRenterObj.MobileNumber,
+        altMobileNumber: altMob,
         altMobile: altMob,
         address: addr,
         familyMembers: famCount,
@@ -21109,34 +21084,41 @@ function formatMonthLabel(rawVal) {
         !activeRenters.some(r => isSamePropAndFlat(r.PropertyName, r.FlatName, f.PropertyName, f.FlatName))
       );
 
+      const getBillTotalVal = (b) => Number(b.TotalBilled !== undefined && b.TotalBilled !== "" ? b.TotalBilled : (b.TotalAmount || 0));
+      const getBillPaidVal = (b) => Number(b.PaidAmount || 0);
+      const getBillDueVal = (b) => {
+        if (b.DueAmount !== undefined && b.DueAmount !== "") return Math.max(0, Number(b.DueAmount));
+        return Math.max(0, getBillTotalVal(b) - getBillPaidVal(b));
+      };
+
       let totalBilled = 0;
       let totalCollected = 0;
       let totalPendingDue = 0;
       bills.forEach(b => {
-        const tot = Number(b.TotalAmount || 0);
-        const paid = Number(b.PaidAmount || 0);
-        const due = b.DueAmount !== undefined && b.DueAmount !== "" ? Number(b.DueAmount) : Math.max(0, tot - paid);
+        const tot = getBillTotalVal(b);
+        const paid = getBillPaidVal(b);
+        const due = getBillDueVal(b);
         totalBilled += tot;
         totalCollected += paid;
         if (due > 0) totalPendingDue += due;
       });
 
-      const totalKharch = kharch.reduce((acc, k) => acc + (Number(k.Amount) || 0), 0);
-      const totalFdPrincipal = fds.reduce((acc, f) => acc + (Number(f.PrincipalAmount || f.Amount) || 0), 0);
-      const totalKhetAmount = khets.reduce((acc, k) => acc + (Number(k.TotalAmount || k.Amount) || 0), 0);
+      const totalKharch = kharch.reduce((acc, k) => acc + (Number(k.Amount !== undefined ? k.Amount : k.amount) || 0), 0);
+      const totalFdPrincipal = fds.reduce((acc, f) => acc + (Number(f.PrincipalAmount || f.amount || f.Amount) || 0), 0);
+      const totalKhetAmount = khets.reduce((acc, k) => acc + (Number(k.totalLandValue || k.TotalLandValue || k.amountPaid || k.AmountPaid || k.TotalAmount || k.Amount) || 0), 0);
 
       // 1. Check if asking about a specific flat or renter name
       const matchedRenter = renters.find(r => r.RenterName && q.includes(String(r.RenterName).toLowerCase()));
       if (matchedRenter && !q.includes("summary") && !q.includes("all")) {
         const tenure = resolveRenterTenureStatus(matchedRenter, matchedRenter.IdentityDocNumber);
         const rBills = getBillsForSpecificRenter(matchedRenter.PropertyName, matchedRenter.FlatName, matchedRenter);
-        const rPaid = rBills.reduce((s, b) => s + (Number(b.PaidAmount) || 0), 0);
-        const rDue = rBills.reduce((s, b) => s + (Number(b.DueAmount) || 0), 0);
+        const rPaid = rBills.reduce((s, b) => s + getBillPaidVal(b), 0);
+        const rDue = rBills.reduce((s, b) => s + getBillDueVal(b), 0);
         return `
           <div style="line-height:1.5;">
             <div><strong>Renter Record Found:</strong> ${matchedRenter.RenterName} (${matchedRenter.Status || 'Active'})</div>
             <div>• <strong>Location:</strong> ${matchedRenter.PropertyName} — Flat ${matchedRenter.FlatName}</div>
-            <div>• <strong>Origin Status:</strong> ${tenure.badgeText} (${tenure.titleText})</div>
+            <div>• <strong>Origin Status:</strong> ${tenure.badge || tenure.badgeText || 'NEW RENTER'} (${tenure.title || tenure.titleText || 'First-Time Stay'})</div>
             <div>• <strong>Aadhaar:</strong> ${formatAadhaarWithHyphens(matchedRenter.IdentityDocNumber) || 'Not Recorded'}</div>
             <div>• <strong>Mobile:</strong> ${matchedRenter.MobileNumber || 'Not Recorded'}</div>
             <div>• <strong>Stay Period:</strong> ${formatDateOnly(matchedRenter.JoinDate)} to ${formatDateOnly(matchedRenter.EndDate) || 'Present'}</div>
@@ -21166,14 +21148,15 @@ function formatMonthLabel(rawVal) {
 
       // 3. Pending Dues / Unpaid Bills Query
       if (q.includes("due") || q.includes("unpaid") || q.includes("pending") || q.includes("arrears")) {
-        const unpaidList = bills.filter(b => Number(b.DueAmount || 0) > 0).slice(0, 8);
+        const allUnpaidBills = bills.filter(b => getBillDueVal(b) > 0);
+        const unpaidList = allUnpaidBills.slice(0, 8);
         const rowsHtml = unpaidList.map(b =>
-          `<div>• <strong>${b.PropertyName} (Flat ${b.FlatName})</strong> — ${b.TenantName || 'Renter'} (${b.MonthYear}): <span style="color:#f43f5e;font-weight:800;">₹${Number(b.DueAmount).toLocaleString('en-IN')} Due</span></div>`
+          `<div>• <strong>${b.PropertyName} (Flat ${b.FlatName})</strong> — ${b.TenantName || 'Renter'} (${b.MonthYear}): <span style="color:#f43f5e;font-weight:800;">₹${getBillDueVal(b).toLocaleString('en-IN')} Due</span></div>`
         ).join("");
         return `
           <div style="line-height:1.5;">
             <div><strong>Pending Dues Report (From Website Bills):</strong></div>
-            <div>• Total Outstanding Dues: <strong style="color:#f43f5e;">₹${totalPendingDue.toLocaleString('en-IN')}</strong> across ${bills.filter(b => Number(b.DueAmount || 0) > 0).length} bill records</div>
+            <div>• Total Outstanding Dues: <strong style="color:#f43f5e;">₹${totalPendingDue.toLocaleString('en-IN')}</strong> across ${allUnpaidBills.length} bill records</div>
             <div>• Total Collected So Far: <strong style="color:#10b981;">₹${totalCollected.toLocaleString('en-IN')}</strong></div>
             <div style="margin-top:6px; border-top:1px dashed var(--glass-border); padding-top:6px;">
               ${rowsHtml || '<span style="color:#10b981;font-weight:800;">All recorded bills are 100% paid! Zero pending dues.</span>'}
@@ -21186,11 +21169,12 @@ function formatMonthLabel(rawVal) {
       if (q.includes("renter") || q.includes("tenant") || q.includes("returning") || q.includes("shifted") || q.includes("aadhaar")) {
         const returningOrShifted = activeRenters.filter(r => {
           const t = resolveRenterTenureStatus(r, r.IdentityDocNumber);
-          return t.type === "RETURNING" || t.type === "SHIFTED";
+          const code = t.code || t.type;
+          return code === "RETURNING" || code === "SHIFTED";
         });
         const listHtml = returningOrShifted.map(r => {
           const t = resolveRenterTenureStatus(r, r.IdentityDocNumber);
-          return `<div>• <strong>${r.RenterName}</strong> (${r.PropertyName} - Flat ${r.FlatName}): <span style="font-weight:800; color:#f59e0b;">${t.badgeText}</span></div>`;
+          return `<div>• <strong>${r.RenterName}</strong> (${r.PropertyName} - Flat ${r.FlatName}): <span style="font-weight:800; color:#f59e0b;">${t.badge || t.badgeText}</span></div>`;
         }).join("");
         return `
           <div style="line-height:1.5;">
@@ -21508,8 +21492,10 @@ function formatMonthLabel(rawVal) {
           const safeName = String(c.displayName || "User").replace(/</g, "&lt;").replace(/>/g, "&gt;");
           const safeLabel = String(c.flatLabel || "Registered Account").replace(/</g, "&lt;").replace(/>/g, "&gt;");
           const chData = store[c.channelId] || store["channel_" + String(c.targetUsername || "").toLowerCase()];
-          const lastMsg = (chData?.messages || []).slice(-1)[0];
-          const snippet = lastMsg ? String(lastMsg.text || "").slice(0, 32) : "Click to message this User ID...";
+          const clearedAt = Number(chData?.clearedAt || 0);
+          const visibleMsgs = (chData?.messages || []).filter(m => m && Number(m.timestamp || 0) > clearedAt);
+          const lastMsg = visibleMsgs.slice(-1)[0];
+          const snippet = lastMsg ? String(lastMsg.text || "").slice(0, 32).replace(/</g, "&lt;").replace(/>/g, "&gt;") : "Click to message this User ID...";
 
           return `
             <div class="chat-roster-item" onclick="openChatWithChannel('${c.channelId}', '${encodeURIComponent(c.displayName)}', '${encodeURIComponent(c.flatLabel)}', '${encodeURIComponent(c.targetAdminUsername || activeUser || 'admin')}')">
@@ -21550,9 +21536,11 @@ function formatMonthLabel(rawVal) {
           const chId = getMyPrivateChatChannelId(adm.username);
           const chObj = store[chId] || {};
           const unread = Number(chObj.unreadRenter || 0);
-          const lastMsg = (chObj.messages || []).slice(-1)[0];
+          const clearedAt = Number(chObj.clearedAt || 0);
+          const visibleMsgs = (chObj.messages || []).filter(m => m && Number(m.timestamp || 0) > clearedAt);
+          const lastMsg = visibleMsgs.slice(-1)[0];
           const snippet = lastMsg
-            ? String(lastMsg.text || "").slice(0, 36)
+            ? String(lastMsg.text || "").slice(0, 36).replace(/</g, "&lt;").replace(/>/g, "&gt;")
             : `Click to send a direct message to @${adm.username}...`;
           const displayTitle = `${adm.fullName || adm.username} (@${adm.username})`;
           const subLabel = `Admin ID: @${adm.username} • Direct Support`;
@@ -21658,8 +21646,11 @@ function formatMonthLabel(rawVal) {
         return;
       }
 
+      const myLowerUser = String(activeUser || "").trim().toLowerCase();
       box.innerHTML = msgs.map(m => {
-        const isMine = (isAdmin && m.senderRole === "Admin") || (!isAdmin && m.senderRole !== "Admin");
+        const isMine = m.senderUsername
+          ? String(m.senderUsername).trim().toLowerCase() === myLowerUser
+          : ((isAdmin && m.senderRole === "Admin") || (!isAdmin && m.senderRole !== "Admin"));
         const safeText = String(m.text || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         return `
           <div class="chat-msg-bubble ${isMine ? 'sent' : 'received'}">
