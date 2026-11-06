@@ -4077,7 +4077,7 @@
   <!-- Firebase SDK (Compat v10 for rock-solid standalone browser runtime) -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+</head>
 <body class="theme-black">
 
   <!-- PERMANENT HOUSE BACKGROUND CANVAS FOR HOME PAGE & LOGIN -->
@@ -10009,19 +10009,22 @@
     function normalizeMonthYear(rawVal) {
       if (!rawVal) return "";
       const str = String(rawVal).replace(/^'+/, "").trim();
+      if (!str || str === "undefined" || str === "null" || str === "--") return "";
       if (/^\d{4}-\d{2}$/.test(str)) return str;
-
+      if (/^\d{4}-\d{2}-\d{2}/.test(str)) return str.substring(0, 7);
+      const dmyMatch = str.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
+      if (dmyMatch) {
+        const m = dmyMatch[2].padStart(2, "0");
+        const y = dmyMatch[3];
+        return `${y}-${m}`;
+      }
       const parsed = new Date(str);
       if (!isNaN(parsed.getTime())) {
         const y = parsed.getFullYear();
         const m = String(parsed.getMonth() + 1).padStart(2, "0");
         return `${y}-${m}`;
       }
-
-      if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
-        return str.substring(0, 7);
-      }
-      return str;
+      return "";
     }
 
     
@@ -10031,8 +10034,16 @@
     function formatDateOnly(rawDate) {
       if (!rawDate) return "--";
       const s = String(rawDate).trim().replace(/^'+/, "");
+      if (!s || s === "undefined" || s === "null" || s === "Invalid Date" || s === "--") return "--";
       if (s.includes("T")) return s.split("T")[0];
       if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0, 10);
+      const dmyMatch = s.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
+      if (dmyMatch) {
+        const d = dmyMatch[1].padStart(2, "0");
+        const m = dmyMatch[2].padStart(2, "0");
+        const y = dmyMatch[3];
+        return `${y}-${m}-${d}`;
+      }
       const parsed = new Date(s);
       if (!isNaN(parsed.getTime())) {
         const y = parsed.getFullYear();
@@ -10040,7 +10051,9 @@
         const d = String(parsed.getDate()).padStart(2, "0");
         return y + "-" + m + "-" + d;
       }
-      return s.split(" ")[0];
+      const firstWord = s.split(" ")[0];
+      if (/^\d{4}-\d{2}-\d{2}/.test(firstWord)) return firstWord.substring(0, 10);
+      return "--";
     }
 
     function formatStayDurationDisplay(joinDate, endDate, isAct) {
@@ -14740,13 +14753,20 @@ function formatMonthLabel(rawVal) {
     function toInputDateValue(rawDate) {
       if (!rawDate) return "";
       const s = String(rawDate).trim().replace(/^'+/, "");
-      if (s === "Present" || s === "Departed" || s === "Active" || s === "Left" || s === "--") return "";
+      if (!s || s === "Present" || s === "Departed" || s === "Active" || s === "Left" || s === "--" || s === "undefined" || s === "null" || s === "Invalid Date") return "";
       if (s.includes("T")) {
         const part = s.split("T")[0];
         if (/^\d{4}-\d{2}-\d{2}$/.test(part)) return part;
       }
       if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
       if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0, 10);
+      const dmyMatch = s.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
+      if (dmyMatch) {
+        const d = dmyMatch[1].padStart(2, "0");
+        const m = dmyMatch[2].padStart(2, "0");
+        const y = dmyMatch[3];
+        return `${y}-${m}-${d}`;
+      }
       const parsed = new Date(s);
       if (!isNaN(parsed.getTime())) {
         const y = parsed.getFullYear();
@@ -15937,80 +15957,80 @@ function formatMonthLabel(rawVal) {
     }
 
     function runBillMath() {
-      const rent = parseFloat(document.getElementById("calcRent").value) || 0;
-      document.getElementById("calcRentBadge").innerText = `₹ ${rent}`;
+      const rentEl = document.getElementById("calcRent");
+      if (!rentEl) return;
+      const rent = parseFloat(rentEl.value) || 0;
+      const rentBadge = document.getElementById("calcRentBadge");
+      if (rentBadge) rentBadge.innerText = `₹ ${rent}`;
 
-      const elecPrev = parseFloat(document.getElementById("calcElecPrev").value) || 0;
-      const elecCurr = parseFloat(document.getElementById("calcElecCurr").value) || 0;
-      const elecRate = parseFloat(document.getElementById("calcElecRate").value) || 0;
+      const elecPrev = parseFloat(document.getElementById("calcElecPrev")?.value) || 0;
+      const elecCurr = parseFloat(document.getElementById("calcElecCurr")?.value) || 0;
+      const elecRate = parseFloat(document.getElementById("calcElecRate")?.value) || 0;
       const elecUnits = elecCurr > elecPrev ? (elecCurr - elecPrev) : 0;
-      const elecTotal = elecUnits * elecRate;
-      document.getElementById("calcElecSummary").innerText = `${elecUnits} U (₹${elecTotal})`;
+      const elecTotal = Math.round(elecUnits * elecRate * 100) / 100;
+      const elecSummary = document.getElementById("calcElecSummary");
+      if (elecSummary) elecSummary.innerText = `${elecUnits} U (₹${elecTotal})`;
 
-      const pngPrev = parseFloat(document.getElementById("calcPngPrev").value) || 0;
-      const pngCurr = parseFloat(document.getElementById("calcPngCurr").value) || 0;
-      const pngRate = parseFloat(document.getElementById("calcPngRate").value) || 0;
+      const pngPrev = parseFloat(document.getElementById("calcPngPrev")?.value) || 0;
+      const pngCurr = parseFloat(document.getElementById("calcPngCurr")?.value) || 0;
+      const pngRate = parseFloat(document.getElementById("calcPngRate")?.value) || 0;
       const pngUnits = pngCurr > pngPrev ? (pngCurr - pngPrev) : 0;
-      const pngTotal = pngUnits * pngRate;
-      document.getElementById("calcPngSummary").innerText = `${pngUnits} U (₹${pngTotal})`;
+      const pngTotal = Math.round(pngUnits * pngRate * 100) / 100;
+      const pngSummary = document.getElementById("calcPngSummary");
+      if (pngSummary) pngSummary.innerText = `${pngUnits} U (₹${pngTotal})`;
 
-      const waterPrev = parseFloat(document.getElementById("calcWaterPrev").value) || 0;
-      const waterCurr = parseFloat(document.getElementById("calcWaterCurr").value) || 0;
-      const waterRate = parseFloat(document.getElementById("calcWaterRate").value) || 0;
+      const waterPrev = parseFloat(document.getElementById("calcWaterPrev")?.value) || 0;
+      const waterCurr = parseFloat(document.getElementById("calcWaterCurr")?.value) || 0;
+      const waterRate = parseFloat(document.getElementById("calcWaterRate")?.value) || 0;
       const waterUnits = waterCurr > waterPrev ? (waterCurr - waterPrev) : 0;
-      const waterTotal = waterUnits * waterRate;
-      document.getElementById("calcWaterSummary").innerText = `${waterUnits} U (₹${waterTotal})`;
+      const waterTotal = Math.round(waterUnits * waterRate * 100) / 100;
+      const waterSummary = document.getElementById("calcWaterSummary");
+      if (waterSummary) waterSummary.innerText = `${waterUnits} U (₹${waterTotal})`;
 
-      const addToggle = document.getElementById("calcAddToggle").value;
-      const addAmt = parseFloat(document.getElementById("calcAddAmount").value) || 0;
+      const addToggle = document.getElementById("calcAddToggle")?.value || "+";
+      const addAmt = parseFloat(document.getElementById("calcAddAmount")?.value) || 0;
       const addCalculated = addToggle === "+" ? addAmt : -addAmt;
-      document.getElementById("calcAddSummary").innerText = `₹ ${addCalculated}`;
+      const addSummary = document.getElementById("calcAddSummary");
+      if (addSummary) addSummary.innerText = `₹ ${addCalculated}`;
 
-      const prevCarry = parseFloat(document.getElementById("calcPrevCarryBalance").value) || 0;
+      const prevCarry = parseFloat(document.getElementById("calcPrevCarryBalance")?.value) || 0;
       const carryTypeBadge = document.getElementById("calcCarryTypeBadge");
       const carryAmtBadge = document.getElementById("calcCarryAmountBadge");
       const carryHint = document.getElementById("carryForwardHint");
 
       if (prevCarry > 0) {
-        carryTypeBadge.innerText = "Pending Due (+)";
-        carryTypeBadge.style.color = "var(--accent-red)";
-        carryAmtBadge.innerText = `+ ₹ ${prevCarry.toFixed(0)}`;
-        carryAmtBadge.style.color = "var(--accent-red)";
-        carryHint.innerText = `Auto-added ₹${prevCarry.toFixed(0)} pending due from previous month(s)`;
-        carryHint.style.color = "var(--accent-red)";
+        if (carryTypeBadge) { carryTypeBadge.innerText = "Pending Due (+)"; carryTypeBadge.style.color = "var(--accent-red)"; }
+        if (carryAmtBadge) { carryAmtBadge.innerText = `+ ₹ ${prevCarry.toFixed(0)}`; carryAmtBadge.style.color = "var(--accent-red)"; }
+        if (carryHint) { carryHint.innerText = `Auto-added ₹${prevCarry.toFixed(0)} pending due from previous month(s)`; carryHint.style.color = "var(--accent-red)"; }
       } else if (prevCarry < 0) {
-        carryTypeBadge.innerText = "Advance Credit (-)";
-        carryTypeBadge.style.color = "var(--accent-green)";
-        carryAmtBadge.innerText = `- ₹ ${Math.abs(prevCarry).toFixed(0)}`;
-        carryAmtBadge.style.color = "var(--accent-green)";
-        carryHint.innerText = `Auto-deducted ₹${Math.abs(prevCarry).toFixed(0)} advance payment from previous month(s)`;
-        carryHint.style.color = "var(--accent-green)";
+        if (carryTypeBadge) { carryTypeBadge.innerText = "Advance Credit (-)"; carryTypeBadge.style.color = "var(--accent-green)"; }
+        if (carryAmtBadge) { carryAmtBadge.innerText = `- ₹ ${Math.abs(prevCarry).toFixed(0)}`; carryAmtBadge.style.color = "var(--accent-green)"; }
+        if (carryHint) { carryHint.innerText = `Auto-deducted ₹${Math.abs(prevCarry).toFixed(0)} advance payment from previous month(s)`; carryHint.style.color = "var(--accent-green)"; }
       } else {
-        carryTypeBadge.innerText = "Settled (₹0)";
-        carryTypeBadge.style.color = "var(--text-muted)";
-        carryAmtBadge.innerText = `₹ 0`;
-        carryAmtBadge.style.color = "var(--primary)";
-        carryHint.innerText = "No pending due or advance from prior months";
-        carryHint.style.color = "var(--text-muted)";
+        if (carryTypeBadge) { carryTypeBadge.innerText = "Settled (₹0)"; carryTypeBadge.style.color = "var(--text-muted)"; }
+        if (carryAmtBadge) { carryAmtBadge.innerText = `₹ 0`; carryAmtBadge.style.color = "var(--primary)"; }
+        if (carryHint) { carryHint.innerText = "No pending due or advance from prior months"; carryHint.style.color = "var(--text-muted)"; }
       }
 
       const rawGrand = rent + elecTotal + pngTotal + waterTotal + addCalculated + prevCarry;
       const grand = Math.max(0, rawGrand);
-      document.getElementById("calcGrandTotal").innerText = `₹ ${grand.toFixed(2)}`;
+      const grandTotalEl = document.getElementById("calcGrandTotal");
+      if (grandTotalEl) grandTotalEl.innerText = `₹ ${grand.toFixed(2)}`;
 
-      const paidNow = parseFloat(document.getElementById("calcPaidNow").value) || 0;
+      const paidNow = parseFloat(document.getElementById("calcPaidNow")?.value) || 0;
       const netClosing = rawGrand - paidNow;
       const dueBadge = document.getElementById("calcDueBadge");
-
-      if (netClosing > 0) {
-        dueBadge.innerText = `Due: ₹ ${netClosing.toFixed(0)}`;
-        dueBadge.style.color = "var(--accent-red)";
-      } else if (netClosing < 0) {
-        dueBadge.innerText = `Advance: ₹ ${Math.abs(netClosing).toFixed(0)}`;
-        dueBadge.style.color = "var(--accent-green)";
-      } else {
-        dueBadge.innerText = `Fully Paid (₹0)`;
-        dueBadge.style.color = "var(--accent-green)";
+      if (dueBadge) {
+        if (netClosing > 0) {
+          dueBadge.innerText = `Due: ₹ ${netClosing.toFixed(0)}`;
+          dueBadge.style.color = "var(--accent-red)";
+        } else if (netClosing < 0) {
+          dueBadge.innerText = `Advance: ₹ ${Math.abs(netClosing).toFixed(0)}`;
+          dueBadge.style.color = "var(--accent-green)";
+        } else {
+          dueBadge.innerText = `Fully Paid (₹0)`;
+          dueBadge.style.color = "var(--accent-green)";
+        }
       }
     }
 
@@ -18183,7 +18203,7 @@ function formatMonthLabel(rawVal) {
       }
       if (!matEl.dataset.userEdited || matEl.value === "") {
         const est = Math.round(principal * Math.pow(1 + (rate / 100), years));
-        matEl.value = est;
+        if (Number.isFinite(est) && est > 0) matEl.value = est;
       }
     }
 
@@ -18650,10 +18670,10 @@ function formatMonthLabel(rawVal) {
 
       const remainingBalance = initialNonRentTotal - deductedExpenses;
       return {
-        initialNonRentTotal: Math.round(initialNonRentTotal),
-        outstandingNonRentPending: Math.round(outstandingNonRentPending),
-        deductedExpenses: Math.round(deductedExpenses),
-        remainingBalance: Math.round(remainingBalance)
+        initialNonRentTotal: Number.isFinite(initialNonRentTotal) ? Math.round(initialNonRentTotal) : 0,
+        outstandingNonRentPending: Number.isFinite(outstandingNonRentPending) ? Math.round(outstandingNonRentPending) : 0,
+        deductedExpenses: Number.isFinite(deductedExpenses) ? Math.round(deductedExpenses) : 0,
+        remainingBalance: Number.isFinite(remainingBalance) ? Math.round(remainingBalance) : 0
       };
     }
 
@@ -22758,6 +22778,24 @@ function formatMonthLabel(rawVal) {
       const w = document.getElementById("modularLiveChatWidget");
       if (w) w.style.display = "none";
     }
-  </script>
+      function closeModularAiWidget() {
+      const w = document.getElementById("modularAiWidget");
+      if (w) w.style.display = "none";
+    }
+    function openModularAiWidget() {
+      const w = document.getElementById("modularAiWidget");
+      if (w) {
+        w.classList.remove("minimized");
+        w.style.display = "flex";
+      }
+    }
+    if (typeof window !== "undefined") {
+      window._disabledOldTab = function(id) { if (typeof openEditLeftRenterModal === "function") openEditLeftRenterModal(id); };
+      window.closeModularAiWidget = closeModularAiWidget;
+      window.openModularAiWidget = openModularAiWidget;
+    }
+</script>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>
