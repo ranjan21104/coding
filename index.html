@@ -2773,8 +2773,9 @@
 
   /* Requirement 1, 8 & 9: Clean Standard Dashboard Theme (Colorful Theme Removed), Icon-Only Header Buttons & White Outline-Only FD Modal */
   
-  /* REQUIREMENT 1: Unified 42px Outline-Box Buttons for Live Chat, FD, Khet, Kharch, Plus (+), Profile, Settings & Logout */
+  /* REQUIREMENT 1 & 2: Unified 42px Outline-Box Buttons for Live Chat, Help Center, FD, Khet, Kharch, Plus (+), Profile, Settings & Logout */
   .live-chat-icon-only-btn,
+  .help-center-icon-only-btn,
   .fd-icon-only-btn,
   .khet-icon-only-btn,
   .kharch-icon-only-btn,
@@ -2786,6 +2787,7 @@
     height: 42px !important;
     min-width: 42px !important;
     min-height: 42px !important;
+    max-width: 42px !important;
     padding: 0 !important;
     border-radius: 12px !important;
     display: inline-flex !important;
@@ -2799,6 +2801,7 @@
     position: relative !important;
   }
   .live-chat-icon-only-btn:hover,
+  .help-center-icon-only-btn:hover,
   .fd-icon-only-btn:hover,
   .khet-icon-only-btn:hover,
   .kharch-icon-only-btn:hover,
@@ -2817,6 +2820,14 @@
   .live-chat-icon-only-btn:hover {
     border-color: #10b981 !important;
     box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35) !important;
+  }
+  .help-center-icon-only-btn {
+    border-color: rgba(56, 189, 248, 0.5) !important;
+    background: linear-gradient(135deg, rgba(2, 132, 199, 0.22) 0%, var(--bg-input) 100%) !important;
+  }
+  .help-center-icon-only-btn:hover {
+    border-color: #38bdf8 !important;
+    box-shadow: 0 6px 16px rgba(56, 189, 248, 0.35) !important;
   }
   .plus-icon-box-btn {
     border-color: rgba(56, 189, 248, 0.45) !important;
@@ -2892,58 +2903,225 @@
     border-color: #38bdf8 !important;
   }
 
-  /* Enhanced Appealing Homepage & Renter Portal Re-Entry Styling */
+  /* Minimized Live Chat Widget Fix */
+  .modular-floating-widget.minimized #chatDirectoryView,
+  .modular-floating-widget.minimized #chatConversationView {
+    display: none !important;
+  }
+
+  /* Requirement 6: Completely hide Live Portfolio Overview strip */
+  .home-welcome-hero-strip,
+  #homeWelcomeHeroStrip {
+    display: none !important;
+  }
+
+  /* Requirement 3: Upgraded Modern & Clean Renter Portal Interface */
   @keyframes homePortalEntryFade {
     0% { opacity: 0; transform: translateY(10px); }
     100% { opacity: 1; transform: translateY(0); }
   }
-  #dashboardScreen.active .home-welcome-hero-strip,
   #dashboardScreen.active .properties-bar,
   #dashboardScreen.active .flats-container,
-  #dashboardScreen.active .renter-two-box-layout {
+  #dashboardScreen.active .renter-modern-portal {
     animation: homePortalEntryFade 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
-  .home-welcome-hero-strip {
-    max-width: 1280px;
-    margin: 14px auto 4px auto;
-    padding: 0 18px;
+  .renter-modern-portal {
+    max-width: 1240px;
+    margin: 18px auto 36px auto;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 0 4px;
   }
-  .home-welcome-hero-card {
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(30, 27, 75, 0.84) 50%, rgba(15, 23, 42, 0.9) 100%);
-    border: 1.5px solid rgba(129, 140, 248, 0.42);
-    border-radius: 18px;
-    padding: 16px 22px;
+  .renter-hero-banner {
+    position: relative;
+    overflow: hidden;
+    border-radius: 22px;
+    padding: 24px 28px;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 27, 75, 0.9) 55%, rgba(15, 23, 42, 0.96) 100%);
+    border: 1.5px solid rgba(129, 140, 248, 0.38);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  body.theme-white .renter-hero-banner {
+    background: linear-gradient(135deg, #ffffff 0%, #f5f7ff 55%, #f0f9ff 100%);
+    border-color: rgba(99, 102, 241, 0.32);
+    box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08), inset 0 1px 0 #ffffff;
+  }
+  .renter-hero-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
+    gap: 18px;
+  }
+  .renter-hero-identity {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+  }
+  .renter-hero-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 2px solid rgba(129, 140, 248, 0.65);
+    background: linear-gradient(135deg, #4f46e5, #06b6d4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 900;
+    flex-shrink: 0;
+    box-shadow: 0 10px 24px rgba(79, 70, 229, 0.35);
+  }
+  .renter-hero-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .renter-meta-chips {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .renter-meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 10px;
+    font-size: 0.76rem;
+    font-weight: 800;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--glass-border);
+    color: var(--text-main);
+  }
+  body.theme-white .renter-meta-chip {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    color: #0f172a;
+  }
+  .renter-hero-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .renter-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 18px;
+    border-radius: 12px;
+    font-size: 0.84rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1.5px solid transparent;
+    color: #ffffff;
+  }
+  .renter-action-btn:hover {
+    transform: translateY(-2px);
+  }
+  .renter-action-btn.primary {
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+  }
+  .renter-action-btn.secondary {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+  }
+  .renter-action-btn.outline {
+    background: var(--bg-input);
+    border-color: var(--glass-border);
+    color: var(--text-main);
+  }
+  .renter-action-btn.outline:hover {
+    border-color: #38bdf8;
+  }
+  .renter-kpi-bento-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 14px;
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.14);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
   }
-  body.theme-white .home-welcome-hero-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(238, 242, 255, 0.94) 55%, rgba(240, 249, 255, 0.95) 100%);
-    border-color: rgba(99, 102, 241, 0.45);
-    box-shadow: 0 12px 28px rgba(79, 70, 229, 0.12), inset 0 1px 0 #ffffff;
+  .renter-kpi-card {
+    background: rgba(15, 23, 42, 0.88);
+    border: 1.5px solid var(--glass-border);
+    border-radius: 18px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+    transition: transform 0.2s ease, border-color 0.2s ease;
   }
-  .renter-upper-box,
-  .renter-lower-box {
-    border-radius: 18px !important;
-    transition: transform 0.22s ease, box-shadow 0.22s ease !important;
+  .renter-kpi-card:hover {
+    transform: translateY(-2px);
   }
-  body.theme-white .renter-upper-box {
-    background: linear-gradient(145deg, #ffffff 0%, #f5f3ff 100%) !important;
-    border-color: #8b5cf6 !important;
-    box-shadow: 0 16px 38px rgba(79, 70, 229, 0.14) !important;
-    color: #0f172a !important;
+  body.theme-white .renter-kpi-card {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
   }
-  body.theme-white .renter-lower-box {
-    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%) !important;
-    box-shadow: 0 16px 38px rgba(15, 23, 42, 0.12) !important;
-    color: #0f172a !important;
+  .renter-main-split {
+    display: grid;
+    grid-template-columns: 1.45fr 1fr;
+    gap: 18px;
+    align-items: start;
   }
+  @media (max-width: 960px) {
+    .renter-main-split {
+      grid-template-columns: 1fr;
+    }
+  }
+  .renter-statement-card,
+  .renter-payment-card,
+  .renter-recent-bills-card {
+    background: rgba(15, 23, 42, 0.92);
+    border: 1.5px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 22px 24px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.34);
+  }
+  body.theme-white .renter-statement-card,
+  body.theme-white .renter-payment-card,
+  body.theme-white .renter-recent-bills-card {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+  }
+  .renter-utility-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin: 14px 0;
+  }
+  .renter-utility-item {
+    background: var(--bg-input);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  body.theme-white .renter-utility-item {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+  }
+
 
   /* Requirement 9: White Background for FD Modal in Light Theme & Outline-Only Inner Boxes */
   body.theme-white #fdModal .modal-window {
@@ -4984,9 +5162,9 @@
             <i class="fa-solid fa-comments" style="color:#34d399; font-size:1.05rem;"></i>
             <span id="renterNavChatBadge" class="notification-badge-dot" style="display:none;">0</span>
           </button>
-          <!-- Top Dashboard Help Center Button -->
-          <button type="button" id="btnRenterNavHelpCenter" class="nav-btn" style="width:auto !important; min-width:auto !important; max-width:none !important; padding:0 12px !important; gap:6px; font-weight:800; font-size:0.78rem; background:linear-gradient(135deg, rgba(2,132,199,0.25), rgba(3,105,161,0.2)); border:1.5px solid #0284c7; color:var(--text-main); display:inline-flex;" onclick="openContactUsModal()" title="24/7 Help Center & Contact Us">
-            <i class="fa-solid fa-headset" style="color:#38bdf8;"></i> <span>Help Center</span>
+          <!-- Top Dashboard Help Center Button (Icon Only per Requirement 2) -->
+          <button type="button" id="btnRenterNavHelpCenter" class="nav-btn help-center-icon-only-btn" onclick="openContactUsModal()" title="24/7 Help Center & Contact Us" aria-label="24/7 Help Center & Contact Us">
+            <i class="fa-solid fa-headset" style="color:#38bdf8; font-size:1.05rem;"></i>
           </button>
           <!-- 1. Fixed Deposit (FD) Box Button -->
           <button type="button" class="nav-btn fd-icon-only-btn" onclick="openFdModal()" title="Fixed Deposit (FD) &amp; Savings Portfolio" aria-label="Fixed Deposit (FD)">
@@ -5040,9 +5218,6 @@
         </div>
       </div>
     </header>
-
-    <!-- Appealing Homepage Welcome & Live Overview Strip (Bug 4) -->
-    <section id="homeWelcomeHeroStrip" class="home-welcome-hero-strip"></section>
 
     <!-- Centered Horizontal Scrollable Properties -->
     <section class="properties-bar">
@@ -5113,7 +5288,7 @@
       <div style="padding:10px 12px; border-bottom:1px solid var(--glass-border); background:var(--bg-input); flex-shrink:0;">
         <div style="position:relative;">
           <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:0.75rem;"></i>
-          <input type="text" id="chatSearchInput" class="form-control" style="padding:7px 12px 7px 32px; font-size:0.76rem;" placeholder="Search renters or registered users..." oninput="filterChatDirectory(this.value)">
+          <input type="text" id="chatSearchInput" class="form-control" style="padding:7px 12px 7px 32px; font-size:0.76rem;" placeholder="Search..." oninput="filterChatDirectory(this.value)">
         </div>
       </div>
       <!-- Directory Roster Items List -->
@@ -5125,8 +5300,8 @@
       <!-- Conversation Header Bar with [← Back to List] and Active Partner Info -->
       <div style="padding:8px 12px; border-bottom:1px solid var(--glass-border); background:var(--bg-input); display:flex; align-items:center; justify-content:space-between; gap:8px; flex-shrink:0;">
         <div style="display:flex; align-items:center; gap:8px; min-width:0;">
-          <button type="button" id="btnBackToChatDirectory" class="btn-ledger-action admin-only" style="padding:5px 9px; font-size:0.72rem; color:var(--accent-cyan); display:flex; align-items:center; gap:5px; flex-shrink:0; border:1px solid rgba(6,182,212,0.4); border-radius:8px;" onclick="returnToChatDirectory()" title="Return to registered users list">
-            <i class="fa-solid fa-arrow-left"></i> <span>All Users</span>
+          <button type="button" id="btnBackToChatDirectory" class="btn-ledger-action" style="padding:5px 9px; font-size:0.72rem; color:var(--accent-cyan); display:inline-flex; align-items:center; gap:5px; flex-shrink:0; border:1px solid rgba(6,182,212,0.4); border-radius:8px;" onclick="returnToChatDirectory()" title="Return to directory">
+            <i class="fa-solid fa-arrow-left"></i> <span id="btnBackToChatDirectoryText">Back</span>
           </button>
           <div style="min-width:0;">
             <div id="activeChatPartnerName" style="font-size:0.8rem; font-weight:800; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
@@ -7795,11 +7970,11 @@
           return { status: "blocked", message: "Your account has been blocked by an administrator." };
         }
 
-        // Update single-device active session token in Firestore
-        await dbInstance.collection("users").doc(userDocId).update({
+        // Update single-device active session token in Firestore (merge: true ensures reliability for all accounts)
+        await dbInstance.collection("users").doc(userDocId).set({
           ActiveSessionToken: sessionToken,
           LastLoginAt: new Date().toISOString()
-        });
+        }, { merge: true });
 
         // Record entry in login history
         try {
@@ -7923,6 +8098,24 @@
         try {
           dbInstance.collection(colName).onSnapshot(function(snap) {
             if (!snap || snap.metadata?.hasPendingWrites) return;
+            if (colName === "users" && activeUser && activeSessionToken && !String(activeSessionToken).startsWith("SESS-LOCAL")) {
+              const lowerActive = String(activeUser).trim().toLowerCase();
+              let foundConflict = false;
+              snap.forEach(function(docItem) {
+                const uData = docItem.data() || {};
+                const uName = String(uData.Username || docItem.id || "").trim().toLowerCase();
+                if (uName === lowerActive) {
+                  const remoteTok = String(uData.ActiveSessionToken || "").trim();
+                  if (remoteTok && remoteTok !== String(activeSessionToken).trim()) {
+                    foundConflict = true;
+                  }
+                }
+              });
+              if (foundConflict && typeof triggerSingleDeviceSessionConflict === "function") {
+                triggerSingleDeviceSessionConflict();
+                return;
+              }
+            }
             if (activeUser && activeUser !== "undefined") {
               if (typeof syncDataLive === "function") syncDataLive(true);
             }
@@ -10910,12 +11103,8 @@ function formatMonthLabel(rawVal) {
       const savedTheme = localStorage.getItem("app_visual_theme") || "black";
       applyVisualTheme(savedTheme);
 
-      // Strictly purge all legacy local DB & credential caches so deleted Firebase Firestore records or User IDs NEVER reappear
+      // Purge legacy local DB & credential caches so Firebase Firestore is always the single source of truth for data
       try {
-        sessionStorage.clear();
-        localStorage.removeItem("active_session_user");
-        localStorage.removeItem("active_session_role");
-        localStorage.removeItem("active_session_token");
         localStorage.removeItem("portal_full_db_backup");
         localStorage.removeItem("portal_verified_auth_map");
         localStorage.removeItem("portal_fd_records_v1");
@@ -10924,11 +11113,7 @@ function formatMonthLabel(rawVal) {
         localStorage.removeItem("portal_flat_utility_meta_v1");
       } catch (e) {}
 
-      // Requirement 2 & Bug 6: Always require ID and password when opening, reloading, or navigating via browser history
-      selectedProperty = null;
-      forceLockToLoginScreenForHistorySecurity(true);
-
-      // Requirement 1: Listen for concurrent login in another tab/window on the same browser immediately
+      // Requirement 7: Listen for concurrent login in another tab/window on the same browser immediately
       window.addEventListener("storage", (ev) => {
         if (!activeUser || !activeSessionToken) return;
         const expectedKey = "portal_device_session_" + String(activeUser).trim().toLowerCase();
@@ -10937,26 +11122,106 @@ function formatMonthLabel(rawVal) {
         }
       });
 
-      // Bug 6: Even if someone tries to open the site from browser history (Back/Forward/bfcache), prompt for ID & Password
+      // Requirement 5: When a user clicks the refresh button on any browser, stay logged in and fetch fresh data
+      const restoredSession = restoreSavedActiveSession();
+      if (restoredSession && restoredSession.username) {
+        activeUser = restoredSession.username;
+        activeRole = restoredSession.role || "Admin";
+        activeUserFullName = restoredSession.fullName || restoredSession.username;
+        activeUserMobile = restoredSession.mobile || "";
+        activeAssignedProperty = restoredSession.assignedProperty || "";
+        activeAssignedFlat = restoredSession.assignedFlat || "";
+        activeAssignedAadhaar = restoredSession.assignedAadhaar || "";
+        activeSessionToken = restoredSession.sessionToken || "";
+        selectedProperty = restoredSession.selectedProperty || null;
+
+        applyRolePermissions(activeRole);
+        unlockDashboardInstant(false);
+      } else {
+        selectedProperty = null;
+        forceLockToLoginScreenForHistorySecurity(true);
+        prewarmServerInBackground();
+      }
+
+      // If page is restored from bfcache after logout, keep locked; if logged in, fetch fresh data
       window.addEventListener("pageshow", (event) => {
-        const navEntries = (window.performance && typeof window.performance.getEntriesByType === "function")
-          ? window.performance.getEntriesByType("navigation")
-          : [];
-        const navType = navEntries.length > 0 ? navEntries[0].type : "";
-        if (event.persisted || navType === "back_forward" || !activeUser) {
+        const currentSaved = restoreSavedActiveSession();
+        if (!currentSaved || !currentSaved.username) {
           forceLockToLoginScreenForHistorySecurity(true);
+        } else if (event.persisted && activeUser) {
+          syncDataLive(true);
         }
       });
-
-      window.addEventListener("popstate", () => {
-        if (activeUser || document.getElementById("dashboardScreen")?.classList.contains("active")) {
-          forceLockToLoginScreenForHistorySecurity(false);
-          triggerSideToast("Authentication Required", "Please enter your Username and Password to access the portal.", false);
-        }
-      });
-
-      prewarmServerInBackground();
     });
+
+    function persistActiveAuthSession() {
+      if (!activeUser) return;
+      try {
+        sessionStorage.setItem("active_session_user", activeUser);
+        sessionStorage.setItem("active_session_fullname", activeUserFullName || activeUser);
+        sessionStorage.setItem("active_session_mobile", activeUserMobile || "");
+        sessionStorage.setItem("active_session_role", activeRole || "Admin");
+        sessionStorage.setItem("active_session_assigned_prop", activeAssignedProperty || "");
+        sessionStorage.setItem("active_session_assigned_flat", activeAssignedFlat || "");
+        sessionStorage.setItem("active_session_assigned_aadhaar", activeAssignedAadhaar || "");
+        sessionStorage.setItem("active_session_token", activeSessionToken || "");
+        const sessionPayload = {
+          username: activeUser,
+          fullName: activeUserFullName || activeUser,
+          mobile: activeUserMobile || "",
+          role: activeRole || "Admin",
+          assignedProperty: activeAssignedProperty || "",
+          assignedFlat: activeAssignedFlat || "",
+          assignedAadhaar: activeAssignedAadhaar || "",
+          sessionToken: activeSessionToken || "",
+          selectedProperty: selectedProperty || "",
+          updatedAt: Date.now()
+        };
+        localStorage.setItem("portal_active_auth_session_v1", JSON.stringify(sessionPayload));
+      } catch (e) {}
+    }
+
+    function restoreSavedActiveSession() {
+      try {
+        const sUser = sessionStorage.getItem("active_session_user");
+        const sToken = sessionStorage.getItem("active_session_token");
+        if (sUser) {
+          return {
+            username: sUser,
+            fullName: sessionStorage.getItem("active_session_fullname") || sUser,
+            mobile: sessionStorage.getItem("active_session_mobile") || "",
+            role: sessionStorage.getItem("active_session_role") || "Admin",
+            assignedProperty: sessionStorage.getItem("active_session_assigned_prop") || "",
+            assignedFlat: sessionStorage.getItem("active_session_assigned_flat") || "",
+            assignedAadhaar: sessionStorage.getItem("active_session_assigned_aadhaar") || "",
+            sessionToken: sToken || "",
+            selectedProperty: sessionStorage.getItem("active_selected_property") || null
+          };
+        }
+        const rawLocal = localStorage.getItem("portal_active_auth_session_v1");
+        if (rawLocal) {
+          const parsed = JSON.parse(rawLocal);
+          if (parsed && parsed.username) {
+            // Verify token has not been superseded by another tab on the same browser
+            const deviceKey = "portal_device_session_" + String(parsed.username).trim().toLowerCase();
+            const latestDeviceTok = localStorage.getItem(deviceKey);
+            if (latestDeviceTok && parsed.sessionToken && latestDeviceTok !== parsed.sessionToken) {
+              return null;
+            }
+            sessionStorage.setItem("active_session_user", parsed.username);
+            sessionStorage.setItem("active_session_fullname", parsed.fullName || parsed.username);
+            sessionStorage.setItem("active_session_mobile", parsed.mobile || "");
+            sessionStorage.setItem("active_session_role", parsed.role || "Admin");
+            sessionStorage.setItem("active_session_assigned_prop", parsed.assignedProperty || "");
+            sessionStorage.setItem("active_session_assigned_flat", parsed.assignedFlat || "");
+            sessionStorage.setItem("active_session_assigned_aadhaar", parsed.assignedAadhaar || "");
+            sessionStorage.setItem("active_session_token", parsed.sessionToken || "");
+            return parsed;
+          }
+        }
+      } catch (e) {}
+      return null;
+    }
 
     function forceLockToLoginScreenForHistorySecurity(silent = true) {
       activeUser = null;
@@ -10977,6 +11242,7 @@ function formatMonthLabel(rawVal) {
         localStorage.removeItem("active_session_user");
         localStorage.removeItem("active_session_role");
         localStorage.removeItem("active_session_token");
+        localStorage.removeItem("portal_active_auth_session_v1");
       } catch (e) {}
 
       if (syncTimer) {
@@ -11080,13 +11346,14 @@ function formatMonthLabel(rawVal) {
 
     let hasAutoOpenedViewerFlatOnce = false;
 
-    // Requirement 6: Helper functions for strict Aadhaar-linked Renter isolation
+    // Requirement 1 & 6: Helper functions for strict individual Renter data isolation
     function getNormalizedActiveRenterAadhaar() {
       let aadh = String(activeAssignedAadhaar || "").replace(/\D/g, "").slice(0, 12);
       if (!aadh && activeUser) {
         const matchedU = (DB.users || []).find(u => String(u.Username || "").trim().toLowerCase() === String(activeUser).trim().toLowerCase());
-        if (matchedU && matchedU.AssignedAadhaar) {
-          aadh = String(matchedU.AssignedAadhaar).replace(/\D/g, "").slice(0, 12);
+        const rawUserAadh = matchedU?.AssignedAadhaar || matchedU?.AadhaarNumber || "";
+        if (rawUserAadh) {
+          aadh = String(rawUserAadh).replace(/\D/g, "").slice(0, 12);
           activeAssignedAadhaar = aadh;
         }
       }
@@ -11095,18 +11362,38 @@ function formatMonthLabel(rawVal) {
 
     function getRenterProfilesForLoggedInAadhaar() {
       const aadh = getNormalizedActiveRenterAadhaar();
-      if (!aadh) return [];
-      return (DB.renters || []).filter(r => {
-        const rAadh = String(r.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
-        return rAadh && rAadh === aadh;
-      });
+      if (aadh) {
+        const byAadh = (DB.renters || []).filter(r => {
+          const rAadh = String(r.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
+          return rAadh && rAadh === aadh;
+        });
+        if (byAadh.length > 0) return byAadh;
+      }
+      // Fallback for individual renter account assigned by Property + Flat or FullName
+      const matchedU = activeUser
+        ? (DB.users || []).find(u => String(u.Username || "").trim().toLowerCase() === String(activeUser).trim().toLowerCase())
+        : null;
+      const prop = String(activeAssignedProperty || matchedU?.AssignedProperty || "").trim();
+      const flat = String(activeAssignedFlat || matchedU?.AssignedFlat || "").trim();
+      const uFullName = String(activeUserFullName || matchedU?.FullName || "").trim().toLowerCase();
+
+      if (prop && flat && prop.toUpperCase() !== "ALL") {
+        const flatRenters = (DB.renters || []).filter(r => isSamePropAndFlat(r.PropertyName, r.FlatName, prop, flat));
+        if (uFullName) {
+          const exactNameMatches = flatRenters.filter(r => String(r.RenterName || "").trim().toLowerCase() === uFullName);
+          if (exactNameMatches.length > 0) return exactNameMatches;
+        }
+        const activeInFlat = flatRenters.filter(r => String(r.Status || "").trim().toLowerCase() === "active");
+        if (activeInFlat.length > 0) return [activeInFlat[0]];
+      }
+      return [];
     }
 
     function isBillLinkedToLoggedInRenterAadhaar(bill) {
       if (activeRole !== "Renter") return true;
-      const aadh = getNormalizedActiveRenterAadhaar();
+      if (!bill) return false;
       const matchedProfiles = getRenterProfilesForLoggedInAadhaar();
-      if (!aadh || matchedProfiles.length === 0) return false;
+      if (matchedProfiles.length === 0) return false;
 
       const allowedIds = new Set(matchedProfiles.map(r => String(r.RenterID || "").trim()).filter(Boolean));
       const billRenterId = String(bill.RenterID || "").trim();
@@ -11114,7 +11401,7 @@ function formatMonthLabel(rawVal) {
         return allowedIds.has(billRenterId);
       }
 
-      // Fallback when older bill has no RenterID: match by TenantName + Property + Flat of that Aadhaar holder
+      // Fallback when older bill has no RenterID: strictly match TenantName + Property + Flat of that individual renter
       const bTenant = String(bill.TenantName || "").trim().toLowerCase();
       return matchedProfiles.some(r =>
         String(r.RenterName || "").trim().toLowerCase() === bTenant &&
@@ -11131,8 +11418,8 @@ function formatMonthLabel(rawVal) {
         if (matchedU) {
           if (!prop) prop = String(matchedU.AssignedProperty || "").trim();
           if (!flat) flat = String(matchedU.AssignedFlat || "").trim();
-          if (!activeAssignedAadhaar && matchedU.AssignedAadhaar) {
-            activeAssignedAadhaar = String(matchedU.AssignedAadhaar).replace(/\D/g, "").slice(0, 12);
+          if (!activeAssignedAadhaar && (matchedU.AssignedAadhaar || matchedU.AadhaarNumber)) {
+            activeAssignedAadhaar = String(matchedU.AssignedAadhaar || matchedU.AadhaarNumber).replace(/\D/g, "").slice(0, 12);
           }
           activeAssignedProperty = prop;
           activeAssignedFlat = flat;
@@ -11171,7 +11458,7 @@ function formatMonthLabel(rawVal) {
       return String(viewerScope.prop || "").trim().toLowerCase() === target;
     }
 
-    // Bug 5 Helper: Get current calendar month in YYYY-MM format and compute strictly current month's standalone Advance & Due
+    // Requirement 1 & Bug 5 Helper: Get current active month in YYYY-MM format and compute strictly that month's standalone Advance or Due
     function getCurrentCalendarYearMonth() {
       const now = new Date();
       return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
@@ -11191,18 +11478,8 @@ function formatMonthLabel(rawVal) {
           dueAmt: 0
         };
       }
-      const billYM = typeof normalizeMonthYear === "function" ? normalizeMonthYear(billObj.MonthYear || billObj.BillDate) : "";
-      if (billYM !== currentYM) {
-        return {
-          isCurrentMonth: false,
-          monthYear: currentYM,
-          monthLabel: currentMonthLabel,
-          standaloneCharge: 0,
-          paidAmount: 0,
-          advanceAmt: 0,
-          dueAmt: 0
-        };
-      }
+      const billYM = (typeof normalizeMonthYear === "function" ? normalizeMonthYear(billObj.MonthYear || billObj.BillDate) : "") || currentYM;
+      const activeMonthLabel = typeof formatMonthLabel === "function" ? formatMonthLabel(billYM) : billYM;
 
       const baseRent = parseFloat(billObj.BaseRent) || 0;
       const elecTot = parseFloat(billObj.ElecTotal) || 0;
@@ -11229,8 +11506,8 @@ function formatMonthLabel(rawVal) {
 
       return {
         isCurrentMonth: true,
-        monthYear: currentYM,
-        monthLabel: currentMonthLabel,
+        monthYear: billYM,
+        monthLabel: activeMonthLabel,
         standaloneCharge: Math.round(standaloneCharge),
         paidAmount: Math.round(paidAmount),
         advanceAmt,
@@ -11238,7 +11515,7 @@ function formatMonthLabel(rawVal) {
       };
     }
 
-    // Bug 5: Top Dashboard "Advance" and "Due" for Renter (strictly current calendar month only, showing exact Advance and Due)
+    // Requirement 1: Top Dashboard for Renter displays ONLY the Advance or Due status for the current active month (individual renter data only)
     function updateRenterTopDashboardBalance(currentMonthBillObj) {
       const pnlTracker = document.querySelector(".pnl-tracker");
       if (!pnlTracker) return;
@@ -11247,20 +11524,36 @@ function formatMonthLabel(rawVal) {
       const advanceAmt = metrics.advanceAmt;
       const dueAmt = metrics.dueAmt;
 
-      pnlTracker.innerHTML = `
-        <div class="renter-pnl-balanced" title="Current Month (${metrics.monthLabel}) Advance and Due Details">
-          <span style="font-size:0.7rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.35); padding:3px 8px; border-radius:6px; white-space:nowrap;">
-            <i class="fa-regular fa-calendar-check"></i> ${metrics.monthLabel}
-          </span>
-          <div class="renter-pnl-pill renter-pnl-advance" style="color:var(--accent-green); background:rgba(16,185,129,0.12); border-radius:6px;">
+      let statusPillHtml = "";
+      if (advanceAmt > 0) {
+        statusPillHtml = `
+          <div class="renter-pnl-pill renter-pnl-advance" style="color:#34d399; background:rgba(16,185,129,0.14); border:1px solid rgba(16,185,129,0.4); padding:4px 10px; border-radius:8px; display:inline-flex; align-items:center; gap:6px;">
             <i class="fa-solid fa-arrow-up-right-dots"></i>
             <span>Advance: <strong>₹${advanceAmt.toLocaleString("en-IN")}</strong></span>
           </div>
-          <div style="width:1px; height:16px; background:var(--glass-border);"></div>
-          <div class="renter-pnl-pill ${dueAmt > 0 ? 'renter-pnl-loss' : 'renter-pnl-settled'}" style="border-radius:6px;">
-            <i class="fa-solid ${dueAmt > 0 ? 'fa-triangle-exclamation' : 'fa-circle-check'}"></i>
+        `;
+      } else if (dueAmt > 0) {
+        statusPillHtml = `
+          <div class="renter-pnl-pill renter-pnl-loss" style="color:#f87171; background:rgba(239,68,68,0.14); border:1px solid rgba(239,68,68,0.45); padding:4px 10px; border-radius:8px; display:inline-flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-triangle-exclamation"></i>
             <span>Due: <strong>₹${dueAmt.toLocaleString("en-IN")}</strong></span>
           </div>
+        `;
+      } else {
+        statusPillHtml = `
+          <div class="renter-pnl-pill renter-pnl-settled" style="color:#34d399; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.35); padding:4px 10px; border-radius:8px; display:inline-flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>Due: <strong>₹0</strong></span>
+          </div>
+        `;
+      }
+
+      pnlTracker.innerHTML = `
+        <div class="renter-pnl-balanced" style="display:inline-flex; align-items:center; gap:8px;" title="Current Active Month (${metrics.monthLabel}) Status">
+          <span style="font-size:0.7rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.35); padding:4px 9px; border-radius:8px; white-space:nowrap;">
+            <i class="fa-regular fa-calendar-check"></i> ${metrics.monthLabel}
+          </span>
+          ${statusPillHtml}
         </div>
       `;
       pnlTracker.style.display = "flex";
@@ -11746,59 +12039,13 @@ function formatMonthLabel(rawVal) {
       }
     }
 
-    // Bug 4: Render an Appealing Homepage Welcome & Live Overview Strip when entering/re-entering the homepage
+    // Requirement 6: Remove 'Live Portfolio Overview' section completely
     function renderHomeWelcomeHeroStrip() {
       const strip = document.getElementById("homeWelcomeHeroStrip");
-      if (!strip) return;
-      const currentYM = getCurrentCalendarYearMonth();
-      const currentMonthLabel = typeof formatMonthLabel === "function" ? formatMonthLabel(currentYM) : currentYM;
-      const displayName = activeUserFullName || activeUser || "Administrator";
-
-      if (activeRole === "Renter") {
+      if (strip) {
         strip.style.display = "none";
         strip.innerHTML = "";
-        return;
       }
-
-      strip.style.display = "block";
-      const totalProps = (DB.properties || []).length;
-      const totalFlats = (DB.flats || []).length;
-      const activeRenters = (DB.renters || []).filter(r => String(r.Status || "").trim().toLowerCase() === "active").length;
-
-      strip.innerHTML = `
-        <div class="home-welcome-hero-card">
-          <div style="display:flex; align-items:center; gap:14px;">
-            <div style="width:46px; height:46px; border-radius:14px; background:linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%); color:#ffffff; display:flex; align-items:center; justify-content:center; font-size:1.25rem; box-shadow:0 8px 20px rgba(79,70,229,0.38); flex-shrink:0;">
-              <i class="fa-solid fa-building-shield"></i>
-            </div>
-            <div>
-              <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#38bdf8;">
-                <i class="fa-regular fa-calendar-check"></i> ${currentMonthLabel} • Live Portfolio Overview
-              </div>
-              <h3 style="margin:2px 0 0 0; font-size:1.12rem; font-weight:800; color:var(--text-main);">
-                Welcome back, ${displayName}
-              </h3>
-              <p style="margin:2px 0 0 0; font-size:0.76rem; color:var(--text-muted);">
-                ${selectedProperty ? `Viewing flats in <strong>${selectedProperty}</strong> (Tap property card again to collapse)` : `Select any property card below to inspect its flats, utility billing, and tenant ledgers.`}
-              </p>
-            </div>
-          </div>
-          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-            <div style="background:rgba(99,102,241,0.14); border:1px solid rgba(129,140,248,0.4); padding:7px 13px; border-radius:11px; font-size:0.76rem; font-weight:800; color:var(--text-main); display:inline-flex; align-items:center; gap:6px;">
-              <i class="fa-solid fa-hotel" style="color:#818cf8;"></i>
-              <span>Properties: <strong>${totalProps}</strong></span>
-            </div>
-            <div style="background:rgba(14,165,233,0.14); border:1px solid rgba(56,189,248,0.4); padding:7px 13px; border-radius:11px; font-size:0.76rem; font-weight:800; color:var(--text-main); display:inline-flex; align-items:center; gap:6px;">
-              <i class="fa-solid fa-door-open" style="color:#38bdf8;"></i>
-              <span>Flats: <strong>${totalFlats}</strong></span>
-            </div>
-            <div style="background:rgba(16,185,129,0.14); border:1px solid rgba(52,211,153,0.4); padding:7px 13px; border-radius:11px; font-size:0.76rem; font-weight:800; color:var(--text-main); display:inline-flex; align-items:center; gap:6px;">
-              <i class="fa-solid fa-user-check" style="color:#34d399;"></i>
-              <span>Active Tenants: <strong>${activeRenters}</strong></span>
-            </div>
-          </div>
-        </div>
-      `;
     }
 
     function renderAllDashboardUI() {
@@ -11816,16 +12063,27 @@ function formatMonthLabel(rawVal) {
         const primaryRenter = matchedProfiles.find(r => String(r.Status || "").toLowerCase() === "active") || matchedProfiles[0] || null;
 
         if (!renterAadhaar || !primaryRenter) {
+          updateRenterTopDashboardBalance(null);
           if (flatsContainer) {
+            flatsContainer.style.display = "";
             flatsContainer.innerHTML = `
-              <div class="empty-flats-prompt" style="border:1.5px solid rgba(192,132,252,0.55); border-radius:16px; max-width:840px; margin:20px auto;">
-                <i class="fa-solid fa-id-card-clip" style="color:#c084fc;"></i>
-                <h3>No Renter Profile Linked to Your Aadhaar Card</h3>
-                <p>Your Renter account ${renterAadhaar ? `(Aadhaar: ${renterAadhaar})` : ""} does not match any tenant Aadhaar record yet. Please ask the Admin to link your 12-digit Aadhaar number in Settings.</p>
-                <div style="margin-top:14px;">
-                  <button type="button" class="btn-primary" style="width:auto; padding:8px 18px; margin:0 auto; border-radius:10px;" onclick="handleLogout(true)">
-                    <i class="fa-solid fa-right-from-bracket"></i> Switch Account / Log in as Admin
-                  </button>
+              <div class="renter-modern-portal">
+                <div class="renter-hero-banner" style="text-align:center; padding:38px 26px;">
+                  <div style="width:68px; height:68px; border-radius:20px; background:rgba(99,102,241,0.16); border:1.5px solid rgba(129,140,248,0.45); display:flex; align-items:center; justify-content:center; margin:0 auto 16px auto; font-size:1.85rem; color:#818cf8;">
+                    <i class="fa-solid fa-id-card-clip"></i>
+                  </div>
+                  <h3 style="font-size:1.35rem; font-weight:900; color:var(--text-main); margin:0 0 8px 0;">No Renter Profile Linked to Your Account Yet</h3>
+                  <p style="font-size:0.88rem; color:var(--text-muted); max-width:560px; margin:0 auto 20px auto; line-height:1.6;">
+                    Your Renter account ${renterAadhaar ? `(Aadhaar: <strong>${formatAadhaarWithHyphens(renterAadhaar)}</strong>)` : ""} is isolated to your personal residency record. Please ask your Administrator to link your 12-digit Aadhaar number or flat assignment in Settings.
+                  </p>
+                  <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+                    <button type="button" class="renter-action-btn primary" onclick="openModularLiveChatWidget()">
+                      <i class="fa-solid fa-comments"></i> Message Admin Support
+                    </button>
+                    <button type="button" class="renter-action-btn secondary" onclick="handleLogout(true)">
+                      <i class="fa-solid fa-right-from-bracket"></i> Switch Account
+                    </button>
+                  </div>
                 </div>
               </div>
             `;
@@ -11848,7 +12106,7 @@ function formatMonthLabel(rawVal) {
         selectedFlat = assignedFlatObj;
         activeFlatRenterObj = primaryRenter;
 
-        // All bills belonging to this tenant's Aadhaar
+        // Requirement 1: Strictly filter ONLY bills belonging to this logged-in renter
         const myBills = (DB.bills || []).filter(b => isBillLinkedToLoggedInRenterAadhaar(b));
         // Sort strictly newest first (latest month first)
         myBills.sort((a, b) => {
@@ -11858,23 +12116,44 @@ function formatMonthLabel(rawVal) {
           return (new Date(b.BillDate || b.PaymentDate || 0).getTime()) - (new Date(a.BillDate || a.PaymentDate || 0).getTime());
         });
 
-        // Bug 5: Strictly match ONLY the current calendar month's bill for Advance and Due details
+        // Requirement 1: Resolve the current active month's bill for this individual renter
         const currentCalendarYM = getCurrentCalendarYearMonth();
-        const currentCalendarMonthLabel = formatMonthLabel(currentCalendarYM);
-        const currentMonthBill = myBills.find(b => normalizeMonthYear(b.MonthYear || b.BillDate) === currentCalendarYM) || null;
+        const currentMonthBill = myBills.find(b => normalizeMonthYear(b.MonthYear || b.BillDate) === currentCalendarYM) || myBills[0] || null;
         const currentMonthMetrics = computeCurrentMonthStandaloneAdvanceAndDue(currentMonthBill);
+        const activeMonthLabel = currentMonthMetrics.monthLabel;
 
-        // Update Top Dashboard Header with "Advance" and "Due" strictly for the current month only
+        // Update Top Dashboard Header to show ONLY Advance or Due status for the current active month
         updateRenterTopDashboardBalance(currentMonthBill);
 
         const safePropArg = String(targetProp).replace(/'/g, "\\'");
         const safeFlatArg = String(targetFlat).replace(/'/g, "\\'");
-        const renterNameDisplay = primaryRenter.RenterName || activeUserFullName || "Valued Renter";
+        const renterNameDisplay = primaryRenter.RenterName || activeUserFullName || "Valued Resident";
+        const avatarInitials = String(renterNameDisplay || "R").trim().split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase() || "R";
+        const profileImgUrl = primaryRenter.ProfileImageURL && !isPlaceholderImageUrl(primaryRenter.ProfileImageURL)
+          ? primaryRenter.ProfileImageURL
+          : "";
 
-        // ====================================================================
-        // LOWER RECTANGULAR BOX HTML: CURRENT MONTH'S RECEIPT & ADVANCE/DUE
-        // ====================================================================
-        let lowerReceiptBoxHtml = "";
+        // Active Month Status KPI Card (Strictly Advance OR Due for the current active month)
+        const hasAdvance = currentMonthMetrics.advanceAmt > 0;
+        const hasDue = currentMonthMetrics.dueAmt > 0;
+        const activeStatusTitle = hasAdvance
+          ? `${activeMonthLabel} Advance Credit`
+          : `${activeMonthLabel} Due Balance`;
+        const activeStatusValue = hasAdvance
+          ? `₹${currentMonthMetrics.advanceAmt.toLocaleString("en-IN")}`
+          : `₹${currentMonthMetrics.dueAmt.toLocaleString("en-IN")}`;
+        const activeStatusColor = hasAdvance
+          ? "#34d399"
+          : (hasDue ? "#f87171" : "#34d399");
+        const activeStatusSub = hasAdvance
+          ? `<i class="fa-solid fa-arrow-up-right-dots"></i> Paid in advance for ${activeMonthLabel}`
+          : (hasDue
+            ? `<i class="fa-solid fa-clock"></i> Pending payment for ${activeMonthLabel}`
+            : `<i class="fa-solid fa-circle-check"></i> All settled for ${activeMonthLabel}`);
+
+        // Statement & Payment Hub HTML
+        let statementLeftHtml = "";
+        let paymentRightHtml = "";
         let qrRenderData = null;
 
         if (currentMonthBill) {
@@ -11885,6 +12164,7 @@ function formatMonthLabel(rawVal) {
           const isBillFullyPaid = billDue <= 0;
           const billMonthName = currentMonthMetrics.monthLabel;
           const billDateStr = formatDateOnly(currentMonthBill.BillDate || currentMonthBill.PaymentDate);
+          const baseRentAmt = parseFloat(currentMonthBill.BaseRent) || 0;
 
           const elecPrev = parseFloat(currentMonthBill.ElecPrev) || 0;
           const elecCurr = parseFloat(currentMonthBill.ElecCurr) || 0;
@@ -11905,6 +12185,7 @@ function formatMonthLabel(rawVal) {
           const waterTot = parseFloat(currentMonthBill.WaterTotal) || 0;
 
           const addAmt = parseFloat(currentMonthBill.AdditionalAmount) || 0;
+          const addName = currentMonthBill.AdditionalName || "None";
 
           const resolvedContact = resolveFlatUpiAndContact(currentMonthBill.PropertyName || targetProp, assignedFlatObj, primaryRenter);
           const upiId = (currentMonthBill.UPIID && String(currentMonthBill.UPIID).trim()) ? String(currentMonthBill.UPIID).trim() : resolvedContact.upiId;
@@ -11924,259 +12205,364 @@ function formatMonthLabel(rawVal) {
             note: `Rent ${targetProp} Flat ${targetFlat} (${billMonthName})`
           };
 
-          lowerReceiptBoxHtml = `
-            <!-- CURRENT MONTH'S RECEIPT FULLY OPENED IN RECTANGULAR BOX -->
-            <div class="renter-lower-box glass-card" style="border-radius:18px; padding:26px; border:2px solid ${isBillFullyPaid ? "rgba(16,185,129,0.65)" : "rgba(239,68,68,0.75)"} !important; background:linear-gradient(145deg, rgba(17, 24, 39, 0.96) 0%, rgba(30, 41, 59, 0.94) 100%); box-shadow:0 18px 45px rgba(0, 0, 0, 0.45);">
-              
-              <!-- Receipt Top Header (Strictly Current Month) -->
-              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding:16px 20px; background:rgba(15,23,42,0.9); border:1.5px solid var(--glass-border); border-radius:12px; margin-bottom:18px;">
+          statementLeftHtml = `
+            <div class="renter-statement-card">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; padding-bottom:16px; margin-bottom:18px; border-bottom:1px solid var(--glass-border);">
                 <div>
-                  <div style="font-size:1.3rem; font-weight:900; color:var(--text-main); letter-spacing:-0.2px;">
-                    ${currentMonthBill.PropertyName || targetProp} — Flat ${currentMonthBill.FlatName || targetFlat}
+                  <div style="display:inline-flex; align-items:center; gap:6px; font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#38bdf8; margin-bottom:4px;">
+                    <i class="fa-solid fa-file-invoice-dollar"></i> Active Monthly Statement
                   </div>
-                  <div style="font-size:0.9rem; font-weight:800; color:#38bdf8; margin-top:4px;">
-                    Current Billing Month: ${billMonthName}
-                  </div>
-                  <div style="font-size:0.72rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; margin-top:2px;">
-                    CURRENT MONTH RENT, ADVANCE &amp; DUE STATEMENT
+                  <h3 style="margin:0; font-size:1.25rem; font-weight:900; color:var(--text-main);">
+                    ${billMonthName} Billing Breakdown
+                  </h3>
+                  <div style="font-size:0.76rem; color:var(--text-muted); margin-top:3px;">
+                    Issued on ${billDateStr} • ${currentMonthBill.PropertyName || targetProp} (Flat ${currentMonthBill.FlatName || targetFlat})
                   </div>
                 </div>
-                <div>
-                  <span class="${isBillFullyPaid ? "badge-paid" : "badge-unpaid"}" style="font-size:0.86rem; padding:8px 16px; font-weight:900; border-radius:10px; display:inline-flex; align-items:center; gap:6px;">
-                    <i class="fa-solid ${isBillFullyPaid ? "fa-circle-check" : "fa-triangle-exclamation"}"></i>
-                    ${isBillFullyPaid ? `Paid • ₹${billPaid.toLocaleString("en-IN")}` : `Current Month Due • ₹${billDue.toLocaleString("en-IN")}`}
-                  </span>
-                </div>
+                <span class="${isBillFullyPaid ? "badge-paid" : "badge-unpaid"}" style="font-size:0.8rem; padding:7px 14px; font-weight:900; border-radius:10px; display:inline-flex; align-items:center; gap:6px;">
+                  <i class="fa-solid ${isBillFullyPaid ? "fa-circle-check" : "fa-triangle-exclamation"}"></i>
+                  ${isBillFullyPaid ? (billAdvance > 0 ? `Advance • ₹${billAdvance.toLocaleString("en-IN")}` : `Settled • ₹0 Due`) : `Due • ₹${billDue.toLocaleString("en-IN")}`}
+                </span>
               </div>
 
               ${!isBillFullyPaid ? `
-                <div class="continuous-unpaid-warning-banner" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:0.92rem; font-weight:900; color:#fef2f2; margin-bottom:18px; padding:14px 18px; border-radius:12px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; background:rgba(239,68,68,0.12); border:1.5px solid rgba(239,68,68,0.45); border-radius:14px; padding:14px 16px; margin-bottom:18px;">
                   <div style="display:flex; align-items:center; gap:12px;">
-                    <i class="fa-solid fa-triangle-exclamation" style="font-size:1.4rem; color:#f87171; flex-shrink:0;"></i>
+                    <div style="width:38px; height:38px; border-radius:10px; background:rgba(239,68,68,0.2); color:#f87171; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;">
+                      <i class="fa-solid fa-bell"></i>
+                    </div>
                     <div>
-                      <div style="text-transform:uppercase; letter-spacing:0.04em; font-size:0.76rem; color:#fca5a5;">CURRENT MONTH PAYMENT DUE (${billMonthName})</div>
-                      <div>Your current month due amount is <strong>₹${billDue.toLocaleString("en-IN")}</strong> for ${billMonthName}. Please complete payment at your earliest convenience.</div>
+                      <div style="font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#fca5a5;">Payment Action Needed</div>
+                      <div style="font-size:0.86rem; font-weight:700; color:var(--text-main);">Pending balance of <strong>₹${billDue.toLocaleString("en-IN")}</strong> for ${billMonthName}.</div>
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    class="btn-primary"
-                    style="width:auto; padding:10px 20px; font-size:0.88rem; font-weight:900; border-radius:10px; background:linear-gradient(135deg, #10b981, #059669); box-shadow:0 6px 18px rgba(16,185,129,0.4);"
-                    onclick="event.stopPropagation(); openRentCollectionQrModal();"
-                  >
-                    <i class="fa-solid fa-qrcode"></i> Pay Now Immediately
+                  <button type="button" class="renter-action-btn emerald" style="padding:9px 16px; font-size:0.82rem;" onclick="event.stopPropagation(); openRentCollectionQrModal();">
+                    <i class="fa-solid fa-qrcode"></i> Pay ₹${billDue.toLocaleString("en-IN")}
                   </button>
                 </div>
               ` : ""}
 
-              <!-- Fully Opened Receipt Line Items Inside Rectangular Box (Current Month Only) -->
-              <div style="background:rgba(15,23,42,0.65); border:1.5px solid var(--glass-border); border-radius:12px; padding:18px 20px; margin-bottom:18px;">
-                <div class="receipt-line" style="padding:10px 0; border-bottom:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center;">
-                  <span style="color:var(--text-muted); font-weight:700;">Tenant Name:</span>
-                  <strong style="font-size:0.96rem; color:var(--text-main);">${currentMonthBill.TenantName || renterNameDisplay}</strong>
-                </div>
-
-                <div class="receipt-line" style="padding:10px 0; border-bottom:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center;">
-                  <span style="color:var(--text-muted); font-weight:700;">Billing Date:</span>
-                  <strong style="font-size:0.94rem; color:var(--text-main);">${billDateStr}</strong>
-                </div>
-
-                <div class="receipt-line" style="padding:10px 0; border-bottom:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center;">
-                  <span style="color:var(--text-muted); font-weight:700;">Base Rent (${billMonthName}):</span>
-                  <strong style="font-size:0.94rem; color:var(--text-main);">₹${(parseFloat(currentMonthBill.BaseRent) || 0).toLocaleString("en-IN")}</strong>
-                </div>
-
-                <div class="receipt-line" style="padding:10px 0; border-bottom:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-                  <span style="color:var(--text-muted); font-weight:700;">Electricity (${elecPrev} to ${elecCurr} = ${elecUnits}U @ ₹${elecRate}):</span>
-                  <strong style="font-size:0.94rem; color:#38bdf8;">₹${elecTot.toLocaleString("en-IN")}</strong>
-                </div>
-
-                <div class="receipt-line" style="padding:10px 0; border-bottom:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-                  <span style="color:var(--text-muted); font-weight:700;">PNG Gas (${pngPrev} to ${pngCurr} = ${pngUnits}U @ ₹${pngRate}):</span>
-                  <strong style="font-size:0.94rem; color:#f59e0b;">₹${pngTot.toLocaleString("en-IN")}</strong>
-                </div>
-
-                <div class="receipt-line" style="padding:10px 0; border-bottom:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-                  <span style="color:var(--text-muted); font-weight:700;">Water (${waterPrev} to ${waterCurr} = ${waterUnits}U @ ₹${waterRate}):</span>
-                  <strong style="font-size:0.94rem; color:#06b6d4;">₹${waterTot.toLocaleString("en-IN")}</strong>
-                </div>
-
-                <div class="receipt-line" style="padding:10px 0; border-bottom:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center;">
-                  <span style="color:var(--text-muted); font-weight:700;">Additional Charge (${currentMonthBill.AdditionalName || "None"}):</span>
-                  <strong style="font-size:0.94rem; color:var(--text-main);">₹${addAmt.toLocaleString("en-IN")}</strong>
-                </div>
-
-                <div style="margin:14px 0; padding:14px 16px; background:rgba(99,102,241,0.12); border:1.5px solid rgba(99,102,241,0.45); border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
-                  <span style="font-weight:900; font-size:1rem; color:var(--text-main);">Current Month Total Charges (${billMonthName}):</span>
-                  <strong style="font-size:1.35rem; font-weight:900; color:var(--primary);">₹${billTotal.toLocaleString("en-IN")}</strong>
-                </div>
-
-                <!-- Bug 5: Explicitly show Paid Amount, Current Month Advance, and Current Month Due -->
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-bottom:12px;">
-                  <div style="padding:11px 14px; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.35); border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:0.8rem; font-weight:800; color:#38bdf8;">Paid (${billMonthName}):</span>
-                    <strong style="font-size:1rem; font-weight:900; color:#38bdf8;">₹${billPaid.toLocaleString("en-IN")}</strong>
+              <!-- Itemized Utility & Rent Breakdown Grid -->
+              <div class="renter-utility-grid" style="margin-bottom:18px;">
+                <div class="renter-utility-item">
+                  <div class="renter-utility-item-left">
+                    <div class="renter-utility-icon" style="background:rgba(99,102,241,0.15); color:#818cf8;">
+                      <i class="fa-solid fa-house-chimney"></i>
+                    </div>
+                    <div>
+                      <div style="font-size:0.88rem; font-weight:800; color:var(--text-main);">Monthly Base Rent</div>
+                      <div style="font-size:0.74rem; color:var(--text-muted);">Fixed flat rental charge for ${billMonthName}</div>
+                    </div>
                   </div>
-                  <div style="padding:11px 14px; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.4); border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:0.8rem; font-weight:800; color:#34d399;">Advance (${billMonthName}):</span>
-                    <strong style="font-size:1rem; font-weight:900; color:#34d399;">₹${billAdvance.toLocaleString("en-IN")}</strong>
+                  <strong style="font-size:1rem; font-weight:900; color:var(--text-main);">₹${baseRentAmt.toLocaleString("en-IN")}</strong>
+                </div>
+
+                <div class="renter-utility-item">
+                  <div class="renter-utility-item-left">
+                    <div class="renter-utility-icon" style="background:rgba(56,189,248,0.15); color:#38bdf8;">
+                      <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div>
+                      <div style="font-size:0.88rem; font-weight:800; color:var(--text-main);">Electricity Consumption</div>
+                      <div style="font-size:0.74rem; color:var(--text-muted);">Meter: ${elecPrev} → ${elecCurr} (${elecUnits} Units @ ₹${elecRate}/U)</div>
+                    </div>
                   </div>
-                  <div style="padding:11px 14px; background:${billDue > 0 ? "rgba(239,68,68,0.14)" : "rgba(16,185,129,0.1)"}; border:1px solid ${billDue > 0 ? "rgba(239,68,68,0.45)" : "rgba(16,185,129,0.35)"}; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:0.8rem; font-weight:800; color:${billDue > 0 ? "#fca5a5" : "#34d399"};">Due (${billMonthName}):</span>
-                    <strong style="font-size:1rem; font-weight:900; color:${billDue > 0 ? "#f87171" : "#34d399"};">₹${billDue.toLocaleString("en-IN")}</strong>
+                  <strong style="font-size:1rem; font-weight:900; color:#38bdf8;">₹${elecTot.toLocaleString("en-IN")}</strong>
+                </div>
+
+                <div class="renter-utility-item">
+                  <div class="renter-utility-item-left">
+                    <div class="renter-utility-icon" style="background:rgba(245,158,11,0.15); color:#f59e0b;">
+                      <i class="fa-solid fa-fire-flame-simple"></i>
+                    </div>
+                    <div>
+                      <div style="font-size:0.88rem; font-weight:800; color:var(--text-main);">PNG Gas Supply</div>
+                      <div style="font-size:0.74rem; color:var(--text-muted);">Meter: ${pngPrev} → ${pngCurr} (${pngUnits} Units @ ₹${pngRate}/U)</div>
+                    </div>
                   </div>
+                  <strong style="font-size:1rem; font-weight:900; color:#f59e0b;">₹${pngTot.toLocaleString("en-IN")}</strong>
                 </div>
 
-                <div class="receipt-line" style="padding:8px 0; border-bottom:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center;">
-                  <span style="color:var(--text-muted); font-weight:700;">Pay UPI Name:</span>
-                  <strong style="color:var(--primary);">${upiName || "--"}</strong>
+                <div class="renter-utility-item">
+                  <div class="renter-utility-item-left">
+                    <div class="renter-utility-icon" style="background:rgba(6,182,212,0.15); color:#06b6d4;">
+                      <i class="fa-solid fa-faucet-drip"></i>
+                    </div>
+                    <div>
+                      <div style="font-size:0.88rem; font-weight:800; color:var(--text-main);">Water Supply</div>
+                      <div style="font-size:0.74rem; color:var(--text-muted);">Meter: ${waterPrev} → ${waterCurr} (${waterUnits} Units @ ₹${waterRate}/U)</div>
+                    </div>
+                  </div>
+                  <strong style="font-size:1rem; font-weight:900; color:#06b6d4;">₹${waterTot.toLocaleString("en-IN")}</strong>
                 </div>
 
-                <div class="receipt-line" style="padding:8px 0; border-bottom:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center;">
-                  <span style="color:var(--text-muted); font-weight:700;">Contact Phone Number:</span>
-                  <strong>${contactPhone}</strong>
+                ${addAmt > 0 || (addName && addName !== "None") ? `
+                <div class="renter-utility-item">
+                  <div class="renter-utility-item-left">
+                    <div class="renter-utility-icon" style="background:rgba(168,85,247,0.15); color:#c084fc;">
+                      <i class="fa-solid fa-circle-plus"></i>
+                    </div>
+                    <div>
+                      <div style="font-size:0.88rem; font-weight:800; color:var(--text-main);">Additional Charge</div>
+                      <div style="font-size:0.74rem; color:var(--text-muted);">${addName}</div>
+                    </div>
+                  </div>
+                  <strong style="font-size:1rem; font-weight:900; color:#c084fc;">₹${addAmt.toLocaleString("en-IN")}</strong>
                 </div>
-
-                ${upiId ? `
-                <div class="receipt-line" style="padding:8px 0; display:flex; justify-content:space-between; align-items:center;">
-                  <span style="color:var(--text-muted); font-weight:700;">Pay via UPI (${upiName || "Account"}):</span>
-                  <strong style="color:var(--primary);">${upiId}</strong>
-                </div>` : ""}
+                ` : ""}
               </div>
 
-              <!-- Embedded UPI QR & Direct Pay Now Rectangular Box -->
-              <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:18px; padding:18px 20px; background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:12px;">
-                <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
-                  <div style="background:#ffffff; padding:8px; border-radius:10px; border:2px solid #cbd5e1; display:flex; align-items:center; justify-content:center;">
-                    <canvas id="renterHomeInlineQrCanvas" width="140" height="140" style="width:140px; height:140px; display:block;"></canvas>
+              <!-- Total Summary Bar -->
+              <div style="padding:16px 18px; border-radius:14px; background:linear-gradient(135deg, rgba(99,102,241,0.14) 0%, rgba(14,165,233,0.1) 100%); border:1.5px solid rgba(99,102,241,0.38); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                <div>
+                  <div style="font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#818cf8;">${billMonthName} Total Bill</div>
+                  <div style="font-size:1.35rem; font-weight:900; color:var(--text-main); margin-top:2px;">₹${billTotal.toLocaleString("en-IN")}</div>
+                </div>
+                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                  <div style="text-align:right;">
+                    <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; color:#38bdf8;">Paid</div>
+                    <div style="font-size:1rem; font-weight:900; color:#38bdf8;">₹${billPaid.toLocaleString("en-IN")}</div>
                   </div>
-                  <div>
-                    <div style="font-size:0.75rem; font-weight:800; text-transform:uppercase; color:#10b981; letter-spacing:0.05em;">
-                      <i class="fa-solid fa-qrcode"></i> Instant UPI QR Payment
+                  <div style="width:1px; height:28px; background:var(--glass-border);"></div>
+                  <div style="text-align:right;">
+                    <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; color:${billAdvance > 0 ? "#34d399" : (billDue > 0 ? "#f87171" : "#34d399")};">
+                      ${billAdvance > 0 ? "Advance" : "Due"}
                     </div>
-                    <div style="font-size:1.1rem; font-weight:900; color:var(--text-main); margin-top:3px;">
-                      Payable (${billMonthName}): ₹${payableAmt.toLocaleString("en-IN")}
-                    </div>
-                    <div style="font-size:0.82rem; font-weight:700; color:var(--primary); margin-top:2px;">
-                      UPI ID: ${upiId || "Not Configured"}
-                    </div>
-                    <div style="font-size:0.74rem; color:var(--text-muted); margin-top:4px;">
-                      Scan with Google Pay, PhonePe, Paytm, or BHIM
+                    <div style="font-size:1rem; font-weight:900; color:${billAdvance > 0 ? "#34d399" : (billDue > 0 ? "#f87171" : "#34d399")};">
+                      ₹${(billAdvance > 0 ? billAdvance : billDue).toLocaleString("en-IN")}
                     </div>
                   </div>
                 </div>
-                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+              </div>
+            </div>
+          `;
+
+          paymentRightHtml = `
+            <div style="display:flex; flex-direction:column; gap:18px;">
+              <!-- Instant UPI QR Payment Hub -->
+              <div class="renter-payment-card">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px;">
+                  <div>
+                    <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#10b981;">
+                      <i class="fa-solid fa-qrcode"></i> Instant UPI Payment Hub
+                    </div>
+                    <h4 style="margin:3px 0 0 0; font-size:1.08rem; font-weight:900; color:var(--text-main);">
+                      Scan &amp; Pay (${billMonthName})
+                    </h4>
+                  </div>
+                  <span style="font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:8px; background:rgba(16,185,129,0.14); color:#34d399; border:1px solid rgba(16,185,129,0.35);">
+                    ₹${payableAmt.toLocaleString("en-IN")}
+                  </span>
+                </div>
+
+                <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; padding:14px; border-radius:14px; background:var(--bg-input); border:1px solid var(--glass-border); margin-bottom:14px;">
+                  <div style="background:#ffffff; padding:8px; border-radius:12px; border:2px solid #cbd5e1; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                    <canvas id="renterHomeInlineQrCanvas" width="128" height="128" style="width:128px; height:128px; display:block;"></canvas>
+                  </div>
+                  <div style="flex:1; min-width:160px;">
+                    <div style="font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Payee Name</div>
+                    <div style="font-size:0.95rem; font-weight:900; color:var(--text-main); margin-bottom:6px;">${upiName || targetProp || "Property Admin"}</div>
+                    <div style="font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Official UPI ID</div>
+                    <div style="font-size:0.86rem; font-weight:800; color:var(--primary); word-break:break-all; margin-bottom:6px;">${upiId || "Not Configured"}</div>
+                    <div style="font-size:0.72rem; color:var(--text-muted);"><i class="fa-solid fa-phone" style="color:#38bdf8; margin-right:4px;"></i>Support: <strong>${contactPhone}</strong></div>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  class="renter-action-btn emerald"
+                  style="width:100%; justify-content:center; padding:13px 20px; font-size:0.92rem;"
+                  onclick="event.stopPropagation(); openRentCollectionQrModal();"
+                >
+                  <i class="fa-solid fa-indian-rupee-sign"></i> Open Full Payment &amp; UPI QR Modal
+                </button>
+              </div>
+
+              <!-- Recent Individual Statements Quick List -->
+              <div class="renter-recent-bills-card">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px;">
+                  <div style="font-size:0.86rem; font-weight:900; color:var(--text-main);">
+                    <i class="fa-solid fa-clock-rotate-left" style="color:#818cf8; margin-right:6px;"></i>My Billing History (${myBills.length})
+                  </div>
                   <button
                     type="button"
-                    class="btn-primary"
-                    style="min-width:210px; background:linear-gradient(135deg, #10b981, #059669); font-weight:900; font-size:0.95rem; border-radius:10px; padding:14px 22px;"
-                    onclick="event.stopPropagation(); openRentCollectionQrModal();"
+                    style="background:none; border:none; color:#38bdf8; font-size:0.76rem; font-weight:800; cursor:pointer;"
+                    onclick="openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'});"
                   >
-                    <i class="fa-solid fa-indian-rupee-sign"></i> Pay Now
+                    View All <i class="fa-solid fa-arrow-right"></i>
                   </button>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  ${myBills.slice(0, 3).map(bItem => {
+                    const mMetrics = computeCurrentMonthStandaloneAdvanceAndDue(bItem);
+                    const isSettled = mMetrics.dueAmt <= 0;
+                    return `
+                      <div
+                        style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border-radius:11px; background:var(--bg-input); border:1px solid var(--glass-border); cursor:pointer;"
+                        onclick="openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'});"
+                      >
+                        <div>
+                          <div style="font-size:0.82rem; font-weight:800; color:var(--text-main);">${mMetrics.monthLabel}</div>
+                          <div style="font-size:0.7rem; color:var(--text-muted);">Bill: ₹${mMetrics.standaloneCharge.toLocaleString("en-IN")} • Paid: ₹${mMetrics.paidAmount.toLocaleString("en-IN")}</div>
+                        </div>
+                        <span style="font-size:0.72rem; font-weight:800; padding:3px 9px; border-radius:999px; background:${isSettled ? "rgba(16,185,129,0.14)" : "rgba(239,68,68,0.14)"}; color:${isSettled ? "#34d399" : "#f87171"}; border:1px solid ${isSettled ? "rgba(16,185,129,0.35)" : "rgba(239,68,68,0.4)"};">
+                          ${mMetrics.advanceAmt > 0 ? `Adv ₹${mMetrics.advanceAmt.toLocaleString("en-IN")}` : (isSettled ? "Paid" : `Due ₹${mMetrics.dueAmt.toLocaleString("en-IN")}`)}
+                        </span>
+                      </div>
+                    `;
+                  }).join("")}
                 </div>
               </div>
             </div>
           `;
         } else {
-          lowerReceiptBoxHtml = `
-            <div class="renter-lower-box glass-card" style="border-radius:18px; padding:28px 22px; text-align:center; border:2px solid var(--glass-border); background:linear-gradient(145deg, rgba(17, 24, 39, 0.94) 0%, rgba(30, 41, 59, 0.92) 100%);">
-              <i class="fa-solid fa-receipt" style="font-size:2.2rem; color:#38bdf8; opacity:0.85; margin-bottom:12px; display:inline-block;"></i>
-              <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main); margin-bottom:6px;">No Bill Generated for ${currentCalendarMonthLabel} Yet</h3>
-              <p style="font-size:0.84rem; color:var(--text-muted); max-width:520px; margin:0 auto 14px auto;">
-                Advance and Due details strictly display data for the current month (${currentCalendarMonthLabel}). Once your administrator records this month's bill, your exact ${currentCalendarMonthLabel} statement will appear here.
+          statementLeftHtml = `
+            <div class="renter-statement-card" style="text-align:center; padding:36px 24px;">
+              <div style="width:58px; height:58px; border-radius:16px; background:rgba(56,189,248,0.14); border:1px solid rgba(56,189,248,0.35); color:#38bdf8; display:flex; align-items:center; justify-content:center; font-size:1.5rem; margin:0 auto 14px auto;">
+                <i class="fa-solid fa-file-invoice"></i>
+              </div>
+              <h3 style="font-size:1.15rem; font-weight:900; color:var(--text-main); margin:0 0 6px 0;">No Statement Generated for ${activeMonthLabel} Yet</h3>
+              <p style="font-size:0.84rem; color:var(--text-muted); max-width:480px; margin:0 auto 16px auto; line-height:1.55;">
+                Your portal is tailored exclusively to your personal residency record. As soon as your property administrator generates the ${activeMonthLabel} statement, your itemized utility breakdown will appear here.
               </p>
-              <div style="display:inline-flex; align-items:center; gap:14px; flex-wrap:wrap; justify-content:center; padding:10px 18px; border-radius:12px; background:rgba(15,23,42,0.55); border:1px solid var(--glass-border);">
-                <span style="font-size:0.82rem; font-weight:800; color:#34d399;"><i class="fa-solid fa-arrow-up-right-dots"></i> ${currentCalendarMonthLabel} Advance: ₹0</span>
-                <span style="color:var(--glass-border);">|</span>
-                <span style="font-size:0.82rem; font-weight:800; color:#94a3b8;"><i class="fa-solid fa-circle-check"></i> ${currentCalendarMonthLabel} Due: ₹0</span>
+              <div style="display:inline-flex; align-items:center; gap:10px; padding:8px 16px; border-radius:10px; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.35); color:#34d399; font-size:0.8rem; font-weight:800;">
+                <i class="fa-solid fa-circle-check"></i> ${activeMonthLabel} Current Status: ₹0 Due
+              </div>
+            </div>
+          `;
+          paymentRightHtml = `
+            <div class="renter-payment-card" style="display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:32px 22px;">
+              <div style="width:52px; height:52px; border-radius:14px; background:rgba(16,185,129,0.14); color:#34d399; display:flex; align-items:center; justify-content:center; font-size:1.4rem; margin-bottom:12px;">
+                <i class="fa-solid fa-headset"></i>
+              </div>
+              <h4 style="margin:0 0 6px 0; font-size:1.05rem; font-weight:900; color:var(--text-main);">Need Assistance with Your Flat?</h4>
+              <p style="font-size:0.8rem; color:var(--text-muted); margin:0 0 16px 0; line-height:1.5;">
+                Connect directly with your property administrator via 1-on-1 Live Chat or check official support contacts.
+              </p>
+              <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+                <button type="button" class="renter-action-btn primary" onclick="openModularLiveChatWidget()">
+                  <i class="fa-solid fa-comments"></i> Open Live Chat
+                </button>
+                <button type="button" class="renter-action-btn secondary" onclick="openContactUsModal()">
+                  <i class="fa-solid fa-headset"></i> Help Center
+                </button>
               </div>
             </div>
           `;
         }
 
         // ====================================================================
-        // UPPER RECTANGULAR BOX HTML: ENLARGED "RESIDENT HOME" WITH CURRENT MONTH ADVANCE & DUE
+        // REQUIREMENT 3: COMPLETELY RESTYLED & UPGRADED RENTER HOME PORTAL
         // ====================================================================
         if (flatsContainer) {
           flatsContainer.style.display = "";
           flatsContainer.innerHTML = `
-            <div class="renter-two-box-layout" style="display:flex; flex-direction:column; gap:20px; max-width:1180px; margin:14px auto; width:100%;">
+            <div class="renter-modern-portal">
               
-              <!-- ENLARGED RESIDENT HOME IN RECTANGULAR BOX -->
-              <div class="renter-upper-box glass-card" style="border-radius:18px; padding:28px 30px; border:2px solid rgba(192, 132, 252, 0.65) !important; background:linear-gradient(145deg, rgba(17, 24, 39, 0.96) 0%, rgba(30, 41, 59, 0.94) 100%); box-shadow:0 18px 45px rgba(0, 0, 0, 0.45);">
-                
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:18px; border-bottom:1.5px solid var(--glass-border); padding-bottom:20px; margin-bottom:20px;">
-                  <div>
-                    <div style="display:inline-flex; align-items:center; gap:8px; font-size:0.92rem; font-weight:900; color:#c084fc; text-transform:uppercase; letter-spacing:0.08em; background:rgba(192,132,252,0.12); border:1.5px solid rgba(192,132,252,0.4); padding:6px 14px; border-radius:10px; margin-bottom:10px;">
-                      <i class="fa-solid fa-house-user"></i> Resident Home Portal
+              <!-- 1. EXECUTIVE RESIDENT HERO BANNER -->
+              <div class="renter-hero-banner">
+                <div class="renter-hero-top">
+                  <div class="renter-hero-identity">
+                    <div class="renter-hero-avatar">
+                      ${profileImgUrl ? `<img src="${profileImgUrl}" alt="${renterNameDisplay}" />` : avatarInitials}
                     </div>
-                    <h2 style="margin:0; font-size:2.1rem; font-weight:900; color:var(--text-main); letter-spacing:-0.4px; line-height:1.15;">
-                      ${renterNameDisplay}
-                    </h2>
+                    <div>
+                      <div style="display:inline-flex; align-items:center; gap:6px; font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.08em; color:#38bdf8; margin-bottom:5px;">
+                        <i class="fa-solid fa-shield-check"></i> Verified Resident Portal • Personal Ledger
+                      </div>
+                      <h2 style="margin:0; font-size:1.75rem; font-weight:900; color:var(--text-main); letter-spacing:-0.02em; line-height:1.15;">
+                        ${renterNameDisplay}
+                      </h2>
+                      <div class="renter-meta-chips">
+                        <span class="renter-meta-chip">
+                          <i class="fa-solid fa-building" style="color:#38bdf8;"></i>
+                          <span>${targetProp}</span>
+                        </span>
+                        <span class="renter-meta-chip">
+                          <i class="fa-solid fa-door-open" style="color:#fbbf24;"></i>
+                          <span>Flat ${targetFlat}</span>
+                        </span>
+                        ${renterAadhaar ? `
+                        <span class="renter-meta-chip" style="border-color:rgba(16,185,129,0.38);">
+                          <i class="fa-solid fa-id-card" style="color:#34d399;"></i>
+                          <span>Aadhaar: ${formatAadhaarWithHyphens(renterAadhaar)}</span>
+                        </span>` : ""}
+                      </div>
+                    </div>
                   </div>
 
-                  <!-- Property, Flat, and Aadhaar inside Rectangular Boxes -->
-                  <div style="display:flex; align-items:stretch; gap:10px; flex-wrap:wrap;">
-                    <div style="background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:12px; padding:10px 16px;">
-                      <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:var(--text-muted);">Property</div>
-                      <div style="font-size:0.98rem; font-weight:900; color:var(--text-main); margin-top:2px;"><i class="fa-solid fa-hotel" style="color:#38bdf8; margin-right:6px;"></i>${targetProp}</div>
-                    </div>
-                    <div style="background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:12px; padding:10px 16px;">
-                      <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:var(--text-muted);">Assigned Space</div>
-                      <div style="font-size:0.98rem; font-weight:900; color:var(--text-main); margin-top:2px;"><i class="fa-solid fa-door-open" style="color:#fbbf24; margin-right:6px;"></i>Flat ${targetFlat}</div>
-                    </div>
-                    ${renterAadhaar ? `
-                    <div style="background:var(--bg-input); border:1.5px solid rgba(16,185,129,0.4); border-radius:12px; padding:10px 16px;">
-                      <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:#34d399;">Verified Aadhaar ID</div>
-                      <div style="font-size:0.98rem; font-weight:900; color:#34d399; margin-top:2px;"><i class="fa-solid fa-shield-halved" style="margin-right:6px;"></i>${formatAadhaarWithHyphens(renterAadhaar)}</div>
-                    </div>` : ""}
+                  <div class="renter-hero-actions">
+                    <button
+                      type="button"
+                      class="renter-action-btn primary"
+                      onclick="openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'});"
+                    >
+                      <i class="fa-solid fa-receipt"></i>
+                      <span>My Receipts (${myBills.length})</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="renter-action-btn secondary"
+                      onclick="openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'}); setTimeout(() => { if (typeof switchFlatTabToProfile === 'function') switchFlatTabToProfile(); }, 40);"
+                    >
+                      <i class="fa-solid fa-user-shield"></i>
+                      <span>My Profile</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="renter-action-btn emerald"
+                      onclick="openModularLiveChatWidget()"
+                    >
+                      <i class="fa-solid fa-comments"></i>
+                      <span>Live Chat</span>
+                    </button>
                   </div>
                 </div>
 
-                <!-- Bug 5: Current Month Only Advance & Due Summary Strip -->
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:12px; margin-bottom:20px;">
-                  <div style="background:rgba(16,185,129,0.12); border:1.5px solid rgba(16,185,129,0.42); border-radius:12px; padding:12px 16px; display:flex; align-items:center; justify-content:space-between;">
-                    <div>
-                      <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:#34d399;">${currentCalendarMonthLabel} Advance Amount</div>
-                      <div style="font-size:1.25rem; font-weight:900; color:#34d399; margin-top:2px;">₹${currentMonthMetrics.advanceAmt.toLocaleString("en-IN")}</div>
+                <!-- 2. 4-CARD KPI BENTO GRID (CURRENT ACTIVE MONTH) -->
+                <div class="renter-kpi-bento-grid">
+                  <div class="renter-kpi-card">
+                    <span class="renter-kpi-label">Active Billing Period</span>
+                    <div class="renter-kpi-value" style="color:#38bdf8; font-size:1.25rem;">${activeMonthLabel}</div>
+                    <div class="renter-kpi-sub">
+                      <i class="fa-regular fa-calendar-check" style="color:#38bdf8;"></i>
+                      <span>Base Rent: ₹${(parseFloat(assignedFlatObj.RentAmount || primaryRenter.RentAmount || 0) || 0).toLocaleString("en-IN")}/mo</span>
                     </div>
-                    <i class="fa-solid fa-arrow-up-right-dots" style="font-size:1.35rem; color:#34d399; opacity:0.85;"></i>
                   </div>
-                  <div style="background:${currentMonthMetrics.dueAmt > 0 ? "rgba(239,68,68,0.14)" : "rgba(148,163,184,0.12)"}; border:1.5px solid ${currentMonthMetrics.dueAmt > 0 ? "rgba(239,68,68,0.5)" : "rgba(148,163,184,0.35)"}; border-radius:12px; padding:12px 16px; display:flex; align-items:center; justify-content:space-between;">
-                    <div>
-                      <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:${currentMonthMetrics.dueAmt > 0 ? "#f87171" : "#94a3b8"};">${currentCalendarMonthLabel} Due Amount</div>
-                      <div style="font-size:1.25rem; font-weight:900; color:${currentMonthMetrics.dueAmt > 0 ? "#f87171" : "var(--text-main)"}; margin-top:2px;">₹${currentMonthMetrics.dueAmt.toLocaleString("en-IN")}</div>
-                    </div>
-                    <i class="fa-solid ${currentMonthMetrics.dueAmt > 0 ? "fa-triangle-exclamation" : "fa-circle-check"}" style="font-size:1.35rem; color:${currentMonthMetrics.dueAmt > 0 ? "#f87171" : "#34d399"}; opacity:0.85;"></i>
-                  </div>
-                </div>
 
-                <!-- Action Rectangular Boxes: "View My Receipt" and "View My Profile" -->
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px;">
-                  <button
-                    type="button"
-                    class="btn-primary"
-                    style="padding:16px 22px; font-size:1rem; font-weight:900; border-radius:12px; background:linear-gradient(135deg, #6366f1, #8b5cf6); box-shadow:0 8px 22px rgba(99,102,241,0.35); display:flex; align-items:center; justify-content:center; gap:10px;"
-                    onclick="openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'});"
-                  >
-                    <i class="fa-solid fa-receipt"></i>
-                    <span>View My Receipt History (${myBills.length})</span>
-                  </button>
-                  <button
-                    type="button"
-                    class="btn-primary"
-                    style="padding:16px 22px; font-size:1rem; font-weight:900; border-radius:12px; background:linear-gradient(135deg, #059669, #10b981); box-shadow:0 8px 22px rgba(16,185,129,0.35); display:flex; align-items:center; justify-content:center; gap:10px;"
-                    onclick="openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'}); setTimeout(() => { if (typeof switchFlatTabToProfile === 'function') switchFlatTabToProfile(); }, 40);"
-                  >
-                    <i class="fa-solid fa-user-check"></i>
-                    <span>View My Profile (View Only)</span>
-                  </button>
+                  <div class="renter-kpi-card">
+                    <span class="renter-kpi-label">${activeMonthLabel} Total Charges</span>
+                    <div class="renter-kpi-value">₹${currentMonthMetrics.standaloneCharge.toLocaleString("en-IN")}</div>
+                    <div class="renter-kpi-sub">
+                      <i class="fa-solid fa-file-invoice-dollar" style="color:#818cf8;"></i>
+                      <span>Rent + Electricity + PNG + Water</span>
+                    </div>
+                  </div>
+
+                  <div class="renter-kpi-card">
+                    <span class="renter-kpi-label">${activeMonthLabel} Paid Amount</span>
+                    <div class="renter-kpi-value" style="color:#38bdf8;">₹${currentMonthMetrics.paidAmount.toLocaleString("en-IN")}</div>
+                    <div class="renter-kpi-sub">
+                      <i class="fa-solid fa-money-bill-transfer" style="color:#38bdf8;"></i>
+                      <span>Recorded payments for ${activeMonthLabel}</span>
+                    </div>
+                  </div>
+
+                  <div class="renter-kpi-card" style="border-color:${hasAdvance ? "rgba(16,185,129,0.45)" : (hasDue ? "rgba(239,68,68,0.5)" : "rgba(16,185,129,0.35)")};">
+                    <span class="renter-kpi-label">${activeStatusTitle}</span>
+                    <div class="renter-kpi-value" style="color:${activeStatusColor};">${activeStatusValue}</div>
+                    <div class="renter-kpi-sub" style="color:${activeStatusColor};">
+                      ${activeStatusSub}
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <!-- LOWER RECTANGULAR BOX (CURRENT MONTH'S RECEIPT FULLY OPENED) -->
-              ${lowerReceiptBoxHtml}
+              <!-- 3. TWO-COLUMN SPLIT: ITEMIZED STATEMENT + INSTANT UPI PAYMENT HUB -->
+              <div class="renter-main-split">
+                ${statementLeftHtml}
+                ${paymentRightHtml}
+              </div>
 
             </div>
           `;
@@ -12191,7 +12577,7 @@ function formatMonthLabel(rawVal) {
                   amount: qrRenderData.amount,
                   note: qrRenderData.note,
                   canvasEl: qrCanvasEl,
-                  size: 140
+                  size: 128
                 });
               }
             }, 30);
@@ -12267,7 +12653,7 @@ function formatMonthLabel(rawVal) {
       }
     }
 
-    // Requirement 1: Single-Device Session Conflict Handler & Redirect Modal
+    // Requirement 7: Single-Device Session Conflict Handler & Redirect Modal (Enforced for ALL accounts)
     function triggerSingleDeviceSessionConflict() {
       if (isSessionConflictModalOpen) return;
       isSessionConflictModalOpen = true;
@@ -12275,7 +12661,7 @@ function formatMonthLabel(rawVal) {
         clearInterval(syncTimer);
         syncTimer = null;
       }
-      // Immediately clear active session state on this first device
+      // Immediately clear active session state on this previous device
       activeUser = null;
       activeSessionToken = "";
       selectedProperty = null;
@@ -12290,6 +12676,15 @@ function formatMonthLabel(rawVal) {
       sessionStorage.removeItem("active_session_assigned_aadhaar");
       sessionStorage.removeItem("active_session_token");
       sessionStorage.removeItem("active_selected_property");
+      try {
+        localStorage.removeItem(PERSISTED_AUTH_SESSION_KEY);
+      } catch (e) {}
+
+      // Hide dashboard & live chat immediately and show login screen behind the alert modal
+      document.getElementById("dashboardScreen")?.classList.remove("active");
+      document.getElementById("loginScreen")?.classList.add("active");
+      const chatWidgetEl = document.getElementById("modularLiveChatWidget");
+      if (chatWidgetEl) chatWidgetEl.style.display = "none";
 
       // Close all other modals and show the Single-Device Session Conflict Alert Modal
       document.querySelectorAll(".modal-overlay").forEach(m => {
@@ -12320,12 +12715,8 @@ function formatMonthLabel(rawVal) {
       if (loginScr) loginScr.classList.remove("active");
       if (dashScr) dashScr.classList.add("active");
 
-      // Bug 6: Push a history guard state so browser Back/Forward history navigation forces re-authentication
-      try {
-        if (window.history && typeof window.history.pushState === "function") {
-          window.history.pushState({ portalRequiresReauthOnHistory: true }, "", window.location.href);
-        }
-      } catch (e) {}
+      // Requirement 5: Persist session state so refreshing on any browser keeps the user logged in
+      persistActiveAuthSession();
 
       try { applyCustomBackgrounds(); } catch (e) {}
       try {
@@ -12410,7 +12801,7 @@ function formatMonthLabel(rawVal) {
       document.body.classList.toggle("role-renter", activeRole === "Renter");
       const rNavChat = document.getElementById("btnRenterNavLiveChat");
       const rNavHelp = document.getElementById("btnRenterNavHelpCenter");
-      // Requirement 6 & 8: Live Chat is in the top dashboard for all roles; Help Center is in the top dashboard for Renter & Viewer
+      // Requirement 2: Live Chat is in the top dashboard for all roles; Help Center is icon-only in the top dashboard for Renter & Viewer
       if (rNavChat) rNavChat.style.display = "inline-flex";
       if (rNavHelp) rNavHelp.style.display = (activeRole === "Renter" || activeRole === "Viewer") ? "inline-flex" : "none";
 
@@ -12498,14 +12889,7 @@ function formatMonthLabel(rawVal) {
         activeSessionToken = String(res.sessionToken || matchedU?.ActiveSessionToken || activeSessionToken).trim();
       }
 
-      sessionStorage.setItem("active_session_user", activeUser);
-      sessionStorage.setItem("active_session_fullname", activeUserFullName);
-      sessionStorage.setItem("active_session_mobile", activeUserMobile);
-      sessionStorage.setItem("active_session_role", activeRole);
-      sessionStorage.setItem("active_session_assigned_prop", activeAssignedProperty);
-      sessionStorage.setItem("active_session_assigned_flat", activeAssignedFlat);
-      sessionStorage.setItem("active_session_assigned_aadhaar", activeAssignedAadhaar);
-      sessionStorage.setItem("active_session_token", activeSessionToken);
+      persistActiveAuthSession();
       try {
         localStorage.setItem("portal_device_session_" + String(activeUser).trim().toLowerCase(), activeSessionToken);
       } catch (e) {}
@@ -12647,9 +13031,7 @@ function formatMonthLabel(rawVal) {
           activeRole = "Admin";
           activeUserFullName = "Administrator";
           activeSessionToken = "SESS-LOCAL-ADMIN";
-          sessionStorage.setItem("active_session_user", "admin");
-          sessionStorage.setItem("active_session_role", "Admin");
-          sessionStorage.setItem("active_session_fullname", "Administrator");
+          persistActiveAuthSession();
           applyRolePermissions("Admin");
           try {
             unlockDashboardInstant(true);
@@ -12670,7 +13052,7 @@ function formatMonthLabel(rawVal) {
       }
     }
 
-    // 2. Continuous Live Background Sync Directly from Firebases (Detects 2nd-device login conflict, manual row deletions & Admin global background)
+    // 2. Continuous Live Background Sync Directly from Firebases (Detects 2nd-device login conflict for ALL roles, manual row deletions & Admin global background)
     async function syncDataLive(forceRender = false) {
       if (!activeUser || isSyncingLive || isSessionConflictModalOpen) return;
       if (!forceRender && (pendingWriteCount > 0 || (Date.now() - lastWriteCompletedAt < 4000))) {
@@ -12691,14 +13073,18 @@ function formatMonthLabel(rawVal) {
           );
           const activeUserStillInSheet = Boolean(matchedServerUser);
 
-          // Requirement 1: Check if this User ID has logged in from a second device!
+          // Requirement 7: Check if this account (Admin, Renter, or Viewer) has logged in from a new device!
           const serverToken = String(res.activeSessionToken || matchedServerUser?.ActiveSessionToken || "").trim();
-          const isAdminUser = String(activeRole || "").toLowerCase() === "admin" || String(activeUser || "").toLowerCase() === "admin";
-          if (!isAdminUser && (res.sessionConflict === true || (activeSessionToken && serverToken && serverToken !== activeSessionToken))) {
+          const isLocalFallbackToken = String(activeSessionToken || "").startsWith("SESS-LOCAL");
+          if (
+            !isLocalFallbackToken &&
+            (res.sessionConflict === true || (activeSessionToken && serverToken && serverToken !== activeSessionToken))
+          ) {
             triggerSingleDeviceSessionConflict();
             return;
           }
 
+          const isAdminUser = String(activeRole || "").toLowerCase() === "admin" || String(activeUser || "").toLowerCase() === "admin";
           // If the currently logged-in user's row was manually deleted in Firebases, log out & wipe dashboard immediately!
           if (!isAdminUser && (res.userDeleted === true || res.userExists === false || !activeUserStillInSheet)) {
             DB.properties = [];
@@ -12820,6 +13206,8 @@ function formatMonthLabel(rawVal) {
             activeUserMobile = sanitizeContactPhoneDisplay(res.userMobile);
             sessionStorage.setItem("active_session_mobile", activeUserMobile);
           }
+
+          persistActiveAuthSession();
 
           if (hasDataChanged || forceRender) {
             renderAllDashboardUI();
@@ -13030,6 +13418,21 @@ function formatMonthLabel(rawVal) {
     }
 
     function updateGlobalProfitAndLoss() {
+      const pnlTracker = document.querySelector(".pnl-tracker");
+      if (pnlTracker && (!document.getElementById("topTotalProfit") || !document.getElementById("topTotalLoss"))) {
+        pnlTracker.innerHTML = `
+          <div class="pnl-item pnl-profit">
+            <i class="fa-solid fa-arrow-trend-up"></i>
+            <span>Profit: <strong id="topTotalProfit">₹0</strong></span>
+          </div>
+          <div class="pnl-divider"></div>
+          <div class="pnl-item pnl-loss">
+            <i class="fa-solid fa-arrow-trend-down"></i>
+            <span>Loss/Due: <strong id="topTotalLoss">₹0</strong></span>
+          </div>
+        `;
+      }
+
       let totalProfit = 0;
       let totalLoss = 0;
 
@@ -13047,8 +13450,10 @@ function formatMonthLabel(rawVal) {
         }
       });
 
-      document.getElementById("topTotalProfit").innerText = `₹${totalProfit.toLocaleString('en-IN')}`;
-      document.getElementById("topTotalLoss").innerText = `₹${totalLoss.toLocaleString('en-IN')}`;
+      const profEl = document.getElementById("topTotalProfit");
+      const lossEl = document.getElementById("topTotalLoss");
+      if (profEl) profEl.innerText = `₹${totalProfit.toLocaleString('en-IN')}`;
+      if (lossEl) lossEl.innerText = `₹${totalLoss.toLocaleString('en-IN')}`;
     }
 
     // 3. Render Properties (Requirement 9: Sorted A-Z + Distinct Background Color Change on Click/Touch + No "Selected Property / Tap to Select" Text)
@@ -13089,6 +13494,7 @@ function formatMonthLabel(rawVal) {
       if (selectedProperty && clickedClean === currentClean) {
         selectedProperty = null;
         sessionStorage.removeItem("active_selected_property");
+        persistActiveAuthSession();
         if (flatsContainer) {
           flatsContainer.innerHTML = "";
           flatsContainer.style.display = "none";
@@ -13099,6 +13505,7 @@ function formatMonthLabel(rawVal) {
 
       selectedProperty = name;
       sessionStorage.setItem("active_selected_property", name);
+      persistActiveAuthSession();
       if (flatsContainer) flatsContainer.style.display = "";
       renderAllDashboardUI();
     }
@@ -22615,12 +23022,15 @@ function formatMonthLabel(rawVal) {
       activeSessionToken = "";
       selectedProperty = null;
       selectedFlat = null;
+      activeSelectedChatChannelId = "";
+      activeSelectedTargetAdminUsername = "";
       isSessionConflictModalOpen = false;
       isSubmittingLogin = false;
 
       // Wipe session storage and device login tokens
       sessionStorage.clear();
       try {
+        localStorage.removeItem(PERSISTED_AUTH_SESSION_KEY);
         localStorage.removeItem("active_session_user");
         localStorage.removeItem("active_session_role");
         localStorage.removeItem("active_session_token");
@@ -23312,8 +23722,7 @@ function formatMonthLabel(rawVal) {
     }
 
     // ==========================================================================
-    // REQUIREMENTS 7, 10 & 11: LIVE CHAT WITHOUT USERNAMES, ADMIN-ONLY CLEAR,
-    // ADMIN-EXCLUSIVE REGISTERED USERS LIST, AND AUTOMATIC BLOCKED USER REMOVAL
+    // REQUIREMENT 4: SMOOTH, UNINTERRUPTED 1-ON-1 LIVE CHAT FOR RENTER & ADMIN
     // ==========================================================================
     function getPrivateChatStore() {
       try {
@@ -23346,10 +23755,66 @@ function formatMonthLabel(rawVal) {
       }
     }
 
+    function buildAdminRenterChannelId(adminUsername, userUsername) {
+      const cleanAdmin = String(adminUsername || "admin").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+      const cleanUser = String(userUsername || "guest").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+      return `channel_admin_${cleanAdmin}__user_${cleanUser}`;
+    }
+
+    function getMyPrivateChatChannelId(targetAdminUsername = "") {
+      const cleanUser = String(activeUser || "guest").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+      if (targetAdminUsername) {
+        return buildAdminRenterChannelId(targetAdminUsername, cleanUser);
+      }
+      return "channel_" + cleanUser;
+    }
+
+    // Merge messages across canonical channelId and any legacy channel_<renter> so Renter & Admin never miss messages
+    function getMergedChannelObject(store, canonicalChannelId, renterUsername = "") {
+      if (!store || typeof store !== "object") return { messages: [], clearedAt: 0, unreadAdmin: 0, unreadRenter: 0, lastTimestamp: 0 };
+      const primary = store[canonicalChannelId] || null;
+      const cleanRenter = String(
+        renterUsername ||
+        primary?.renterUsername ||
+        canonicalChannelId.replace(/^channel_admin_[^_]+__user_/, "").replace(/^channel_/, "")
+      ).trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+
+      const legacyKey = cleanRenter ? `channel_${cleanRenter}` : "";
+      const legacy = (legacyKey && legacyKey !== canonicalChannelId && store[legacyKey]) ? store[legacyKey] : null;
+
+      if (!primary && !legacy) {
+        return { messages: [], clearedAt: 0, unreadAdmin: 0, unreadRenter: 0, lastTimestamp: 0 };
+      }
+      if (primary && !legacy) return primary;
+      if (!primary && legacy) return legacy;
+
+      const effectiveClearedAt = Math.max(Number(primary.clearedAt || 0), Number(legacy.clearedAt || 0));
+      const msgMap = new Map();
+      (Array.isArray(legacy.messages) ? legacy.messages : []).concat(Array.isArray(primary.messages) ? primary.messages : []).forEach(m => {
+        if (m && m.id && Number(m.timestamp || 0) > effectiveClearedAt) {
+          msgMap.set(m.id, m);
+        }
+      });
+      const mergedMsgs = Array.from(msgMap.values()).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+      return {
+        ...legacy,
+        ...primary,
+        clearedAt: effectiveClearedAt,
+        messages: mergedMsgs,
+        lastTimestamp: Math.max(Number(primary.lastTimestamp || 0), Number(legacy.lastTimestamp || 0)),
+        unreadAdmin: Math.max(Number(primary.unreadAdmin || 0), Number(legacy.unreadAdmin || 0)),
+        unreadRenter: Math.max(Number(primary.unreadRenter || 0), Number(legacy.unreadRenter || 0))
+      };
+    }
+
     function syncServerPrivateChatsToLocal(serverChats, forceImmediateUI = false) {
       if (!serverChats || typeof serverChats !== "object") return;
       const localStore = getPrivateChatStore();
       let changed = false;
+
+      const w = document.getElementById("modularLiveChatWidget");
+      const convView = document.getElementById("chatConversationView");
+      const isChatConvOpen = Boolean(w && w.style.display === "flex" && !w.classList.contains("minimized") && convView && convView.style.display !== "none");
 
       Object.keys(serverChats).forEach(chId => {
         const sCh = serverChats[chId];
@@ -23393,38 +23858,37 @@ function formatMonthLabel(rawVal) {
             changed = true;
           }
         }
+
+        // If this channel is currently open in the active conversation window, clear unread count for the active reader
+        if (isChatConvOpen && activeSelectedChatChannelId && chId === activeSelectedChatChannelId && localStore[chId]) {
+          if (activeRole === "Admin" && Number(localStore[chId].unreadAdmin || 0) > 0) {
+            localStore[chId].unreadAdmin = 0;
+            changed = true;
+          } else if (activeRole !== "Admin" && Number(localStore[chId].unreadRenter || 0) > 0) {
+            localStore[chId].unreadRenter = 0;
+            changed = true;
+          }
+        }
       });
 
       if (changed || forceImmediateUI) {
         try {
           localStorage.setItem(PRIVATE_CHAT_STORAGE_KEY, JSON.stringify(localStore));
         } catch (e) {}
-        const w = document.getElementById("modularLiveChatWidget");
         if (w && w.style.display === "flex") {
-          if (activeRole === "Admin") {
+          const dirView = document.getElementById("chatDirectoryView");
+          if (dirView && dirView.style.display !== "none") {
             renderChatDirectoryRoster();
           }
-          renderCurrentChatMessages();
+          if (convView && convView.style.display !== "none") {
+            renderCurrentChatMessages();
+          }
         }
         updateLiveChatUnreadBadge();
       }
     }
 
-    function buildAdminRenterChannelId(adminUsername, userUsername) {
-      const cleanAdmin = String(adminUsername || "admin").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
-      const cleanUser = String(userUsername || "guest").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
-      return `channel_admin_${cleanAdmin}__user_${cleanUser}`;
-    }
-
-    function getMyPrivateChatChannelId(targetAdminUsername = "") {
-      const cleanUser = String(activeUser || "guest").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
-      if (targetAdminUsername) {
-        return buildAdminRenterChannelId(targetAdminUsername, cleanUser);
-      }
-      return "channel_" + cleanUser;
-    }
-
-    // Requirement 7: Resolve clean Actual Name and Role ("Admin" or "Renter") without ever exposing @username
+    // Resolve clean Actual Name and Role ("Admin" or "Renter") without ever exposing @username
     function formatCleanChatRoleLabel(rawRole) {
       const r = String(rawRole || "").trim().toLowerCase();
       if (r === "admin") return "Admin";
@@ -23445,12 +23909,15 @@ function formatMonthLabel(rawVal) {
       const roleLabel = formatCleanChatRoleLabel(userObj?.Role || (uname.toLowerCase() === "admin" ? "Admin" : "Renter"));
       let actualName = String(userObj?.FullName || "").trim();
 
-      // If no FullName on user record, check linked Aadhaar renter record for actual RenterName
-      if (!actualName && userObj?.AadhaarNumber) {
-        const cleanAadh = normalizeAadhaarString(userObj.AadhaarNumber);
-        const matchedRenter = (DB.renters || []).find(r => normalizeAadhaarString(r.IdentityDocNumber) === cleanAadh);
-        if (matchedRenter && matchedRenter.RenterName) {
-          actualName = String(matchedRenter.RenterName).trim();
+      // Fix: Check both AssignedAadhaar and AadhaarNumber on user record to resolve actual RenterName
+      const linkedAadhaarRaw = userObj?.AssignedAadhaar || userObj?.AadhaarNumber || (uname.toLowerCase() === String(activeUser || "").toLowerCase() ? activeAssignedAadhaar : "");
+      if (!actualName && linkedAadhaarRaw) {
+        const cleanAadh = normalizeAadhaarString(linkedAadhaarRaw);
+        if (cleanAadh) {
+          const matchedRenter = (DB.renters || []).find(r => normalizeAadhaarString(r.IdentityDocNumber) === cleanAadh);
+          if (matchedRenter && matchedRenter.RenterName) {
+            actualName = String(matchedRenter.RenterName).trim();
+          }
         }
       }
       if (!actualName && userObj?.AssignedProperty && userObj?.AssignedFlat) {
@@ -23460,6 +23927,9 @@ function formatMonthLabel(rawVal) {
         if (matchedRenter && matchedRenter.RenterName) {
           actualName = String(matchedRenter.RenterName).trim();
         }
+      }
+      if (!actualName && uname.toLowerCase() === String(activeUser || "").toLowerCase() && activeUserFullName) {
+        actualName = String(activeUserFullName).trim();
       }
       if (!actualName) {
         actualName = roleLabel === "Admin" ? "Property Admin" : (uname || "Registered Renter");
@@ -23474,7 +23944,7 @@ function formatMonthLabel(rawVal) {
       };
     }
 
-    // Requirement 11: Check if a registered user is blocked
+    // Check if a registered user is blocked
     function isRegisteredUserBlockedForChat(userObj) {
       if (!userObj) return true;
       const unameClean = String(userObj.Username || "").trim().toLowerCase();
@@ -23531,7 +24001,7 @@ function formatMonthLabel(rawVal) {
       return admins;
     }
 
-    // Requirement 10 & 11: Admin ONLY sees users who have successfully registered (DB.users) AND are NOT blocked
+    // Admin ONLY sees users who have successfully registered (DB.users) AND are NOT blocked
     function getAllAvailablePrivateChatChannelsForAdmin() {
       const store = getPrivateChatStore();
       const channelsMap = new Map();
@@ -23543,17 +24013,26 @@ function formatMonthLabel(rawVal) {
         const unameLower = uname.toLowerCase();
         if (unameLower === myAdminUsername) return; // Do not list self
 
-        // Requirement 11: Automatically exclude any blocked user ID from the live chat list
+        // Automatically exclude any blocked user ID from the live chat list
         if (isRegisteredUserBlockedForChat(u)) return;
 
         const info = resolveUserActualFullNameAndRole(u);
         const chId = buildAdminRenterChannelId(myAdminUsername, unameLower);
-        const legacyChId = "channel_" + unameLower.replace(/[^a-z0-9_-]/g, "_");
+        const mergedCh = getMergedChannelObject(store, chId, unameLower);
 
-        const existingCh = store[chId] || store[legacyChId] || null;
         const detailsParts = [info.roleLabel];
-        if (u.AssignedProperty) detailsParts.push(u.AssignedProperty);
-        if (u.AssignedFlat) detailsParts.push(`Flat ${u.AssignedFlat}`);
+        let propName = u.AssignedProperty || "";
+        let flatName = u.AssignedFlat || "";
+        if (!propName && (u.AssignedAadhaar || u.AadhaarNumber)) {
+          const cleanAadh = normalizeAadhaarString(u.AssignedAadhaar || u.AadhaarNumber);
+          const matchedR = (DB.renters || []).find(r => normalizeAadhaarString(r.IdentityDocNumber) === cleanAadh);
+          if (matchedR) {
+            propName = matchedR.PropertyName || "";
+            flatName = matchedR.FlatName || "";
+          }
+        }
+        if (propName) detailsParts.push(propName);
+        if (flatName) detailsParts.push(`Flat ${flatName}`);
 
         channelsMap.set(chId, {
           channelId: chId,
@@ -23562,8 +24041,8 @@ function formatMonthLabel(rawVal) {
           displayName: info.actualName,
           roleLabel: info.roleLabel,
           flatLabel: detailsParts.join(" • "),
-          unreadAdmin: Number(existingCh?.unreadAdmin || 0),
-          lastTimestamp: existingCh?.lastTimestamp || 0
+          unreadAdmin: Number(mergedCh?.unreadAdmin || 0),
+          lastTimestamp: Number(mergedCh?.lastTimestamp || 0)
         });
       });
 
@@ -23574,9 +24053,7 @@ function formatMonthLabel(rawVal) {
     let activeSelectedTargetAdminUsername = "";
 
     function renderLiveChatChannelsAndMessages() {
-      if (activeRole === "Admin") {
-        renderChatDirectoryRoster();
-      }
+      renderChatDirectoryRoster();
       renderCurrentChatMessages();
     }
 
@@ -23585,15 +24062,18 @@ function formatMonthLabel(rawVal) {
       renderChatDirectoryRoster();
     }
 
-    // Requirement 7, 10 & 11: Registered Users List is exclusively visible to Admin, shows Actual Name + Role (no username), and excludes blocked users
     function renderChatDirectoryRoster() {
       const rosterEl = document.getElementById("chatRosterList");
-      const dirView = document.getElementById("chatDirectoryView");
       if (!rosterEl) return;
-      if (dirView) dirView.style.display = "flex";
 
       const store = getPrivateChatStore();
       const isAdmin = activeRole === "Admin";
+      const searchInputEl = document.getElementById("chatSearchInput");
+      if (searchInputEl) {
+        searchInputEl.placeholder = isAdmin
+          ? "Search renters or registered users..."
+          : "Search administrators...";
+      }
 
       if (isAdmin) {
         let channels = getAllAvailablePrivateChatChannelsForAdmin();
@@ -23622,11 +24102,11 @@ function formatMonthLabel(rawVal) {
           const safeName = String(c.displayName || "Renter").replace(/</g, "&lt;").replace(/>/g, "&gt;");
           const safeRole = String(c.roleLabel || "Renter").replace(/</g, "&lt;").replace(/>/g, "&gt;");
           const safeLabel = String(c.flatLabel || safeRole).replace(/</g, "&lt;").replace(/>/g, "&gt;");
-          const chData = store[c.channelId] || store["channel_" + String(c.targetUsername || "").toLowerCase()];
+          const chData = getMergedChannelObject(store, c.channelId, c.targetUsername);
           const clearedAt = Number(chData?.clearedAt || 0);
           const visibleMsgs = (chData?.messages || []).filter(m => m && Number(m.timestamp || 0) > clearedAt);
           const lastMsg = visibleMsgs.slice(-1)[0];
-          const snippet = lastMsg ? String(lastMsg.text || "").slice(0, 34).replace(/</g, "&lt;").replace(/>/g, "&gt;") : `Tap to chat with ${safeName} (${safeRole})...`;
+          const snippet = lastMsg ? String(lastMsg.text || "").slice(0, 38).replace(/</g, "&lt;").replace(/>/g, "&gt;") : `Tap to chat with ${safeName} (${safeRole})...`;
           const headerTitle = `${c.displayName} • ${c.roleLabel}`;
 
           return `
@@ -23653,8 +24133,6 @@ function formatMonthLabel(rawVal) {
           `;
         }).join("");
       } else {
-        // Requirement 3: When the renter opens live chat, it will FIRST provide an option to select which admin they want to talk to.
-        // It will display all the available admins related to that renter. The renter can click on a specific admin to start talking directly!
         let adminsList = getRegisteredAdminAccountsList();
         if (activeChatDirectoryFilter) {
           const q = activeChatDirectoryFilter;
@@ -23677,15 +24155,14 @@ function formatMonthLabel(rawVal) {
         const myUserClean = String(activeUser || "guest").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
         const listHtml = adminsList.map(adm => {
           const chId = buildAdminRenterChannelId(adm.username, myUserClean);
-          const chData = store[chId] || store["channel_" + myUserClean] || {};
+          const chData = getMergedChannelObject(store, chId, myUserClean);
           const unread = Number(chData.unreadRenter || 0);
           const clearedAt = Number(chData.clearedAt || 0);
           const visibleMsgs = (chData.messages || []).filter(m => m && Number(m.timestamp || 0) > clearedAt);
           const lastMsg = visibleMsgs.slice(-1)[0];
-          const snippet = lastMsg ? String(lastMsg.text || "").slice(0, 36).replace(/</g, "&lt;").replace(/>/g, "&gt;") : `Click to chat directly with ${adm.fullName} (Admin)...`;
+          const snippet = lastMsg ? String(lastMsg.text || "").slice(0, 38).replace(/</g, "&lt;").replace(/>/g, "&gt;") : `Click to chat directly with ${adm.fullName} (Admin)...`;
           const headerTitle = `${adm.fullName} • Admin`;
           const subTitle = "Admin • Direct Support Channel";
-          const initials = (adm.fullName || "AD").trim().substring(0, 2).toUpperCase();
 
           return `
             <div class="chat-roster-item" onclick="openChatWithChannel('${chId}', '${encodeURIComponent(headerTitle)}', '${encodeURIComponent(subTitle)}', '${encodeURIComponent(adm.username)}')">
@@ -23735,8 +24212,12 @@ function formatMonthLabel(rawVal) {
       if (convView) convView.style.display = "flex";
 
       const btnBackDir = document.getElementById("btnBackToChatDirectory");
+      const btnBackText = document.getElementById("btnBackToChatDirectoryText");
       const btnClearChat = document.getElementById("btnClearCurrentChat");
-      if (btnBackDir) btnBackDir.style.display = isAdmin ? "inline-flex" : "none";
+      if (btnBackDir) {
+        btnBackDir.style.display = "inline-flex";
+        if (btnBackText) btnBackText.innerText = isAdmin ? "Users" : "Admins";
+      }
       if (btnClearChat) btnClearChat.style.display = isAdmin ? "inline-flex" : "none";
 
       const nameEl = document.getElementById("activeChatPartnerName");
@@ -23745,10 +24226,32 @@ function formatMonthLabel(rawVal) {
       if (subEl) subEl.innerText = sub;
 
       const store = getPrivateChatStore();
+      let storeModified = false;
       if (store[channelId]) {
-        if (isAdmin) store[channelId].unreadAdmin = 0;
-        else store[channelId].unreadRenter = 0;
-        savePrivateChatStore(store);
+        if (isAdmin && Number(store[channelId].unreadAdmin || 0) > 0) {
+          store[channelId].unreadAdmin = 0;
+          storeModified = true;
+        } else if (!isAdmin && Number(store[channelId].unreadRenter || 0) > 0) {
+          store[channelId].unreadRenter = 0;
+          storeModified = true;
+        }
+      }
+      // Also clear unread count on legacy channel if present
+      const cleanRenter = isAdmin
+        ? channelId.replace(/^channel_admin_[^_]+__user_/, "").replace(/^channel_/, "")
+        : String(activeUser || "guest").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+      const legacyId = `channel_${cleanRenter}`;
+      if (store[legacyId]) {
+        if (isAdmin && Number(store[legacyId].unreadAdmin || 0) > 0) {
+          store[legacyId].unreadAdmin = 0;
+          storeModified = true;
+        } else if (!isAdmin && Number(store[legacyId].unreadRenter || 0) > 0) {
+          store[legacyId].unreadRenter = 0;
+          storeModified = true;
+        }
+      }
+      if (storeModified) {
+        savePrivateChatStore(store, true);
       }
 
       renderCurrentChatMessages();
@@ -23764,6 +24267,8 @@ function formatMonthLabel(rawVal) {
       const convView = document.getElementById("chatConversationView");
       if (dirView) dirView.style.display = "flex";
       if (convView) convView.style.display = "none";
+      const btnBackDir = document.getElementById("btnBackToChatDirectory");
+      if (btnBackDir) btnBackDir.style.display = "none";
       renderChatDirectoryRoster();
       updateLiveChatUnreadBadge();
     }
@@ -23771,23 +24276,26 @@ function formatMonthLabel(rawVal) {
     function renderCurrentChatMessages() {
       const box = document.getElementById("floatingChatMessagesBox") || document.getElementById("chatWidgetMessagesArea");
       if (!box) return;
-      const channelId = activeSelectedChatChannelId || (activeRole === "Admin" ? "" : getMyPrivateChatChannelId(activeSelectedTargetAdminUsername || (getRegisteredAdminAccountsList()[0]?.username || "admin")));
+      const isAdmin = activeRole === "Admin";
+      const channelId = activeSelectedChatChannelId || (isAdmin ? "" : getMyPrivateChatChannelId(activeSelectedTargetAdminUsername || (getRegisteredAdminAccountsList()[0]?.username || "admin")));
       if (!channelId) {
-        box.innerHTML = `<div style="text-align:center; padding:30px 14px; color:var(--text-muted); font-size:0.8rem;">Select a registered user from the list to view messages.</div>`;
+        box.innerHTML = `<div style="text-align:center; padding:30px 14px; color:var(--text-muted); font-size:0.8rem;">Select a conversation from the list to view messages.</div>`;
         return;
       }
       const store = getPrivateChatStore();
-      const channelObj = store[channelId] || { messages: [] };
+      const renterUname = isAdmin
+        ? channelId.replace(/^channel_admin_[^_]+__user_/, "").replace(/^channel_/, "")
+        : String(activeUser || "guest").trim().toLowerCase();
+      const channelObj = getMergedChannelObject(store, channelId, renterUname);
       const clearedAt = Number(channelObj.clearedAt || 0);
       const msgs = (Array.isArray(channelObj.messages) ? channelObj.messages : []).filter(m => m && Number(m.timestamp || 0) > clearedAt);
-      const isAdmin = activeRole === "Admin";
 
       if (msgs.length === 0) {
         box.innerHTML = `
           <div style="text-align:center; padding:30px 14px; color:var(--text-muted); font-size:0.8rem;">
             <i class="fa-solid fa-lock" style="font-size:1.5rem; color:#10b981; margin-bottom:8px; display:block;"></i>
             <strong style="color:var(--text-main); display:block; margin-bottom:4px;">Private 1-on-1 Conversation</strong>
-            Send a message below to start chatting.
+            Send a message below to start chatting directly.
           </div>
         `;
         return;
@@ -23799,7 +24307,6 @@ function formatMonthLabel(rawVal) {
           ? String(m.senderUsername).trim().toLowerCase() === myLowerUser
           : ((isAdmin && m.senderRole === "Admin") || (!isAdmin && m.senderRole !== "Admin"));
         const safeText = String(m.text || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        // Requirement 7: Strip any legacy (@username) and show Actual Name + Role ("Admin" or "Renter")
         const cleanSenderRole = formatCleanChatRoleLabel(m.senderRole);
         let cleanSenderName = String(m.senderName || "").replace(/\s*\(@[^)]+\)/g, "").trim();
         if (!cleanSenderName && m.senderUsername) {
@@ -23833,17 +24340,23 @@ function formatMonthLabel(rawVal) {
 
       if (isAdmin) {
         targetChannelId = activeSelectedChatChannelId;
-        targetAdminId = String(activeUser || "admin").trim();
+        targetAdminId = String(activeUser || "admin").trim().toLowerCase();
         if (!targetChannelId) {
           return triggerSideToast("Select a User", "Please select a registered user from the list first.", false);
         }
       } else {
-        targetAdminId = activeSelectedTargetAdminUsername || (getRegisteredAdminAccountsList()[0]?.username || "admin");
+        targetAdminId = String(activeSelectedTargetAdminUsername || (getRegisteredAdminAccountsList()[0]?.username || "admin")).trim().toLowerCase();
         targetChannelId = activeSelectedChatChannelId || getMyPrivateChatChannelId(targetAdminId);
         activeSelectedChatChannelId = targetChannelId;
+        activeSelectedTargetAdminUsername = targetAdminId;
       }
 
       const myInfo = resolveUserActualFullNameAndRole(activeUser);
+      const renterUnameClean = isAdmin
+        ? targetChannelId.replace(/^channel_admin_[^_]+__user_/, "").replace(/^channel_/, "")
+        : String(activeUser || "").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+
+      const mergedExisting = getMergedChannelObject(store, targetChannelId, renterUnameClean);
 
       if (!store[targetChannelId]) {
         let flatInfo = myInfo.roleLabel;
@@ -23857,28 +24370,28 @@ function formatMonthLabel(rawVal) {
         store[targetChannelId] = {
           channelId: targetChannelId,
           targetAdminUsername: String(targetAdminId).trim().toLowerCase(),
-          renterUsername: isAdmin ? targetChannelId.replace(/^channel_admin_[^_]+__user_/, "").replace(/^channel_/, "") : String(activeUser || "").trim().toLowerCase(),
+          renterUsername: renterUnameClean,
           displayName: isAdmin ? (partnerNameEl?.innerText || myInfo.actualName) : myInfo.actualName,
           flatLabel: flatInfo,
           unreadAdmin: 0,
           unreadRenter: 0,
-          clearedAt: 0,
+          clearedAt: Number(mergedExisting.clearedAt || 0),
           lastTimestamp: Date.now(),
-          messages: []
+          messages: Array.isArray(mergedExisting.messages) ? [...mergedExisting.messages] : []
         };
+      } else if (Array.isArray(mergedExisting.messages) && mergedExisting.messages.length > (store[targetChannelId].messages || []).length) {
+        store[targetChannelId].messages = [...mergedExisting.messages];
       }
 
-      // Requirement 7: Save Actual Name and Role ("Admin" or "Renter"), never @username
       const senderRoleLabel = isAdmin ? "Admin" : "Renter";
-      const senderActualName = isAdmin
-        ? (activeUserFullName || myInfo.actualName || "Admin")
-        : (sessionStorage.getItem("active_session_fullname") || myInfo.actualName || "Renter");
+      const senderActualName = myInfo.actualName || activeUserFullName || (isAdmin ? "Admin" : "Renter");
       const cleanSenderDisplay = `${String(senderActualName).replace(/\s*\(@[^)]+\)/g, "").trim()} (${senderRoleLabel})`;
 
       const nowTs = Date.now();
       const nowStr = new Date(nowTs).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
       store[targetChannelId].targetAdminUsername = String(targetAdminId || store[targetChannelId].targetAdminUsername || "admin").trim().toLowerCase();
+      store[targetChannelId].renterUsername = renterUnameClean;
       if (!Array.isArray(store[targetChannelId].messages)) {
         store[targetChannelId].messages = [];
       }
@@ -23896,8 +24409,10 @@ function formatMonthLabel(rawVal) {
 
       if (isAdmin) {
         store[targetChannelId].unreadRenter = Number(store[targetChannelId].unreadRenter || 0) + 1;
+        store[targetChannelId].unreadAdmin = 0;
       } else {
         store[targetChannelId].unreadAdmin = Number(store[targetChannelId].unreadAdmin || 0) + 1;
+        store[targetChannelId].unreadRenter = 0;
       }
 
       savePrivateChatStore(store, true);
@@ -23906,7 +24421,7 @@ function formatMonthLabel(rawVal) {
       updateLiveChatUnreadBadge();
     }
 
-    // Requirement 7: A renter is NEVER allowed to clear the chat; only the Admin has authority to clear the chat
+    // Only the Admin has authority to clear the chat
     function clearCurrentAdminChatChannel() {
       if (activeRole !== "Admin") {
         return triggerSideToast("Admin Authority Required", "Only the Admin has authority to clear the chat.", false);
@@ -23915,22 +24430,29 @@ function formatMonthLabel(rawVal) {
       if (!channelId) return;
       const store = getPrivateChatStore();
       const nowTs = Date.now();
-      if (!store[channelId]) {
-        store[channelId] = {
-          channelId: channelId,
-          messages: [],
-          unreadAdmin: 0,
-          unreadRenter: 0,
-          clearedAt: nowTs,
-          lastTimestamp: nowTs
-        };
-      } else {
-        store[channelId].messages = [];
-        store[channelId].unreadAdmin = 0;
-        store[channelId].unreadRenter = 0;
-        store[channelId].clearedAt = nowTs;
-        store[channelId].lastTimestamp = nowTs;
-      }
+      const renterUnameClean = channelId.replace(/^channel_admin_[^_]+__user_/, "").replace(/^channel_/, "");
+      const legacyId = `channel_${renterUnameClean}`;
+
+      [channelId, legacyId].forEach(key => {
+        if (!key) return;
+        if (!store[key]) {
+          store[key] = {
+            channelId: key,
+            messages: [],
+            unreadAdmin: 0,
+            unreadRenter: 0,
+            clearedAt: nowTs,
+            lastTimestamp: nowTs
+          };
+        } else {
+          store[key].messages = [];
+          store[key].unreadAdmin = 0;
+          store[key].unreadRenter = 0;
+          store[key].clearedAt = nowTs;
+          store[key].lastTimestamp = nowTs;
+        }
+      });
+
       savePrivateChatStore(store, true);
       renderChatDirectoryRoster();
       renderCurrentChatMessages();
@@ -23982,15 +24504,49 @@ function formatMonthLabel(rawVal) {
       w.style.display = "flex";
 
       const isAdmin = activeRole === "Admin";
-      const btnBackDir = document.getElementById("btnBackToChatDirectory");
       const btnClearChat = document.getElementById("btnClearCurrentChat");
-      if (btnBackDir) btnBackDir.style.display = isAdmin ? "inline-flex" : "none";
       if (btnClearChat) btnClearChat.style.display = isAdmin ? "inline-flex" : "none";
 
-      if (!activeSelectedChatChannelId || !isAdmin) {
-        returnToChatDirectory();
+      if (isAdmin) {
+        if (!activeSelectedChatChannelId) {
+          returnToChatDirectory();
+        } else {
+          const dirView = document.getElementById("chatDirectoryView");
+          const convView = document.getElementById("chatConversationView");
+          if (dirView) dirView.style.display = "none";
+          if (convView) convView.style.display = "flex";
+          const btnBackDir = document.getElementById("btnBackToChatDirectory");
+          const btnBackText = document.getElementById("btnBackToChatDirectoryText");
+          if (btnBackDir) {
+            btnBackDir.style.display = "inline-flex";
+            if (btnBackText) btnBackText.innerText = "Users";
+          }
+          renderCurrentChatMessages();
+        }
       } else {
-        renderCurrentChatMessages();
+        const adminsList = getRegisteredAdminAccountsList();
+        const myUserClean = String(activeUser || "guest").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+        if (activeSelectedChatChannelId && activeSelectedTargetAdminUsername) {
+          const targetAdm = adminsList.find(a => a.username.toLowerCase() === activeSelectedTargetAdminUsername.toLowerCase()) || adminsList[0];
+          const chId = buildAdminRenterChannelId(targetAdm.username, myUserClean);
+          openChatWithChannel(
+            chId,
+            encodeURIComponent(`${targetAdm.fullName} • Admin`),
+            encodeURIComponent("Admin • Direct Support Channel"),
+            encodeURIComponent(targetAdm.username)
+          );
+        } else if (adminsList.length === 1) {
+          const singleAdm = adminsList[0];
+          const chId = buildAdminRenterChannelId(singleAdm.username, myUserClean);
+          openChatWithChannel(
+            chId,
+            encodeURIComponent(`${singleAdm.fullName} • Admin`),
+            encodeURIComponent("Admin • Direct Support Channel"),
+            encodeURIComponent(singleAdm.username)
+          );
+        } else {
+          returnToChatDirectory();
+        }
       }
       updateLiveChatUnreadBadge();
     }
