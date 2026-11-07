@@ -9426,6 +9426,7 @@
 
     // Requirement 3: Granular Feature & Control Permissions Catalog for Manager Role
     const MANAGER_FEATURE_PERMISSIONS_CATALOG = [
+      { key: "properties", label: "Properties & Flats View", icon: "fa-building", desc: "View & open property and flat cards on dashboard" },
       { key: "pnl", label: "Profit & Loss Tracker", icon: "fa-chart-line", desc: "Top dashboard Profit & Loss summary" },
       { key: "search", label: "Global Search Bar", icon: "fa-magnifying-glass", desc: "Search properties, flats & renters" },
       { key: "liveChat", label: "Private Live Chat", icon: "fa-comments", desc: "1-on-1 live chat with renters" },
@@ -9499,7 +9500,7 @@
       const container = document.getElementById(containerId);
       if (!container) return;
       const defaultSelected = selectedPerms === null
-        ? ["pnl", "search", "liveChat", "billing", "renterProfile", "notifications"]
+        ? ["properties", "pnl", "search", "liveChat", "billing", "renterProfile", "notifications"]
         : normalizeManagerPermissionsList(selectedPerms);
       const selectedSet = new Set(defaultSelected);
       container.innerHTML = MANAGER_FEATURE_PERMISSIONS_CATALOG.map(item => {
@@ -12137,11 +12138,17 @@ function formatMonthLabel(rawVal) {
       }).join("");
     }
 
-    function markAllNotificationsAsRead() {
+    function markAllVisibleNotificationsRead() {
       const allNotices = getStoredBroadcastNotifications();
       const allIds = allNotices.map(n => n.id).filter(Boolean);
-      localStorage.setItem(PORTAL_READ_NOTIFICATIONS_KEY, JSON.stringify(allIds));
+      try {
+        localStorage.setItem(PORTAL_READ_NOTIFICATIONS_KEY, JSON.stringify(allIds));
+      } catch (e) {}
       syncNotificationsBadgeUI();
+    }
+
+    function markAllNotificationsAsRead() {
+      markAllVisibleNotificationsRead();
       renderNotificationsListUI();
       triggerSideToast("Notifications Read", "All notices marked as read.", true);
     }
@@ -12859,13 +12866,23 @@ function formatMonthLabel(rawVal) {
       if (isRestrictedRole(activeRole) || (activeRole === "Manager" && viewerScope && viewerScope.mode === "FLAT")) {
         const flatsContainer = document.getElementById("flatsList");
         const propsBar = document.querySelector(".properties-bar");
-        if (activeRole === "Manager") {
+        if (activeRole === "Manager" && !hasManagerPermission("properties")) {
+          if (propsBar) propsBar.style.display = "none";
+          if (flatsContainer) {
+            flatsContainer.innerHTML = "";
+            flatsContainer.style.display = "none";
+          }
           updateGlobalProfitAndLoss();
           renderHomeKhetSection();
+          return;
         }
         if (viewerScope && viewerScope.mode === "FLAT") {
           if (propsBar) propsBar.style.display = "none";
           selectedProperty = viewerScope.prop;
+          if (activeRole === "Manager") {
+            updateGlobalProfitAndLoss();
+            renderHomeKhetSection();
+          }
           if (flatsContainer) flatsContainer.style.display = "";
           renderFlatsGrid(viewerScope.prop);
           const assignedFlatObj = findFlatObject(viewerScope.prop, viewerScope.flat);
@@ -12904,6 +12921,17 @@ function formatMonthLabel(rawVal) {
       }
 
       const propsBar = document.querySelector(".properties-bar");
+      const flatsContainer = document.getElementById("flatsList");
+      if (activeRole === "Manager" && !hasManagerPermission("properties")) {
+        if (propsBar) propsBar.style.display = "none";
+        if (flatsContainer) {
+          flatsContainer.innerHTML = "";
+          flatsContainer.style.display = "none";
+        }
+        updateGlobalProfitAndLoss();
+        renderHomeKhetSection();
+        return;
+      }
       if (propsBar) propsBar.style.display = "";
 
       if (
@@ -12919,7 +12947,6 @@ function formatMonthLabel(rawVal) {
       renderPropertiesRow();
       renderHomeKhetSection();
 
-      const flatsContainer = document.getElementById("flatsList");
       if (selectedProperty && DB.properties.some(p => String(p.PropertyName).trim() === String(selectedProperty).trim())) {
         if (flatsContainer) flatsContainer.style.display = "";
         renderFlatsGrid(selectedProperty);
@@ -13755,19 +13782,6 @@ function formatMonthLabel(rawVal) {
     // Requirement 5: Dynamic Profit & Loss by Selected Property (Displays total for all properties by default; dynamically switches to selected property when clicked)
     function updateGlobalProfitAndLoss() {
       const pnlTracker = document.querySelector(".pnl-tracker");
-      if (pnlTracker && (!document.getElementById("topTotalProfit") || !document.getElementById("topTotalLoss"))) {
-        pnlTracker.innerHTML = `
-          <div class="pnl-item pnl-profit">
-            <i class="fa-solid fa-arrow-trend-up"></i>
-            <span>Profit: <strong id="topTotalProfit">₹0</strong></span>
-          </div>
-          <div class="pnl-divider"></div>
-          <div class="pnl-item pnl-loss">
-            <i class="fa-solid fa-arrow-trend-down"></i>
-            <span>Loss/Due: <strong id="topTotalLoss">₹0</strong></span>
-          </div>
-        `;
-      }
 
       let totalProfit = 0;
       let totalLoss = 0;
@@ -14753,7 +14767,7 @@ function formatMonthLabel(rawVal) {
           managerPermsBox.style.display = "block";
           const listEl = document.getElementById("createManagerPermsList");
           if (listEl && !listEl.innerHTML.trim()) {
-            renderManagerPermissionsCheckboxes("createManagerPermsList", ["properties", "billing", "renterProfile", "pnl", "liveChat"]);
+            renderManagerPermissionsCheckboxes("createManagerPermsList", null);
           }
         }
       } else {
@@ -15102,7 +15116,7 @@ function formatMonthLabel(rawVal) {
       const roleVal = (u.Role === "Renter") ? "Renter" : ((u.Role === "Viewer") ? "Viewer" : ((u.Role === "Manager") ? "Manager" : "Admin"));
       document.getElementById("editAssignRole").value = roleVal;
 
-      renderManagerPermissionsCheckboxes("editAssignManagerPermsList", u.ManagerPermissions || ["properties", "billing", "renterProfile", "pnl", "liveChat"]);
+      renderManagerPermissionsCheckboxes("editAssignManagerPermsList", u.ManagerPermissions || null);
 
       const aadhEl = document.getElementById("editAssignAadhaar");
       if (aadhEl) aadhEl.value = String(u.AssignedAadhaar || "").replace(/\D/g, "").slice(0, 12);
@@ -15165,7 +15179,7 @@ function formatMonthLabel(rawVal) {
         managerPermsBox.style.display = (role === "Manager") ? "block" : "none";
         const listEl = document.getElementById("editAssignManagerPermsList");
         if (role === "Manager" && listEl && !listEl.innerHTML.trim()) {
-          renderManagerPermissionsCheckboxes("editAssignManagerPermsList", ["properties", "billing", "renterProfile", "pnl", "liveChat"]);
+          renderManagerPermissionsCheckboxes("editAssignManagerPermsList", null);
         }
       }
 
@@ -15319,7 +15333,7 @@ function formatMonthLabel(rawVal) {
         const mgrPermsArr = normalizeManagerPermissionsList(u.ManagerPermissions);
         const mgrPermsLabels = isTargetManager
           ? mgrPermsArr.map(pid => {
-              const found = MANAGER_FEATURE_PERMISSIONS_CATALOG.find(item => item.id === pid);
+              const found = MANAGER_FEATURE_PERMISSIONS_CATALOG.find(item => item.key === pid);
               return found ? found.label : pid;
             }).join(", ")
           : "";
@@ -15569,11 +15583,11 @@ function formatMonthLabel(rawVal) {
       document.getElementById(subTabId)?.classList.add("active");
       if (subTabId === "setSubNotifications") {
         mountSharedNotificationsWorkspaceInto("setSubNotifications");
-        const composerEl = document.getElementById("adminNotificationComposerBox");
+        const composerEl = document.getElementById("adminNotificationComposeCard");
         const canCompose = activeRole === "Admin" || (activeRole === "Manager" && hasManagerPermission("notifications"));
         if (composerEl) {
           composerEl.style.display = canCompose ? "block" : "none";
-          if (canCompose && !editingNotificationId) {
+          if (canCompose && !currentEditingNoticeId) {
             renderNoticeTargetPropertiesChecklist(["ALL"]);
           }
         }
@@ -17970,6 +17984,9 @@ function formatMonthLabel(rawVal) {
             }
           }
         });
+        modal.querySelectorAll("#tabProfile .admin-only").forEach(el => {
+          el.style.display = canEditProf ? "" : "none";
+        });
       }
 
       openModal('flatDetailsModal');
@@ -18346,9 +18363,11 @@ function formatMonthLabel(rawVal) {
               <button type="button" class="btn-ledger-action receipt-btn" onclick="openBillReceiptModal('${bill.BillID}', '${cleanMonth}')" title="Show Receipt & Share on WhatsApp">
                 <i class="fa-solid fa-receipt"></i> Receipt
               </button>
+              ${(activeRole === "Admin" || (activeRole === "Manager" && hasManagerPermission("billing"))) ? `
               <button type="button" class="btn-ledger-action edit-btn admin-only" onclick="editBillMonthFromHistory('${cleanMonth}')" title="Edit Everything for This Month">
                 <i class="fa-solid fa-pen-to-square"></i> Edit
               </button>
+              ` : ""}
             </div>
           </td>
         `;
@@ -22279,7 +22298,7 @@ function formatMonthLabel(rawVal) {
       const mName = memberData && memberData.name ? String(memberData.name).replace(/"/g, "&quot;") : "";
       const mMobile = memberData && memberData.mobile ? String(memberData.mobile).replace(/"/g, "&quot;") : "";
       const mAadhaar = memberData && memberData.aadhaar ? formatAadhaarWithHyphens(String(memberData.aadhaar)) : "";
-      const isReadOnly = activeRole !== "Admin";
+      const isReadOnly = !(activeRole === "Admin" || (activeRole === "Manager" && hasManagerPermission("renterProfile")));
 
       const row = document.createElement("div");
       row.className = "family-member-dynamic-row";
@@ -24362,10 +24381,11 @@ function formatMonthLabel(rawVal) {
 
         // If this channel is currently open in the active conversation window, clear unread count for the active reader
         if (isChatConvOpen && activeSelectedChatChannelId && chId === activeSelectedChatChannelId && localStore[chId]) {
-          if (activeRole === "Admin" && Number(localStore[chId].unreadAdmin || 0) > 0) {
+          const isAdminChat = activeRole === "Admin" || (activeRole === "Manager" && hasManagerPermission("liveChat"));
+          if (isAdminChat && Number(localStore[chId].unreadAdmin || 0) > 0) {
             localStore[chId].unreadAdmin = 0;
             changed = true;
-          } else if (activeRole !== "Admin" && Number(localStore[chId].unreadRenter || 0) > 0) {
+          } else if (!isAdminChat && Number(localStore[chId].unreadRenter || 0) > 0) {
             localStore[chId].unreadRenter = 0;
             changed = true;
           }
