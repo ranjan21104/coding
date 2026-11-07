@@ -2928,7 +2928,7 @@
     display: none !important;
   }
 
-  /* Requirement 3: Upgraded Modern & Clean Renter Portal Interface */
+  /* Requirement 3: Upgraded Executive, Clean & Modern Renter Portal Interface */
   @keyframes homePortalEntryFade {
     0% { opacity: 0; transform: translateY(10px); }
     100% { opacity: 1; transform: translateY(0); }
@@ -2938,62 +2938,82 @@
   #dashboardScreen.active .renter-modern-portal {
     animation: homePortalEntryFade 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
+  body.role-renter .flats-container {
+    display: block !important;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 16px 20px 48px 20px;
+  }
   .renter-modern-portal {
+    grid-column: 1 / -1;
     max-width: 1240px;
-    margin: 18px auto 36px auto;
+    margin: 6px auto 36px auto;
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    padding: 0 4px;
+    gap: 20px;
+    padding: 0;
+    font-variant-numeric: tabular-nums;
   }
   .renter-hero-banner {
     position: relative;
     overflow: hidden;
     border-radius: 22px;
-    padding: 24px 28px;
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 27, 75, 0.9) 55%, rgba(15, 23, 42, 0.96) 100%);
-    border: 1.5px solid rgba(129, 140, 248, 0.38);
+    padding: 26px 28px;
+    background: linear-gradient(145deg, rgba(15, 23, 42, 0.96) 0%, rgba(23, 37, 84, 0.88) 55%, rgba(15, 23, 42, 0.97) 100%);
+    border: 1.5px solid rgba(129, 140, 248, 0.36);
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.12);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 22px;
+  }
+  .renter-hero-banner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #4f46e5 0%, #0ea5e9 50%, #10b981 100%);
   }
   body.theme-white .renter-hero-banner {
-    background: linear-gradient(135deg, #ffffff 0%, #f5f7ff 55%, #f0f9ff 100%);
-    border-color: rgba(99, 102, 241, 0.32);
-    box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08), inset 0 1px 0 #ffffff;
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 60%, #f0f9ff 100%);
+    border-color: #cbd5e1;
+    box-shadow: 0 14px 36px rgba(15, 23, 42, 0.07), inset 0 1px 0 #ffffff;
   }
   .renter-hero-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 18px;
+    gap: 20px;
   }
   .renter-hero-identity {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 18px;
     min-width: 0;
+    flex: 1;
   }
   .renter-hero-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 18px;
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
     overflow: hidden;
     border: 2px solid rgba(129, 140, 248, 0.65);
-    background: linear-gradient(135deg, #4f46e5, #06b6d4);
+    background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ffffff;
-    font-size: 1.5rem;
+    font-size: 1.65rem;
     font-weight: 900;
     flex-shrink: 0;
-    box-shadow: 0 10px 24px rgba(79, 70, 229, 0.35);
+    box-shadow: 0 10px 24px rgba(79, 70, 229, 0.32);
+    cursor: pointer;
+    position: relative;
   }
   .renter-hero-avatar img {
     width: 100%;
@@ -3001,27 +3021,47 @@
     object-fit: cover;
     display: block;
   }
+  .renter-verified-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.32);
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 6px;
+  }
+  body.theme-white .renter-verified-pill {
+    color: #0369a1;
+    background: #e0f2fe;
+    border-color: #bae6fd;
+  }
   .renter-meta-chips {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: 8px;
+    margin-top: 10px;
   }
   .renter-meta-chip {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 5px 12px;
+    gap: 7px;
+    padding: 6px 13px;
     border-radius: 10px;
-    font-size: 0.76rem;
-    font-weight: 800;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid var(--glass-border);
-    color: var(--text-main);
+    font-size: 0.78rem;
+    font-weight: 700;
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    color: #f8fafc;
   }
   body.theme-white .renter-meta-chip {
-    background: #ffffff;
+    background: #f8fafc;
     border-color: #cbd5e1;
     color: #0f172a;
   }
@@ -3034,26 +3074,51 @@
   .renter-action-btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     padding: 11px 18px;
     border-radius: 12px;
     font-size: 0.84rem;
     font-weight: 800;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     border: 1.5px solid transparent;
     color: #ffffff;
+    white-space: nowrap;
+    text-decoration: none;
   }
   .renter-action-btn:hover {
     transform: translateY(-2px);
+    filter: brightness(1.05);
+  }
+  .renter-action-btn:active {
+    transform: translateY(0);
   }
   .renter-action-btn.primary {
     background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
-    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.32);
+    border-color: rgba(165, 180, 252, 0.35);
   }
   .renter-action-btn.secondary {
+    background: rgba(30, 41, 59, 0.9);
+    border-color: rgba(148, 163, 184, 0.38);
+    color: #f8fafc;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
+  }
+  body.theme-white .renter-action-btn.secondary {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    color: #0f172a;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  }
+  .renter-action-btn.secondary:hover {
+    border-color: #6366f1;
+  }
+  .renter-action-btn.emerald {
     background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 8px 22px rgba(16, 185, 129, 0.34);
+    border-color: rgba(110, 231, 183, 0.38);
+    color: #ffffff !important;
   }
   .renter-action-btn.outline {
     background: var(--bg-input);
@@ -3065,36 +3130,98 @@
   }
   .renter-kpi-bento-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 14px;
   }
+  @media (max-width: 1024px) {
+    .renter-kpi-bento-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 560px) {
+    .renter-kpi-bento-grid {
+      grid-template-columns: 1fr;
+    }
+  }
   .renter-kpi-card {
-    background: rgba(15, 23, 42, 0.88);
-    border: 1.5px solid var(--glass-border);
-    border-radius: 18px;
+    background: rgba(15, 23, 42, 0.82);
+    border: 1.5px solid rgba(148, 163, 184, 0.22);
+    border-radius: 16px;
     padding: 18px 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     gap: 8px;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.24);
     transition: transform 0.2s ease, border-color 0.2s ease;
+    position: relative;
+    overflow: hidden;
   }
   .renter-kpi-card:hover {
     transform: translateY(-2px);
+    border-color: rgba(129, 140, 248, 0.45);
   }
   body.theme-white .renter-kpi-card {
     background: #ffffff;
-    border-color: #cbd5e1;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    border-color: #e2e8f0;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+  }
+  .renter-kpi-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .renter-kpi-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #94a3b8;
+  }
+  body.theme-white .renter-kpi-label {
+    color: #475569;
+  }
+  .renter-kpi-icon-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.88rem;
+    flex-shrink: 0;
+  }
+  .renter-kpi-value {
+    font-size: 1.55rem;
+    font-weight: 900;
+    color: var(--text-main);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+  }
+  body.theme-white .renter-kpi-value {
+    color: #0f172a;
+  }
+  .renter-kpi-sub {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1.35;
+  }
+  body.theme-white .renter-kpi-sub {
+    color: #475569;
   }
   .renter-main-split {
     display: grid;
-    grid-template-columns: 1.45fr 1fr;
-    gap: 18px;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 20px;
     align-items: start;
   }
-  @media (max-width: 960px) {
+  @media (max-width: 980px) {
     .renter-main-split {
       grid-template-columns: 1fr;
     }
@@ -3102,37 +3229,113 @@
   .renter-statement-card,
   .renter-payment-card,
   .renter-recent-bills-card {
-    background: rgba(15, 23, 42, 0.92);
-    border: 1.5px solid var(--glass-border);
+    background: rgba(15, 23, 42, 0.94);
+    border: 1.5px solid rgba(148, 163, 184, 0.24);
     border-radius: 20px;
-    padding: 22px 24px;
+    padding: 24px 26px;
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.34);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
   }
   body.theme-white .renter-statement-card,
   body.theme-white .renter-payment-card,
   body.theme-white .renter-recent-bills-card {
     background: #ffffff;
     border-color: #cbd5e1;
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
   }
   .renter-utility-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 12px;
-    margin: 14px 0;
-  }
-  .renter-utility-item {
-    background: var(--bg-input);
-    border: 1px solid var(--glass-border);
-    border-radius: 14px;
-    padding: 14px 16px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 10px;
+    margin: 16px 0;
+  }
+  .renter-utility-item {
+    background: rgba(30, 41, 59, 0.65);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 14px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    transition: border-color 0.18s ease, background 0.18s ease;
+  }
+  .renter-utility-item:hover {
+    border-color: rgba(129, 140, 248, 0.42);
+    background: rgba(30, 41, 59, 0.85);
   }
   body.theme-white .renter-utility-item {
     background: #f8fafc;
     border-color: #e2e8f0;
+  }
+  body.theme-white .renter-utility-item:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+  }
+  .renter-utility-item-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    flex: 1;
+  }
+  .renter-utility-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  body.theme-white .renter-utility-icon {
+    border-color: rgba(15, 23, 42, 0.08);
+  }
+  .renter-utility-reading-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  body.theme-white .renter-utility-reading-pill {
+    background: #e2e8f0;
+    color: #334155;
+  }
+  .renter-history-row-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .renter-history-row-item:hover {
+    border-color: #6366f1;
+    transform: translateX(2px);
+    background: rgba(30, 41, 59, 0.88);
+  }
+  body.theme-white .renter-history-row-item {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+  }
+  body.theme-white .renter-history-row-item:hover {
+    background: #eff6ff;
+    border-color: #6366f1;
   }
 
 
@@ -11381,9 +11584,15 @@ function formatMonthLabel(rawVal) {
       });
     });
 
+    const PERSISTED_AUTH_SESSION_KEY = "portal_active_auth_session_v1";
+    const EXPLICIT_LOGOUT_FLAG_KEY = "portal_explicit_logged_out_v1";
+    let authSessionEpoch = 0;
+    let hasCompletedInitialSync = false;
+
     function persistActiveAuthSession() {
       if (!activeUser) return;
       try {
+        if (localStorage.getItem(EXPLICIT_LOGOUT_FLAG_KEY) === "1") return;
         const normalizedPerms = normalizeManagerPermissionsList(activeManagerPermissions);
         sessionStorage.setItem("active_session_user", activeUser);
         sessionStorage.setItem("active_session_fullname", activeUserFullName || activeUser);
@@ -11407,12 +11616,21 @@ function formatMonthLabel(rawVal) {
           selectedProperty: selectedProperty || "",
           updatedAt: Date.now()
         };
-        localStorage.setItem("portal_active_auth_session_v1", JSON.stringify(sessionPayload));
+        localStorage.setItem(PERSISTED_AUTH_SESSION_KEY, JSON.stringify(sessionPayload));
       } catch (e) {}
     }
 
     function restoreSavedActiveSession() {
       try {
+        // Bug 2 Fix: If the user explicitly logged out, never restore any session on refresh
+        if (localStorage.getItem(EXPLICIT_LOGOUT_FLAG_KEY) === "1") {
+          sessionStorage.clear();
+          localStorage.removeItem(PERSISTED_AUTH_SESSION_KEY);
+          localStorage.removeItem("active_session_user");
+          localStorage.removeItem("active_session_role");
+          localStorage.removeItem("active_session_token");
+          return null;
+        }
         const sUser = sessionStorage.getItem("active_session_user");
         const sToken = sessionStorage.getItem("active_session_token");
         if (sUser) {
@@ -11433,7 +11651,7 @@ function formatMonthLabel(rawVal) {
             selectedProperty: sessionStorage.getItem("active_selected_property") || null
           };
         }
-        const rawLocal = localStorage.getItem("portal_active_auth_session_v1");
+        const rawLocal = localStorage.getItem(PERSISTED_AUTH_SESSION_KEY);
         if (rawLocal) {
           const parsed = JSON.parse(rawLocal);
           if (parsed && parsed.username) {
@@ -11462,6 +11680,9 @@ function formatMonthLabel(rawVal) {
     }
 
     function forceLockToLoginScreenForHistorySecurity(silent = true) {
+      const prevUser = activeUser;
+      authSessionEpoch++;
+      hasCompletedInitialSync = false;
       activeUser = null;
       activeRole = "Admin";
       activeUserFullName = "Administrator";
@@ -11481,7 +11702,10 @@ function formatMonthLabel(rawVal) {
         localStorage.removeItem("active_session_user");
         localStorage.removeItem("active_session_role");
         localStorage.removeItem("active_session_token");
-        localStorage.removeItem("portal_active_auth_session_v1");
+        localStorage.removeItem(PERSISTED_AUTH_SESSION_KEY);
+        if (prevUser) {
+          localStorage.removeItem("portal_device_session_" + String(prevUser).trim().toLowerCase());
+        }
       } catch (e) {}
 
       if (syncTimer) {
@@ -11624,6 +11848,31 @@ function formatMonthLabel(rawVal) {
         }
         const activeInFlat = flatRenters.filter(r => String(r.Status || "").trim().toLowerCase() === "active");
         if (activeInFlat.length > 0) return [activeInFlat[0]];
+        if (flatRenters.length > 0) return [flatRenters[0]];
+      }
+
+      // Match by RenterName if no property/flat was explicitly stored on user doc
+      if (uFullName && uFullName !== "administrator" && uFullName !== "admin") {
+        const byName = (DB.renters || []).filter(r => String(r.RenterName || "").trim().toLowerCase() === uFullName);
+        if (byName.length > 0) return byName;
+      }
+
+      // If assigned to a Property + Flat or Aadhaar (e.g., while live sync is completing or before a separate renter row is created), provide a clean resident profile object so the Renter's homepage renders immediately
+      if ((prop && flat && prop.toUpperCase() !== "ALL") || aadh) {
+        const flatObj = (prop && flat) ? findFlatObject(prop, flat) : null;
+        return [{
+          RenterID: "RENTER-SESSION-" + String(activeUser || "user").toLowerCase(),
+          PropertyName: prop || "Assigned Property",
+          FlatName: flat || "--",
+          RenterName: activeUserFullName || matchedU?.FullName || activeUser || "Resident",
+          IdentityDocNumber: aadh ? formatAadhaarWithHyphens(aadh) : "",
+          MobileNumber: activeUserMobile || matchedU?.MobileNumber || "",
+          Status: "Active",
+          RentAmount: flatObj?.RentAmount || 0,
+          ElecFixedRate: flatObj?.ElecRate || 0,
+          PNGFixedRate: flatObj?.PNGRate || 0,
+          WaterFixedRate: flatObj?.WaterRate || 0
+        }];
       }
       return [];
     }
@@ -11634,18 +11883,25 @@ function formatMonthLabel(rawVal) {
       const matchedProfiles = getRenterProfilesForLoggedInAadhaar();
       if (matchedProfiles.length === 0) return false;
 
-      const allowedIds = new Set(matchedProfiles.map(r => String(r.RenterID || "").trim()).filter(Boolean));
+      const realIds = matchedProfiles
+        .map(r => String(r.RenterID || "").trim())
+        .filter(id => id && !id.startsWith("RENTER-SESSION-"));
+      const allowedIds = new Set(realIds);
       const billRenterId = String(bill.RenterID || "").trim();
-      if (billRenterId) {
+      if (billRenterId && allowedIds.size > 0) {
         return allowedIds.has(billRenterId);
       }
 
-      // Fallback when older bill has no RenterID: strictly match TenantName + Property + Flat of that individual renter
+      // Fallback when older bill has no RenterID or session fallback profile is used: match TenantName + Property + Flat (or Property + Flat if assigned exclusively)
       const bTenant = String(bill.TenantName || "").trim().toLowerCase();
-      return matchedProfiles.some(r =>
-        String(r.RenterName || "").trim().toLowerCase() === bTenant &&
-        isSamePropAndFlat(r.PropertyName, r.FlatName, bill.PropertyName, bill.FlatName)
-      );
+      return matchedProfiles.some(r => {
+        const sameUnit = isSamePropAndFlat(r.PropertyName, r.FlatName, bill.PropertyName, bill.FlatName);
+        if (!sameUnit) return false;
+        const rName = String(r.RenterName || "").trim().toLowerCase();
+        if (bTenant && rName && bTenant === rName) return true;
+        if (!billRenterId && String(r.RenterID || "").startsWith("RENTER-SESSION-")) return true;
+        return false;
+      });
     }
 
     function resolveViewerAssignedScope() {
@@ -12323,6 +12579,23 @@ function formatMonthLabel(rawVal) {
       }
     }
 
+    function copyRenterHomeUpiId(upiIdText) {
+      const cleanUpi = String(upiIdText || "").trim();
+      if (!cleanUpi || cleanUpi === "Not Configured") {
+        triggerSideToast("UPI Not Set", "Official UPI ID has not been configured by the administrator yet.", false);
+        return;
+      }
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        navigator.clipboard.writeText(cleanUpi).then(() => {
+          triggerSideToast("UPI ID Copied", `${cleanUpi} copied to clipboard.`, true);
+        }).catch(() => {
+          triggerSideToast("UPI ID", cleanUpi, true);
+        });
+      } else {
+        triggerSideToast("UPI ID", cleanUpi, true);
+      }
+    }
+
     function renderAllDashboardUI() {
       const viewerScope = resolveViewerAssignedScope();
       renderHomeWelcomeHeroStrip();
@@ -12337,23 +12610,29 @@ function formatMonthLabel(rawVal) {
         const matchedProfiles = getRenterProfilesForLoggedInAadhaar();
         const primaryRenter = matchedProfiles.find(r => String(r.Status || "").toLowerCase() === "active") || matchedProfiles[0] || null;
 
-        if (!renterAadhaar || !primaryRenter) {
+        if (!primaryRenter) {
           updateRenterTopDashboardBalance(null);
           if (flatsContainer) {
             flatsContainer.style.display = "";
             flatsContainer.innerHTML = `
               <div class="renter-modern-portal">
-                <div class="renter-hero-banner" style="text-align:center; padding:38px 26px;">
-                  <div style="width:68px; height:68px; border-radius:20px; background:rgba(99,102,241,0.16); border:1.5px solid rgba(129,140,248,0.45); display:flex; align-items:center; justify-content:center; margin:0 auto 16px auto; font-size:1.85rem; color:#818cf8;">
+                <div class="renter-hero-banner" style="text-align:center; padding:44px 28px;">
+                  <div style="width:72px; height:72px; border-radius:20px; background:rgba(99,102,241,0.16); border:1.5px solid rgba(129,140,248,0.45); display:flex; align-items:center; justify-content:center; margin:0 auto 18px auto; font-size:1.95rem; color:#818cf8; box-shadow:0 12px 28px rgba(99,102,241,0.22);">
                     <i class="fa-solid fa-id-card-clip"></i>
                   </div>
-                  <h3 style="font-size:1.35rem; font-weight:900; color:var(--text-main); margin:0 0 8px 0;">No Renter Profile Linked to Your Account Yet</h3>
-                  <p style="font-size:0.88rem; color:var(--text-muted); max-width:560px; margin:0 auto 20px auto; line-height:1.6;">
-                    Your Renter account ${renterAadhaar ? `(Aadhaar: <strong>${formatAadhaarWithHyphens(renterAadhaar)}</strong>)` : ""} is isolated to your personal residency record. Please ask your Administrator to link your 12-digit Aadhaar number or flat assignment in Settings.
+                  <div class="renter-verified-pill" style="margin-bottom:12px;">
+                    <i class="fa-solid fa-shield-halved"></i> Resident Account Verification
+                  </div>
+                  <h3 style="font-size:1.45rem; font-weight:900; color:var(--text-main); margin:0 0 10px 0; letter-spacing:-0.02em;">No Renter Profile Linked to Your Account Yet</h3>
+                  <p style="font-size:0.9rem; color:var(--text-muted); max-width:580px; margin:0 auto 24px auto; line-height:1.65;">
+                    Your Renter account ${renterAadhaar ? `(Aadhaar: <strong>${formatAadhaarWithHyphens(renterAadhaar)}</strong>)` : ""} is isolated to your personal residency record. Please ask your Property Administrator to link your 12-digit Aadhaar number or flat assignment in Settings.
                   </p>
                   <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
                     <button type="button" class="renter-action-btn primary" onclick="openModularLiveChatWidget()">
                       <i class="fa-solid fa-comments"></i> Message Admin Support
+                    </button>
+                    <button type="button" class="renter-action-btn secondary" onclick="openContactUsModal()">
+                      <i class="fa-solid fa-headset"></i> Help Center
                     </button>
                     <button type="button" class="renter-action-btn secondary" onclick="handleLogout(true)">
                       <i class="fa-solid fa-right-from-bracket"></i> Switch Account
@@ -12366,8 +12645,8 @@ function formatMonthLabel(rawVal) {
           return;
         }
 
-        const targetProp = primaryRenter.PropertyName || (viewerScope && viewerScope.prop) || "";
-        const targetFlat = primaryRenter.FlatName || (viewerScope && viewerScope.flat) || "";
+        const targetProp = primaryRenter.PropertyName || (viewerScope && viewerScope.prop) || activeAssignedProperty || "Assigned Property";
+        const targetFlat = primaryRenter.FlatName || (viewerScope && viewerScope.flat) || activeAssignedFlat || "Assigned Flat";
         selectedProperty = targetProp;
 
         const assignedFlatObj = findFlatObject(targetProp, targetFlat) || {
@@ -12381,7 +12660,7 @@ function formatMonthLabel(rawVal) {
         selectedFlat = assignedFlatObj;
         activeFlatRenterObj = primaryRenter;
 
-        // Requirement 1: Strictly filter ONLY bills belonging to this logged-in renter
+        // Strictly filter ONLY bills belonging to this logged-in renter
         const myBills = (DB.bills || []).filter(b => isBillLinkedToLoggedInRenterAadhaar(b));
         // Sort strictly newest first (latest month first)
         myBills.sort((a, b) => {
@@ -12391,7 +12670,7 @@ function formatMonthLabel(rawVal) {
           return (new Date(b.BillDate || b.PaymentDate || 0).getTime()) - (new Date(a.BillDate || a.PaymentDate || 0).getTime());
         });
 
-        // Requirement 1: Resolve the current active month's bill for this individual renter
+        // Resolve the current active month's bill for this individual renter
         const currentCalendarYM = getCurrentCalendarYearMonth();
         const currentMonthBill = myBills.find(b => normalizeMonthYear(b.MonthYear || b.BillDate) === currentCalendarYM) || myBills[0] || null;
         const currentMonthMetrics = computeCurrentMonthStandaloneAdvanceAndDue(currentMonthBill);
@@ -12407,6 +12686,10 @@ function formatMonthLabel(rawVal) {
         const profileImgUrl = primaryRenter.ProfileImageURL && !isPlaceholderImageUrl(primaryRenter.ProfileImageURL)
           ? primaryRenter.ProfileImageURL
           : "";
+        const safeProfileImgArg = String(profileImgUrl || "").replace(/'/g, "\\'");
+        const safeRenterNameArg = String(renterNameDisplay || "Resident").replace(/'/g, "\\'");
+        const renterPhoneDisplay = sanitizeContactPhoneDisplay(primaryRenter.MobileNumber || activeUserMobile || "");
+        const effectiveAadhaar = renterAadhaar || String(primaryRenter.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
 
         // Active Month Status KPI Card (Strictly Advance OR Due for the current active month)
         const hasAdvance = currentMonthMetrics.advanceAmt > 0;
@@ -12426,6 +12709,13 @@ function formatMonthLabel(rawVal) {
             ? `<i class="fa-solid fa-clock"></i> Pending payment for ${activeMonthLabel}`
             : `<i class="fa-solid fa-circle-check"></i> All settled for ${activeMonthLabel}`);
 
+        const baseRentConfigured = parseFloat(
+          (currentMonthBill && currentMonthBill.BaseRent) ||
+          assignedFlatObj.RentAmount ||
+          primaryRenter.RentAmount ||
+          0
+        ) || 0;
+
         // Statement & Payment Hub HTML
         let statementLeftHtml = "";
         let paymentRightHtml = "";
@@ -12440,6 +12730,8 @@ function formatMonthLabel(rawVal) {
           const billMonthName = currentMonthMetrics.monthLabel;
           const billDateStr = formatDateOnly(currentMonthBill.BillDate || currentMonthBill.PaymentDate);
           const baseRentAmt = parseFloat(currentMonthBill.BaseRent) || 0;
+          const safeBillIdArg = String(currentMonthBill.BillID || "").replace(/'/g, "\\'");
+          const safeBillMonthArg = String(currentMonthBill.MonthYear || "").replace(/'/g, "\\'");
 
           const elecPrev = parseFloat(currentMonthBill.ElecPrev) || 0;
           const elecCurr = parseFloat(currentMonthBill.ElecCurr) || 0;
@@ -12465,6 +12757,7 @@ function formatMonthLabel(rawVal) {
           const resolvedContact = resolveFlatUpiAndContact(currentMonthBill.PropertyName || targetProp, assignedFlatObj, primaryRenter);
           const upiId = (currentMonthBill.UPIID && String(currentMonthBill.UPIID).trim()) ? String(currentMonthBill.UPIID).trim() : resolvedContact.upiId;
           const upiName = (currentMonthBill.UPIName && String(currentMonthBill.UPIName).trim()) ? String(currentMonthBill.UPIName).trim() : resolvedContact.upiName;
+          const safeUpiIdArg = String(upiId || "").replace(/'/g, "\\'");
           const contactPhone =
             resolvedContact.contractMobile ||
             sanitizeContactPhoneDisplay(currentMonthBill.ContractMobile) ||
@@ -12482,128 +12775,166 @@ function formatMonthLabel(rawVal) {
 
           statementLeftHtml = `
             <div class="renter-statement-card">
-              <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; padding-bottom:16px; margin-bottom:18px; border-bottom:1px solid var(--glass-border);">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px; padding-bottom:18px; margin-bottom:18px; border-bottom:1px solid var(--glass-border);">
                 <div>
-                  <div style="display:inline-flex; align-items:center; gap:6px; font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#38bdf8; margin-bottom:4px;">
-                    <i class="fa-solid fa-file-invoice-dollar"></i> Active Monthly Statement
+                  <div style="display:inline-flex; align-items:center; gap:6px; font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:0.07em; color:#38bdf8; margin-bottom:5px;">
+                    <i class="fa-solid fa-file-invoice-dollar"></i> Official Monthly Statement
                   </div>
-                  <h3 style="margin:0; font-size:1.25rem; font-weight:900; color:var(--text-main);">
+                  <h3 style="margin:0; font-size:1.32rem; font-weight:900; color:var(--text-main); letter-spacing:-0.015em;">
                     ${billMonthName} Billing Breakdown
                   </h3>
-                  <div style="font-size:0.76rem; color:var(--text-muted); margin-top:3px;">
-                    Issued on ${billDateStr} • ${currentMonthBill.PropertyName || targetProp} (Flat ${currentMonthBill.FlatName || targetFlat})
+                  <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <span><i class="fa-regular fa-calendar" style="margin-right:4px; color:#818cf8;"></i>Issued ${billDateStr}</span>
+                    <span>•</span>
+                    <span><i class="fa-solid fa-location-dot" style="margin-right:4px; color:#38bdf8;"></i>${currentMonthBill.PropertyName || targetProp} (Flat ${currentMonthBill.FlatName || targetFlat})</span>
                   </div>
                 </div>
-                <span class="${isBillFullyPaid ? "badge-paid" : "badge-unpaid"}" style="font-size:0.8rem; padding:7px 14px; font-weight:900; border-radius:10px; display:inline-flex; align-items:center; gap:6px;">
-                  <i class="fa-solid ${isBillFullyPaid ? "fa-circle-check" : "fa-triangle-exclamation"}"></i>
-                  ${isBillFullyPaid ? (billAdvance > 0 ? `Advance • ₹${billAdvance.toLocaleString("en-IN")}` : `Settled • ₹0 Due`) : `Due • ₹${billDue.toLocaleString("en-IN")}`}
-                </span>
+                <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                  <button
+                    type="button"
+                    class="renter-action-btn secondary"
+                    style="padding:8px 14px; font-size:0.78rem; border-radius:10px;"
+                    onclick="event.stopPropagation(); openBillReceiptModal('${safeBillIdArg}', '${safeBillMonthArg}');"
+                  >
+                    <i class="fa-solid fa-print" style="color:#38bdf8;"></i> View / Print Receipt
+                  </button>
+                  <span class="${isBillFullyPaid ? "badge-paid" : "badge-unpaid"}" style="font-size:0.8rem; padding:8px 14px; font-weight:900; border-radius:10px; display:inline-flex; align-items:center; gap:6px;">
+                    <i class="fa-solid ${isBillFullyPaid ? "fa-circle-check" : "fa-triangle-exclamation"}"></i>
+                    ${isBillFullyPaid ? (billAdvance > 0 ? `Advance • ₹${billAdvance.toLocaleString("en-IN")}` : `Settled • ₹0 Due`) : `Due • ₹${billDue.toLocaleString("en-IN")}`}
+                  </span>
+                </div>
               </div>
 
               ${!isBillFullyPaid ? `
-                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; background:rgba(239,68,68,0.12); border:1.5px solid rgba(239,68,68,0.45); border-radius:14px; padding:14px 16px; margin-bottom:18px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; background:rgba(239,68,68,0.11); border:1.5px solid rgba(239,68,68,0.42); border-radius:14px; padding:14px 16px; margin-bottom:18px;">
                   <div style="display:flex; align-items:center; gap:12px;">
-                    <div style="width:38px; height:38px; border-radius:10px; background:rgba(239,68,68,0.2); color:#f87171; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;">
+                    <div style="width:40px; height:40px; border-radius:11px; background:rgba(239,68,68,0.2); color:#f87171; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;">
                       <i class="fa-solid fa-bell"></i>
                     </div>
                     <div>
-                      <div style="font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#fca5a5;">Payment Action Needed</div>
-                      <div style="font-size:0.86rem; font-weight:700; color:var(--text-main);">Pending balance of <strong>₹${billDue.toLocaleString("en-IN")}</strong> for ${billMonthName}.</div>
+                      <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#fca5a5;">Payment Action Needed</div>
+                      <div style="font-size:0.88rem; font-weight:700; color:var(--text-main);">Pending balance of <strong>₹${billDue.toLocaleString("en-IN")}</strong> for ${billMonthName}.</div>
                     </div>
                   </div>
                   <button type="button" class="renter-action-btn emerald" style="padding:9px 16px; font-size:0.82rem;" onclick="event.stopPropagation(); openRentCollectionQrModal();">
-                    <i class="fa-solid fa-qrcode"></i> Pay ₹${billDue.toLocaleString("en-IN")}
+                    <i class="fa-solid fa-qrcode"></i> Pay ₹${billDue.toLocaleString("en-IN")} Now
                   </button>
                 </div>
-              ` : ""}
+              ` : `
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; background:rgba(16,185,129,0.1); border:1.5px solid rgba(16,185,129,0.35); border-radius:14px; padding:12px 16px; margin-bottom:18px;">
+                  <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="width:36px; height:36px; border-radius:10px; background:rgba(16,185,129,0.2); color:#34d399; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0;">
+                      <i class="fa-solid fa-shield-check"></i>
+                    </div>
+                    <div>
+                      <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#34d399;">Statement Settled</div>
+                      <div style="font-size:0.84rem; font-weight:700; color:var(--text-main);">All dues for ${billMonthName} are cleared${billAdvance > 0 ? ` with ₹${billAdvance.toLocaleString("en-IN")} advance credit` : ""}.</div>
+                    </div>
+                  </div>
+                  <button type="button" class="renter-action-btn secondary" style="padding:7px 13px; font-size:0.76rem;" onclick="event.stopPropagation(); openBillReceiptModal('${safeBillIdArg}', '${safeBillMonthArg}');">
+                    <i class="fa-solid fa-download" style="color:#34d399;"></i> Official Receipt
+                  </button>
+                </div>
+              `}
 
-              <!-- Itemized Utility & Rent Breakdown Grid -->
+              <!-- Itemized Utility & Rent Breakdown List -->
               <div class="renter-utility-grid" style="margin-bottom:18px;">
                 <div class="renter-utility-item">
                   <div class="renter-utility-item-left">
-                    <div class="renter-utility-icon" style="background:rgba(99,102,241,0.15); color:#818cf8;">
+                    <div class="renter-utility-icon" style="background:rgba(99,102,241,0.15); color:#818cf8; border:1px solid rgba(99,102,241,0.3);">
                       <i class="fa-solid fa-house-chimney"></i>
                     </div>
                     <div>
-                      <div style="font-size:0.88rem; font-weight:800; color:var(--text-main);">Monthly Base Rent</div>
-                      <div style="font-size:0.74rem; color:var(--text-muted);">Fixed flat rental charge for ${billMonthName}</div>
+                      <div style="font-size:0.9rem; font-weight:800; color:var(--text-main);">Monthly Base Rent</div>
+                      <div style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">
+                        <span class="renter-utility-reading-pill"><i class="fa-regular fa-building"></i> Flat ${currentMonthBill.FlatName || targetFlat} Fixed Rent</span>
+                      </div>
                     </div>
                   </div>
-                  <strong style="font-size:1rem; font-weight:900; color:var(--text-main);">₹${baseRentAmt.toLocaleString("en-IN")}</strong>
+                  <strong style="font-size:1.05rem; font-weight:900; color:var(--text-main); font-variant-numeric:tabular-nums;">₹${baseRentAmt.toLocaleString("en-IN")}</strong>
                 </div>
 
                 <div class="renter-utility-item">
                   <div class="renter-utility-item-left">
-                    <div class="renter-utility-icon" style="background:rgba(56,189,248,0.15); color:#38bdf8;">
+                    <div class="renter-utility-icon" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.3);">
                       <i class="fa-solid fa-bolt"></i>
                     </div>
                     <div>
-                      <div style="font-size:0.88rem; font-weight:800; color:var(--text-main);">Electricity Consumption</div>
-                      <div style="font-size:0.74rem; color:var(--text-muted);">Meter: ${elecPrev} → ${elecCurr} (${elecUnits} Units @ ₹${elecRate}/U)</div>
+                      <div style="font-size:0.9rem; font-weight:800; color:var(--text-main);">Electricity Consumption</div>
+                      <div style="font-size:0.74rem; color:var(--text-muted); margin-top:3px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                        <span class="renter-utility-reading-pill">Meter: ${elecPrev} → ${elecCurr}</span>
+                        <span>${elecUnits} Units × ₹${elecRate}/Unit</span>
+                      </div>
                     </div>
                   </div>
-                  <strong style="font-size:1rem; font-weight:900; color:#38bdf8;">₹${elecTot.toLocaleString("en-IN")}</strong>
+                  <strong style="font-size:1.05rem; font-weight:900; color:#38bdf8; font-variant-numeric:tabular-nums;">₹${elecTot.toLocaleString("en-IN")}</strong>
                 </div>
 
                 <div class="renter-utility-item">
                   <div class="renter-utility-item-left">
-                    <div class="renter-utility-icon" style="background:rgba(245,158,11,0.15); color:#f59e0b;">
+                    <div class="renter-utility-icon" style="background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid rgba(245,158,11,0.3);">
                       <i class="fa-solid fa-fire-flame-simple"></i>
                     </div>
                     <div>
-                      <div style="font-size:0.88rem; font-weight:800; color:var(--text-main);">PNG Gas Supply</div>
-                      <div style="font-size:0.74rem; color:var(--text-muted);">Meter: ${pngPrev} → ${pngCurr} (${pngUnits} Units @ ₹${pngRate}/U)</div>
+                      <div style="font-size:0.9rem; font-weight:800; color:var(--text-main);">PNG Gas Supply</div>
+                      <div style="font-size:0.74rem; color:var(--text-muted); margin-top:3px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                        <span class="renter-utility-reading-pill">Meter: ${pngPrev} → ${pngCurr}</span>
+                        <span>${pngUnits} Units × ₹${pngRate}/Unit</span>
+                      </div>
                     </div>
                   </div>
-                  <strong style="font-size:1rem; font-weight:900; color:#f59e0b;">₹${pngTot.toLocaleString("en-IN")}</strong>
+                  <strong style="font-size:1.05rem; font-weight:900; color:#f59e0b; font-variant-numeric:tabular-nums;">₹${pngTot.toLocaleString("en-IN")}</strong>
                 </div>
 
                 <div class="renter-utility-item">
                   <div class="renter-utility-item-left">
-                    <div class="renter-utility-icon" style="background:rgba(6,182,212,0.15); color:#06b6d4;">
+                    <div class="renter-utility-icon" style="background:rgba(6,182,212,0.15); color:#06b6d4; border:1px solid rgba(6,182,212,0.3);">
                       <i class="fa-solid fa-faucet-drip"></i>
                     </div>
                     <div>
-                      <div style="font-size:0.88rem; font-weight:800; color:var(--text-main);">Water Supply</div>
-                      <div style="font-size:0.74rem; color:var(--text-muted);">Meter: ${waterPrev} → ${waterCurr} (${waterUnits} Units @ ₹${waterRate}/U)</div>
+                      <div style="font-size:0.9rem; font-weight:800; color:var(--text-main);">Water Supply</div>
+                      <div style="font-size:0.74rem; color:var(--text-muted); margin-top:3px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                        <span class="renter-utility-reading-pill">Meter: ${waterPrev} → ${waterCurr}</span>
+                        <span>${waterUnits} Units × ₹${waterRate}/Unit</span>
+                      </div>
                     </div>
                   </div>
-                  <strong style="font-size:1rem; font-weight:900; color:#06b6d4;">₹${waterTot.toLocaleString("en-IN")}</strong>
+                  <strong style="font-size:1.05rem; font-weight:900; color:#06b6d4; font-variant-numeric:tabular-nums;">₹${waterTot.toLocaleString("en-IN")}</strong>
                 </div>
 
                 ${addAmt > 0 || (addName && addName !== "None") ? `
                 <div class="renter-utility-item">
                   <div class="renter-utility-item-left">
-                    <div class="renter-utility-icon" style="background:rgba(168,85,247,0.15); color:#c084fc;">
+                    <div class="renter-utility-icon" style="background:rgba(168,85,247,0.15); color:#c084fc; border:1px solid rgba(168,85,247,0.3);">
                       <i class="fa-solid fa-circle-plus"></i>
                     </div>
                     <div>
-                      <div style="font-size:0.88rem; font-weight:800; color:var(--text-main);">Additional Charge</div>
-                      <div style="font-size:0.74rem; color:var(--text-muted);">${addName}</div>
+                      <div style="font-size:0.9rem; font-weight:800; color:var(--text-main);">Additional Charge</div>
+                      <div style="font-size:0.74rem; color:var(--text-muted); margin-top:3px;">${addName}</div>
                     </div>
                   </div>
-                  <strong style="font-size:1rem; font-weight:900; color:#c084fc;">₹${addAmt.toLocaleString("en-IN")}</strong>
+                  <strong style="font-size:1.05rem; font-weight:900; color:#c084fc; font-variant-numeric:tabular-nums;">₹${addAmt.toLocaleString("en-IN")}</strong>
                 </div>
                 ` : ""}
               </div>
 
               <!-- Total Summary Bar -->
-              <div style="padding:16px 18px; border-radius:14px; background:linear-gradient(135deg, rgba(99,102,241,0.14) 0%, rgba(14,165,233,0.1) 100%); border:1.5px solid rgba(99,102,241,0.38); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+              <div style="padding:16px 20px; border-radius:14px; background:linear-gradient(135deg, rgba(99,102,241,0.14) 0%, rgba(14,165,233,0.1) 100%); border:1.5px solid rgba(99,102,241,0.38); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">
                 <div>
-                  <div style="font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#818cf8;">${billMonthName} Total Bill</div>
-                  <div style="font-size:1.35rem; font-weight:900; color:var(--text-main); margin-top:2px;">₹${billTotal.toLocaleString("en-IN")}</div>
+                  <div style="font-size:0.71rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#818cf8;">${billMonthName} Total Billed</div>
+                  <div style="font-size:1.4rem; font-weight:900; color:var(--text-main); margin-top:2px; font-variant-numeric:tabular-nums;">₹${billTotal.toLocaleString("en-IN")}</div>
                 </div>
-                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
                   <div style="text-align:right;">
-                    <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; color:#38bdf8;">Paid</div>
-                    <div style="font-size:1rem; font-weight:900; color:#38bdf8;">₹${billPaid.toLocaleString("en-IN")}</div>
+                    <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#38bdf8;">Paid Amount</div>
+                    <div style="font-size:1.08rem; font-weight:900; color:#38bdf8; font-variant-numeric:tabular-nums;">₹${billPaid.toLocaleString("en-IN")}</div>
                   </div>
-                  <div style="width:1px; height:28px; background:var(--glass-border);"></div>
+                  <div style="width:1px; height:30px; background:var(--glass-border);"></div>
                   <div style="text-align:right;">
-                    <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; color:${billAdvance > 0 ? "#34d399" : (billDue > 0 ? "#f87171" : "#34d399")};">
-                      ${billAdvance > 0 ? "Advance" : "Due"}
+                    <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:${billAdvance > 0 ? "#34d399" : (billDue > 0 ? "#f87171" : "#34d399")};">
+                      ${billAdvance > 0 ? "Advance Credit" : "Balance Due"}
                     </div>
-                    <div style="font-size:1rem; font-weight:900; color:${billAdvance > 0 ? "#34d399" : (billDue > 0 ? "#f87171" : "#34d399")};">
+                    <div style="font-size:1.08rem; font-weight:900; color:${billAdvance > 0 ? "#34d399" : (billDue > 0 ? "#f87171" : "#34d399")}; font-variant-numeric:tabular-nums;">
                       ₹${(billAdvance > 0 ? billAdvance : billDue).toLocaleString("en-IN")}
                     </div>
                   </div>
@@ -12618,35 +12949,51 @@ function formatMonthLabel(rawVal) {
               <div class="renter-payment-card">
                 <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px;">
                   <div>
-                    <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#10b981;">
+                    <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.07em; color:#10b981;">
                       <i class="fa-solid fa-qrcode"></i> Instant UPI Payment Hub
                     </div>
-                    <h4 style="margin:3px 0 0 0; font-size:1.08rem; font-weight:900; color:var(--text-main);">
+                    <h4 style="margin:3px 0 0 0; font-size:1.1rem; font-weight:900; color:var(--text-main);">
                       Scan &amp; Pay (${billMonthName})
                     </h4>
                   </div>
-                  <span style="font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:8px; background:rgba(16,185,129,0.14); color:#34d399; border:1px solid rgba(16,185,129,0.35);">
+                  <span style="font-size:0.8rem; font-weight:900; padding:5px 11px; border-radius:9px; background:rgba(16,185,129,0.14); color:#34d399; border:1px solid rgba(16,185,129,0.35); font-variant-numeric:tabular-nums;">
                     ₹${payableAmt.toLocaleString("en-IN")}
                   </span>
                 </div>
 
                 <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; padding:14px; border-radius:14px; background:var(--bg-input); border:1px solid var(--glass-border); margin-bottom:14px;">
-                  <div style="background:#ffffff; padding:8px; border-radius:12px; border:2px solid #cbd5e1; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                  <div
+                    style="background:#ffffff; padding:8px; border-radius:12px; border:2px solid #cbd5e1; display:flex; align-items:center; justify-content:center; flex-shrink:0; cursor:pointer; box-shadow:0 6px 16px rgba(0,0,0,0.18);"
+                    title="Click to enlarge QR Code"
+                    onclick="event.stopPropagation(); openRentCollectionQrModal();"
+                  >
                     <canvas id="renterHomeInlineQrCanvas" width="128" height="128" style="width:128px; height:128px; display:block;"></canvas>
                   </div>
-                  <div style="flex:1; min-width:160px;">
-                    <div style="font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Payee Name</div>
-                    <div style="font-size:0.95rem; font-weight:900; color:var(--text-main); margin-bottom:6px;">${upiName || targetProp || "Property Admin"}</div>
-                    <div style="font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Official UPI ID</div>
-                    <div style="font-size:0.86rem; font-weight:800; color:var(--primary); word-break:break-all; margin-bottom:6px;">${upiId || "Not Configured"}</div>
-                    <div style="font-size:0.72rem; color:var(--text-muted);"><i class="fa-solid fa-phone" style="color:#38bdf8; margin-right:4px;"></i>Support: <strong>${contactPhone}</strong></div>
+                  <div style="flex:1; min-width:165px;">
+                    <div style="font-size:0.68rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Payee Name</div>
+                    <div style="font-size:0.95rem; font-weight:900; color:var(--text-main); margin-bottom:8px;">${upiName || targetProp || "Property Admin"}</div>
+                    <div style="font-size:0.68rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Official UPI ID</div>
+                    <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
+                      <span style="font-size:0.84rem; font-weight:800; color:var(--primary); word-break:break-all;">${upiId || "Not Configured"}</span>
+                      ${upiId ? `
+                        <button
+                          type="button"
+                          onclick="event.stopPropagation(); copyRenterHomeUpiId('${safeUpiIdArg}');"
+                          style="background:rgba(99,102,241,0.15); border:1px solid rgba(99,102,241,0.35); color:#818cf8; border-radius:6px; padding:2px 7px; font-size:0.68rem; font-weight:800; cursor:pointer;"
+                          title="Copy UPI ID"
+                        >
+                          <i class="fa-regular fa-copy"></i> Copy
+                        </button>
+                      ` : ""}
+                    </div>
+                    <div style="font-size:0.74rem; color:var(--text-muted);"><i class="fa-solid fa-phone" style="color:#38bdf8; margin-right:5px;"></i>Support: <strong>${contactPhone}</strong></div>
                   </div>
                 </div>
 
                 <button
                   type="button"
                   class="renter-action-btn emerald"
-                  style="width:100%; justify-content:center; padding:13px 20px; font-size:0.92rem;"
+                  style="width:100%; justify-content:center; padding:13px 20px; font-size:0.9rem;"
                   onclick="event.stopPropagation(); openRentCollectionQrModal();"
                 >
                   <i class="fa-solid fa-indian-rupee-sign"></i> Open Full Payment &amp; UPI QR Modal
@@ -12656,33 +13003,44 @@ function formatMonthLabel(rawVal) {
               <!-- Recent Individual Statements Quick List -->
               <div class="renter-recent-bills-card">
                 <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px;">
-                  <div style="font-size:0.86rem; font-weight:900; color:var(--text-main);">
+                  <div style="font-size:0.88rem; font-weight:900; color:var(--text-main);">
                     <i class="fa-solid fa-clock-rotate-left" style="color:#818cf8; margin-right:6px;"></i>My Billing History (${myBills.length})
                   </div>
                   <button
                     type="button"
-                    style="background:none; border:none; color:#38bdf8; font-size:0.76rem; font-weight:800; cursor:pointer;"
+                    style="background:none; border:none; color:#38bdf8; font-size:0.76rem; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:5px;"
                     onclick="openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'});"
                   >
-                    View All <i class="fa-solid fa-arrow-right"></i>
+                    <span>All Statements</span> <i class="fa-solid fa-arrow-right"></i>
                   </button>
                 </div>
                 <div style="display:flex; flex-direction:column; gap:8px;">
-                  ${myBills.slice(0, 3).map(bItem => {
+                  ${myBills.slice(0, 4).map(bItem => {
                     const mMetrics = computeCurrentMonthStandaloneAdvanceAndDue(bItem);
                     const isSettled = mMetrics.dueAmt <= 0;
+                    const itemBillId = String(bItem.BillID || "").replace(/'/g, "\\'");
+                    const itemMonthYear = String(bItem.MonthYear || "").replace(/'/g, "\\'");
                     return `
                       <div
-                        style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border-radius:11px; background:var(--bg-input); border:1px solid var(--glass-border); cursor:pointer;"
-                        onclick="openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'});"
+                        class="renter-history-row-item"
+                        onclick="openBillReceiptModal('${itemBillId}', '${itemMonthYear}');"
+                        title="Click to view official receipt for ${mMetrics.monthLabel}"
                       >
-                        <div>
-                          <div style="font-size:0.82rem; font-weight:800; color:var(--text-main);">${mMetrics.monthLabel}</div>
-                          <div style="font-size:0.7rem; color:var(--text-muted);">Bill: ₹${mMetrics.standaloneCharge.toLocaleString("en-IN")} • Paid: ₹${mMetrics.paidAmount.toLocaleString("en-IN")}</div>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                          <div style="width:34px; height:34px; border-radius:9px; background:${isSettled ? "rgba(16,185,129,0.14)" : "rgba(239,68,68,0.14)"}; color:${isSettled ? "#34d399" : "#f87171"}; display:flex; align-items:center; justify-content:center; font-size:0.88rem; flex-shrink:0;">
+                            <i class="fa-solid ${isSettled ? "fa-file-circle-check" : "fa-file-circle-exclamation"}"></i>
+                          </div>
+                          <div>
+                            <div style="font-size:0.83rem; font-weight:800; color:var(--text-main);">${mMetrics.monthLabel}</div>
+                            <div style="font-size:0.71rem; color:var(--text-muted);">Billed: ₹${mMetrics.standaloneCharge.toLocaleString("en-IN")} • Paid: ₹${mMetrics.paidAmount.toLocaleString("en-IN")}</div>
+                          </div>
                         </div>
-                        <span style="font-size:0.72rem; font-weight:800; padding:3px 9px; border-radius:999px; background:${isSettled ? "rgba(16,185,129,0.14)" : "rgba(239,68,68,0.14)"}; color:${isSettled ? "#34d399" : "#f87171"}; border:1px solid ${isSettled ? "rgba(16,185,129,0.35)" : "rgba(239,68,68,0.4)"};">
-                          ${mMetrics.advanceAmt > 0 ? `Adv ₹${mMetrics.advanceAmt.toLocaleString("en-IN")}` : (isSettled ? "Paid" : `Due ₹${mMetrics.dueAmt.toLocaleString("en-IN")}`)}
-                        </span>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                          <span style="font-size:0.71rem; font-weight:800; padding:4px 9px; border-radius:999px; background:${isSettled ? "rgba(16,185,129,0.14)" : "rgba(239,68,68,0.14)"}; color:${isSettled ? "#34d399" : "#f87171"}; border:1px solid ${isSettled ? "rgba(16,185,129,0.35)" : "rgba(239,68,68,0.4)"};">
+                            ${mMetrics.advanceAmt > 0 ? `Adv ₹${mMetrics.advanceAmt.toLocaleString("en-IN")}` : (isSettled ? "Settled" : `Due ₹${mMetrics.dueAmt.toLocaleString("en-IN")}`)}
+                          </span>
+                          <i class="fa-solid fa-chevron-right" style="font-size:0.7rem; color:var(--text-muted);"></i>
+                        </div>
                       </div>
                     `;
                   }).join("")}
@@ -12691,35 +13049,131 @@ function formatMonthLabel(rawVal) {
             </div>
           `;
         } else {
+          const resolvedContact = resolveFlatUpiAndContact(targetProp, assignedFlatObj, primaryRenter);
+          const fallbackUpiId = resolvedContact.upiId || "";
+          const fallbackUpiName = resolvedContact.upiName || targetProp || "Property Admin";
+          const fallbackPhone = resolvedContact.contractMobile || renterPhoneDisplay || "--";
+
+          if (fallbackUpiId && baseRentConfigured > 0) {
+            qrRenderData = {
+              upiId: fallbackUpiId,
+              upiName: fallbackUpiName,
+              amount: baseRentConfigured,
+              note: `Rent ${targetProp} Flat ${targetFlat} (${activeMonthLabel})`
+            };
+          }
+
           statementLeftHtml = `
-            <div class="renter-statement-card" style="text-align:center; padding:36px 24px;">
-              <div style="width:58px; height:58px; border-radius:16px; background:rgba(56,189,248,0.14); border:1px solid rgba(56,189,248,0.35); color:#38bdf8; display:flex; align-items:center; justify-content:center; font-size:1.5rem; margin:0 auto 14px auto;">
-                <i class="fa-solid fa-file-invoice"></i>
+            <div class="renter-statement-card" style="display:flex; flex-direction:column; justify-content:space-between;">
+              <div>
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; padding-bottom:16px; margin-bottom:20px; border-bottom:1px solid var(--glass-border);">
+                  <div>
+                    <div style="display:inline-flex; align-items:center; gap:6px; font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:0.07em; color:#38bdf8; margin-bottom:4px;">
+                      <i class="fa-solid fa-file-invoice"></i> Active Residency Overview
+                    </div>
+                    <h3 style="margin:0; font-size:1.28rem; font-weight:900; color:var(--text-main);">
+                      ${activeMonthLabel} Statement Status
+                    </h3>
+                  </div>
+                  <span class="badge-paid" style="font-size:0.78rem; padding:7px 13px; font-weight:900; border-radius:10px; display:inline-flex; align-items:center; gap:6px;">
+                    <i class="fa-solid fa-circle-check"></i> No Pending Dues
+                  </span>
+                </div>
+
+                <div style="text-align:center; padding:26px 18px; border-radius:16px; background:var(--bg-input); border:1px dashed var(--glass-border); margin-bottom:20px;">
+                  <div style="width:56px; height:56px; border-radius:16px; background:rgba(56,189,248,0.14); border:1px solid rgba(56,189,248,0.35); color:#38bdf8; display:flex; align-items:center; justify-content:center; font-size:1.45rem; margin:0 auto 12px auto;">
+                    <i class="fa-solid fa-file-circle-check"></i>
+                  </div>
+                  <h4 style="font-size:1.08rem; font-weight:900; color:var(--text-main); margin:0 0 6px 0;">No Bill Issued for ${activeMonthLabel} Yet</h4>
+                  <p style="font-size:0.83rem; color:var(--text-muted); max-width:460px; margin:0 auto; line-height:1.6;">
+                    As soon as your property administrator generates the ${activeMonthLabel} utility and rent statement for <strong>${targetProp} (Flat ${targetFlat})</strong>, your itemized meter readings and receipt will appear right here.
+                  </p>
+                </div>
+
+                <!-- Configured Flat Rate Schedule -->
+                <div class="renter-utility-grid">
+                  <div class="renter-utility-item">
+                    <div class="renter-utility-item-left">
+                      <div class="renter-utility-icon" style="background:rgba(99,102,241,0.15); color:#818cf8;">
+                        <i class="fa-solid fa-house-chimney"></i>
+                      </div>
+                      <div>
+                        <div style="font-size:0.88rem; font-weight:800; color:var(--text-main);">Configured Monthly Base Rent</div>
+                        <div style="font-size:0.73rem; color:var(--text-muted);">Standard monthly rent for Flat ${targetFlat}</div>
+                      </div>
+                    </div>
+                    <strong style="font-size:1rem; font-weight:900; color:var(--text-main);">₹${baseRentConfigured.toLocaleString("en-IN")}/mo</strong>
+                  </div>
+                </div>
               </div>
-              <h3 style="font-size:1.15rem; font-weight:900; color:var(--text-main); margin:0 0 6px 0;">No Statement Generated for ${activeMonthLabel} Yet</h3>
-              <p style="font-size:0.84rem; color:var(--text-muted); max-width:480px; margin:0 auto 16px auto; line-height:1.55;">
-                Your portal is tailored exclusively to your personal residency record. As soon as your property administrator generates the ${activeMonthLabel} statement, your itemized utility breakdown will appear here.
-              </p>
-              <div style="display:inline-flex; align-items:center; gap:10px; padding:8px 16px; border-radius:10px; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.35); color:#34d399; font-size:0.8rem; font-weight:800;">
-                <i class="fa-solid fa-circle-check"></i> ${activeMonthLabel} Current Status: ₹0 Due
+
+              <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
+                <button
+                  type="button"
+                  class="renter-action-btn primary"
+                  onclick="openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'});"
+                >
+                  <i class="fa-solid fa-folder-open"></i> Open Flat Ledger &amp; Past Receipts
+                </button>
+                <button
+                  type="button"
+                  class="renter-action-btn secondary"
+                  onclick="openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'}); setTimeout(() => { if (typeof switchFlatTabToProfile === 'function') switchFlatTabToProfile(); }, 40);"
+                >
+                  <i class="fa-solid fa-id-card"></i> View Registered KYC Profile
+                </button>
               </div>
             </div>
           `;
+
           paymentRightHtml = `
-            <div class="renter-payment-card" style="display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:32px 22px;">
-              <div style="width:52px; height:52px; border-radius:14px; background:rgba(16,185,129,0.14); color:#34d399; display:flex; align-items:center; justify-content:center; font-size:1.4rem; margin-bottom:12px;">
-                <i class="fa-solid fa-headset"></i>
+            <div class="renter-payment-card" style="display:flex; flex-direction:column; justify-content:space-between; gap:16px;">
+              <div>
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px;">
+                  <div>
+                    <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.07em; color:#10b981;">
+                      <i class="fa-solid fa-headset"></i> Resident Support &amp; Payment Hub
+                    </div>
+                    <h4 style="margin:3px 0 0 0; font-size:1.08rem; font-weight:900; color:var(--text-main);">
+                      Quick Assistance &amp; UPI Details
+                    </h4>
+                  </div>
+                </div>
+
+                ${fallbackUpiId ? `
+                  <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:14px; border-radius:14px; background:var(--bg-input); border:1px solid var(--glass-border); margin-bottom:14px;">
+                    ${baseRentConfigured > 0 ? `
+                      <div style="background:#ffffff; padding:8px; border-radius:12px; border:2px solid #cbd5e1; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                        <canvas id="renterHomeInlineQrCanvas" width="116" height="116" style="width:116px; height:116px; display:block;"></canvas>
+                      </div>
+                    ` : ""}
+                    <div style="flex:1; min-width:160px;">
+                      <div style="font-size:0.68rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Official Payee</div>
+                      <div style="font-size:0.94rem; font-weight:900; color:var(--text-main); margin-bottom:6px;">${fallbackUpiName}</div>
+                      <div style="font-size:0.68rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Official UPI ID</div>
+                      <div style="font-size:0.84rem; font-weight:800; color:var(--primary); word-break:break-all; margin-bottom:6px;">${fallbackUpiId}</div>
+                      <div style="font-size:0.73rem; color:var(--text-muted);"><i class="fa-solid fa-phone" style="color:#38bdf8; margin-right:4px;"></i>Support: <strong>${fallbackPhone}</strong></div>
+                    </div>
+                  </div>
+                ` : `
+                  <div style="padding:18px; border-radius:14px; background:var(--bg-input); border:1px solid var(--glass-border); margin-bottom:14px;">
+                    <div style="font-size:0.84rem; font-weight:700; color:var(--text-main); margin-bottom:6px;">Direct Property Administration Support</div>
+                    <div style="font-size:0.78rem; color:var(--text-muted); line-height:1.55;">
+                      Connect directly with your property administrator via 1-on-1 Live Chat for billing inquiries, maintenance requests, or receipt assistance.
+                    </div>
+                  </div>
+                `}
               </div>
-              <h4 style="margin:0 0 6px 0; font-size:1.05rem; font-weight:900; color:var(--text-main);">Need Assistance with Your Flat?</h4>
-              <p style="font-size:0.8rem; color:var(--text-muted); margin:0 0 16px 0; line-height:1.5;">
-                Connect directly with your property administrator via 1-on-1 Live Chat or check official support contacts.
-              </p>
-              <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
-                <button type="button" class="renter-action-btn primary" onclick="openModularLiveChatWidget()">
-                  <i class="fa-solid fa-comments"></i> Open Live Chat
+
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button type="button" class="renter-action-btn emerald" style="flex:1; justify-content:center;" onclick="openRentCollectionQrModal()">
+                  <i class="fa-solid fa-qrcode"></i> UPI QR Modal
                 </button>
-                <button type="button" class="renter-action-btn secondary" onclick="openContactUsModal()">
-                  <i class="fa-solid fa-headset"></i> Help Center
+                <button type="button" class="renter-action-btn primary" style="flex:1; justify-content:center;" onclick="openModularLiveChatWidget()">
+                  <i class="fa-solid fa-comments"></i> Live Chat
+                </button>
+                <button type="button" class="renter-action-btn secondary" style="justify-content:center;" onclick="openContactUsModal()">
+                  <i class="fa-solid fa-headset"></i> Help
                 </button>
               </div>
             </div>
@@ -12727,7 +13181,7 @@ function formatMonthLabel(rawVal) {
         }
 
         // ====================================================================
-        // REQUIREMENT 3: COMPLETELY RESTYLED & UPGRADED RENTER HOME PORTAL
+        // REQUIREMENT 3: EXECUTIVE RESIDENT PORTAL HOMEPAGE
         // ====================================================================
         if (flatsContainer) {
           flatsContainer.style.display = "";
@@ -12738,14 +13192,17 @@ function formatMonthLabel(rawVal) {
               <div class="renter-hero-banner">
                 <div class="renter-hero-top">
                   <div class="renter-hero-identity">
-                    <div class="renter-hero-avatar">
+                    <div
+                      class="renter-hero-avatar"
+                      ${profileImgUrl ? `style="cursor:zoom-in;" title="Click to view full photo" onclick="openPhotoZoomModal('${safeProfileImgArg}', '${safeRenterNameArg}')"` : ""}
+                    >
                       ${profileImgUrl ? `<img src="${profileImgUrl}" alt="${renterNameDisplay}" />` : avatarInitials}
                     </div>
                     <div>
-                      <div style="display:inline-flex; align-items:center; gap:6px; font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.08em; color:#38bdf8; margin-bottom:5px;">
-                        <i class="fa-solid fa-shield-check"></i> Verified Resident Portal • Personal Ledger
+                      <div class="renter-verified-pill">
+                        <i class="fa-solid fa-circle-check"></i> Verified Resident Portal • Personal Ledger
                       </div>
-                      <h2 style="margin:0; font-size:1.75rem; font-weight:900; color:var(--text-main); letter-spacing:-0.02em; line-height:1.15;">
+                      <h2 style="margin:0; font-size:1.8rem; font-weight:900; color:var(--text-main); letter-spacing:-0.025em; line-height:1.15;">
                         ${renterNameDisplay}
                       </h2>
                       <div class="renter-meta-chips">
@@ -12757,16 +13214,29 @@ function formatMonthLabel(rawVal) {
                           <i class="fa-solid fa-door-open" style="color:#fbbf24;"></i>
                           <span>Flat ${targetFlat}</span>
                         </span>
-                        ${renterAadhaar ? `
+                        ${effectiveAadhaar ? `
                         <span class="renter-meta-chip" style="border-color:rgba(16,185,129,0.38);">
                           <i class="fa-solid fa-id-card" style="color:#34d399;"></i>
-                          <span>Aadhaar: ${formatAadhaarWithHyphens(renterAadhaar)}</span>
+                          <span>Aadhaar: ${formatAadhaarWithHyphens(effectiveAadhaar)}</span>
+                        </span>` : ""}
+                        ${renterPhoneDisplay ? `
+                        <span class="renter-meta-chip">
+                          <i class="fa-solid fa-phone" style="color:#a855f7;"></i>
+                          <span>${renterPhoneDisplay}</span>
                         </span>` : ""}
                       </div>
                     </div>
                   </div>
 
                   <div class="renter-hero-actions">
+                    <button
+                      type="button"
+                      class="renter-action-btn emerald"
+                      onclick="openRentCollectionQrModal()"
+                    >
+                      <i class="fa-solid fa-qrcode"></i>
+                      <span>Scan &amp; Pay UPI</span>
+                    </button>
                     <button
                       type="button"
                       class="renter-action-btn primary"
@@ -12781,14 +13251,14 @@ function formatMonthLabel(rawVal) {
                       onclick="openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'}); setTimeout(() => { if (typeof switchFlatTabToProfile === 'function') switchFlatTabToProfile(); }, 40);"
                     >
                       <i class="fa-solid fa-user-shield"></i>
-                      <span>My Profile</span>
+                      <span>My KYC Profile</span>
                     </button>
                     <button
                       type="button"
-                      class="renter-action-btn emerald"
+                      class="renter-action-btn secondary"
                       onclick="openModularLiveChatWidget()"
                     >
-                      <i class="fa-solid fa-comments"></i>
+                      <i class="fa-solid fa-comments" style="color:#38bdf8;"></i>
                       <span>Live Chat</span>
                     </button>
                   </div>
@@ -12797,34 +13267,54 @@ function formatMonthLabel(rawVal) {
                 <!-- 2. 4-CARD KPI BENTO GRID (CURRENT ACTIVE MONTH) -->
                 <div class="renter-kpi-bento-grid">
                   <div class="renter-kpi-card">
-                    <span class="renter-kpi-label">Active Billing Period</span>
-                    <div class="renter-kpi-value" style="color:#38bdf8; font-size:1.25rem;">${activeMonthLabel}</div>
+                    <div class="renter-kpi-head">
+                      <span class="renter-kpi-label">Active Billing Period</span>
+                      <div class="renter-kpi-icon-badge" style="background:rgba(56,189,248,0.14); color:#38bdf8; border:1px solid rgba(56,189,248,0.3);">
+                        <i class="fa-regular fa-calendar-check"></i>
+                      </div>
+                    </div>
+                    <div class="renter-kpi-value" style="color:#38bdf8; font-size:1.32rem;">${activeMonthLabel}</div>
                     <div class="renter-kpi-sub">
-                      <i class="fa-regular fa-calendar-check" style="color:#38bdf8;"></i>
-                      <span>Base Rent: ₹${(parseFloat(assignedFlatObj.RentAmount || primaryRenter.RentAmount || 0) || 0).toLocaleString("en-IN")}/mo</span>
+                      <i class="fa-solid fa-house" style="color:#38bdf8;"></i>
+                      <span>Base Rent: ₹${baseRentConfigured.toLocaleString("en-IN")}/mo</span>
                     </div>
                   </div>
 
                   <div class="renter-kpi-card">
-                    <span class="renter-kpi-label">${activeMonthLabel} Total Charges</span>
+                    <div class="renter-kpi-head">
+                      <span class="renter-kpi-label">${activeMonthLabel} Total Charges</span>
+                      <div class="renter-kpi-icon-badge" style="background:rgba(99,102,241,0.14); color:#818cf8; border:1px solid rgba(99,102,241,0.3);">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                      </div>
+                    </div>
                     <div class="renter-kpi-value">₹${currentMonthMetrics.standaloneCharge.toLocaleString("en-IN")}</div>
                     <div class="renter-kpi-sub">
-                      <i class="fa-solid fa-file-invoice-dollar" style="color:#818cf8;"></i>
+                      <i class="fa-solid fa-layer-group" style="color:#818cf8;"></i>
                       <span>Rent + Electricity + PNG + Water</span>
                     </div>
                   </div>
 
                   <div class="renter-kpi-card">
-                    <span class="renter-kpi-label">${activeMonthLabel} Paid Amount</span>
+                    <div class="renter-kpi-head">
+                      <span class="renter-kpi-label">${activeMonthLabel} Paid Amount</span>
+                      <div class="renter-kpi-icon-badge" style="background:rgba(14,165,233,0.14); color:#38bdf8; border:1px solid rgba(14,165,233,0.3);">
+                        <i class="fa-solid fa-money-bill-transfer"></i>
+                      </div>
+                    </div>
                     <div class="renter-kpi-value" style="color:#38bdf8;">₹${currentMonthMetrics.paidAmount.toLocaleString("en-IN")}</div>
                     <div class="renter-kpi-sub">
-                      <i class="fa-solid fa-money-bill-transfer" style="color:#38bdf8;"></i>
+                      <i class="fa-solid fa-receipt" style="color:#38bdf8;"></i>
                       <span>Recorded payments for ${activeMonthLabel}</span>
                     </div>
                   </div>
 
                   <div class="renter-kpi-card" style="border-color:${hasAdvance ? "rgba(16,185,129,0.45)" : (hasDue ? "rgba(239,68,68,0.5)" : "rgba(16,185,129,0.35)")};">
-                    <span class="renter-kpi-label">${activeStatusTitle}</span>
+                    <div class="renter-kpi-head">
+                      <span class="renter-kpi-label">${activeStatusTitle}</span>
+                      <div class="renter-kpi-icon-badge" style="background:${hasAdvance ? "rgba(16,185,129,0.15)" : (hasDue ? "rgba(239,68,68,0.15)" : "rgba(16,185,129,0.15)")}; color:${activeStatusColor}; border:1px solid ${hasAdvance ? "rgba(16,185,129,0.35)" : (hasDue ? "rgba(239,68,68,0.35)" : "rgba(16,185,129,0.35)")};">
+                        <i class="fa-solid ${hasAdvance ? "fa-vault" : (hasDue ? "fa-clock" : "fa-circle-check")}"></i>
+                      </div>
+                    </div>
                     <div class="renter-kpi-value" style="color:${activeStatusColor};">${activeStatusValue}</div>
                     <div class="renter-kpi-sub" style="color:${activeStatusColor};">
                       ${activeStatusSub}
@@ -12965,28 +13455,26 @@ function formatMonthLabel(rawVal) {
     function triggerSingleDeviceSessionConflict() {
       if (isSessionConflictModalOpen) return;
       isSessionConflictModalOpen = true;
+      authSessionEpoch++;
       if (syncTimer) {
         clearInterval(syncTimer);
         syncTimer = null;
       }
+      const prevUser = String(activeUser || "").trim().toLowerCase();
       // Immediately clear active session state on this previous device
       activeUser = null;
       activeSessionToken = "";
       selectedProperty = null;
       selectedFlat = null;
       activeFlatRenterObj = null;
-      sessionStorage.removeItem("active_session_user");
-      sessionStorage.removeItem("active_session_fullname");
-      sessionStorage.removeItem("active_session_mobile");
-      sessionStorage.removeItem("active_session_role");
-      sessionStorage.removeItem("active_session_assigned_prop");
-      sessionStorage.removeItem("active_session_assigned_flat");
-      sessionStorage.removeItem("active_session_assigned_aadhaar");
-      sessionStorage.removeItem("active_session_manager_perms");
-      sessionStorage.removeItem("active_session_token");
-      sessionStorage.removeItem("active_selected_property");
+      sessionStorage.clear();
       try {
+        localStorage.setItem(EXPLICIT_LOGOUT_FLAG_KEY, "1");
         localStorage.removeItem(PERSISTED_AUTH_SESSION_KEY);
+        localStorage.removeItem("portal_active_auth_session_v1");
+        if (prevUser) {
+          localStorage.removeItem("portal_device_session_" + prevUser);
+        }
       } catch (e) {}
 
       // Hide dashboard & live chat immediately and show login screen behind the alert modal
@@ -13024,7 +13512,7 @@ function formatMonthLabel(rawVal) {
       if (loginScr) loginScr.classList.remove("active");
       if (dashScr) dashScr.classList.add("active");
 
-      // Requirement 5: Persist session state so refreshing on any browser keeps the user logged in
+      // Requirement 5: Persist session state so refreshing on any browser keeps the user logged in (only when not logged out)
       persistActiveAuthSession();
 
       try { applyCustomBackgrounds(); } catch (e) {}
@@ -13212,6 +13700,12 @@ function formatMonthLabel(rawVal) {
     }
 
     function applyServerLoginPayload(res) {
+      authSessionEpoch++;
+      hasCompletedInitialSync = true;
+      try {
+        localStorage.removeItem(EXPLICIT_LOGOUT_FLAG_KEY);
+      } catch (e) {}
+
       activeUser = res.username;
       activeUserFullName = res.fullName || res.username;
       activeUserMobile = sanitizeContactPhoneDisplay(res.mobile || "");
@@ -13239,9 +13733,9 @@ function formatMonthLabel(rawVal) {
       DB.kharchRecords = Array.isArray(res.kharchRecords) ? res.kharchRecords : [];
 
       const matchedU = (DB.users || []).find(u => String(u.Username || "").trim().toLowerCase() === String(activeUser).trim().toLowerCase());
-      activeAssignedProperty = res.assignedProperty || matchedU?.AssignedProperty || "";
-      activeAssignedFlat = res.assignedFlat || matchedU?.AssignedFlat || "";
-      activeAssignedAadhaar = String(res.assignedAadhaar || matchedU?.AssignedAadhaar || "").replace(/\D/g, "").slice(0, 12);
+      activeAssignedProperty = res.assignedProperty || res.userAssignedProperty || matchedU?.AssignedProperty || "";
+      activeAssignedFlat = res.assignedFlat || res.userAssignedFlat || matchedU?.AssignedFlat || "";
+      activeAssignedAadhaar = String(res.assignedAadhaar || res.userAssignedAadhaar || matchedU?.AssignedAadhaar || "").replace(/\D/g, "").slice(0, 12);
       activeManagerPermissions = normalizeManagerPermissionsList(res.managerPermissions || res.userManagerPermissions || matchedU?.ManagerPermissions || []);
       if (res.sessionToken || matchedU?.ActiveSessionToken) {
         activeSessionToken = String(res.sessionToken || matchedU?.ActiveSessionToken || activeSessionToken).trim();
@@ -13349,6 +13843,9 @@ function formatMonthLabel(rawVal) {
         }
 
         if (res && res.status === "success") {
+          try {
+            localStorage.removeItem(EXPLICIT_LOGOUT_FLAG_KEY);
+          } catch (e) {}
           activeSessionToken = String(res.sessionToken || newSessionToken).trim();
           hasAutoOpenedViewerFlatOnce = false;
           selectedProperty = null;
@@ -13385,6 +13882,10 @@ function formatMonthLabel(rawVal) {
       } catch (err) {
         console.error("Critical login error:", err);
         if (isAdminCredentials) {
+          try {
+            localStorage.removeItem(EXPLICIT_LOGOUT_FLAG_KEY);
+          } catch (e) {}
+          authSessionEpoch++;
           activeUser = "admin";
           activeRole = "Admin";
           activeUserFullName = "Administrator";
@@ -13413,14 +13914,29 @@ function formatMonthLabel(rawVal) {
     // 2. Continuous Live Background Sync Directly from Firebases (Detects 2nd-device login conflict for ALL roles, manual row deletions & Admin global background)
     async function syncDataLive(forceRender = false) {
       if (!activeUser || isSyncingLive || isSessionConflictModalOpen) return;
+      try {
+        if (localStorage.getItem(EXPLICIT_LOGOUT_FLAG_KEY) === "1") return;
+      } catch (e) {}
       if (!forceRender && (pendingWriteCount > 0 || (Date.now() - lastWriteCompletedAt < 4000))) {
         return;
       }
+      const syncEpochAtStart = authSessionEpoch;
+      const syncUserAtStart = activeUser;
+      const syncTokenAtStart = activeSessionToken || "";
       isSyncingLive = true;
       try {
-        const res = await firebaseGetInitialData(activeUser, activeSessionToken || "");
+        const res = await firebaseGetInitialData(syncUserAtStart, syncTokenAtStart);
+
+        // Guard against race condition where user logged out while firebaseGetInitialData was in flight
+        if (!activeUser || authSessionEpoch !== syncEpochAtStart || activeUser !== syncUserAtStart) {
+          return;
+        }
+        try {
+          if (localStorage.getItem(EXPLICIT_LOGOUT_FLAG_KEY) === "1") return;
+        } catch (e) {}
 
         if (res && res.status === "success") {
+          hasCompletedInitialSync = true;
           if (!forceRender && (pendingWriteCount > 0 || (Date.now() - lastWriteCompletedAt < 4000))) {
             return;
           }
@@ -13500,6 +14016,7 @@ function formatMonthLabel(rawVal) {
           });
 
           const hasDataChanged = incomingHash !== lastSyncedDataHash;
+          lastSyncedDataHash = incomingHash;
 
           DB.properties = incomingProperties;
           DB.flats = incomingFlats;
@@ -13569,7 +14086,9 @@ function formatMonthLabel(rawVal) {
             sessionStorage.setItem("active_session_mobile", activeUserMobile);
           }
 
-          persistActiveAuthSession();
+          if (activeUser && authSessionEpoch === syncEpochAtStart) {
+            persistActiveAuthSession();
+          }
 
           if (hasDataChanged || forceRender) {
             renderAllDashboardUI();
@@ -18543,8 +19062,32 @@ function formatMonthLabel(rawVal) {
       let sourceLabel = "Current Month Closing Balance Due";
 
       if (activeRole === "Renter") {
-        // For Renter view (where calculator tab is hidden), prefer ledger pending due or latest unpaid bill
-        if (ledgerNetDue > 0) {
+        // Resolve directly from the logged-in renter's active month statement first so Homepage QR and Modal QR always match
+        const myBills = (DB.bills || []).filter(b => isBillLinkedToLoggedInRenterAadhaar(b));
+        myBills.sort((a, b) => {
+          const mA = normalizeMonthYear(a.MonthYear || a.BillDate);
+          const mB = normalizeMonthYear(b.MonthYear || b.BillDate);
+          if (mA && mB && mA !== mB) return mB.localeCompare(mA);
+          return (new Date(b.BillDate || b.PaymentDate || 0).getTime()) - (new Date(a.BillDate || a.PaymentDate || 0).getTime());
+        });
+        const currentCalendarYM = getCurrentCalendarYearMonth();
+        const activeBill = myBills.find(b => normalizeMonthYear(b.MonthYear || b.BillDate) === currentCalendarYM) || myBills[0] || null;
+        if (activeBill) {
+          const activeMetrics = computeCurrentMonthStandaloneAdvanceAndDue(activeBill);
+          if (activeMetrics.dueAmt > 0) {
+            primaryAmountDue = activeMetrics.dueAmt;
+            sourceLabel = `${activeMetrics.monthLabel} Balance Due`;
+          } else if (ledgerNetDue > 0) {
+            primaryAmountDue = ledgerNetDue;
+            sourceLabel = "Total Pending Ledger Balance";
+          } else if (activeMetrics.standaloneCharge > 0) {
+            primaryAmountDue = activeMetrics.standaloneCharge;
+            sourceLabel = `${activeMetrics.monthLabel} Statement Total`;
+          } else {
+            primaryAmountDue = rent;
+            sourceLabel = "Monthly Base Rent";
+          }
+        } else if (ledgerNetDue > 0) {
           primaryAmountDue = ledgerNetDue;
           sourceLabel = "Total Pending Ledger Balance";
         } else if (calcClosingDue > 0) {
@@ -18599,8 +19142,14 @@ function formatMonthLabel(rawVal) {
 
       const propName = selectedFlat.PropertyName || selectedProperty || "Property";
       const flatName = selectedFlat.FlatName || "--";
-      const tenantName = document.getElementById("renterName")?.value?.trim() || activeFlatRenterObj?.RenterName || "Tenant";
-      const billingMonthRaw = document.getElementById("calcMonthPicker")?.value || "";
+      const tenantName = document.getElementById("renterName")?.value?.trim() || activeFlatRenterObj?.RenterName || activeUserFullName || "Tenant";
+      let billingMonthRaw = document.getElementById("calcMonthPicker")?.value || "";
+      if (!billingMonthRaw && activeRole === "Renter") {
+        const myBills = (DB.bills || []).filter(b => isBillLinkedToLoggedInRenterAadhaar(b));
+        const currentCalendarYM = getCurrentCalendarYearMonth();
+        const activeBill = myBills.find(b => normalizeMonthYear(b.MonthYear || b.BillDate) === currentCalendarYM) || myBills[0] || null;
+        billingMonthRaw = activeBill ? (activeBill.MonthYear || activeBill.BillDate || currentCalendarYM) : currentCalendarYM;
+      }
       const billingMonthLabel = billingMonthRaw ? formatMonthLabel(billingMonthRaw) : "Current Month";
 
       // Resolve UPI details from profile inputs, flat record, renter record, or property record
@@ -18919,6 +19468,18 @@ function formatMonthLabel(rawVal) {
     }
 
     function openBillReceiptModal(billId, monthYear) {
+      if (!selectedFlat && activeRole === "Renter") {
+        const matchedProfiles = getRenterProfilesForLoggedInAadhaar();
+        const primaryRenter = matchedProfiles.find(r => String(r.Status || "").toLowerCase() === "active") || matchedProfiles[0] || null;
+        if (primaryRenter) {
+          selectedFlat = findFlatObject(primaryRenter.PropertyName, primaryRenter.FlatName) || {
+            PropertyName: primaryRenter.PropertyName,
+            FlatName: primaryRenter.FlatName,
+            RentAmount: primaryRenter.RentAmount || 0
+          };
+          activeFlatRenterObj = primaryRenter;
+        }
+      }
       if (!selectedFlat) return;
       injectReceiptWhatsAppStyles();
 
@@ -23529,6 +24090,14 @@ function formatMonthLabel(rawVal) {
 
     // Requirement 8 & 9: Complete Session Scrub on Logout so Admin or other roles can log in seamlessly on same device
     function performConfirmedLogout() {
+      const prevUser = String(activeUser || sessionStorage.getItem("active_session_user") || "").trim().toLowerCase();
+      authSessionEpoch++;
+
+      if (syncTimer) {
+        clearInterval(syncTimer);
+        syncTimer = null;
+      }
+
       try { saveDbSnapshotToCache(); } catch (e) {}
 
       // Completely clear memory state
@@ -23542,28 +24111,31 @@ function formatMonthLabel(rawVal) {
       activeSessionToken = "";
       selectedProperty = null;
       selectedFlat = null;
+      activeFlatRenterObj = null;
       activeSelectedChatChannelId = "";
       activeSelectedTargetAdminUsername = "";
       isSessionConflictModalOpen = false;
       isSubmittingLogin = false;
 
-      // Wipe session storage and device login tokens
-      sessionStorage.clear();
+      // Wipe session storage and device login tokens — set explicit logout flag so refresh NEVER auto-logs back in
       try {
+        sessionStorage.clear();
+      } catch (e) {}
+      try {
+        localStorage.setItem(EXPLICIT_LOGOUT_FLAG_KEY, "1");
         localStorage.removeItem(PERSISTED_AUTH_SESSION_KEY);
+        localStorage.removeItem("portal_active_auth_session_v1");
         localStorage.removeItem("active_session_user");
         localStorage.removeItem("active_session_role");
         localStorage.removeItem("active_session_token");
+        if (prevUser) {
+          localStorage.removeItem("portal_device_session_" + prevUser);
+        }
       } catch (e) {}
 
-      if (syncTimer) {
-        clearInterval(syncTimer);
-        syncTimer = null;
-      }
-
       // Remove role-specific CSS classes from document
-      document.body.classList.remove("role-renter", "role-viewer", "role-admin", "is-renter-mode");
-      document.documentElement.classList.remove("role-renter", "role-viewer", "role-admin", "is-renter-mode");
+      document.body.classList.remove("role-renter", "role-viewer", "role-admin", "role-manager", "role-restricted", "is-renter-mode");
+      document.documentElement.classList.remove("role-renter", "role-viewer", "role-admin", "role-manager", "role-restricted", "is-renter-mode");
 
       // Switch views and reset UI overlays
       document.getElementById("dashboardScreen")?.classList.remove("active");
