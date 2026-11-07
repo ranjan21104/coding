@@ -5380,6 +5380,7 @@
             </button>
           </div>
         </div>
+        <div id="loginLockoutStatusBanner" style="display:none; margin-bottom:12px;"></div>
         <button type="submit" id="loginBtn" class="btn-primary" style="margin-top:6px; padding:13px 18px; border-radius:12px; font-size:0.96rem; box-shadow: 0 10px 24px rgba(79, 70, 229, 0.32);">
           <span>Log In</span>
           <i class="fa-solid fa-arrow-right-to-bracket"></i>
@@ -9020,6 +9021,10 @@
             const resolvedPngRate = parseFloat(data.pngFixedRate !== undefined ? data.pngFixedRate : data.pngRate) || 0;
             const resolvedWaterRate = parseFloat(data.waterFixedRate !== undefined ? data.waterFixedRate : data.waterRate) || 0;
 
+            const nowIso = new Date().toISOString();
+            const cleanAadhaar12 = String(data.identityDocNumber || data.identityNumber || "").replace(/\D/g, "").slice(0, 12);
+            const prevAadhaar12 = String(data.previousAadhaar || "").replace(/\D/g, "").slice(0, 12);
+
             const renterDoc = {
               RenterID: rId,
               PropertyName: pName,
@@ -9048,10 +9053,51 @@
               UPIName: String(data.upiName || "").trim(),
               UPIID: String(data.upiId || "").trim(),
               ContractMobile: cleanPhoneStr(data.contractMobile || ""),
-              UpdatedAt: new Date().toISOString()
+              UpdatedAt: nowIso
             };
 
             await dbInstance.collection("renters").doc(rId).set(renterDoc, { merge: true });
+
+            // Synchronize shared personal/KYC details across all historical and active stays sharing the same Aadhaar
+            if (cleanAadhaar12.length === 12 || prevAadhaar12.length === 12) {
+              try {
+                const allRentersSnap = await dbInstance.collection("renters").get();
+                const syncBatch = dbInstance.batch();
+                let batchCount = 0;
+                const sharedUpdatePayload = {
+                  RenterName: renterDoc.RenterName,
+                  IdentityDocNumber: renterDoc.IdentityDocNumber,
+                  MobileNumber: renterDoc.MobileNumber,
+                  AltMobileNumber: renterDoc.AltMobileNumber,
+                  Address: renterDoc.Address,
+                  TotalFamilyMembers: renterDoc.TotalFamilyMembers,
+                  UpdatedAt: nowIso
+                };
+                if (Array.isArray(data.familyMembersList)) {
+                  sharedUpdatePayload.FamilyMembersList = data.familyMembersList;
+                }
+                if (renterDoc.ProfileImageURL) {
+                  sharedUpdatePayload.ProfileImageURL = renterDoc.ProfileImageURL;
+                }
+                if (renterDoc.IdentityImageURL) {
+                  sharedUpdatePayload.IdentityImageURL = renterDoc.IdentityImageURL;
+                }
+                allRentersSnap.forEach(function(docSnap) {
+                  if (docSnap.id === rId) return;
+                  const d = docSnap.data() || {};
+                  const docAadhaar12 = String(d.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
+                  if (docAadhaar12.length === 12 && (docAadhaar12 === cleanAadhaar12 || (prevAadhaar12.length === 12 && docAadhaar12 === prevAadhaar12))) {
+                    syncBatch.set(docSnap.ref, sharedUpdatePayload, { merge: true });
+                    batchCount++;
+                  }
+                });
+                if (batchCount > 0) {
+                  await syncBatch.commit();
+                }
+              } catch (syncErr) {
+                console.warn("Cross-location Aadhaar sync warning:", syncErr);
+              }
+            }
 
             // Update flat status in Firestore
             const flatDocId = (pName + "___" + fName).replace(/[\/\\#?\s+]/g, "_");
@@ -9071,33 +9117,77 @@
               ContractMobile: cleanPhoneStr(data.contractMobile || "")
             }, { merge: true });
 
-            return { status: "success", renterId: rId, message: "Renter profile saved to Firebase." };
+            return { status: "success", renterId: rId, message: "Renter profile saved and synced across all stays in Firebase." };
           }
 
           case "uploadRenterDocument": {
             const rId = String(data.renterId || "").trim();
             const docType = String(data.docType || "profile").trim();
-            const imgData = data.base64Data || data.imageUrl || "";
+            const imgData = data.base64Data || data.directImageUrl || data.imageUrl || "";
+            const nowIso = new Date().toISOString();
 
             if (rId) {
               const fieldName = (docType === "identity") ? "IdentityImageURL" : "ProfileImageURL";
               await dbInstance.collection("renters").doc(rId).set({
                 [fieldName]: imgData,
-                UpdatedAt: new Date().toISOString()
+                UpdatedAt: nowIso
               }, { merge: true });
+
+              try {
+                const targetSnap = await dbInstance.collection("renters").doc(rId).get();
+                const targetData = targetSnap.exists ? (targetSnap.data() || {}) : {};
+                const cleanAadhaar12 = String(data.identityDocNumber || targetData.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
+                if (cleanAadhaar12.length === 12) {
+                  const allRentersSnap = await dbInstance.collection("renters").get();
+                  const docBatch = dbInstance.batch();
+                  let count = 0;
+                  allRentersSnap.forEach(function(docSnap) {
+                    if (docSnap.id === rId) return;
+                    const d = docSnap.data() || {};
+                    const dAadh = String(d.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
+                    if (dAadh === cleanAadhaar12) {
+                      docBatch.set(docSnap.ref, { [fieldName]: imgData, UpdatedAt: nowIso }, { merge: true });
+                      count++;
+                    }
+                  });
+                  if (count > 0) await docBatch.commit();
+                }
+              } catch (e) {}
             }
-            return { status: "success", url: imgData, message: "Document saved to Firebase." };
+            return { status: "success", url: imgData, imageUrl: imgData, message: "Document saved & synced across all Aadhaar stays in Firebase." };
           }
 
           case "deleteRenterDocument": {
             const rId = String(data.renterId || "").trim();
             const docType = String(data.docType || "profile").trim();
+            const nowIso = new Date().toISOString();
             if (rId) {
               const fieldName = (docType === "identity") ? "IdentityImageURL" : "ProfileImageURL";
               await dbInstance.collection("renters").doc(rId).set({
                 [fieldName]: "",
-                UpdatedAt: new Date().toISOString()
+                UpdatedAt: nowIso
               }, { merge: true });
+
+              try {
+                const targetSnap = await dbInstance.collection("renters").doc(rId).get();
+                const targetData = targetSnap.exists ? (targetSnap.data() || {}) : {};
+                const cleanAadhaar12 = String(data.identityDocNumber || targetData.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
+                if (cleanAadhaar12.length === 12) {
+                  const allRentersSnap = await dbInstance.collection("renters").get();
+                  const docBatch = dbInstance.batch();
+                  let count = 0;
+                  allRentersSnap.forEach(function(docSnap) {
+                    if (docSnap.id === rId) return;
+                    const d = docSnap.data() || {};
+                    const dAadh = String(d.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
+                    if (dAadh === cleanAadhaar12) {
+                      docBatch.set(docSnap.ref, { [fieldName]: "", UpdatedAt: nowIso }, { merge: true });
+                      count++;
+                    }
+                  });
+                  if (count > 0) await docBatch.commit();
+                }
+              } catch (e) {}
             }
             return { status: "success", message: "Document removed from Firebase." };
           }
@@ -10277,7 +10367,7 @@
       }
     }
 
-    // Requirement 1, 2 & 3: Consolidate all historical details (photos, Aadhaar doc, mobile, altMobile, address, family) for any returning or shifted renter
+    // Requirement 1, 2 & 3: Consolidate all historical details (photos, Aadhaar doc, mobile, altMobile, address, family, familyMembersList) for any returning or shifted renter
     function consolidateRenterHistoryDetailsByAadhaar(renterOrAadhaar) {
       const baseObj = (typeof renterOrAadhaar === "object" && renterOrAadhaar !== null) ? { ...renterOrAadhaar } : {};
       const rawDigits = String(
@@ -10299,27 +10389,155 @@
         return false;
       });
 
+      // Sort matching stays so the most recently updated / currently active / latest JoinDate stay comes first
+      const sortedStays = [...matchingStays].sort((a, b) => {
+        const aUpd = String(a.UpdatedAt || "");
+        const bUpd = String(b.UpdatedAt || "");
+        if (aUpd !== bUpd) return bUpd.localeCompare(aUpd);
+        const aAct = String(a.Status || "").toLowerCase() === "active" ? 0 : 1;
+        const bAct = String(b.Status || "").toLowerCase() === "active" ? 0 : 1;
+        if (aAct !== bAct) return aAct - bAct;
+        return String(b.JoinDate || "").localeCompare(String(a.JoinDate || ""));
+      });
+
       const merged = { ...baseObj };
-      matchingStays.forEach(r => {
+      sortedStays.forEach(r => {
         if (!merged.RenterName && r.RenterName) merged.RenterName = r.RenterName;
         if (!merged.IdentityDocNumber && r.IdentityDocNumber) merged.IdentityDocNumber = formatAadhaarWithHyphens(r.IdentityDocNumber);
-        if ((!merged.MobileNumber || merged.MobileNumber === "+91") && r.MobileNumber) merged.MobileNumber = sanitizeContactPhoneDisplay(r.MobileNumber);
-        if (!merged.AltMobileNumber && r.AltMobileNumber) merged.AltMobileNumber = sanitizeContactPhoneDisplay(r.AltMobileNumber);
+        if ((!merged.MobileNumber || merged.MobileNumber === "+91") && r.MobileNumber && r.MobileNumber !== "+91") {
+          merged.MobileNumber = sanitizeContactPhoneDisplay(r.MobileNumber);
+        }
+        if ((!merged.AltMobileNumber || merged.AltMobileNumber === "+91") && r.AltMobileNumber && r.AltMobileNumber !== "+91") {
+          merged.AltMobileNumber = sanitizeContactPhoneDisplay(r.AltMobileNumber);
+        }
         if (!merged.Address && r.Address) merged.Address = r.Address;
         if ((!merged.TotalFamilyMembers || Number(merged.TotalFamilyMembers) <= 1) && Number(r.TotalFamilyMembers) > 1) {
           merged.TotalFamilyMembers = r.TotalFamilyMembers;
         }
-        if (isPlaceholderImageUrl(merged.ProfileImageURL) && !isPlaceholderImageUrl(r.ProfileImageURL)) {
-          merged.ProfileImageURL = normalizeGoogleDriveImageUrl(r.ProfileImageURL);
+        if ((!Array.isArray(merged.FamilyMembersList) || merged.FamilyMembersList.length === 0) && Array.isArray(r.FamilyMembersList) && r.FamilyMembersList.length > 0) {
+          merged.FamilyMembersList = JSON.parse(JSON.stringify(r.FamilyMembersList));
         }
-        if (isPlaceholderImageUrl(merged.IdentityImageURL) && !isPlaceholderImageUrl(r.IdentityImageURL)) {
-          merged.IdentityImageURL = normalizeGoogleDriveImageUrl(r.IdentityImageURL);
+        const permProf = typeof getPermanentRenterPhoto === "function" ? getPermanentRenterPhoto(r.PropertyName, r.FlatName, r.RenterID, "profile") : "";
+        const permId = typeof getPermanentRenterPhoto === "function" ? getPermanentRenterPhoto(r.PropertyName, r.FlatName, r.RenterID, "identity") : "";
+        const candidateProf = !isPlaceholderImageUrl(r.ProfileImageURL) ? r.ProfileImageURL : permProf;
+        const candidateId = !isPlaceholderImageUrl(r.IdentityImageURL) ? r.IdentityImageURL : permId;
+        if (isPlaceholderImageUrl(merged.ProfileImageURL) && !isPlaceholderImageUrl(candidateProf)) {
+          merged.ProfileImageURL = normalizeGoogleDriveImageUrl(candidateProf);
+        }
+        if (isPlaceholderImageUrl(merged.IdentityImageURL) && !isPlaceholderImageUrl(candidateId)) {
+          merged.IdentityImageURL = normalizeGoogleDriveImageUrl(candidateId);
         }
       });
       if (rawDigits.length === 12) {
         merged.IdentityDocNumber = formatAadhaarWithHyphens(rawDigits);
       }
-      return { merged, matchingStays };
+      return { merged, matchingStays: sortedStays };
+    }
+
+    // Cross-Location & Historical Record Synchronization by Aadhaar Number:
+    // Whenever any update is made to a tenant's profile/documents (in either their current location or historical records),
+    // seamlessly synchronize the updated personal & KYC fields across ALL stays (both historical and active locations) sharing that Aadhaar.
+    function syncRenterIdentityAcrossAllStays(aadhaarOrRenterObj, updatedFields = {}, previousAadhaar = "") {
+      const targetDigits = String(
+        (typeof aadhaarOrRenterObj === "object" && aadhaarOrRenterObj !== null)
+          ? (updatedFields.IdentityDocNumber || aadhaarOrRenterObj.IdentityDocNumber || "")
+          : (updatedFields.IdentityDocNumber || aadhaarOrRenterObj || "")
+      ).replace(/\D/g, "").slice(0, 12);
+      const prevDigits = String(previousAadhaar || "").replace(/\D/g, "").slice(0, 12);
+
+      if (targetDigits.length !== 12 && prevDigits.length !== 12) return [];
+
+      const nowIso = new Date().toISOString();
+      const formattedAadhaar = targetDigits.length === 12 ? formatAadhaarWithHyphens(targetDigits) : "";
+      const syncedStays = [];
+      const syncedRenterIds = new Set();
+
+      (DB.renters || []).forEach(r => {
+        const rDigits = String(r.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
+        const isMatch = (targetDigits.length === 12 && rDigits === targetDigits) ||
+                        (prevDigits.length === 12 && rDigits === prevDigits);
+        if (!isMatch) return;
+
+        if (formattedAadhaar) r.IdentityDocNumber = formattedAadhaar;
+        if (updatedFields.RenterName !== undefined && String(updatedFields.RenterName).trim() !== "") {
+          r.RenterName = String(updatedFields.RenterName).trim();
+        }
+        if (updatedFields.MobileNumber !== undefined) {
+          r.MobileNumber = updatedFields.MobileNumber;
+        }
+        if (updatedFields.AltMobileNumber !== undefined) {
+          r.AltMobileNumber = updatedFields.AltMobileNumber;
+        }
+        if (updatedFields.Address !== undefined) {
+          r.Address = updatedFields.Address;
+        }
+        if (updatedFields.TotalFamilyMembers !== undefined) {
+          r.TotalFamilyMembers = updatedFields.TotalFamilyMembers;
+        }
+        if (Array.isArray(updatedFields.FamilyMembersList)) {
+          r.FamilyMembersList = JSON.parse(JSON.stringify(updatedFields.FamilyMembersList));
+        }
+        if (updatedFields.ProfileImageURL !== undefined && (updatedFields.ProfileImageURL !== "" || updatedFields.forceClearProfileImage)) {
+          r.ProfileImageURL = updatedFields.ProfileImageURL;
+          if (typeof savePermanentRenterPhoto === "function" && updatedFields.ProfileImageURL) {
+            savePermanentRenterPhoto(r.PropertyName, r.FlatName, r.RenterID, "profile", updatedFields.ProfileImageURL);
+          } else if (typeof removePermanentRenterPhoto === "function" && updatedFields.forceClearProfileImage) {
+            removePermanentRenterPhoto(r.PropertyName, r.FlatName, r.RenterID, "profile");
+          }
+        }
+        if (updatedFields.IdentityImageURL !== undefined && (updatedFields.IdentityImageURL !== "" || updatedFields.forceClearIdentityImage)) {
+          r.IdentityImageURL = updatedFields.IdentityImageURL;
+          if (typeof savePermanentRenterPhoto === "function" && updatedFields.IdentityImageURL) {
+            savePermanentRenterPhoto(r.PropertyName, r.FlatName, r.RenterID, "identity", updatedFields.IdentityImageURL);
+          } else if (typeof removePermanentRenterPhoto === "function" && updatedFields.forceClearIdentityImage) {
+            removePermanentRenterPhoto(r.PropertyName, r.FlatName, r.RenterID, "identity");
+          }
+        }
+        r.UpdatedAt = nowIso;
+        syncedStays.push(r);
+        if (r.RenterID) syncedRenterIds.add(String(r.RenterID).trim());
+      });
+
+      // Also keep TenantName & TenantMobile updated on any linked bills so historical/current ledger views match
+      if (syncedRenterIds.size > 0 && (updatedFields.RenterName || updatedFields.MobileNumber !== undefined)) {
+        (DB.bills || []).forEach(b => {
+          const bRId = String(b.RenterID || "").trim();
+          if (bRId && syncedRenterIds.has(bRId)) {
+            if (updatedFields.RenterName) b.TenantName = String(updatedFields.RenterName).trim();
+            if (updatedFields.MobileNumber !== undefined) b.TenantMobile = updatedFields.MobileNumber;
+          }
+        });
+      }
+
+      // If the currently open flat's activeFlatRenterObj shares this Aadhaar, refresh the live form inputs as well
+      if (activeFlatRenterObj) {
+        const activeDigits = String(activeFlatRenterObj.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
+        if ((targetDigits.length === 12 && activeDigits === targetDigits) || (prevDigits.length === 12 && activeDigits === prevDigits)) {
+          const nameInput = document.getElementById("renterName");
+          const aadhInput = document.getElementById("renterIdentityNum");
+          const mobInput = document.getElementById("renterMobile");
+          const altMobInput = document.getElementById("renterAltMobile");
+          const addrInput = document.getElementById("renterAddress");
+          const famInput = document.getElementById("renterFamily");
+          if (nameInput && updatedFields.RenterName) nameInput.value = updatedFields.RenterName;
+          if (aadhInput && formattedAadhaar) aadhInput.value = formattedAadhaar;
+          if (mobInput && updatedFields.MobileNumber !== undefined) mobInput.value = updatedFields.MobileNumber || "+91";
+          if (altMobInput && updatedFields.AltMobileNumber !== undefined) altMobInput.value = updatedFields.AltMobileNumber || "+91";
+          if (addrInput && updatedFields.Address !== undefined) addrInput.value = updatedFields.Address;
+          if (famInput && updatedFields.TotalFamilyMembers !== undefined) famInput.value = updatedFields.TotalFamilyMembers;
+          if (Array.isArray(updatedFields.FamilyMembersList) && typeof renderRenterFamilyMembersRows === "function") {
+            renderRenterFamilyMembersRows(updatedFields.FamilyMembersList);
+          }
+          if (updatedFields.ProfileImageURL !== undefined && (updatedFields.ProfileImageURL !== "" || updatedFields.forceClearProfileImage)) {
+            updateRenterImageSlotUI("profile", updatedFields.ProfileImageURL);
+          }
+          if (updatedFields.IdentityImageURL !== undefined && (updatedFields.IdentityImageURL !== "" || updatedFields.forceClearIdentityImage)) {
+            updateRenterImageSlotUI("identity", updatedFields.IdentityImageURL);
+          }
+        }
+      }
+
+      return syncedStays;
     }
 
     // Requirement 3: Track & Auto-Detect Renter Tenure Status ("New Renter", "Returning Renter", "Shifted Renter")
@@ -10565,14 +10783,28 @@
         AltMobileNumber: merged.AltMobileNumber || "",
         Address: merged.Address || "",
         TotalFamilyMembers: merged.TotalFamilyMembers || 1,
+        FamilyMembersList: Array.isArray(merged.FamilyMembersList) ? JSON.parse(JSON.stringify(merged.FamilyMembersList)) : [],
         Status: "Active",
         TenureType: "RETURNING",
         JoinDate: joinDate,
         EndDate: "",
-        RentAmount: rentAmt
+        RentAmount: rentAmt,
+        UpdatedAt: new Date().toISOString()
       };
 
       DB.renters.push(newActiveRenterRecord);
+
+      syncRenterIdentityAcrossAllStays(formattedAadhaar, {
+        RenterName: newActiveRenterRecord.RenterName,
+        IdentityDocNumber: formattedAadhaar,
+        MobileNumber: newActiveRenterRecord.MobileNumber,
+        AltMobileNumber: newActiveRenterRecord.AltMobileNumber,
+        Address: newActiveRenterRecord.Address,
+        TotalFamilyMembers: newActiveRenterRecord.TotalFamilyMembers,
+        FamilyMembersList: newActiveRenterRecord.FamilyMembersList,
+        ProfileImageURL: newActiveRenterRecord.ProfileImageURL,
+        IdentityImageURL: newActiveRenterRecord.IdentityImageURL
+      });
 
       saveRenterTenureMeta(
         newStayRenterId,
@@ -10629,6 +10861,7 @@
         altMobileNumber: newActiveRenterRecord.AltMobileNumber,
         address: newActiveRenterRecord.Address,
         familyMembers: newActiveRenterRecord.TotalFamilyMembers || 1,
+        familyMembersList: newActiveRenterRecord.FamilyMembersList || [],
         renterStatus: "Active",
         joinDate: joinDate,
         endDate: "",
@@ -10731,6 +10964,7 @@
       const oldProp = selectedFlat.PropertyName;
       const oldFlat = selectedFlat.FlatName;
 
+      const domFamilyMembers = typeof collectRenterFamilyMembersFromDOM === "function" ? collectRenterFamilyMembersFromDOM() : [];
       const formRenterSnapshot = {
         ...(activeFlatRenterObj || {}),
         RenterName: (document.getElementById("renterName")?.value || activeFlatRenterObj?.RenterName || "Tenant").trim(),
@@ -10739,6 +10973,7 @@
         AltMobileNumber: sanitizeContactPhoneDisplay(document.getElementById("renterAltMobile")?.value || activeFlatRenterObj?.AltMobileNumber || ""),
         Address: (document.getElementById("renterAddress")?.value || activeFlatRenterObj?.Address || "").trim(),
         TotalFamilyMembers: document.getElementById("renterFamily")?.value || activeFlatRenterObj?.TotalFamilyMembers || 1,
+        FamilyMembersList: domFamilyMembers.length > 0 ? domFamilyMembers : (activeFlatRenterObj?.FamilyMembersList || []),
         ProfileImageURL: !isPlaceholderImageUrl(document.getElementById("profilePicturePreview")?.src)
           ? document.getElementById("profilePicturePreview").src
           : (activeFlatRenterObj?.ProfileImageURL || ""),
@@ -10784,6 +11019,7 @@
         AltMobileNumber: merged.AltMobileNumber || "",
         Address: merged.Address || "",
         TotalFamilyMembers: merged.TotalFamilyMembers || 1,
+        FamilyMembersList: Array.isArray(merged.FamilyMembersList) ? JSON.parse(JSON.stringify(merged.FamilyMembersList)) : [],
         ProfileImageURL: merged.ProfileImageURL || "",
         IdentityImageURL: merged.IdentityImageURL || "",
         JoinDate: shiftDate,
@@ -10797,10 +11033,23 @@
         WaterFixedRate: targetFlatObj?.WaterRate !== undefined ? targetFlatObj.WaterRate : (merged.WaterFixedRate || ""),
         UPIName: targetPropObj?.UPIName || targetFlatObj?.UPIName || merged.UPIName || "",
         UPIID: targetPropObj?.UPIID || targetFlatObj?.UPIID || merged.UPIID || "",
-        ContractMobile: targetPropObj?.ContractNumber || targetFlatObj?.ContractMobile || merged.ContractMobile || ""
+        ContractMobile: targetPropObj?.ContractNumber || targetFlatObj?.ContractMobile || merged.ContractMobile || "",
+        UpdatedAt: new Date().toISOString()
       };
 
       DB.renters.push(shiftedRenterRecord);
+
+      syncRenterIdentityAcrossAllStays(shiftedRenterRecord.IdentityDocNumber, {
+        RenterName: shiftedRenterRecord.RenterName,
+        IdentityDocNumber: shiftedRenterRecord.IdentityDocNumber,
+        MobileNumber: shiftedRenterRecord.MobileNumber,
+        AltMobileNumber: shiftedRenterRecord.AltMobileNumber,
+        Address: shiftedRenterRecord.Address,
+        TotalFamilyMembers: shiftedRenterRecord.TotalFamilyMembers,
+        FamilyMembersList: shiftedRenterRecord.FamilyMembersList,
+        ProfileImageURL: shiftedRenterRecord.ProfileImageURL,
+        IdentityImageURL: shiftedRenterRecord.IdentityImageURL
+      });
 
       if (targetFlatObj) {
         targetFlatObj.RentAmount = newRentAmt;
@@ -10849,6 +11098,7 @@
           altMobileNumber: oldRenterRecord.AltMobileNumber || "",
           address: oldRenterRecord.Address || "",
           familyMembers: oldRenterRecord.TotalFamilyMembers || 1,
+          familyMembersList: oldRenterRecord.FamilyMembersList || [],
           renterStatus: "Inactive",
           joinDate: oldRenterRecord.JoinDate || "",
           endDate: shiftDate,
@@ -10870,6 +11120,7 @@
         altMobileNumber: shiftedRenterRecord.AltMobileNumber || "",
         address: shiftedRenterRecord.Address || "",
         familyMembers: shiftedRenterRecord.TotalFamilyMembers || 1,
+        familyMembersList: shiftedRenterRecord.FamilyMembersList || [],
         renterStatus: "Active",
         joinDate: shiftDate,
         endDate: "",
@@ -11740,6 +11991,7 @@ function formatMonthLabel(rawVal) {
         btn.disabled = false;
         btn.innerHTML = `<span>Log In</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>`;
       }
+      try { if (typeof updateLoginLockoutUI === "function") updateLoginLockoutUI(); } catch (e) {}
       try { applyCustomBackgrounds(); } catch (e) {}
     }
 
@@ -13772,11 +14024,200 @@ function formatMonthLabel(rawVal) {
       renderAllDashboardUI();
     }
 
+    // Progressive 3-Tier Login Lockout System (1 Minute -> 1 Hour -> 24 Hours)
+    // Tier 0: 3 failed attempts -> 1-minute lock (60,000 ms), then moves to Tier 1 (3 more attempts).
+    // Tier 1: 3 failed attempts -> 1-hour lock (3,600,000 ms), then moves to Tier 2 (3 more attempts).
+    // Tier 2: 3 failed attempts -> 24-hour lock (86,400,000 ms), then resets to Tier 0 after 24-hour lock expires.
+    const LOGIN_LOCKOUT_STORAGE_KEY = "portal_login_lockout_state_v1";
+    let loginLockoutCountdownTimer = null;
+
+    function getLoginLockoutState() {
+      const defaultState = { stage: 0, failedInStage: 0, lockedUntil: 0, lockedTierLabel: "" };
+      try {
+        const raw = localStorage.getItem(LOGIN_LOCKOUT_STORAGE_KEY);
+        if (!raw) return defaultState;
+        const parsed = JSON.parse(raw);
+        const state = {
+          stage: Number(parsed.stage) || 0,
+          failedInStage: Number(parsed.failedInStage) || 0,
+          lockedUntil: Number(parsed.lockedUntil) || 0,
+          lockedTierLabel: String(parsed.lockedTierLabel || "")
+        };
+        if (state.lockedUntil > 0 && Date.now() >= state.lockedUntil) {
+          state.lockedUntil = 0;
+          state.failedInStage = 0;
+          localStorage.setItem(LOGIN_LOCKOUT_STORAGE_KEY, JSON.stringify(state));
+        }
+        return state;
+      } catch (e) {
+        return defaultState;
+      }
+    }
+
+    function saveLoginLockoutState(state) {
+      try {
+        localStorage.setItem(LOGIN_LOCKOUT_STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    function resetLoginLockoutState() {
+      try {
+        localStorage.removeItem(LOGIN_LOCKOUT_STORAGE_KEY);
+      } catch (e) {}
+      if (loginLockoutCountdownTimer) {
+        clearInterval(loginLockoutCountdownTimer);
+        loginLockoutCountdownTimer = null;
+      }
+      updateLoginLockoutUI();
+    }
+
+    function formatLockoutRemainingTime(ms) {
+      const totalSeconds = Math.max(1, Math.ceil(ms / 1000));
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      const parts = [];
+      if (hours > 0) parts.push(`${hours}h`);
+      if (minutes > 0 || hours > 0) parts.push(`${minutes}m`);
+      parts.push(`${seconds}s`);
+      return parts.join(" ");
+    }
+
+    function updateLoginLockoutUI() {
+      const state = getLoginLockoutState();
+      const bannerEl = document.getElementById("loginLockoutStatusBanner");
+      const userEl = document.getElementById("loginUsername");
+      const passEl = document.getElementById("loginPassword");
+      const btn = document.getElementById("loginBtn");
+      const now = Date.now();
+
+      if (state.lockedUntil > now) {
+        const remainingMs = state.lockedUntil - now;
+        const remainingFormatted = formatLockoutRemainingTime(remainingMs);
+        const tierLabel = state.lockedTierLabel || "Temporary";
+
+        if (userEl) userEl.disabled = true;
+        if (passEl) passEl.disabled = true;
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = `<i class="fa-solid fa-lock"></i> Locked (${remainingFormatted})`;
+        }
+
+        if (bannerEl) {
+          bannerEl.style.display = "block";
+          bannerEl.innerHTML = `
+            <div style="background:rgba(239, 68, 68, 0.16); border:1.5px solid rgba(239, 68, 68, 0.55); border-radius:12px; padding:11px 14px; color:#fecaca; font-size:0.8rem; line-height:1.45; text-align:left; box-shadow:0 8px 20px rgba(239, 68, 68, 0.18);">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; font-weight:800; color:#f87171; font-size:0.84rem; margin-bottom:4px;">
+                <span><i class="fa-solid fa-shield-halved"></i> Account / Device Locked (${tierLabel})</span>
+                <span style="background:rgba(239,68,68,0.25); padding:2px 8px; border-radius:999px; font-family:monospace; font-size:0.82rem; color:#ffffff;">${remainingFormatted}</span>
+              </div>
+              <div>Too many failed login attempts. Please wait <strong>${remainingFormatted}</strong> for the ${tierLabel.toLowerCase()} lock period to end before trying again.</div>
+            </div>
+          `;
+        }
+
+        if (!loginLockoutCountdownTimer) {
+          loginLockoutCountdownTimer = setInterval(() => {
+            updateLoginLockoutUI();
+          }, 1000);
+        }
+        return true;
+      }
+
+      if (loginLockoutCountdownTimer) {
+        clearInterval(loginLockoutCountdownTimer);
+        loginLockoutCountdownTimer = null;
+      }
+
+      if (!isSubmittingLogin) {
+        if (userEl) userEl.disabled = false;
+        if (passEl) passEl.disabled = false;
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<span>Log In</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>`;
+        }
+      }
+
+      if (bannerEl) {
+        if (state.failedInStage > 0 || state.stage > 0) {
+          const attemptsLeft = Math.max(0, 3 - state.failedInStage);
+          const nextLockText = state.stage === 0 ? "1 Minute" : (state.stage === 1 ? "1 Hour" : "24 Hours");
+          bannerEl.style.display = "block";
+          bannerEl.innerHTML = `
+            <div style="background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.45); border-radius:10px; padding:9px 12px; color:#fde68a; font-size:0.78rem; line-height:1.4; text-align:left;">
+              <i class="fa-solid fa-triangle-exclamation" style="color:#fbbf24;"></i>
+              <strong>Security Notice:</strong> ${attemptsLeft} attempt${attemptsLeft === 1 ? "" : "s"} remaining before a <strong>${nextLockText}</strong> login lock is activated.
+            </div>
+          `;
+        } else {
+          bannerEl.style.display = "none";
+          bannerEl.innerHTML = "";
+        }
+      }
+
+      return false;
+    }
+
+    function recordFailedLoginAttemptAndLockIfNeeded() {
+      const state = getLoginLockoutState();
+      state.failedInStage = (Number(state.failedInStage) || 0) + 1;
+
+      if (state.failedInStage >= 3) {
+        let lockDurationMs = 60 * 1000; // Stage 0: 1 Minute
+        let tierLabel = "1 Minute";
+        let nextStage = 1;
+
+        if (state.stage === 1) {
+          lockDurationMs = 60 * 60 * 1000; // Stage 1: 1 Hour
+          tierLabel = "1 Hour";
+          nextStage = 2;
+        } else if (state.stage >= 2) {
+          lockDurationMs = 24 * 60 * 60 * 1000; // Stage 2: 24 Hours
+          tierLabel = "24 Hours";
+          nextStage = 0; // After 24h lock expires, user can attempt logging in again
+        }
+
+        state.lockedUntil = Date.now() + lockDurationMs;
+        state.lockedTierLabel = tierLabel;
+        state.failedInStage = 0;
+        state.stage = nextStage;
+        saveLoginLockoutState(state);
+        updateLoginLockoutUI();
+        return {
+          justLocked: true,
+          tierLabel,
+          lockedUntil: state.lockedUntil
+        };
+      }
+
+      saveLoginLockoutState(state);
+      updateLoginLockoutUI();
+      const attemptsLeft = Math.max(0, 3 - state.failedInStage);
+      const nextLockLabel = state.stage === 0 ? "1 minute" : (state.stage === 1 ? "1 hour" : "24 hours");
+      return {
+        justLocked: false,
+        attemptsLeft,
+        nextLockLabel
+      };
+    }
+
+    // Initialize lockout check on script load and DOM ready
+    setTimeout(() => {
+      try { updateLoginLockoutUI(); } catch (e) {}
+    }, 50);
+
     // 1. Live Server-Verified Login Every Time + Single-Device Session Token Generation
     let isSubmittingLogin = false;
     async function handleLoginSubmit(e) {
       if (e && e.preventDefault) e.preventDefault();
       if (isSubmittingLogin) return;
+
+      if (updateLoginLockoutUI()) {
+        const lockState = getLoginLockoutState();
+        const rem = formatLockoutRemainingTime(lockState.lockedUntil - Date.now());
+        triggerSideToast("Login Locked", `Too many failed attempts. Please wait ${rem} before trying again.`, false);
+        return;
+      }
 
       const userEl = document.getElementById("loginUsername");
       const passEl = document.getElementById("loginPassword");
@@ -13843,6 +14284,7 @@ function formatMonthLabel(rawVal) {
         }
 
         if (res && res.status === "success") {
+          resetLoginLockoutState();
           try {
             localStorage.removeItem(EXPLICIT_LOGOUT_FLAG_KEY);
           } catch (e) {}
@@ -13876,12 +14318,26 @@ function formatMonthLabel(rawVal) {
           return;
         }
 
-        // Clean user feedback for incorrect credentials
-        const failureMsg = (res && res.message) ? res.message : "Your Username or Password is wrong or does not exist.";
-        triggerSideToast("Login Failed", failureMsg, false);
+        // Record failed attempt & apply progressive 3-tier lockout (1m -> 1h -> 24h)
+        const lockOutcome = recordFailedLoginAttemptAndLockIfNeeded();
+        const baseFailureMsg = (res && res.message) ? res.message : "Invalid username or password.";
+        if (lockOutcome.justLocked) {
+          triggerSideToast(
+            `Locked for ${lockOutcome.tierLabel}`,
+            `3 failed login attempts reached. Login is now locked on this device for ${lockOutcome.tierLabel}.`,
+            false
+          );
+        } else {
+          triggerSideToast(
+            "Login Failed",
+            `${baseFailureMsg} (${lockOutcome.attemptsLeft} attempt${lockOutcome.attemptsLeft === 1 ? "" : "s"} left before ${lockOutcome.nextLockLabel} lock).`,
+            false
+          );
+        }
       } catch (err) {
         console.error("Critical login error:", err);
         if (isAdminCredentials) {
+          resetLoginLockoutState();
           try {
             localStorage.removeItem(EXPLICIT_LOGOUT_FLAG_KEY);
           } catch (e) {}
@@ -13904,10 +14360,7 @@ function formatMonthLabel(rawVal) {
         triggerSideToast("Login Notice", "Unable to log in at this moment. Please check your credentials and try again.", false);
       } finally {
         isSubmittingLogin = false;
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = `<span>Log In</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>`;
-        }
+        updateLoginLockoutUI();
       }
     }
 
@@ -17049,6 +17502,10 @@ function formatMonthLabel(rawVal) {
           docType,
           compressedDataUrl
         );
+        syncRenterIdentityAcrossAllStays(targetRenter, isIdentity
+          ? { IdentityImageURL: compressedDataUrl }
+          : { ProfileImageURL: compressedDataUrl }
+        );
 
         saveDbSnapshotToCache();
         renderAllDashboardUI();
@@ -17065,6 +17522,7 @@ function formatMonthLabel(rawVal) {
           propertyName: targetRenter.PropertyName || selectedFlat.PropertyName,
           flatName: targetRenter.FlatName || selectedFlat.FlatName,
           renterId: targetRenter.RenterID,
+          identityDocNumber: targetRenter.IdentityDocNumber || "",
           renterName: targetRenter.RenterName || "Past Tenant",
           rentAmount: targetRenter.RentAmount || selectedFlat.RentAmount || 0,
           docType: docType,
@@ -17083,13 +17541,17 @@ function formatMonthLabel(rawVal) {
         } else {
           targetRenter.ProfileImageURL = finalSavedImg;
         }
+        syncRenterIdentityAcrossAllStays(targetRenter, isIdentity
+          ? { IdentityImageURL: finalSavedImg }
+          : { ProfileImageURL: finalSavedImg }
+        );
         saveDbSnapshotToCache();
         renderAllDashboardUI();
         populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
 
         triggerSideToast(
-          "Saved to Past Renter Profile",
-          `${isIdentity ? "Aadhaar Card photo" : "Profile photo"} saved specifically to ${targetRenter.RenterName}'s profile & Google Drive!`,
+          "Saved & Synced Across All Stays",
+          `${isIdentity ? "Aadhaar Card photo" : "Profile photo"} saved and synced across all historical & active stays for ${targetRenter.RenterName}!`,
           true
         );
       } catch (err) {
@@ -17114,6 +17576,11 @@ function formatMonthLabel(rawVal) {
       if (isIdentity) targetRenter.IdentityImageURL = "";
       else targetRenter.ProfileImageURL = "";
 
+      syncRenterIdentityAcrossAllStays(targetRenter, isIdentity
+        ? { IdentityImageURL: "", forceClearIdentityImage: true }
+        : { ProfileImageURL: "", forceClearProfileImage: true }
+      );
+
       saveDbSnapshotToCache();
       renderAllDashboardUI();
       populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
@@ -17125,6 +17592,7 @@ function formatMonthLabel(rawVal) {
         propertyName: targetRenter.PropertyName || selectedFlat.PropertyName,
         flatName: targetRenter.FlatName || selectedFlat.FlatName,
         renterId: targetRenter.RenterID,
+        identityDocNumber: targetRenter.IdentityDocNumber || "",
         docType: docType,
         currentImageUrl: currentUrl
       });
@@ -17158,14 +17626,15 @@ function formatMonthLabel(rawVal) {
         targetRenter.RenterID = "R-" + Date.now();
       }
 
+      const { merged } = consolidateRenterHistoryDetailsByAadhaar(targetRenter);
       const existingStatus = String(targetRenter.Status || "Inactive").trim().toLowerCase() === "active" ? "Active" : "Inactive";
       document.getElementById("editLeftRenterId").value = targetRenter.RenterID || "";
-      document.getElementById("editLeftName").value = targetRenter.RenterName || "";
-      document.getElementById("editLeftIdentityNum").value = formatAadhaarWithHyphens(targetRenter.IdentityDocNumber || "");
-      document.getElementById("editLeftMobile").value = sanitizeContactPhoneDisplay(targetRenter.MobileNumber) || "";
-      document.getElementById("editLeftAltMobile").value = sanitizeContactPhoneDisplay(targetRenter.AltMobileNumber) || "";
-      document.getElementById("editLeftAddress").value = targetRenter.Address || "";
-      document.getElementById("editLeftFamily").value = targetRenter.TotalFamilyMembers || 1;
+      document.getElementById("editLeftName").value = merged.RenterName || targetRenter.RenterName || "";
+      document.getElementById("editLeftIdentityNum").value = formatAadhaarWithHyphens(merged.IdentityDocNumber || targetRenter.IdentityDocNumber || "");
+      document.getElementById("editLeftMobile").value = sanitizeContactPhoneDisplay(merged.MobileNumber || targetRenter.MobileNumber) || "";
+      document.getElementById("editLeftAltMobile").value = sanitizeContactPhoneDisplay(merged.AltMobileNumber || targetRenter.AltMobileNumber) || "";
+      document.getElementById("editLeftAddress").value = merged.Address || targetRenter.Address || "";
+      document.getElementById("editLeftFamily").value = merged.TotalFamilyMembers || targetRenter.TotalFamilyMembers || 1;
       document.getElementById("editLeftStatus").value = existingStatus;
       const statusDispEl = document.getElementById("editLeftStatusDisplay");
       if (statusDispEl) {
@@ -17174,9 +17643,9 @@ function formatMonthLabel(rawVal) {
       document.getElementById("editLeftJoinDate").value = toInputDateValue(targetRenter.JoinDate);
       document.getElementById("editLeftEndDate").value = toInputDateValue(targetRenter.EndDate);
 
-      // Populate Past Renter Profile & Aadhaar Card Photo Slots
-      updateLeftRenterImageSlotUI("profile", targetRenter.ProfileImageURL || "");
-      updateLeftRenterImageSlotUI("identity", targetRenter.IdentityImageURL || "");
+      // Populate Past Renter Profile & Aadhaar Card Photo Slots with consolidated images
+      updateLeftRenterImageSlotUI("profile", merged.ProfileImageURL || targetRenter.ProfileImageURL || "");
+      updateLeftRenterImageSlotUI("identity", merged.IdentityImageURL || targetRenter.IdentityImageURL || "");
 
       // Requirement 5: Only show Reactivate button when the renter has left (Inactive), never for an Active renter
       const reactivateBtn = document.getElementById("btnReactivateFromEditModal");
@@ -17226,6 +17695,8 @@ function formatMonthLabel(rawVal) {
         return triggerSideToast("Error", "Renter record not found.", false);
       }
 
+      const previousAadhaar = targetRenter.IdentityDocNumber || "";
+
       // Requirement 5: Status must remain unchanged (if left, stays Inactive; if active, stays Active)
       const preservedStatus = String(targetRenter.Status || "Inactive").trim().toLowerCase() === "active" ? "Active" : "Inactive";
 
@@ -17243,6 +17714,23 @@ function formatMonthLabel(rawVal) {
       targetRenter.EndDate = document.getElementById("editLeftEndDate").value;
       targetRenter.ProfileImageURL = isPlaceholderImageUrl(leftProfSrc) ? (targetRenter.ProfileImageURL || "") : leftProfSrc;
       targetRenter.IdentityImageURL = isPlaceholderImageUrl(leftIdSrc) ? (targetRenter.IdentityImageURL || "") : leftIdSrc;
+      targetRenter.UpdatedAt = new Date().toISOString();
+
+      // Synchronize updated personal/KYC details across ALL historical and active stays sharing this Aadhaar
+      const syncedStays = syncRenterIdentityAcrossAllStays(
+        cleanAadhaar || previousAadhaar,
+        {
+          RenterName: targetRenter.RenterName,
+          IdentityDocNumber: targetRenter.IdentityDocNumber,
+          MobileNumber: targetRenter.MobileNumber,
+          AltMobileNumber: targetRenter.AltMobileNumber,
+          Address: targetRenter.Address,
+          TotalFamilyMembers: targetRenter.TotalFamilyMembers,
+          ProfileImageURL: targetRenter.ProfileImageURL,
+          IdentityImageURL: targetRenter.IdentityImageURL
+        },
+        previousAadhaar
+      );
 
       saveLocalFlatUtilityAndDateMeta(selectedFlat.PropertyName, selectedFlat.FlatName, targetRenter.RenterID, {
         JoinDate: targetRenter.JoinDate,
@@ -17258,11 +17746,13 @@ function formatMonthLabel(rawVal) {
       populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
       renderAllRentersGraphForFlat(selectedFlat.PropertyName, selectedFlat.FlatName);
 
-      triggerSideToast("Profile Updated", "Renter details & photos saved while keeping their '" + (preservedStatus === "Active" ? "Active" : "Left") + "' status unchanged!", true);
+      const syncNote = syncedStays.length > 1 ? ` & synced across ${syncedStays.length} locations/records` : "";
+      triggerSideToast("Profile Updated & Synced", `Renter details & photos saved${syncNote} while keeping their '${preservedStatus === "Active" ? "Active" : "Left"}' status unchanged!`, true);
 
       await sendFirebaseAction({
         action: "updateRenterProfile",
         renterId: targetRenterId,
+        previousAadhaar: previousAadhaar,
         propertyName: targetRenter.PropertyName || selectedFlat.PropertyName,
         flatName: targetRenter.FlatName || selectedFlat.FlatName,
         renterName: targetRenter.RenterName,
@@ -17271,6 +17761,7 @@ function formatMonthLabel(rawVal) {
         altMobileNumber: targetRenter.AltMobileNumber,
         address: targetRenter.Address,
         familyMembers: targetRenter.TotalFamilyMembers,
+        familyMembersList: targetRenter.FamilyMembersList || [],
         renterStatus: preservedStatus,
         joinDate: targetRenter.JoinDate,
         endDate: targetRenter.EndDate,
@@ -20339,7 +20830,15 @@ function formatMonthLabel(rawVal) {
               </div>
               <div style="display:flex; flex-direction:column; gap:8px;">
                 ${filteredRenters.map(item => {
-                  const r = item.r;
+                  const { merged: rMerged } = consolidateRenterHistoryDetailsByAadhaar(item.r);
+                  const r = {
+                    ...item.r,
+                    RenterName: rMerged.RenterName || item.r.RenterName,
+                    IdentityDocNumber: rMerged.IdentityDocNumber || item.r.IdentityDocNumber,
+                    MobileNumber: rMerged.MobileNumber || item.r.MobileNumber,
+                    AltMobileNumber: rMerged.AltMobileNumber || item.r.AltMobileNumber,
+                    ProfileImageURL: !isPlaceholderImageUrl(rMerged.ProfileImageURL) ? rMerged.ProfileImageURL : item.r.ProfileImageURL
+                  };
                   const isAct = String(r.Status || "").toLowerCase() === "active";
                   const statusBadge = isAct ? "Active Tenant" : "Left / Past Tenant";
                   const statusCls = isAct ? "badge-paid" : "badge-unpaid";
@@ -20411,7 +20910,17 @@ function formatMonthLabel(rawVal) {
       const toMonth = toDateStr ? toDateStr.substring(0, 7) : "";
 
       container.innerHTML = filteredRenters.map((item, idx) => {
-        const targetRenter = item.r;
+        const { merged: targetMerged } = consolidateRenterHistoryDetailsByAadhaar(item.r);
+        const targetRenter = {
+          ...item.r,
+          RenterName: targetMerged.RenterName || item.r.RenterName,
+          IdentityDocNumber: targetMerged.IdentityDocNumber || item.r.IdentityDocNumber,
+          MobileNumber: targetMerged.MobileNumber || item.r.MobileNumber,
+          AltMobileNumber: targetMerged.AltMobileNumber || item.r.AltMobileNumber,
+          Address: targetMerged.Address || item.r.Address,
+          ProfileImageURL: !isPlaceholderImageUrl(targetMerged.ProfileImageURL) ? targetMerged.ProfileImageURL : item.r.ProfileImageURL,
+          IdentityImageURL: !isPlaceholderImageUrl(targetMerged.IdentityImageURL) ? targetMerged.IdentityImageURL : item.r.IdentityImageURL
+        };
         const isAct = String(targetRenter.Status || "").toLowerCase() === "active";
         const statusBadgeText = isAct ? "Active Tenant" : "Left / Past Tenant";
         const statusBadgeClass = isAct ? "badge-paid" : "badge-unpaid";
@@ -20618,6 +21127,27 @@ function formatMonthLabel(rawVal) {
           return triggerSideToast("Access Denied", "You only have permission to view your own Aadhaar-linked profile.", false);
         }
       }
+
+      // Consolidate all Aadhaar-linked stays so any updates made in a new or historical location reflect seamlessly here
+      const { merged: consolidatedRenter } = consolidateRenterHistoryDetailsByAadhaar(targetRenter);
+      targetRenter = {
+        ...targetRenter,
+        RenterName: consolidatedRenter.RenterName || targetRenter.RenterName,
+        IdentityDocNumber: consolidatedRenter.IdentityDocNumber || targetRenter.IdentityDocNumber,
+        MobileNumber: consolidatedRenter.MobileNumber || targetRenter.MobileNumber,
+        AltMobileNumber: consolidatedRenter.AltMobileNumber || targetRenter.AltMobileNumber,
+        Address: consolidatedRenter.Address || targetRenter.Address,
+        TotalFamilyMembers: consolidatedRenter.TotalFamilyMembers || targetRenter.TotalFamilyMembers,
+        FamilyMembersList: Array.isArray(consolidatedRenter.FamilyMembersList) && consolidatedRenter.FamilyMembersList.length > 0
+          ? consolidatedRenter.FamilyMembersList
+          : (targetRenter.FamilyMembersList || []),
+        ProfileImageURL: !isPlaceholderImageUrl(consolidatedRenter.ProfileImageURL)
+          ? consolidatedRenter.ProfileImageURL
+          : targetRenter.ProfileImageURL,
+        IdentityImageURL: !isPlaceholderImageUrl(consolidatedRenter.IdentityImageURL)
+          ? consolidatedRenter.IdentityImageURL
+          : targetRenter.IdentityImageURL
+      };
 
       const prop = targetRenter.PropertyName || propName || "";
       const flat = targetRenter.FlatName || flatName || "";
@@ -22771,6 +23301,35 @@ function formatMonthLabel(rawVal) {
 
     let lastAutoPromptedReturningAadhaar = "";
 
+    function applyAutoFetchedAadhaarDetailsToCurrentForm(mergedRenter) {
+      if (!mergedRenter) return;
+      const nameEl = document.getElementById("renterName");
+      const mobEl = document.getElementById("renterMobile");
+      const altMobEl = document.getElementById("renterAltMobile");
+      const addrEl = document.getElementById("renterAddress");
+      const famEl = document.getElementById("renterFamily");
+      const statusEl = document.getElementById("renterStatus");
+      const joinEl = document.getElementById("renterJoinDate");
+
+      if (nameEl && mergedRenter.RenterName) nameEl.value = mergedRenter.RenterName;
+      if (mobEl && mergedRenter.MobileNumber) mobEl.value = sanitizeContactPhoneDisplay(mergedRenter.MobileNumber);
+      if (altMobEl && mergedRenter.AltMobileNumber) altMobEl.value = sanitizeContactPhoneDisplay(mergedRenter.AltMobileNumber);
+      if (addrEl && mergedRenter.Address) addrEl.value = mergedRenter.Address;
+      if (famEl && mergedRenter.TotalFamilyMembers) famEl.value = mergedRenter.TotalFamilyMembers;
+      if (statusEl) statusEl.value = "Active";
+      if (joinEl && !joinEl.value) joinEl.value = new Date().toISOString().split("T")[0];
+
+      if (Array.isArray(mergedRenter.FamilyMembersList) && typeof renderRenterFamilyMembersRows === "function") {
+        renderRenterFamilyMembersRows(mergedRenter.FamilyMembersList);
+      }
+      if (!isPlaceholderImageUrl(mergedRenter.ProfileImageURL)) {
+        updateRenterImageSlotUI("profile", mergedRenter.ProfileImageURL);
+      }
+      if (!isPlaceholderImageUrl(mergedRenter.IdentityImageURL)) {
+        updateRenterImageSlotUI("identity", mergedRenter.IdentityImageURL);
+      }
+    }
+
     function handleAadhaarLookupInput(rawVal) {
       const promptEl = document.getElementById("aadhaarPreviousRenterPrompt");
       if (!promptEl) return;
@@ -22786,7 +23345,7 @@ function formatMonthLabel(rawVal) {
         return;
       }
 
-      // Find matching saved renter profiles with this Aadhaar number (prioritizing renters who have left / Inactive)
+      // Find matching saved renter profiles with this Aadhaar number across all properties & flats
       const matches = (DB.renters || [])
         .map((r, idx) => ({ r, rId: r.RenterID || `IDX-${idx}` }))
         .filter(({ r }) => {
@@ -22803,8 +23362,11 @@ function formatMonthLabel(rawVal) {
         return;
       }
 
-      // Sort so Inactive (left) renters appear first
+      // Sort so most recently updated / active / latest stay appears first
       matches.sort((a, b) => {
+        const aUpd = String(a.r.UpdatedAt || "");
+        const bUpd = String(b.r.UpdatedAt || "");
+        if (aUpd !== bUpd) return bUpd.localeCompare(aUpd);
         const aLeft = String(a.r.Status || "").toLowerCase() !== "active" ? 0 : 1;
         const bLeft = String(b.r.Status || "").toLowerCase() !== "active" ? 0 : 1;
         return aLeft - bLeft;
@@ -22812,44 +23374,57 @@ function formatMonthLabel(rawVal) {
 
       const bestMatch = matches[0];
       const pastRenter = bestMatch.r;
+      const { merged: consolidatedData, matchingStays } = consolidateRenterHistoryDetailsByAadhaar(cleanAadhaar);
       const pastBills = getBillsForSpecificRenter(pastRenter.PropertyName, pastRenter.FlatName, pastRenter);
       const safeRId = String(bestMatch.rId || "").replace(/'/g, "\\'");
-      const avatarSrc = (!isPlaceholderImageUrl(pastRenter.ProfileImageURL))
-        ? pastRenter.ProfileImageURL
+      const avatarSrc = (!isPlaceholderImageUrl(consolidatedData.ProfileImageURL))
+        ? consolidatedData.ProfileImageURL
         : EMPTY_PROFILE_PLACEHOLDER;
+      const staysLocationsSummary = matchingStays
+        .map(s => `${s.PropertyName || '--'} (Flat ${s.FlatName || '--'})`)
+        .filter((v, i, arr) => arr.indexOf(v) === i)
+        .join(", ");
+
+      // Automatically fetch and display all existing tenant data right into the current flat's profile fields when 12 digits are matched
+      if (cleanAadhaar.length === 12 && lastAutoPromptedReturningAadhaar !== cleanAadhaar) {
+        lastAutoPromptedReturningAadhaar = cleanAadhaar;
+        applyAutoFetchedAadhaarDetailsToCurrentForm(consolidatedData);
+        triggerSideToast(
+          "Existing Tenant Data Auto-Fetched",
+          `All saved details, family members & photos for ${consolidatedData.RenterName || 'Tenant'} (Aadhaar: ${formatAadhaarWithHyphens(cleanAadhaar)}) have been automatically populated!`,
+          true
+        );
+      }
 
       promptEl.style.display = "block";
       promptEl.innerHTML = `
         <div style="background:rgba(16, 185, 129, 0.12); border:1.5px solid var(--accent-green); border-radius:12px; padding:12px; text-align:left;">
-          <div style="display:flex; align-items:center; gap:6px; font-size:0.76rem; font-weight:800; color:var(--accent-green); margin-bottom:8px;">
-            <i class="fa-solid fa-clock-rotate-left"></i> Matching Aadhaar (${formatAadhaarWithHyphens(cleanAadhaar)}) — Returning Renter Found!
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px; font-size:0.76rem; font-weight:800; color:var(--accent-green); margin-bottom:8px;">
+            <span><i class="fa-solid fa-clock-rotate-left"></i> Matching Aadhaar (${formatAadhaarWithHyphens(cleanAadhaar)}) — Existing Tenant Auto-Fetched!</span>
+            <span style="background:rgba(16,185,129,0.2); padding:2px 8px; border-radius:999px; font-size:0.68rem;">Synced Across All Stays</span>
           </div>
           <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
             <div class="renter-avatar" style="width:44px; height:44px; flex-shrink:0;">
-              <img src="${avatarSrc}" alt="${pastRenter.RenterName || 'Tenant'}">
+              <img src="${avatarSrc}" alt="${consolidatedData.RenterName || 'Tenant'}">
             </div>
             <div style="font-size:0.78rem; line-height:1.35;">
-              <div><strong>${pastRenter.RenterName || 'Saved Renter'}</strong> <span class="badge-unpaid" style="font-size:0.65rem; margin-left:4px;">${pastRenter.Status || 'Past Stay'}</span></div>
-              <div style="color:var(--text-muted);">Previous Flat: <strong>${pastRenter.PropertyName || '--'} - Flat ${pastRenter.FlatName || '--'}</strong> (History Retained) • Phone: ${sanitizeContactPhoneDisplay(pastRenter.MobileNumber) || '--'}</div>
-              <div style="color:var(--text-muted);">Stay: ${formatDateOnly(pastRenter.JoinDate)} to ${formatDateOnly(pastRenter.EndDate) || 'Left'} • Past Bills: <strong>${pastBills.length}</strong></div>
+              <div><strong>${consolidatedData.RenterName || 'Saved Renter'}</strong> <span class="badge-unpaid" style="font-size:0.65rem; margin-left:4px;">${pastRenter.Status || 'Previous Stay'}</span></div>
+              <div style="color:var(--text-muted);">Recorded Locations: <strong>${staysLocationsSummary}</strong> • Phone: ${sanitizeContactPhoneDisplay(consolidatedData.MobileNumber) || '--'}</div>
+              <div style="color:var(--text-muted);">Last Stay: ${formatDateOnly(pastRenter.JoinDate)} to ${formatDateOnly(pastRenter.EndDate) || 'Present'} • Past Bills: <strong>${pastBills.length}</strong></div>
             </div>
           </div>
-          <button
-            type="button"
-            class="btn-primary"
-            style="padding:9px 12px; font-size:0.78rem; background:var(--accent-green);"
-            onclick="reactivatePreviousRenterProfile('${safeRId}')"
-          >
-            <i class="fa-solid fa-user-check"></i> Choose Property &amp; Flat to Place Returning Renter
-          </button>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <button
+              type="button"
+              class="btn-primary"
+              style="flex:1; min-width:190px; padding:9px 12px; font-size:0.76rem; background:var(--accent-green);"
+              onclick="reactivatePreviousRenterProfile('${safeRId}')"
+            >
+              <i class="fa-solid fa-people-arrows"></i> Shift / Place in Any Property &amp; Flat
+            </button>
+          </div>
         </div>
       `;
-
-      // Requirement 10: When all 12 digits of a departed renter's Aadhaar are entered, prompt where to place them while keeping old flat history intact
-      if (cleanAadhaar.length === 12 && lastAutoPromptedReturningAadhaar !== cleanAadhaar) {
-        lastAutoPromptedReturningAadhaar = cleanAadhaar;
-        reactivatePreviousRenterProfile(bestMatch.rId);
-      }
     }
 
     // Requirement 6: Dynamic Family Member Rows (+) and (-) inside Flat Details -> Profile
@@ -23122,6 +23697,9 @@ function formatMonthLabel(rawVal) {
         String(r.Status).trim().toLowerCase() === "active"
       );
 
+      const previousAadhaarBeforeEdit = existingRenterRecord?.IdentityDocNumber || activeFlatRenterObj?.IdentityDocNumber || "";
+      payload.previousAadhaar = previousAadhaarBeforeEdit;
+
       if (statusVal === "Inactive") {
         if (existingRenterRecord) {
           const vacatedId = existingRenterRecord.RenterID || targetRenterId;
@@ -23150,6 +23728,7 @@ function formatMonthLabel(rawVal) {
           existingRenterRecord.UPIName = payload.upiName;
           existingRenterRecord.UPIID = payload.upiId;
           existingRenterRecord.ContractMobile = payload.contractMobile;
+          existingRenterRecord.UpdatedAt = new Date().toISOString();
 
           const vacatedNameClean = String(existingRenterRecord.RenterName || "").trim().toLowerCase();
           DB.bills.forEach(b => {
@@ -23163,12 +23742,28 @@ function formatMonthLabel(rawVal) {
           });
         }
 
+        syncRenterIdentityAcrossAllStays(
+          payload.identityDocNumber || previousAadhaarBeforeEdit,
+          {
+            RenterName: payload.renterName,
+            IdentityDocNumber: payload.identityDocNumber,
+            MobileNumber: payload.mobileNumber,
+            AltMobileNumber: payload.altMobileNumber,
+            Address: payload.address,
+            TotalFamilyMembers: payload.familyMembers,
+            FamilyMembersList: payload.familyMembersList,
+            ProfileImageURL: payload.profileImageUrl,
+            IdentityImageURL: payload.identityImageUrl
+          },
+          previousAadhaarBeforeEdit
+        );
+
         // Requirement 5: If we were editing a departed renter from history, keep their edited data visible and status 'Inactive'
         if (wasAlreadyInactive && existingRenterRecord) {
           activeFlatRenterObj = existingRenterRecord;
           document.getElementById("renterJoinDate").value = payload.joinDate;
           document.getElementById("renterEndDate").value = payload.endDate;
-          triggerSideToast("Departed Renter Updated", "Updated details saved while preserving 'Left / Inactive' status!", true);
+          triggerSideToast("Departed Renter Updated", "Updated details saved & synced across all records while preserving 'Left / Inactive' status!", true);
         } else {
           activeFlatRenterObj = null;
           clearRenterRightForm();
@@ -23203,6 +23798,7 @@ function formatMonthLabel(rawVal) {
           existingRenterRecord.UPIName = payload.upiName;
           existingRenterRecord.UPIID = payload.upiId;
           existingRenterRecord.ContractMobile = payload.contractMobile;
+          existingRenterRecord.UpdatedAt = new Date().toISOString();
           activeFlatRenterObj = existingRenterRecord;
         } else {
           const createdRenter = {
@@ -23232,16 +23828,37 @@ function formatMonthLabel(rawVal) {
             UPIName: payload.upiName,
             UPIID: payload.upiId,
             ContractMobile: payload.contractMobile,
-            Status: "Active"
+            Status: "Active",
+            UpdatedAt: new Date().toISOString()
           };
           DB.renters.push(createdRenter);
           activeFlatRenterObj = createdRenter;
         }
+
+        const syncedRecords = syncRenterIdentityAcrossAllStays(
+          payload.identityDocNumber || previousAadhaarBeforeEdit,
+          {
+            RenterName: payload.renterName,
+            IdentityDocNumber: payload.identityDocNumber,
+            MobileNumber: payload.mobileNumber,
+            AltMobileNumber: payload.altMobileNumber,
+            Address: payload.address,
+            TotalFamilyMembers: payload.familyMembers,
+            FamilyMembersList: payload.familyMembersList,
+            ProfileImageURL: payload.profileImageUrl,
+            IdentityImageURL: payload.identityImageUrl
+          },
+          previousAadhaarBeforeEdit
+        );
+
         document.getElementById("renterJoinDate").value = payload.joinDate;
         document.getElementById("renterEndDate").value = payload.endDate;
         updateRenterTenureStatusUI(activeFlatRenterObj, payload.identityDocNumber);
         syncProfileReactivateButtonVisibility();
-        triggerSideToast("Profile & Utility Details Saved", "Renter profile, family members, dates & utility meter numbers saved!", true);
+        const syncedMsg = syncedRecords.length > 1
+          ? `Renter profile saved & synchronized across ${syncedRecords.length} historical/active locations!`
+          : "Renter profile, family members, dates & utility meter numbers saved!";
+        triggerSideToast("Profile & Utility Details Saved", syncedMsg, true);
       }
 
       propagatePropertyWideUpiAndContactLocal(
@@ -24303,6 +24920,8 @@ function formatMonthLabel(rawVal) {
         if (isIdentity) targetR.IdentityImageURL = directImageUrl;
         else targetR.ProfileImageURL = directImageUrl;
       }
+      const currentAadhaarVal = document.getElementById("renterIdentityNum")?.value || activeFlatRenterObj?.IdentityDocNumber || targetR?.IdentityDocNumber || "";
+      syncRenterIdentityAcrossAllStays(currentAadhaarVal, isIdentity ? { IdentityImageURL: directImageUrl } : { ProfileImageURL: directImageUrl });
       saveDbSnapshotToCache();
       renderAllDashboardUI();
       populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
@@ -24314,6 +24933,7 @@ function formatMonthLabel(rawVal) {
           propertyName: selectedFlat.PropertyName,
           flatName: selectedFlat.FlatName,
           renterId: activeFlatRenterObj?.RenterID || "",
+          identityDocNumber: currentAadhaarVal,
           renterName: document.getElementById("renterName")?.value || activeFlatRenterObj?.RenterName || "Current Tenant",
           rentAmount: selectedFlat.RentAmount || 0,
           docType: docType,
@@ -24323,7 +24943,7 @@ function formatMonthLabel(rawVal) {
           activeFlatRenterObj.RenterID = res.resolvedRenterId;
           saveDbSnapshotToCache();
         }
-        triggerSideToast("Photo Link Synced", "Photo link saved to Firebases and active across all devices!", true);
+        triggerSideToast("Photo Link Synced", "Photo link saved to Firebases and synced across all stays & devices!", true);
       } catch (e) {
         triggerSideToast("Sync Warning", "Could not reach Firebase Firestore server.", false);
       }
@@ -24365,6 +24985,8 @@ function formatMonthLabel(rawVal) {
           if (isIdentity) targetR.IdentityImageURL = sheetSafeBase64;
           else targetR.ProfileImageURL = sheetSafeBase64;
         }
+        const currentAadhaarVal = document.getElementById("renterIdentityNum")?.value || activeFlatRenterObj?.IdentityDocNumber || targetR?.IdentityDocNumber || "";
+        syncRenterIdentityAcrossAllStays(currentAadhaarVal, isIdentity ? { IdentityImageURL: sheetSafeBase64 } : { ProfileImageURL: sheetSafeBase64 });
         saveDbSnapshotToCache();
         renderAllDashboardUI();
 
@@ -24379,6 +25001,7 @@ function formatMonthLabel(rawVal) {
           propertyName: selectedFlat.PropertyName,
           flatName: selectedFlat.FlatName,
           renterId: activeFlatRenterObj?.RenterID || "",
+          identityDocNumber: currentAadhaarVal,
           renterName: document.getElementById("renterName")?.value || activeFlatRenterObj?.RenterName || "Current Tenant",
           rentAmount: selectedFlat.RentAmount || 0,
           docType: docType,
@@ -24406,13 +25029,14 @@ function formatMonthLabel(rawVal) {
           if (isIdentity) targetR.IdentityImageURL = finalImageUrl;
           else targetR.ProfileImageURL = finalImageUrl;
         }
+        syncRenterIdentityAcrossAllStays(currentAadhaarVal, isIdentity ? { IdentityImageURL: finalImageUrl } : { ProfileImageURL: finalImageUrl });
         saveDbSnapshotToCache();
         renderAllDashboardUI();
         populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
 
         triggerSideToast(
-          "Synced Across All Devices",
-          `${isIdentity ? "Aadhaar / ID Card" : "Profile Photo"} saved & synced across all mobile and desktop devices!`,
+          "Synced Across All Stays & Devices",
+          `${isIdentity ? "Aadhaar / ID Card" : "Profile Photo"} saved & synced across all historical and active locations!`,
           true
         );
       } catch (err) {
@@ -24445,6 +25069,11 @@ function formatMonthLabel(rawVal) {
         }
       });
       removePermanentRenterPhoto(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj?.RenterID, docType);
+      const currentAadhaarVal = document.getElementById("renterIdentityNum")?.value || activeFlatRenterObj?.IdentityDocNumber || "";
+      syncRenterIdentityAcrossAllStays(currentAadhaarVal, isIdentity
+        ? { IdentityImageURL: "", forceClearIdentityImage: true }
+        : { ProfileImageURL: "", forceClearProfileImage: true }
+      );
 
       saveDbSnapshotToCache();
       renderAllDashboardUI();
@@ -24461,6 +25090,7 @@ function formatMonthLabel(rawVal) {
         propertyName: selectedFlat.PropertyName,
         flatName: selectedFlat.FlatName,
         renterId: activeFlatRenterObj?.RenterID || "",
+        identityDocNumber: currentAadhaarVal,
         docType: docType,
         currentImageUrl: currentUrl,
         clearIdentityImage: isIdentity,
