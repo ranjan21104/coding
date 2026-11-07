@@ -2773,7 +2773,8 @@
 
   /* Requirement 1, 8 & 9: Clean Standard Dashboard Theme (Colorful Theme Removed), Icon-Only Header Buttons & White Outline-Only FD Modal */
   
-  /* REQUIREMENT 1: Unified 42px Outline-Box Buttons for FD, Khet, Kharch, Plus (+), Profile, Settings & Logout */
+  /* REQUIREMENT 1: Unified 42px Outline-Box Buttons for Live Chat, FD, Khet, Kharch, Plus (+), Profile, Settings & Logout */
+  .live-chat-icon-only-btn,
   .fd-icon-only-btn,
   .khet-icon-only-btn,
   .kharch-icon-only-btn,
@@ -2795,7 +2796,9 @@
     cursor: pointer !important;
     transition: all 0.22s ease !important;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12) !important;
+    position: relative !important;
   }
+  .live-chat-icon-only-btn:hover,
   .fd-icon-only-btn:hover,
   .khet-icon-only-btn:hover,
   .kharch-icon-only-btn:hover,
@@ -2806,6 +2809,14 @@
     transform: translateY(-2px) !important;
     border-color: var(--primary) !important;
     box-shadow: 0 6px 16px rgba(99, 102, 241, 0.25) !important;
+  }
+  .live-chat-icon-only-btn {
+    border-color: rgba(16, 185, 129, 0.5) !important;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, var(--bg-input) 100%) !important;
+  }
+  .live-chat-icon-only-btn:hover {
+    border-color: #10b981 !important;
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35) !important;
   }
   .plus-icon-box-btn {
     border-color: rgba(56, 189, 248, 0.45) !important;
@@ -2823,6 +2834,115 @@
   .logout-icon-box-btn:hover {
     border-color: #ef4444 !important;
     background: rgba(239, 68, 68, 0.15) !important;
+  }
+
+  /* Scrollable Admin Notification Section & Target Audience Drawer */
+  #notificationsModal .exec-modal-window {
+    max-width: 560px !important;
+    max-height: 90vh !important;
+    max-height: 90dvh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+  #notificationsModal .exec-modal-header {
+    flex-shrink: 0 !important;
+  }
+  #notificationsModal .exec-modal-body {
+    flex: 1 1 auto !important;
+    max-height: calc(90vh - 96px) !important;
+    max-height: calc(90dvh - 96px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: contain !important;
+    padding: 16px 20px 22px 20px !important;
+    display: block !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: rgba(245, 158, 11, 0.55) rgba(15, 23, 42, 0.3) !important;
+  }
+  #notificationsModal .exec-modal-body::-webkit-scrollbar,
+  #notificationsListContainer::-webkit-scrollbar,
+  #noticeTargetPropertiesDrawer::-webkit-scrollbar {
+    width: 7px;
+  }
+  #notificationsModal .exec-modal-body::-webkit-scrollbar-track,
+  #notificationsListContainer::-webkit-scrollbar-track,
+  #noticeTargetPropertiesDrawer::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.25);
+    border-radius: 999px;
+  }
+  #notificationsModal .exec-modal-body::-webkit-scrollbar-thumb,
+  #notificationsListContainer::-webkit-scrollbar-thumb,
+  #noticeTargetPropertiesDrawer::-webkit-scrollbar-thumb {
+    background: rgba(245, 158, 11, 0.6);
+    border-radius: 999px;
+  }
+  #adminNotificationComposeCard {
+    margin-bottom: 14px !important;
+  }
+  #notificationsListContainer {
+    max-height: 310px !important;
+    min-height: 150px !important;
+    overflow-y: auto !important;
+    padding-right: 4px !important;
+  }
+  body.theme-white #noticeTargetPropertiesDrawer {
+    background: #f8fafc !important;
+    border-color: #38bdf8 !important;
+  }
+
+  /* Enhanced Appealing Homepage & Renter Portal Re-Entry Styling */
+  @keyframes homePortalEntryFade {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  #dashboardScreen.active .home-welcome-hero-strip,
+  #dashboardScreen.active .properties-bar,
+  #dashboardScreen.active .flats-container,
+  #dashboardScreen.active .renter-two-box-layout {
+    animation: homePortalEntryFade 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .home-welcome-hero-strip {
+    max-width: 1280px;
+    margin: 14px auto 4px auto;
+    padding: 0 18px;
+    width: 100%;
+  }
+  .home-welcome-hero-card {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(30, 27, 75, 0.84) 50%, rgba(15, 23, 42, 0.9) 100%);
+    border: 1.5px solid rgba(129, 140, 248, 0.42);
+    border-radius: 18px;
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+  body.theme-white .home-welcome-hero-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(238, 242, 255, 0.94) 55%, rgba(240, 249, 255, 0.95) 100%);
+    border-color: rgba(99, 102, 241, 0.45);
+    box-shadow: 0 12px 28px rgba(79, 70, 229, 0.12), inset 0 1px 0 #ffffff;
+  }
+  .renter-upper-box,
+  .renter-lower-box {
+    border-radius: 18px !important;
+    transition: transform 0.22s ease, box-shadow 0.22s ease !important;
+  }
+  body.theme-white .renter-upper-box {
+    background: linear-gradient(145deg, #ffffff 0%, #f5f3ff 100%) !important;
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 16px 38px rgba(79, 70, 229, 0.14) !important;
+    color: #0f172a !important;
+  }
+  body.theme-white .renter-lower-box {
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%) !important;
+    box-shadow: 0 16px 38px rgba(15, 23, 42, 0.12) !important;
+    color: #0f172a !important;
   }
 
   /* Requirement 9: White Background for FD Modal in Light Theme & Outline-Only Inner Boxes */
@@ -4859,10 +4979,10 @@
 
         <!-- Action Icons Grouped Together (Top Dashboard Live Chat, Help Center, FD, Khet, Kharch, Add (+), Profile, Notifications, Settings, Logout) -->
         <div class="nav-actions-group">
-          <!-- Top Dashboard Live Chat Button (Moved from bottom-right to top section of dashboard for all roles) -->
-          <button type="button" id="btnRenterNavLiveChat" class="nav-btn" style="width:auto !important; min-width:auto !important; max-width:none !important; padding:0 12px !important; gap:6px; font-weight:800; font-size:0.78rem; background:linear-gradient(135deg, rgba(16,185,129,0.25), rgba(2,132,199,0.22)); border:1.5px solid #10b981; color:var(--text-main); display:inline-flex; position:relative;" onclick="openModularLiveChatWidget()" title="Private Live Chat">
-            <i class="fa-solid fa-comments" style="color:#34d399;"></i> <span>Live Chat</span>
-            <span id="renterNavChatBadge" style="display:none; background:#ef4444; color:#ffffff; font-size:0.65rem; font-weight:900; padding:1px 6px; border-radius:999px; margin-left:2px;">0</span>
+          <!-- Top Dashboard Live Chat Button (Icon Only per Bug 1) -->
+          <button type="button" id="btnRenterNavLiveChat" class="nav-btn live-chat-icon-only-btn" onclick="openModularLiveChatWidget()" title="Private Live Chat" aria-label="Private Live Chat">
+            <i class="fa-solid fa-comments" style="color:#34d399; font-size:1.05rem;"></i>
+            <span id="renterNavChatBadge" class="notification-badge-dot" style="display:none;">0</span>
           </button>
           <!-- Top Dashboard Help Center Button -->
           <button type="button" id="btnRenterNavHelpCenter" class="nav-btn" style="width:auto !important; min-width:auto !important; max-width:none !important; padding:0 12px !important; gap:6px; font-weight:800; font-size:0.78rem; background:linear-gradient(135deg, rgba(2,132,199,0.25), rgba(3,105,161,0.2)); border:1.5px solid #0284c7; color:var(--text-main); display:inline-flex;" onclick="openContactUsModal()" title="24/7 Help Center & Contact Us">
@@ -4920,6 +5040,9 @@
         </div>
       </div>
     </header>
+
+    <!-- Appealing Homepage Welcome & Live Overview Strip (Bug 4) -->
+    <section id="homeWelcomeHeroStrip" class="home-welcome-hero-strip"></section>
 
     <!-- Centered Horizontal Scrollable Properties -->
     <section class="properties-bar">
@@ -5487,7 +5610,7 @@
        ADMIN NOTIFICATIONS & BROADCASTS MODAL (Requirement 4)
        ========================================================================== -->
   <div id="notificationsModal" class="modal-overlay" onclick="if(event.target===this) closeModal('notificationsModal')">
-    <div class="modal-window exec-modal-window" style="max-width: 520px !important;">
+    <div class="modal-window exec-modal-window" style="max-width: 560px !important;">
       <button class="modal-close-btn" onclick="closeModal('notificationsModal')"><i class="fa-solid fa-xmark"></i></button>
       <div class="exec-modal-header header-amber">
         <div class="exec-modal-icon" style="background:linear-gradient(135deg, #f59e0b, #d97706);">
@@ -5503,7 +5626,7 @@
       </div>
       <div class="exec-modal-body">
         <!-- Admin Compose Box (Strictly visible to Admin only) -->
-        <div id="adminNotificationComposeCard" class="exec-field-card admin-only" style="border:1.5px solid rgba(245,158,11,0.4); background:rgba(245,158,11,0.06); display:none;">
+        <div id="adminNotificationComposeCard" class="exec-field-card admin-only" style="border:1.5px solid rgba(245,158,11,0.4); background:rgba(245,158,11,0.06); display:none; margin-bottom:14px;">
           <div class="exec-field-label-row">
             <label id="adminNoticeComposeLabel" class="exec-field-label" style="color:#f59e0b;">
               <i class="fa-solid fa-paper-plane"></i> Send New Notification to Renters
@@ -5514,32 +5637,38 @@
           <input type="text" id="adminNoticeTitleInput" class="form-control" style="margin-bottom:8px;" placeholder="Notice Title (e.g. Water Tank Cleaning / Rent Due Reminder)">
           <textarea id="adminNoticeBodyInput" class="form-control" rows="3" style="margin-bottom:8px;" placeholder="Type complete announcement message details here..."></textarea>
 
-          <!-- Target Audience Property Selector Button & Drawer -->
+          <!-- Target Audience Property Selector Button (Merged Active Selection) & Drawer (Selected Options Displayed at Top) -->
           <div style="margin-bottom:10px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; margin-bottom:6px;">
-              <button type="button" id="btnToggleNoticeTargetProps" class="btn-ledger-action" style="padding:7px 12px; font-size:0.76rem; font-weight:800; color:#38bdf8; border:1.5px solid rgba(56,189,248,0.45); background:rgba(56,189,248,0.1); border-radius:8px; display:inline-flex; align-items:center; gap:6px; cursor:pointer;" onclick="toggleNoticeTargetPropertiesDrawer()">
-                <i class="fa-solid fa-building-circle-check"></i> Select Target Audience (Properties)
+            <div style="display:flex; align-items:center; width:100%; margin-bottom:6px;">
+              <button type="button" id="btnToggleNoticeTargetProps" class="btn-ledger-action" style="width:100%; justify-content:space-between; padding:9px 13px; font-size:0.77rem; font-weight:800; color:#38bdf8; border:1.5px solid rgba(56,189,248,0.48); background:rgba(56,189,248,0.1); border-radius:10px; display:inline-flex; align-items:center; gap:8px; cursor:pointer; text-align:left;" onclick="toggleNoticeTargetPropertiesDrawer()">
+                <span style="display:inline-flex; align-items:center; gap:7px; min-width:0; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                  <i class="fa-solid fa-building-circle-check" style="flex-shrink:0;"></i>
+                  <span id="btnToggleNoticeTargetPropsText" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Select Target Audience: <strong style="color:#34d399;">All Properties</strong></span>
+                </span>
+                <i id="btnToggleNoticeTargetPropsChevron" class="fa-solid fa-chevron-down" style="font-size:0.72rem; flex-shrink:0; transition:transform 0.2s ease;"></i>
               </button>
-              <span id="noticeSelectedPropsSummaryBadge" style="font-size:0.72rem; font-weight:800; color:#34d399; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.35); padding:3px 9px; border-radius:6px;">
-                Target: All Properties
-              </span>
             </div>
-            <div id="noticeTargetPropertiesDrawer" style="display:none; background:rgba(15,23,42,0.85); border:1.5px solid rgba(56,189,248,0.4); border-radius:10px; padding:10px; max-height:175px; overflow-y:auto;">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; padding-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.12);">
+            <div id="noticeTargetPropertiesDrawer" style="display:none; background:rgba(15,23,42,0.92); border:1.5px solid rgba(56,189,248,0.45); border-radius:10px; padding:10px; max-height:215px; overflow-y:auto;">
+              <!-- Active Selection Displayed Right at the Top of the Drawer -->
+              <div id="noticeActiveSelectionTopBar" style="margin-bottom:8px; padding:7px 10px; border-radius:8px; background:rgba(16,185,129,0.14); border:1px solid rgba(16,185,129,0.38); font-size:0.73rem; font-weight:800; color:#34d399; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                <i class="fa-solid fa-circle-check"></i>
+                <span id="noticeDrawerTopSelectedText">Selected at Top: All Properties</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; padding-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.12); flex-wrap:wrap; gap:6px;">
                 <label style="font-size:0.74rem; font-weight:800; color:#38bdf8; display:flex; align-items:center; gap:6px; cursor:pointer; margin:0;">
                   <input type="checkbox" id="noticeTargetAllPropsCheckbox" checked onchange="toggleAllNoticeTargetProperties(this.checked)">
                   <span>Select All Properties</span>
                 </label>
-                <span style="font-size:0.68rem; color:var(--text-muted);">Check specific properties to receive this notice</span>
+                <span style="font-size:0.68rem; color:var(--text-muted);">Selected options appear at top</span>
               </div>
               <div id="noticeTargetPropertiesChecklist" style="display:flex; flex-direction:column; gap:6px;">
-                <!-- Populated dynamically from DB.properties -->
+                <!-- Populated dynamically from DB.properties with selected items sorted at the top -->
               </div>
             </div>
           </div>
 
           <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
-            <select id="adminNoticeTargetSelect" class="form-control" style="width:auto; padding:7px 10px; font-size:0.75rem;">
+            <select id="adminNoticeTargetSelect" class="form-control" style="width:auto; flex:1 1 210px; padding:7px 10px; font-size:0.75rem;">
               <option value="ALL">All Renters &amp; Users in Selected Properties</option>
               <option value="RENTERS">Active Renters Only in Selected Properties</option>
             </select>
@@ -5554,11 +5683,11 @@
           </div>
         </div>
 
-        <div id="notificationsListContainer" style="display:flex; flex-direction:column; gap:10px; max-height:360px; overflow-y:auto;">
+        <div id="notificationsListContainer" style="display:flex; flex-direction:column; gap:10px; max-height:310px; min-height:150px; overflow-y:auto; padding-right:4px;">
           <!-- Dynamically populated notices -->
         </div>
 
-        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:4px; padding-top:8px; border-top:1px solid var(--glass-border);">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:10px; padding-top:10px; border-top:1px solid var(--glass-border);">
           <span id="notificationsCountSub" style="font-size:0.72rem; color:var(--text-muted);">0 notifications</span>
           <button type="button" class="btn-ledger-action" style="padding:5px 12px; font-size:0.74rem;" onclick="markAllNotificationsAsRead()">
             <i class="fa-solid fa-check-double"></i> Mark All as Read
@@ -10783,7 +10912,10 @@ function formatMonthLabel(rawVal) {
 
       // Strictly purge all legacy local DB & credential caches so deleted Firebase Firestore records or User IDs NEVER reappear
       try {
-        sessionStorage.removeItem("cached_db_snapshot");
+        sessionStorage.clear();
+        localStorage.removeItem("active_session_user");
+        localStorage.removeItem("active_session_role");
+        localStorage.removeItem("active_session_token");
         localStorage.removeItem("portal_full_db_backup");
         localStorage.removeItem("portal_verified_auth_map");
         localStorage.removeItem("portal_fd_records_v1");
@@ -10792,17 +10924,9 @@ function formatMonthLabel(rawVal) {
         localStorage.removeItem("portal_flat_utility_meta_v1");
       } catch (e) {}
 
-      const savedSessionUser = sessionStorage.getItem("active_session_user");
-      const savedRole = sessionStorage.getItem("active_session_role") || "Admin";
-      const savedFullName = sessionStorage.getItem("active_session_fullname") || savedSessionUser;
-      const savedMobile = sessionStorage.getItem("active_session_mobile") || "";
-      const savedAssignedProp = sessionStorage.getItem("active_session_assigned_prop") || "";
-      const savedAssignedFlat = sessionStorage.getItem("active_session_assigned_flat") || "";
-      const savedAssignedAadhaar = sessionStorage.getItem("active_session_assigned_aadhaar") || "";
-      const savedSessionToken = sessionStorage.getItem("active_session_token") || "";
-      // Requirement 2: When the homepage is opened, flats must remain hidden until the user taps on a specific property
+      // Requirement 2 & Bug 6: Always require ID and password when opening, reloading, or navigating via browser history
       selectedProperty = null;
-      sessionStorage.removeItem("active_selected_property");
+      forceLockToLoginScreenForHistorySecurity(true);
 
       // Requirement 1: Listen for concurrent login in another tab/window on the same browser immediately
       window.addEventListener("storage", (ev) => {
@@ -10813,25 +10937,82 @@ function formatMonthLabel(rawVal) {
         }
       });
 
-      if (savedSessionUser && savedSessionUser !== "undefined") {
-        activeUser = savedSessionUser;
-        activeRole = savedRole;
-        activeUserFullName = savedFullName;
-        activeUserMobile = savedMobile;
-        activeAssignedProperty = savedAssignedProp;
-        activeAssignedFlat = savedAssignedFlat;
-        activeAssignedAadhaar = savedAssignedAadhaar;
-        activeSessionToken = savedSessionToken;
-        applyRolePermissions(activeRole);
-        unlockDashboardInstant(false);
-        if (typeof syncDataLive === "function") syncDataLive(true);
-        if (typeof initFirestoreLiveListeners === "function") initFirestoreLiveListeners();
-        return;
-      } else {
-        sessionStorage.removeItem("active_session_user");
-        prewarmServerInBackground();
-      }
+      // Bug 6: Even if someone tries to open the site from browser history (Back/Forward/bfcache), prompt for ID & Password
+      window.addEventListener("pageshow", (event) => {
+        const navEntries = (window.performance && typeof window.performance.getEntriesByType === "function")
+          ? window.performance.getEntriesByType("navigation")
+          : [];
+        const navType = navEntries.length > 0 ? navEntries[0].type : "";
+        if (event.persisted || navType === "back_forward" || !activeUser) {
+          forceLockToLoginScreenForHistorySecurity(true);
+        }
+      });
+
+      window.addEventListener("popstate", () => {
+        if (activeUser || document.getElementById("dashboardScreen")?.classList.contains("active")) {
+          forceLockToLoginScreenForHistorySecurity(false);
+          triggerSideToast("Authentication Required", "Please enter your Username and Password to access the portal.", false);
+        }
+      });
+
+      prewarmServerInBackground();
     });
+
+    function forceLockToLoginScreenForHistorySecurity(silent = true) {
+      activeUser = null;
+      activeRole = "Admin";
+      activeUserFullName = "Administrator";
+      activeUserMobile = "";
+      activeAssignedProperty = "";
+      activeAssignedFlat = "";
+      activeAssignedAadhaar = "";
+      activeSessionToken = "";
+      selectedProperty = null;
+      selectedFlat = null;
+      activeFlatRenterObj = null;
+      isSubmittingLogin = false;
+
+      try {
+        sessionStorage.clear();
+        localStorage.removeItem("active_session_user");
+        localStorage.removeItem("active_session_role");
+        localStorage.removeItem("active_session_token");
+      } catch (e) {}
+
+      if (syncTimer) {
+        clearInterval(syncTimer);
+        syncTimer = null;
+      }
+
+      document.body.classList.remove("role-renter", "role-viewer", "role-admin", "is-renter-mode");
+      document.documentElement.classList.remove("role-renter", "role-viewer", "role-admin", "is-renter-mode");
+
+      document.getElementById("dashboardScreen")?.classList.remove("active");
+      document.getElementById("loginScreen")?.classList.add("active");
+      document.querySelectorAll(".modal-overlay").forEach(m => m.classList.remove("active"));
+
+      const dockEl = document.getElementById("bottomRightFloatingDock");
+      if (dockEl) dockEl.style.display = "none";
+      const chatWidgetEl = document.getElementById("modularLiveChatWidget");
+      if (chatWidgetEl) chatWidgetEl.style.display = "none";
+
+      const uIn = document.getElementById("loginUsername");
+      const pIn = document.getElementById("loginPassword");
+      const btn = document.getElementById("loginBtn");
+      if (uIn) {
+        uIn.value = "";
+        uIn.disabled = false;
+      }
+      if (pIn) {
+        pIn.value = "";
+        pIn.disabled = false;
+      }
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Log In</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>`;
+      }
+      try { applyCustomBackgrounds(); } catch (e) {}
+    }
 
     let isSyncingLive = false;
     let lastSyncedDataHash = "";
@@ -10990,36 +11171,87 @@ function formatMonthLabel(rawVal) {
       return String(viewerScope.prop || "").trim().toLowerCase() === target;
     }
 
+    // Bug 5 Helper: Get current calendar month in YYYY-MM format and compute strictly current month's standalone Advance & Due
+    function getCurrentCalendarYearMonth() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    }
 
-    // Requirement 9: Top Dashboard "Advance" and "Due" for Renter (strictly current/latest month only, no previous month data)
-    function updateRenterTopDashboardBalance(latestBillOrPaid, legacyNetBalance) {
-      const pnlTracker = document.querySelector(".pnl-tracker");
-      if (!pnlTracker) return;
+    function computeCurrentMonthStandaloneAdvanceAndDue(billObj) {
+      const currentYM = getCurrentCalendarYearMonth();
+      const currentMonthLabel = typeof formatMonthLabel === "function" ? formatMonthLabel(currentYM) : currentYM;
+      if (!billObj || typeof billObj !== "object") {
+        return {
+          isCurrentMonth: false,
+          monthYear: currentYM,
+          monthLabel: currentMonthLabel,
+          standaloneCharge: 0,
+          paidAmount: 0,
+          advanceAmt: 0,
+          dueAmt: 0
+        };
+      }
+      const billYM = typeof normalizeMonthYear === "function" ? normalizeMonthYear(billObj.MonthYear || billObj.BillDate) : "";
+      if (billYM !== currentYM) {
+        return {
+          isCurrentMonth: false,
+          monthYear: currentYM,
+          monthLabel: currentMonthLabel,
+          standaloneCharge: 0,
+          paidAmount: 0,
+          advanceAmt: 0,
+          dueAmt: 0
+        };
+      }
+
+      const baseRent = parseFloat(billObj.BaseRent) || 0;
+      const elecTot = parseFloat(billObj.ElecTotal) || 0;
+      const pngTot = parseFloat(billObj.PNGTotal) || 0;
+      const waterTot = parseFloat(billObj.WaterTotal) || 0;
+      const addAmt = parseFloat(billObj.AdditionalAmount) || 0;
+      const componentSum = baseRent + elecTot + pngTot + waterTot + addAmt;
+
+      const billTotal = parseFloat(billObj.TotalBilled !== undefined ? billObj.TotalBilled : billObj.TotalAmount) || 0;
+      const prevCarry = parseFloat(billObj.PrevCarryBalance) || 0;
+      const standaloneCharge = componentSum > 0 ? componentSum : Math.max(0, billTotal - prevCarry);
+      const paidAmount = parseFloat(billObj.PaidAmount) || 0;
+      const diff = paidAmount - standaloneCharge;
 
       let advanceAmt = 0;
       let dueAmt = 0;
-
-      if (latestBillOrPaid && typeof latestBillOrPaid === "object") {
-        // Compute strictly from the current/latest month's bill only (no previous month data)
-        const billTotal = parseFloat(latestBillOrPaid.TotalBilled !== undefined ? latestBillOrPaid.TotalBilled : latestBillOrPaid.TotalAmount) || 0;
-        const prevCarry = parseFloat(latestBillOrPaid.PrevCarryBalance) || 0;
-        const currentMonthStandaloneCharge = Math.max(0, billTotal - prevCarry);
-        const billPaid = parseFloat(latestBillOrPaid.PaidAmount) || 0;
-        const diff = billPaid - currentMonthStandaloneCharge;
-        if (diff > 0) {
-          advanceAmt = Math.round(diff);
-          dueAmt = 0;
-        } else if (diff < 0) {
-          advanceAmt = 0;
-          dueAmt = Math.round(Math.abs(diff));
-        }
-      } else if (typeof legacyNetBalance === "number") {
-        if (legacyNetBalance < 0) advanceAmt = Math.round(Math.abs(legacyNetBalance));
-        if (legacyNetBalance > 0) dueAmt = Math.round(legacyNetBalance);
+      if (diff > 0) {
+        advanceAmt = Math.round(diff);
+        dueAmt = 0;
+      } else if (diff < 0) {
+        advanceAmt = 0;
+        dueAmt = Math.round(Math.abs(diff));
       }
 
+      return {
+        isCurrentMonth: true,
+        monthYear: currentYM,
+        monthLabel: currentMonthLabel,
+        standaloneCharge: Math.round(standaloneCharge),
+        paidAmount: Math.round(paidAmount),
+        advanceAmt,
+        dueAmt
+      };
+    }
+
+    // Bug 5: Top Dashboard "Advance" and "Due" for Renter (strictly current calendar month only, showing exact Advance and Due)
+    function updateRenterTopDashboardBalance(currentMonthBillObj) {
+      const pnlTracker = document.querySelector(".pnl-tracker");
+      if (!pnlTracker) return;
+
+      const metrics = computeCurrentMonthStandaloneAdvanceAndDue(currentMonthBillObj);
+      const advanceAmt = metrics.advanceAmt;
+      const dueAmt = metrics.dueAmt;
+
       pnlTracker.innerHTML = `
-        <div class="renter-pnl-balanced" title="Current Month Advance and Due Status">
+        <div class="renter-pnl-balanced" title="Current Month (${metrics.monthLabel}) Advance and Due Details">
+          <span style="font-size:0.7rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.35); padding:3px 8px; border-radius:6px; white-space:nowrap;">
+            <i class="fa-regular fa-calendar-check"></i> ${metrics.monthLabel}
+          </span>
           <div class="renter-pnl-pill renter-pnl-advance" style="color:var(--accent-green); background:rgba(16,185,129,0.12); border-radius:6px;">
             <i class="fa-solid fa-arrow-up-right-dots"></i>
             <span>Advance: <strong>₹${advanceAmt.toLocaleString("en-IN")}</strong></span>
@@ -11036,35 +11268,45 @@ function formatMonthLabel(rawVal) {
     }
 
     // ==========================================================================
-    // NOTIFICATIONS SYSTEM (Requirement 3: Select Target Audience by Property ID)
+    // NOTIFICATIONS SYSTEM (Bug 2 & Bug 3: Merged Target Audience & Selected at Top)
     // ==========================================================================
     const PORTAL_NOTIFICATIONS_KEY = "portal_broadcast_notifications";
     const PORTAL_READ_NOTIFICATIONS_KEY = "portal_read_notifications_ids";
 
     function toggleNoticeTargetPropertiesDrawer() {
       const drawer = document.getElementById("noticeTargetPropertiesDrawer");
+      const chevron = document.getElementById("btnToggleNoticeTargetPropsChevron");
       if (!drawer) return;
       const isHidden = drawer.style.display === "none" || !drawer.style.display;
       if (isHidden) {
         renderNoticeTargetPropertiesChecklist();
         drawer.style.display = "block";
+        if (chevron) chevron.style.transform = "rotate(180deg)";
       } else {
         drawer.style.display = "none";
+        if (chevron) chevron.style.transform = "rotate(0deg)";
       }
     }
 
     function renderNoticeTargetPropertiesChecklist(selectedProps = null) {
       const container = document.getElementById("noticeTargetPropertiesChecklist");
-      const allToggle = document.getElementById("noticeSelectAllPropsToggle");
+      const allToggle = document.getElementById("noticeTargetAllPropsCheckbox") || document.getElementById("noticeSelectAllPropsToggle");
       if (!container) return;
 
       const props = (DB.properties || []).map(p => String(p.PropertyName || "").trim()).filter(Boolean);
-      const existingChecked = Array.from(container.querySelectorAll(".notice-prop-target-cb:checked")).map(cb => cb.value);
-      const activeSelection = Array.isArray(selectedProps)
-        ? selectedProps
-        : (existingChecked.length > 0 ? existingChecked : ["ALL"]);
-      const isAllSelected = activeSelection.includes("ALL") || (props.length > 0 && activeSelection.length === props.length);
+      const existingCbs = Array.from(container.querySelectorAll(".notice-prop-target-cb"));
+      const existingChecked = existingCbs.filter(cb => cb.checked).map(cb => cb.value);
 
+      let activeSelection;
+      if (Array.isArray(selectedProps)) {
+        activeSelection = selectedProps;
+      } else if (existingCbs.length > 0) {
+        activeSelection = existingChecked;
+      } else {
+        activeSelection = ["ALL"];
+      }
+
+      const isAllSelected = activeSelection.includes("ALL") || (props.length > 0 && activeSelection.length === props.length);
       if (allToggle) allToggle.checked = isAllSelected;
 
       if (props.length === 0) {
@@ -11073,13 +11315,24 @@ function formatMonthLabel(rawVal) {
         return;
       }
 
-      container.innerHTML = props.map(pName => {
+      // Bug 3: Sort properties so that SELECTED (checked) options are always displayed at the TOP
+      const sortedProps = [...props].sort((a, b) => {
+        const aChecked = isAllSelected || activeSelection.some(s => String(s).trim().toLowerCase() === a.toLowerCase());
+        const bChecked = isAllSelected || activeSelection.some(s => String(s).trim().toLowerCase() === b.toLowerCase());
+        if (aChecked !== bChecked) return aChecked ? -1 : 1;
+        return a.localeCompare(b);
+      });
+
+      container.innerHTML = sortedProps.map(pName => {
         const safeP = pName.replace(/"/g, "&quot;");
         const checked = isAllSelected || activeSelection.some(s => String(s).trim().toLowerCase() === pName.toLowerCase());
         return `
-          <label style="display:flex; align-items:center; gap:7px; font-size:0.76rem; font-weight:700; color:var(--text-main); background:rgba(255,255,255,0.04); border:1px solid var(--glass-border); border-radius:6px; padding:6px 9px; cursor:pointer;">
-            <input type="checkbox" class="notice-prop-target-cb" value="${safeP}" ${checked ? "checked" : ""} onchange="handleNoticePropertyCheckboxChange()" />
-            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"><i class="fa-solid fa-hotel" style="color:#f59e0b; margin-right:4px;"></i>${pName}</span>
+          <label style="display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:0.76rem; font-weight:700; color:var(--text-main); background:${checked ? "rgba(16,185,129,0.14)" : "rgba(255,255,255,0.04)"}; border:1.5px solid ${checked ? "rgba(16,185,129,0.45)" : "var(--glass-border)"}; border-radius:8px; padding:7px 10px; cursor:pointer; transition:all 0.18s ease;">
+            <span style="display:flex; align-items:center; gap:7px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+              <input type="checkbox" class="notice-prop-target-cb" value="${safeP}" ${checked ? "checked" : ""} onchange="handleNoticePropertyCheckboxChange()" />
+              <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"><i class="fa-solid fa-hotel" style="color:${checked ? "#34d399" : "#f59e0b"}; margin-right:5px;"></i>${pName}</span>
+            </span>
+            ${checked ? `<span style="font-size:0.64rem; font-weight:800; color:#34d399; background:rgba(16,185,129,0.18); padding:2px 7px; border-radius:999px; flex-shrink:0;">Selected</span>` : ""}
           </label>
         `;
       }).join("");
@@ -11088,20 +11341,21 @@ function formatMonthLabel(rawVal) {
     }
 
     function toggleAllNoticeTargetProperties(isChecked) {
-      document.querySelectorAll("#noticeTargetPropertiesChecklist .notice-prop-target-cb").forEach(cb => {
-        cb.checked = Boolean(isChecked);
-      });
-      updateNoticeSelectedPropsSummaryBadge();
+      const props = (DB.properties || []).map(p => String(p.PropertyName || "").trim()).filter(Boolean);
+      renderNoticeTargetPropertiesChecklist(isChecked ? ["ALL"] : []);
+      const allToggle = document.getElementById("noticeTargetAllPropsCheckbox") || document.getElementById("noticeSelectAllPropsToggle");
+      if (allToggle) allToggle.checked = Boolean(isChecked) && props.length > 0;
     }
 
     function handleNoticePropertyCheckboxChange() {
       const allCbs = Array.from(document.querySelectorAll("#noticeTargetPropertiesChecklist .notice-prop-target-cb"));
-      const checkedCbs = allCbs.filter(cb => cb.checked);
-      const allToggle = document.getElementById("noticeSelectAllPropsToggle");
+      const checkedVals = allCbs.filter(cb => cb.checked).map(cb => cb.value);
+      const allToggle = document.getElementById("noticeTargetAllPropsCheckbox") || document.getElementById("noticeSelectAllPropsToggle");
       if (allToggle) {
-        allToggle.checked = allCbs.length > 0 && checkedCbs.length === allCbs.length;
+        allToggle.checked = allCbs.length > 0 && checkedVals.length === allCbs.length;
       }
-      updateNoticeSelectedPropsSummaryBadge();
+      // Re-render checklist so newly selected options immediately move to the top
+      renderNoticeTargetPropertiesChecklist(checkedVals);
     }
 
     function getSelectedNoticeTargetProperties() {
@@ -11113,21 +11367,34 @@ function formatMonthLabel(rawVal) {
       return checkedVals;
     }
 
+    // Bug 3: Merge the active selection directly into 'Select Target Audience' button and top bar of the drawer
     function updateNoticeSelectedPropsSummaryBadge() {
-      const badge = document.getElementById("noticeSelectedPropsSummaryBadge");
-      if (!badge) return;
+      const btnTextEl = document.getElementById("btnToggleNoticeTargetPropsText");
+      const topBarTextEl = document.getElementById("noticeDrawerTopSelectedText");
       const allCbs = Array.from(document.querySelectorAll("#noticeTargetPropertiesChecklist .notice-prop-target-cb"));
-      if (allCbs.length === 0) {
-        badge.innerText = "Target: All Properties";
-        return;
+
+      let activeSummary = "All Properties";
+      let colorHex = "#34d399";
+
+      if (allCbs.length > 0) {
+        const checkedVals = allCbs.filter(cb => cb.checked).map(cb => cb.value);
+        if (checkedVals.length === 0) {
+          activeSummary = "None Selected";
+          colorHex = "#f87171";
+        } else if (checkedVals.length === allCbs.length) {
+          activeSummary = `All Properties (${allCbs.length})`;
+          colorHex = "#34d399";
+        } else {
+          activeSummary = checkedVals.join(", ");
+          colorHex = "#38bdf8";
+        }
       }
-      const checkedVals = allCbs.filter(cb => cb.checked).map(cb => cb.value);
-      if (checkedVals.length === 0) {
-        badge.innerText = "Target: None Selected";
-      } else if (checkedVals.length === allCbs.length) {
-        badge.innerText = `Target: All Properties (${allCbs.length})`;
-      } else {
-        badge.innerText = `Target: ${checkedVals.join(", ")}`;
+
+      if (btnTextEl) {
+        btnTextEl.innerHTML = `Select Target Audience: <strong style="color:${colorHex};">${activeSummary}</strong>`;
+      }
+      if (topBarTextEl) {
+        topBarTextEl.innerText = `Selected: ${activeSummary}`;
       }
     }
 
@@ -11357,12 +11624,14 @@ function formatMonthLabel(rawVal) {
       const cancelBtn = document.getElementById("btnCancelAdminNotice");
       const submitBtn = document.getElementById("btnSubmitAdminNotice");
       const drawer = document.getElementById("noticeTargetPropertiesDrawer");
+      const chevron = document.getElementById("btnToggleNoticeTargetPropsChevron");
 
       if (titleInput) titleInput.value = "";
       if (bodyInput) bodyInput.value = "";
       if (targetSelect) targetSelect.value = "ALL";
       renderNoticeTargetPropertiesChecklist(["ALL"]);
       if (drawer) drawer.style.display = "none";
+      if (chevron) chevron.style.transform = "rotate(0deg)";
       if (labelEl) labelEl.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Send New Notification to Renters`;
       if (cancelBtn) cancelBtn.style.display = "none";
       if (submitBtn) submitBtn.innerHTML = `<i class="fa-solid fa-broadcast-tower"></i> Broadcast Notice`;
@@ -11428,7 +11697,9 @@ function formatMonthLabel(rawVal) {
         if (titleInput) titleInput.value = "";
         if (bodyInput) bodyInput.value = "";
         const drawer = document.getElementById("noticeTargetPropertiesDrawer");
+        const chevron = document.getElementById("btnToggleNoticeTargetPropsChevron");
         if (drawer) drawer.style.display = "none";
+        if (chevron) chevron.style.transform = "rotate(0deg)";
         syncNotificationsBadgeUI();
         renderNotificationsListUI();
         const audienceDesc = targetProperties.includes("ALL") ? "all properties" : targetProperties.join(", ");
@@ -11475,8 +11746,64 @@ function formatMonthLabel(rawVal) {
       }
     }
 
+    // Bug 4: Render an Appealing Homepage Welcome & Live Overview Strip when entering/re-entering the homepage
+    function renderHomeWelcomeHeroStrip() {
+      const strip = document.getElementById("homeWelcomeHeroStrip");
+      if (!strip) return;
+      const currentYM = getCurrentCalendarYearMonth();
+      const currentMonthLabel = typeof formatMonthLabel === "function" ? formatMonthLabel(currentYM) : currentYM;
+      const displayName = activeUserFullName || activeUser || "Administrator";
+
+      if (activeRole === "Renter") {
+        strip.style.display = "none";
+        strip.innerHTML = "";
+        return;
+      }
+
+      strip.style.display = "block";
+      const totalProps = (DB.properties || []).length;
+      const totalFlats = (DB.flats || []).length;
+      const activeRenters = (DB.renters || []).filter(r => String(r.Status || "").trim().toLowerCase() === "active").length;
+
+      strip.innerHTML = `
+        <div class="home-welcome-hero-card">
+          <div style="display:flex; align-items:center; gap:14px;">
+            <div style="width:46px; height:46px; border-radius:14px; background:linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%); color:#ffffff; display:flex; align-items:center; justify-content:center; font-size:1.25rem; box-shadow:0 8px 20px rgba(79,70,229,0.38); flex-shrink:0;">
+              <i class="fa-solid fa-building-shield"></i>
+            </div>
+            <div>
+              <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#38bdf8;">
+                <i class="fa-regular fa-calendar-check"></i> ${currentMonthLabel} • Live Portfolio Overview
+              </div>
+              <h3 style="margin:2px 0 0 0; font-size:1.12rem; font-weight:800; color:var(--text-main);">
+                Welcome back, ${displayName}
+              </h3>
+              <p style="margin:2px 0 0 0; font-size:0.76rem; color:var(--text-muted);">
+                ${selectedProperty ? `Viewing flats in <strong>${selectedProperty}</strong> (Tap property card again to collapse)` : `Select any property card below to inspect its flats, utility billing, and tenant ledgers.`}
+              </p>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <div style="background:rgba(99,102,241,0.14); border:1px solid rgba(129,140,248,0.4); padding:7px 13px; border-radius:11px; font-size:0.76rem; font-weight:800; color:var(--text-main); display:inline-flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-hotel" style="color:#818cf8;"></i>
+              <span>Properties: <strong>${totalProps}</strong></span>
+            </div>
+            <div style="background:rgba(14,165,233,0.14); border:1px solid rgba(56,189,248,0.4); padding:7px 13px; border-radius:11px; font-size:0.76rem; font-weight:800; color:var(--text-main); display:inline-flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-door-open" style="color:#38bdf8;"></i>
+              <span>Flats: <strong>${totalFlats}</strong></span>
+            </div>
+            <div style="background:rgba(16,185,129,0.14); border:1px solid rgba(52,211,153,0.4); padding:7px 13px; border-radius:11px; font-size:0.76rem; font-weight:800; color:var(--text-main); display:inline-flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-user-check" style="color:#34d399;"></i>
+              <span>Active Tenants: <strong>${activeRenters}</strong></span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     function renderAllDashboardUI() {
       const viewerScope = resolveViewerAssignedScope();
+      renderHomeWelcomeHeroStrip();
       if (activeRole === "Renter") {
         const flatsContainer = document.getElementById("flatsList");
         const propsBar = document.querySelector(".properties-bar");
@@ -11491,12 +11818,12 @@ function formatMonthLabel(rawVal) {
         if (!renterAadhaar || !primaryRenter) {
           if (flatsContainer) {
             flatsContainer.innerHTML = `
-              <div class="empty-flats-prompt" style="border:1.5px solid rgba(192,132,252,0.55); border-radius:6px; max-width:840px; margin:20px auto;">
+              <div class="empty-flats-prompt" style="border:1.5px solid rgba(192,132,252,0.55); border-radius:16px; max-width:840px; margin:20px auto;">
                 <i class="fa-solid fa-id-card-clip" style="color:#c084fc;"></i>
                 <h3>No Renter Profile Linked to Your Aadhaar Card</h3>
                 <p>Your Renter account ${renterAadhaar ? `(Aadhaar: ${renterAadhaar})` : ""} does not match any tenant Aadhaar record yet. Please ask the Admin to link your 12-digit Aadhaar number in Settings.</p>
                 <div style="margin-top:14px;">
-                  <button type="button" class="btn-primary" style="width:auto; padding:8px 18px; margin:0 auto; border-radius:6px;" onclick="handleLogout(true)">
+                  <button type="button" class="btn-primary" style="width:auto; padding:8px 18px; margin:0 auto; border-radius:10px;" onclick="handleLogout(true)">
                     <i class="fa-solid fa-right-from-bracket"></i> Switch Account / Log in as Admin
                   </button>
                 </div>
@@ -11531,64 +11858,60 @@ function formatMonthLabel(rawVal) {
           return (new Date(b.BillDate || b.PaymentDate || 0).getTime()) - (new Date(a.BillDate || a.PaymentDate || 0).getTime());
         });
 
-        const latestBill = myBills.length > 0 ? myBills[0] : null;
+        // Bug 5: Strictly match ONLY the current calendar month's bill for Advance and Due details
+        const currentCalendarYM = getCurrentCalendarYearMonth();
+        const currentCalendarMonthLabel = formatMonthLabel(currentCalendarYM);
+        const currentMonthBill = myBills.find(b => normalizeMonthYear(b.MonthYear || b.BillDate) === currentCalendarYM) || null;
+        const currentMonthMetrics = computeCurrentMonthStandaloneAdvanceAndDue(currentMonthBill);
 
-        // Requirement 9: Update Top Dashboard Header with "Advance" and "Due" for current/latest month only
-        updateRenterTopDashboardBalance(latestBill);
+        // Update Top Dashboard Header with "Advance" and "Due" strictly for the current month only
+        updateRenterTopDashboardBalance(currentMonthBill);
 
         const safePropArg = String(targetProp).replace(/'/g, "\\'");
         const safeFlatArg = String(targetFlat).replace(/'/g, "\\'");
         const renterNameDisplay = primaryRenter.RenterName || activeUserFullName || "Valued Renter";
 
         // ====================================================================
-        // LOWER RECTANGULAR BOX HTML: LATEST MONTH'S RECEIPT FULLY OPENED
+        // LOWER RECTANGULAR BOX HTML: CURRENT MONTH'S RECEIPT & ADVANCE/DUE
         // ====================================================================
         let lowerReceiptBoxHtml = "";
         let qrRenderData = null;
 
-        if (latestBill) {
-          const billTotal = parseFloat(latestBill.TotalBilled !== undefined ? latestBill.TotalBilled : latestBill.TotalAmount) || 0;
-          const billPaid = parseFloat(latestBill.PaidAmount) || 0;
-          const prevCarry = parseFloat(latestBill.PrevCarryBalance) || 0;
-          const standaloneMonthTotal = Math.max(0, billTotal - prevCarry);
-          const billDue = (latestBill.DueAmount !== undefined && latestBill.DueAmount !== "")
-            ? Math.max(0, parseFloat(latestBill.DueAmount))
-            : Math.max(0, billTotal - billPaid);
-          const billAdvance = billPaid > standaloneMonthTotal ? Math.round(billPaid - standaloneMonthTotal) : 0;
-          const isBillFullyPaid = billDue <= 0 || String(latestBill.Status || "").trim().toLowerCase() === "fully paid" || String(latestBill.Status || "").trim().toLowerCase() === "paid";
-          const billMonthName = formatMonthLabel(latestBill.MonthYear || latestBill.BillDate);
-          const billDateStr = formatDateOnly(latestBill.BillDate || latestBill.PaymentDate);
+        if (currentMonthBill) {
+          const billTotal = currentMonthMetrics.standaloneCharge;
+          const billPaid = currentMonthMetrics.paidAmount;
+          const billAdvance = currentMonthMetrics.advanceAmt;
+          const billDue = currentMonthMetrics.dueAmt;
+          const isBillFullyPaid = billDue <= 0;
+          const billMonthName = currentMonthMetrics.monthLabel;
+          const billDateStr = formatDateOnly(currentMonthBill.BillDate || currentMonthBill.PaymentDate);
 
-          const elecPrev = parseFloat(latestBill.ElecPrev) || 0;
-          const elecCurr = parseFloat(latestBill.ElecCurr) || 0;
-          const elecUnits = parseFloat(latestBill.ElecUnits) || Math.max(0, elecCurr - elecPrev);
-          const elecRate = parseFloat(latestBill.ElecRate) || 0;
-          const elecTot = parseFloat(latestBill.ElecTotal) || 0;
+          const elecPrev = parseFloat(currentMonthBill.ElecPrev) || 0;
+          const elecCurr = parseFloat(currentMonthBill.ElecCurr) || 0;
+          const elecUnits = parseFloat(currentMonthBill.ElecUnits) || Math.max(0, elecCurr - elecPrev);
+          const elecRate = parseFloat(currentMonthBill.ElecRate) || 0;
+          const elecTot = parseFloat(currentMonthBill.ElecTotal) || 0;
 
-          const pngPrev = parseFloat(latestBill.PNGPrev) || 0;
-          const pngCurr = parseFloat(latestBill.PNGCurr) || 0;
-          const pngUnits = parseFloat(latestBill.PNGUnits) || Math.max(0, pngCurr - pngPrev);
-          const pngRate = parseFloat(latestBill.PNGRate) || 0;
-          const pngTot = parseFloat(latestBill.PNGTotal) || 0;
+          const pngPrev = parseFloat(currentMonthBill.PNGPrev) || 0;
+          const pngCurr = parseFloat(currentMonthBill.PNGCurr) || 0;
+          const pngUnits = parseFloat(currentMonthBill.PNGUnits) || Math.max(0, pngCurr - pngPrev);
+          const pngRate = parseFloat(currentMonthBill.PNGRate) || 0;
+          const pngTot = parseFloat(currentMonthBill.PNGTotal) || 0;
 
-          const waterPrev = parseFloat(latestBill.WaterPrev) || 0;
-          const waterCurr = parseFloat(latestBill.WaterCurr) || 0;
-          const waterUnits = parseFloat(latestBill.WaterUnits) || Math.max(0, waterCurr - waterPrev);
-          const waterRate = parseFloat(latestBill.WaterRate) || 0;
-          const waterTot = parseFloat(latestBill.WaterTotal) || 0;
+          const waterPrev = parseFloat(currentMonthBill.WaterPrev) || 0;
+          const waterCurr = parseFloat(currentMonthBill.WaterCurr) || 0;
+          const waterUnits = parseFloat(currentMonthBill.WaterUnits) || Math.max(0, waterCurr - waterPrev);
+          const waterRate = parseFloat(currentMonthBill.WaterRate) || 0;
+          const waterTot = parseFloat(currentMonthBill.WaterTotal) || 0;
 
-          const addAmt = parseFloat(latestBill.AdditionalAmount) || 0;
-          const carryVal = parseFloat(latestBill.PrevCarryBalance) || 0;
-          const carryLine = carryVal > 0
-            ? `<span style="color:var(--accent-red);">+ ₹${carryVal.toLocaleString("en-IN")} (Previous Due)</span>`
-            : (carryVal < 0 ? `<span style="color:var(--accent-green);">- ₹${Math.abs(carryVal).toLocaleString("en-IN")} (Advance Credit)</span>` : `₹0`);
+          const addAmt = parseFloat(currentMonthBill.AdditionalAmount) || 0;
 
-          const resolvedContact = resolveFlatUpiAndContact(latestBill.PropertyName || targetProp, assignedFlatObj, primaryRenter);
-          const upiId = (latestBill.UPIID && String(latestBill.UPIID).trim()) ? String(latestBill.UPIID).trim() : resolvedContact.upiId;
-          const upiName = (latestBill.UPIName && String(latestBill.UPIName).trim()) ? String(latestBill.UPIName).trim() : resolvedContact.upiName;
+          const resolvedContact = resolveFlatUpiAndContact(currentMonthBill.PropertyName || targetProp, assignedFlatObj, primaryRenter);
+          const upiId = (currentMonthBill.UPIID && String(currentMonthBill.UPIID).trim()) ? String(currentMonthBill.UPIID).trim() : resolvedContact.upiId;
+          const upiName = (currentMonthBill.UPIName && String(currentMonthBill.UPIName).trim()) ? String(currentMonthBill.UPIName).trim() : resolvedContact.upiName;
           const contactPhone =
             resolvedContact.contractMobile ||
-            sanitizeContactPhoneDisplay(latestBill.ContractMobile) ||
+            sanitizeContactPhoneDisplay(currentMonthBill.ContractMobile) ||
             sanitizeContactPhoneDisplay(activeUserMobile) ||
             sanitizeContactPhoneDisplay(primaryRenter?.MobileNumber) ||
             "--";
@@ -11602,43 +11925,43 @@ function formatMonthLabel(rawVal) {
           };
 
           lowerReceiptBoxHtml = `
-            <!-- LATEST MONTH'S RECEIPT FULLY OPENED IN RECTANGULAR BOX -->
-            <div class="renter-lower-box glass-card" style="border-radius:6px; padding:26px; border:2px solid ${isBillFullyPaid ? "rgba(16,185,129,0.65)" : "rgba(239,68,68,0.75)"} !important; background:linear-gradient(145deg, rgba(17, 24, 39, 0.96) 0%, rgba(30, 41, 59, 0.94) 100%); box-shadow:0 18px 45px rgba(0, 0, 0, 0.45);">
+            <!-- CURRENT MONTH'S RECEIPT FULLY OPENED IN RECTANGULAR BOX -->
+            <div class="renter-lower-box glass-card" style="border-radius:18px; padding:26px; border:2px solid ${isBillFullyPaid ? "rgba(16,185,129,0.65)" : "rgba(239,68,68,0.75)"} !important; background:linear-gradient(145deg, rgba(17, 24, 39, 0.96) 0%, rgba(30, 41, 59, 0.94) 100%); box-shadow:0 18px 45px rgba(0, 0, 0, 0.45);">
               
-              <!-- Receipt Top Header (Billing Month only, no Billing Date at top per Requirement 7) -->
-              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding:16px 20px; background:rgba(15,23,42,0.9); border:1.5px solid var(--glass-border); border-radius:6px; margin-bottom:18px;">
+              <!-- Receipt Top Header (Strictly Current Month) -->
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding:16px 20px; background:rgba(15,23,42,0.9); border:1.5px solid var(--glass-border); border-radius:12px; margin-bottom:18px;">
                 <div>
                   <div style="font-size:1.3rem; font-weight:900; color:var(--text-main); letter-spacing:-0.2px;">
-                    ${latestBill.PropertyName || targetProp} — Flat ${latestBill.FlatName || targetFlat}
+                    ${currentMonthBill.PropertyName || targetProp} — Flat ${currentMonthBill.FlatName || targetFlat}
                   </div>
                   <div style="font-size:0.9rem; font-weight:800; color:#38bdf8; margin-top:4px;">
-                    Billing Month: ${billMonthName}
+                    Current Billing Month: ${billMonthName}
                   </div>
                   <div style="font-size:0.72rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; margin-top:2px;">
-                    MONTHLY RENT &amp; UTILITY RECEIPT (FULLY OPENED)
+                    CURRENT MONTH RENT, ADVANCE &amp; DUE STATEMENT
                   </div>
                 </div>
                 <div>
-                  <span class="${isBillFullyPaid ? "badge-paid" : "badge-unpaid"}" style="font-size:0.86rem; padding:8px 16px; font-weight:900; border-radius:6px; display:inline-flex; align-items:center; gap:6px;">
+                  <span class="${isBillFullyPaid ? "badge-paid" : "badge-unpaid"}" style="font-size:0.86rem; padding:8px 16px; font-weight:900; border-radius:10px; display:inline-flex; align-items:center; gap:6px;">
                     <i class="fa-solid ${isBillFullyPaid ? "fa-circle-check" : "fa-triangle-exclamation"}"></i>
-                    ${isBillFullyPaid ? `Paid • ₹${billPaid.toLocaleString("en-IN")}` : `Unpaid Due • ₹${billDue.toLocaleString("en-IN")}`}
+                    ${isBillFullyPaid ? `Paid • ₹${billPaid.toLocaleString("en-IN")}` : `Current Month Due • ₹${billDue.toLocaleString("en-IN")}`}
                   </span>
                 </div>
               </div>
 
               ${!isBillFullyPaid ? `
-                <div class="continuous-unpaid-warning-banner" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:0.92rem; font-weight:900; color:#fef2f2; margin-bottom:18px; padding:14px 18px; border-radius:6px;">
+                <div class="continuous-unpaid-warning-banner" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:0.92rem; font-weight:900; color:#fef2f2; margin-bottom:18px; padding:14px 18px; border-radius:12px;">
                   <div style="display:flex; align-items:center; gap:12px;">
                     <i class="fa-solid fa-triangle-exclamation" style="font-size:1.4rem; color:#f87171; flex-shrink:0;"></i>
                     <div>
-                      <div style="text-transform:uppercase; letter-spacing:0.04em; font-size:0.76rem; color:#fca5a5;">URGENT PAYMENT WARNING</div>
-                      <div>Your monthly bill of <strong>₹${billDue.toLocaleString("en-IN")}</strong> for ${billMonthName} is UNPAID! Please make the payment quickly to avoid late charges.</div>
+                      <div style="text-transform:uppercase; letter-spacing:0.04em; font-size:0.76rem; color:#fca5a5;">CURRENT MONTH PAYMENT DUE (${billMonthName})</div>
+                      <div>Your current month due amount is <strong>₹${billDue.toLocaleString("en-IN")}</strong> for ${billMonthName}. Please complete payment at your earliest convenience.</div>
                     </div>
                   </div>
                   <button
                     type="button"
                     class="btn-primary"
-                    style="width:auto; padding:10px 20px; font-size:0.88rem; font-weight:900; border-radius:6px; background:linear-gradient(135deg, #10b981, #059669); box-shadow:0 6px 18px rgba(16,185,129,0.4);"
+                    style="width:auto; padding:10px 20px; font-size:0.88rem; font-weight:900; border-radius:10px; background:linear-gradient(135deg, #10b981, #059669); box-shadow:0 6px 18px rgba(16,185,129,0.4);"
                     onclick="event.stopPropagation(); openRentCollectionQrModal();"
                   >
                     <i class="fa-solid fa-qrcode"></i> Pay Now Immediately
@@ -11646,11 +11969,11 @@ function formatMonthLabel(rawVal) {
                 </div>
               ` : ""}
 
-              <!-- Fully Opened Receipt Line Items Inside Rectangular Box -->
-              <div style="background:rgba(15,23,42,0.65); border:1.5px solid var(--glass-border); border-radius:6px; padding:18px 20px; margin-bottom:18px;">
+              <!-- Fully Opened Receipt Line Items Inside Rectangular Box (Current Month Only) -->
+              <div style="background:rgba(15,23,42,0.65); border:1.5px solid var(--glass-border); border-radius:12px; padding:18px 20px; margin-bottom:18px;">
                 <div class="receipt-line" style="padding:10px 0; border-bottom:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center;">
                   <span style="color:var(--text-muted); font-weight:700;">Tenant Name:</span>
-                  <strong style="font-size:0.96rem; color:var(--text-main);">${latestBill.TenantName || renterNameDisplay}</strong>
+                  <strong style="font-size:0.96rem; color:var(--text-main);">${currentMonthBill.TenantName || renterNameDisplay}</strong>
                 </div>
 
                 <div class="receipt-line" style="padding:10px 0; border-bottom:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center;">
@@ -11659,8 +11982,8 @@ function formatMonthLabel(rawVal) {
                 </div>
 
                 <div class="receipt-line" style="padding:10px 0; border-bottom:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center;">
-                  <span style="color:var(--text-muted); font-weight:700;">Base Rent:</span>
-                  <strong style="font-size:0.94rem; color:var(--text-main);">₹${(parseFloat(latestBill.BaseRent) || 0).toLocaleString("en-IN")}</strong>
+                  <span style="color:var(--text-muted); font-weight:700;">Base Rent (${billMonthName}):</span>
+                  <strong style="font-size:0.94rem; color:var(--text-main);">₹${(parseFloat(currentMonthBill.BaseRent) || 0).toLocaleString("en-IN")}</strong>
                 </div>
 
                 <div class="receipt-line" style="padding:10px 0; border-bottom:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
@@ -11679,28 +12002,28 @@ function formatMonthLabel(rawVal) {
                 </div>
 
                 <div class="receipt-line" style="padding:10px 0; border-bottom:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center;">
-                  <span style="color:var(--text-muted); font-weight:700;">Additional Charge (${latestBill.AdditionalName || "None"}):</span>
+                  <span style="color:var(--text-muted); font-weight:700;">Additional Charge (${currentMonthBill.AdditionalName || "None"}):</span>
                   <strong style="font-size:0.94rem; color:var(--text-main);">₹${addAmt.toLocaleString("en-IN")}</strong>
                 </div>
 
-                <div class="receipt-line" style="padding:10px 0; border-bottom:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center;">
-                  <span style="color:var(--text-muted); font-weight:700;">Carry-Forward Balance:</span>
-                  <strong style="font-size:0.94rem;">${carryLine}</strong>
-                </div>
-
-                <div style="margin:14px 0; padding:14px 16px; background:rgba(99,102,241,0.12); border:1.5px solid rgba(99,102,241,0.45); border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
-                  <span style="font-weight:900; font-size:1rem; color:var(--text-main);">Total Billed Amount:</span>
+                <div style="margin:14px 0; padding:14px 16px; background:rgba(99,102,241,0.12); border:1.5px solid rgba(99,102,241,0.45); border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-weight:900; font-size:1rem; color:var(--text-main);">Current Month Total Charges (${billMonthName}):</span>
                   <strong style="font-size:1.35rem; font-weight:900; color:var(--primary);">₹${billTotal.toLocaleString("en-IN")}</strong>
                 </div>
 
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-bottom:12px;">
-                  <div style="padding:10px 14px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.35); border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:0.8rem; font-weight:800; color:#34d399;">Paid Amount:</span>
-                    <strong style="font-size:1rem; font-weight:900; color:#34d399;">₹${billPaid.toLocaleString("en-IN")}</strong>
+                <!-- Bug 5: Explicitly show Paid Amount, Current Month Advance, and Current Month Due -->
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-bottom:12px;">
+                  <div style="padding:11px 14px; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.35); border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:0.8rem; font-weight:800; color:#38bdf8;">Paid (${billMonthName}):</span>
+                    <strong style="font-size:1rem; font-weight:900; color:#38bdf8;">₹${billPaid.toLocaleString("en-IN")}</strong>
                   </div>
-                  <div style="padding:10px 14px; background:${billDue > 0 ? "rgba(239,68,68,0.12)" : "rgba(16,185,129,0.1)"}; border:1px solid ${billDue > 0 ? "rgba(239,68,68,0.4)" : "rgba(16,185,129,0.35)"}; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:0.8rem; font-weight:800; color:${billDue > 0 ? "#fca5a5" : "#34d399"};">${billAdvance > 0 ? "Advance Credit:" : "Current Due:"}</span>
-                    <strong style="font-size:1rem; font-weight:900; color:${billDue > 0 ? "#f87171" : "#34d399"};">₹${(billAdvance > 0 ? billAdvance : billDue).toLocaleString("en-IN")}</strong>
+                  <div style="padding:11px 14px; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.4); border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:0.8rem; font-weight:800; color:#34d399;">Advance (${billMonthName}):</span>
+                    <strong style="font-size:1rem; font-weight:900; color:#34d399;">₹${billAdvance.toLocaleString("en-IN")}</strong>
+                  </div>
+                  <div style="padding:11px 14px; background:${billDue > 0 ? "rgba(239,68,68,0.14)" : "rgba(16,185,129,0.1)"}; border:1px solid ${billDue > 0 ? "rgba(239,68,68,0.45)" : "rgba(16,185,129,0.35)"}; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:0.8rem; font-weight:800; color:${billDue > 0 ? "#fca5a5" : "#34d399"};">Due (${billMonthName}):</span>
+                    <strong style="font-size:1rem; font-weight:900; color:${billDue > 0 ? "#f87171" : "#34d399"};">₹${billDue.toLocaleString("en-IN")}</strong>
                   </div>
                 </div>
 
@@ -11722,9 +12045,9 @@ function formatMonthLabel(rawVal) {
               </div>
 
               <!-- Embedded UPI QR & Direct Pay Now Rectangular Box -->
-              <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:18px; padding:18px 20px; background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:6px;">
+              <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:18px; padding:18px 20px; background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:12px;">
                 <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
-                  <div style="background:#ffffff; padding:8px; border-radius:6px; border:2px solid #cbd5e1; display:flex; align-items:center; justify-content:center;">
+                  <div style="background:#ffffff; padding:8px; border-radius:10px; border:2px solid #cbd5e1; display:flex; align-items:center; justify-content:center;">
                     <canvas id="renterHomeInlineQrCanvas" width="140" height="140" style="width:140px; height:140px; display:block;"></canvas>
                   </div>
                   <div>
@@ -11732,7 +12055,7 @@ function formatMonthLabel(rawVal) {
                       <i class="fa-solid fa-qrcode"></i> Instant UPI QR Payment
                     </div>
                     <div style="font-size:1.1rem; font-weight:900; color:var(--text-main); margin-top:3px;">
-                      Payable: ₹${payableAmt.toLocaleString("en-IN")}
+                      Payable (${billMonthName}): ₹${payableAmt.toLocaleString("en-IN")}
                     </div>
                     <div style="font-size:0.82rem; font-weight:700; color:var(--primary); margin-top:2px;">
                       UPI ID: ${upiId || "Not Configured"}
@@ -11746,7 +12069,7 @@ function formatMonthLabel(rawVal) {
                   <button
                     type="button"
                     class="btn-primary"
-                    style="min-width:210px; background:linear-gradient(135deg, #10b981, #059669); font-weight:900; font-size:0.95rem; border-radius:6px; padding:14px 22px;"
+                    style="min-width:210px; background:linear-gradient(135deg, #10b981, #059669); font-weight:900; font-size:0.95rem; border-radius:10px; padding:14px 22px;"
                     onclick="event.stopPropagation(); openRentCollectionQrModal();"
                   >
                     <i class="fa-solid fa-indian-rupee-sign"></i> Pay Now
@@ -11757,20 +12080,23 @@ function formatMonthLabel(rawVal) {
           `;
         } else {
           lowerReceiptBoxHtml = `
-            <div class="renter-lower-box glass-card" style="border-radius:6px; padding:28px 22px; text-align:center; border:2px solid var(--glass-border); background:linear-gradient(145deg, rgba(17, 24, 39, 0.94) 0%, rgba(30, 41, 59, 0.92) 100%);">
-              <i class="fa-solid fa-receipt" style="font-size:2.2rem; color:var(--text-muted); opacity:0.6; margin-bottom:12px; display:inline-block;"></i>
-              <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main); margin-bottom:4px;">No Receipt for Current Month Yet</h3>
-              <p style="font-size:0.82rem; color:var(--text-muted); max-width:480px; margin:0 auto;">
-                As soon as your administrator calculates and records the monthly utility meter readings and rent invoice, your latest month's receipt will automatically appear fully opened here.
+            <div class="renter-lower-box glass-card" style="border-radius:18px; padding:28px 22px; text-align:center; border:2px solid var(--glass-border); background:linear-gradient(145deg, rgba(17, 24, 39, 0.94) 0%, rgba(30, 41, 59, 0.92) 100%);">
+              <i class="fa-solid fa-receipt" style="font-size:2.2rem; color:#38bdf8; opacity:0.85; margin-bottom:12px; display:inline-block;"></i>
+              <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main); margin-bottom:6px;">No Bill Generated for ${currentCalendarMonthLabel} Yet</h3>
+              <p style="font-size:0.84rem; color:var(--text-muted); max-width:520px; margin:0 auto 14px auto;">
+                Advance and Due details strictly display data for the current month (${currentCalendarMonthLabel}). Once your administrator records this month's bill, your exact ${currentCalendarMonthLabel} statement will appear here.
               </p>
+              <div style="display:inline-flex; align-items:center; gap:14px; flex-wrap:wrap; justify-content:center; padding:10px 18px; border-radius:12px; background:rgba(15,23,42,0.55); border:1px solid var(--glass-border);">
+                <span style="font-size:0.82rem; font-weight:800; color:#34d399;"><i class="fa-solid fa-arrow-up-right-dots"></i> ${currentCalendarMonthLabel} Advance: ₹0</span>
+                <span style="color:var(--glass-border);">|</span>
+                <span style="font-size:0.82rem; font-weight:800; color:#94a3b8;"><i class="fa-solid fa-circle-check"></i> ${currentCalendarMonthLabel} Due: ₹0</span>
+              </div>
             </div>
           `;
         }
 
         // ====================================================================
-        // UPPER RECTANGULAR BOX HTML: ENLARGED "RESIDENT HOME"
-        // (Removed Advance/Due status fields, Live Chat, and Help Center from here;
-        //  wider screen layout and rectangular boxes)
+        // UPPER RECTANGULAR BOX HTML: ENLARGED "RESIDENT HOME" WITH CURRENT MONTH ADVANCE & DUE
         // ====================================================================
         if (flatsContainer) {
           flatsContainer.style.display = "";
@@ -11778,33 +12104,51 @@ function formatMonthLabel(rawVal) {
             <div class="renter-two-box-layout" style="display:flex; flex-direction:column; gap:20px; max-width:1180px; margin:14px auto; width:100%;">
               
               <!-- ENLARGED RESIDENT HOME IN RECTANGULAR BOX -->
-              <div class="renter-upper-box glass-card" style="border-radius:6px; padding:28px 30px; border:2px solid rgba(192, 132, 252, 0.65) !important; background:linear-gradient(145deg, rgba(17, 24, 39, 0.96) 0%, rgba(30, 41, 59, 0.94) 100%); box-shadow:0 18px 45px rgba(0, 0, 0, 0.45);">
+              <div class="renter-upper-box glass-card" style="border-radius:18px; padding:28px 30px; border:2px solid rgba(192, 132, 252, 0.65) !important; background:linear-gradient(145deg, rgba(17, 24, 39, 0.96) 0%, rgba(30, 41, 59, 0.94) 100%); box-shadow:0 18px 45px rgba(0, 0, 0, 0.45);">
                 
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:18px; border-bottom:1.5px solid var(--glass-border); padding-bottom:22px; margin-bottom:22px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:18px; border-bottom:1.5px solid var(--glass-border); padding-bottom:20px; margin-bottom:20px;">
                   <div>
-                    <div style="display:inline-flex; align-items:center; gap:8px; font-size:1.05rem; font-weight:900; color:#c084fc; text-transform:uppercase; letter-spacing:0.08em; background:rgba(192,132,252,0.12); border:1.5px solid rgba(192,132,252,0.4); padding:6px 14px; border-radius:6px; margin-bottom:10px;">
-                      <i class="fa-solid fa-house-user"></i> Resident Home
+                    <div style="display:inline-flex; align-items:center; gap:8px; font-size:0.92rem; font-weight:900; color:#c084fc; text-transform:uppercase; letter-spacing:0.08em; background:rgba(192,132,252,0.12); border:1.5px solid rgba(192,132,252,0.4); padding:6px 14px; border-radius:10px; margin-bottom:10px;">
+                      <i class="fa-solid fa-house-user"></i> Resident Home Portal
                     </div>
-                    <h2 style="margin:0; font-size:2.2rem; font-weight:900; color:var(--text-main); letter-spacing:-0.4px; line-height:1.15;">
+                    <h2 style="margin:0; font-size:2.1rem; font-weight:900; color:var(--text-main); letter-spacing:-0.4px; line-height:1.15;">
                       ${renterNameDisplay}
                     </h2>
                   </div>
 
                   <!-- Property, Flat, and Aadhaar inside Rectangular Boxes -->
                   <div style="display:flex; align-items:stretch; gap:10px; flex-wrap:wrap;">
-                    <div style="background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:6px; padding:10px 16px;">
+                    <div style="background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:12px; padding:10px 16px;">
                       <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:var(--text-muted);">Property</div>
                       <div style="font-size:0.98rem; font-weight:900; color:var(--text-main); margin-top:2px;"><i class="fa-solid fa-hotel" style="color:#38bdf8; margin-right:6px;"></i>${targetProp}</div>
                     </div>
-                    <div style="background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:6px; padding:10px 16px;">
+                    <div style="background:var(--bg-input); border:1.5px solid var(--glass-border); border-radius:12px; padding:10px 16px;">
                       <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:var(--text-muted);">Assigned Space</div>
                       <div style="font-size:0.98rem; font-weight:900; color:var(--text-main); margin-top:2px;"><i class="fa-solid fa-door-open" style="color:#fbbf24; margin-right:6px;"></i>Flat ${targetFlat}</div>
                     </div>
                     ${renterAadhaar ? `
-                    <div style="background:var(--bg-input); border:1.5px solid rgba(16,185,129,0.4); border-radius:6px; padding:10px 16px;">
+                    <div style="background:var(--bg-input); border:1.5px solid rgba(16,185,129,0.4); border-radius:12px; padding:10px 16px;">
                       <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:#34d399;">Verified Aadhaar ID</div>
                       <div style="font-size:0.98rem; font-weight:900; color:#34d399; margin-top:2px;"><i class="fa-solid fa-shield-halved" style="margin-right:6px;"></i>${formatAadhaarWithHyphens(renterAadhaar)}</div>
                     </div>` : ""}
+                  </div>
+                </div>
+
+                <!-- Bug 5: Current Month Only Advance & Due Summary Strip -->
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:12px; margin-bottom:20px;">
+                  <div style="background:rgba(16,185,129,0.12); border:1.5px solid rgba(16,185,129,0.42); border-radius:12px; padding:12px 16px; display:flex; align-items:center; justify-content:space-between;">
+                    <div>
+                      <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:#34d399;">${currentCalendarMonthLabel} Advance Amount</div>
+                      <div style="font-size:1.25rem; font-weight:900; color:#34d399; margin-top:2px;">₹${currentMonthMetrics.advanceAmt.toLocaleString("en-IN")}</div>
+                    </div>
+                    <i class="fa-solid fa-arrow-up-right-dots" style="font-size:1.35rem; color:#34d399; opacity:0.85;"></i>
+                  </div>
+                  <div style="background:${currentMonthMetrics.dueAmt > 0 ? "rgba(239,68,68,0.14)" : "rgba(148,163,184,0.12)"}; border:1.5px solid ${currentMonthMetrics.dueAmt > 0 ? "rgba(239,68,68,0.5)" : "rgba(148,163,184,0.35)"}; border-radius:12px; padding:12px 16px; display:flex; align-items:center; justify-content:space-between;">
+                    <div>
+                      <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; color:${currentMonthMetrics.dueAmt > 0 ? "#f87171" : "#94a3b8"};">${currentCalendarMonthLabel} Due Amount</div>
+                      <div style="font-size:1.25rem; font-weight:900; color:${currentMonthMetrics.dueAmt > 0 ? "#f87171" : "var(--text-main)"}; margin-top:2px;">₹${currentMonthMetrics.dueAmt.toLocaleString("en-IN")}</div>
+                    </div>
+                    <i class="fa-solid ${currentMonthMetrics.dueAmt > 0 ? "fa-triangle-exclamation" : "fa-circle-check"}" style="font-size:1.35rem; color:${currentMonthMetrics.dueAmt > 0 ? "#f87171" : "#34d399"}; opacity:0.85;"></i>
                   </div>
                 </div>
 
@@ -11813,7 +12157,7 @@ function formatMonthLabel(rawVal) {
                   <button
                     type="button"
                     class="btn-primary"
-                    style="padding:16px 22px; font-size:1rem; font-weight:900; border-radius:6px; background:linear-gradient(135deg, #6366f1, #8b5cf6); box-shadow:0 8px 22px rgba(99,102,241,0.35); display:flex; align-items:center; justify-content:center; gap:10px;"
+                    style="padding:16px 22px; font-size:1rem; font-weight:900; border-radius:12px; background:linear-gradient(135deg, #6366f1, #8b5cf6); box-shadow:0 8px 22px rgba(99,102,241,0.35); display:flex; align-items:center; justify-content:center; gap:10px;"
                     onclick="openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'});"
                   >
                     <i class="fa-solid fa-receipt"></i>
@@ -11822,7 +12166,7 @@ function formatMonthLabel(rawVal) {
                   <button
                     type="button"
                     class="btn-primary"
-                    style="padding:16px 22px; font-size:1rem; font-weight:900; border-radius:6px; background:linear-gradient(135deg, #059669, #10b981); box-shadow:0 8px 22px rgba(16,185,129,0.35); display:flex; align-items:center; justify-content:center; gap:10px;"
+                    style="padding:16px 22px; font-size:1rem; font-weight:900; border-radius:12px; background:linear-gradient(135deg, #059669, #10b981); box-shadow:0 8px 22px rgba(16,185,129,0.35); display:flex; align-items:center; justify-content:center; gap:10px;"
                     onclick="openFlatDetailsModal(findFlatObject('${safePropArg}', '${safeFlatArg}') || {PropertyName:'${safePropArg}', FlatName:'${safeFlatArg}'}); setTimeout(() => { if (typeof switchFlatTabToProfile === 'function') switchFlatTabToProfile(); }, 40);"
                   >
                     <i class="fa-solid fa-user-check"></i>
@@ -11831,7 +12175,7 @@ function formatMonthLabel(rawVal) {
                 </div>
               </div>
 
-              <!-- LOWER RECTANGULAR BOX (LATEST MONTH'S RECEIPT FULLY OPENED) -->
+              <!-- LOWER RECTANGULAR BOX (CURRENT MONTH'S RECEIPT FULLY OPENED) -->
               ${lowerReceiptBoxHtml}
 
             </div>
@@ -11975,6 +12319,13 @@ function formatMonthLabel(rawVal) {
       const dashScr = document.getElementById("dashboardScreen");
       if (loginScr) loginScr.classList.remove("active");
       if (dashScr) dashScr.classList.add("active");
+
+      // Bug 6: Push a history guard state so browser Back/Forward history navigation forces re-authentication
+      try {
+        if (window.history && typeof window.history.pushState === "function") {
+          window.history.pushState({ portalRequiresReauthOnHistory: true }, "", window.location.href);
+        }
+      } catch (e) {}
 
       try { applyCustomBackgrounds(); } catch (e) {}
       try {
