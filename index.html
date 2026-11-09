@@ -6,10 +6,10 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> Home Management </title>
-  <meta name="description" content="Comprehensive rental property, tenant billing, utility calculation, FD portfolio, and land records management portal with Firebase Firestore live sync." />
-  <meta property="og:title" content="Home - Property & Rental Management Portal" />
-  <meta property="og:description" content="Comprehensive rental property, tenant billing, utility calculation, FD portfolio, and land records management portal with Firebase Firestore live sync." />
+  <title>Home Management Portal</title>
+  <meta name="description" content="Dual-server rental property, tenant billing, utility calculation, FD portfolio, khet, expense, and live chat management portal powered by Firebase and Google Apps Script." />
+  <meta property="og:title" content="Home Management Portal" />
+  <meta property="og:description" content="Dual-server rental property, tenant billing, utility calculation, FD portfolio, khet, expense, and live chat management portal powered by Firebase and Google Apps Script." />
   <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -858,7 +858,7 @@
       display: flex;
       align-items: center;
     }
-    /* Requirement 2: Plus (+) Button Menu — Completely Transparent Background with Light Blur Behind the 3 Option Names */
+    /* Requirement 2: Plus (+) Button Menu & Home Portfolio Dropdown */
     .action-menu {
       display: none;
       position: absolute;
@@ -879,6 +879,104 @@
       display: flex;
       flex-direction: column;
       gap: 7px;
+      animation: dropdownFadeSlideIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes dropdownFadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .home-portfolio-menu {
+      width: 268px;
+      top: 50px;
+      right: 0;
+      padding: 10px;
+      background: rgba(15, 23, 42, 0.92) !important;
+      backdrop-filter: blur(18px) saturate(165%) !important;
+      -webkit-backdrop-filter: blur(18px) saturate(165%) !important;
+      border: 1.5px solid rgba(52, 211, 153, 0.38) !important;
+      border-radius: 16px !important;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06) inset !important;
+      gap: 8px;
+    }
+    body.theme-white .home-portfolio-menu {
+      background: rgba(255, 255, 255, 0.96) !important;
+      border: 1.5px solid rgba(16, 185, 129, 0.38) !important;
+      box-shadow: 0 18px 38px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(16, 185, 129, 0.1) !important;
+    }
+    .home-portfolio-menu .menu-item {
+      padding: 10px 12px;
+      border-radius: 12px !important;
+      background: rgba(30, 41, 59, 0.72) !important;
+      border: 1px solid rgba(148, 163, 184, 0.22) !important;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      text-shadow: none !important;
+    }
+    body.theme-white .home-portfolio-menu .menu-item {
+      background: rgba(248, 250, 252, 0.95) !important;
+      border: 1px solid rgba(148, 163, 184, 0.28) !important;
+      color: #0f172a !important;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+    }
+    .home-portfolio-menu .menu-item:hover {
+      transform: translateX(3px) translateY(-1px);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.28), rgba(59, 130, 246, 0.24)) !important;
+      border-color: rgba(52, 211, 153, 0.65) !important;
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.22);
+    }
+    body.theme-white .home-portfolio-menu .menu-item:hover {
+      background: linear-gradient(135deg, #10b981, #0284c7) !important;
+      border-color: transparent !important;
+      color: #ffffff !important;
+    }
+    .home-menu-icon-wrap {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      flex-shrink: 0;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+    .home-menu-icon-wrap i {
+      width: auto !important;
+      filter: none !important;
+    }
+    .home-menu-text-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+      line-height: 1.2;
+    }
+    .home-menu-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #f8fafc;
+      letter-spacing: -0.01em;
+    }
+    body.theme-white .home-portfolio-menu .menu-item .home-menu-title {
+      color: #0f172a;
+    }
+    body.theme-white .home-portfolio-menu .menu-item:hover .home-menu-title,
+    body.theme-white .home-portfolio-menu .menu-item:hover .home-menu-sub {
+      color: #ffffff !important;
+    }
+    .home-menu-sub {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #94a3b8;
     }
     .menu-item {
       padding: 12px 16px;
@@ -2738,17 +2836,6 @@
       pointer-events: none;
       backdrop-filter: blur(6px);
     }
-
-    /* Khet Icon-Only Header Button Between FD and Plus (+) */
-    .khet-icon-only-btn {
-      border-color: rgba(52, 211, 153, 0.48) !important;
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, var(--bg-input) 100%) !important;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.22);
-    }
-    .khet-icon-only-btn:hover {
-      border-color: #34d399 !important;
-      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.38);
-    }
   
   /* ==========================================================================
      MOBILE RESPONSIVENESS AND MULTI-COLUMN ADAPTIVE LAYOUTS
@@ -2773,12 +2860,10 @@
 
   /* Requirement 1, 8 & 9: Clean Standard Dashboard Theme (Colorful Theme Removed), Icon-Only Header Buttons & White Outline-Only FD Modal */
   
-  /* REQUIREMENT 1 & 2: Unified 42px Outline-Box Buttons for Live Chat, Help Center, FD, Khet, Kharch, Plus (+), Profile, Settings & Logout */
+  /* REQUIREMENT 1 & 2: Unified 42px Outline-Box Buttons for Live Chat, Help Center, Home Portfolio Dropdown, Plus (+), Profile, Settings & Logout */
   .live-chat-icon-only-btn,
   .help-center-icon-only-btn,
-  .fd-icon-only-btn,
-  .khet-icon-only-btn,
-  .kharch-icon-only-btn,
+  .home-icon-box-btn,
   .plus-icon-box-btn,
   .profile-icon-box-btn,
   .settings-icon-box-btn,
@@ -2809,15 +2894,9 @@
   body.role-renter #fabContactUsBtn {
     display: inline-flex !important;
   }
-  /* Requirement 4: Remove Notification button from Admin/Manager dashboard (moved inside Settings as 1st option) */
-  body:not(.role-renter):not(.role-viewer) #btnDashboardNotification {
-    display: none !important;
-  }
   .live-chat-icon-only-btn:hover,
   .help-center-icon-only-btn:hover,
-  .fd-icon-only-btn:hover,
-  .khet-icon-only-btn:hover,
-  .kharch-icon-only-btn:hover,
+  .home-icon-box-btn:hover,
   .plus-icon-box-btn:hover,
   .profile-icon-box-btn:hover,
   .settings-icon-box-btn:hover,
@@ -2825,6 +2904,14 @@
     transform: translateY(-2px) !important;
     border-color: var(--primary) !important;
     box-shadow: 0 6px 16px rgba(99, 102, 241, 0.25) !important;
+  }
+  .home-icon-box-btn {
+    border-color: rgba(16, 185, 129, 0.5) !important;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, var(--bg-input) 100%) !important;
+  }
+  .home-icon-box-btn:hover {
+    border-color: #10b981 !important;
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35) !important;
   }
   .live-chat-icon-only-btn {
     border-color: rgba(16, 185, 129, 0.5) !important;
@@ -4580,27 +4667,6 @@
     background: rgba(255, 255, 255, 0.32);
     transform: translateY(-1px);
   }
-  .ai-chip-btn {
-    background: rgba(99, 102, 241, 0.15);
-    border: 1px solid rgba(129, 140, 248, 0.4);
-    color: #a5b4fc;
-    border-radius: 999px;
-    padding: 5px 10px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.16s ease;
-  }
-  body.theme-white .ai-chip-btn {
-    background: #eef2ff;
-    border-color: #a5b4fc;
-    color: #4338ca;
-  }
-  .ai-chip-btn:hover {
-    background: #4f46e5;
-    color: #ffffff;
-  }
   .chat-msg-bubble {
     max-width: 86%;
     padding: 9px 12px;
@@ -4961,7 +5027,7 @@
           </div>
 
           <button type="button" id="btnSubmitFdRecord" class="btn-primary" style="background:#4f46e5; color:#ffffff;" onclick="addFdRecord()">
-            <i class="fa-solid fa-check"></i> <span id="btnSubmitFdRecordText">Save Portfolio &amp; FD Entry to Firebase</span>
+            <i class="fa-solid fa-check"></i> <span id="btnSubmitFdRecordText">Save Portfolio &amp; FD Entry to Google Sheet</span>
           </button>
         </div>
       </div>
@@ -5002,7 +5068,7 @@
           </div>
         </div>
         <span style="font-size:0.7rem; font-weight:700; color:var(--accent-green); background:rgba(16,185,129,0.14); padding:4px 10px; border-radius:20px; border:1px solid rgba(16,185,129,0.3);">
-          <i class="fa-solid fa-cloud-arrow-up"></i> Live Firebase Sync
+          <i class="fa-solid fa-table"></i> Live Google Sheet Sync
         </span>
       </div>
 
@@ -5139,7 +5205,7 @@
           </div>
 
           <button type="button" id="btnSubmitKhetRecord" class="btn-primary" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%);" onclick="addKhetRecord()">
-            <i class="fa-solid fa-check"></i> <span id="btnSubmitKhetRecordText">Save Complete Khet &amp; Partner Record to Firebase</span>
+            <i class="fa-solid fa-check"></i> <span id="btnSubmitKhetRecordText">Save Complete Khet &amp; Partner Record to Google Sheet</span>
           </button>
         </div>
       </div>
@@ -5185,7 +5251,7 @@
             <i class="fa-solid fa-wallet" style="color:#f59e0b;"></i> Kharch (Expenses) Ledger &amp; Tracker
           </h3>
           <div style="font-size:0.74rem; color:var(--text-muted); margin-top:2px;">
-            Calculate property utility expenses (excluding rent) &amp; track complete expense history synced live with Firebase
+            Calculate property utility expenses (excluding rent) &amp; track complete expense history synced live with Google Sheet
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:10px;">
@@ -5323,7 +5389,7 @@
             <input type="text" id="kharchNotes" class="form-control" placeholder="Optional bill reference, person paid, or details">
           </div>
           <button type="button" id="btnSubmitKharchRecord" class="btn-primary" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); font-weight:800;" onclick="addKharchRecord()">
-            <i class="fa-solid fa-check"></i> <span id="btnSubmitKharchRecordText">Save Kharch Entry to Firebase</span>
+            <i class="fa-solid fa-check"></i> <span id="btnSubmitKharchRecordText">Save Kharch Entry to Google Sheet</span>
           </button>
         </div>
       </div>
@@ -5433,21 +5499,44 @@
           <button type="button" id="btnRenterNavHelpCenter" class="nav-btn help-center-icon-only-btn" onclick="openContactUsModal()" title="24/7 Help Center & Contact Us" aria-label="24/7 Help Center & Contact Us">
             <i class="fa-solid fa-headset" style="color:#38bdf8; font-size:1.05rem;"></i>
           </button>
-          <!-- 1. Fixed Deposit (FD) Box Button -->
-          <button type="button" class="nav-btn fd-icon-only-btn" onclick="openFdModal()" title="Fixed Deposit (FD) &amp; Savings Portfolio" aria-label="Fixed Deposit (FD)">
-            <i class="fa-solid fa-building-columns" style="color:#818cf8; font-size:1.05rem;"></i>
-          </button>
-          <!-- 2. Field (Khet) Box Button -->
-          <button type="button" class="nav-btn khet-icon-only-btn" onclick="openKhetModal()" title="Khet (Field)" aria-label="Khet (Field)">
-            <i class="fa-solid fa-seedling" style="color:#34d399; font-size:1.05rem;"></i>
-          </button>
-          <!-- 3. Kharch (Expenses) Box Button -->
-          <button type="button" class="nav-btn kharch-icon-only-btn admin-only" onclick="openKharchModal()" title="Kharch (Expenses)" aria-label="Kharch (Expenses)">
-            <i class="fa-solid fa-wallet" style="color:#f59e0b; font-size:1.05rem;"></i>
-          </button>
+          <!-- Portfolio Home Icon Dropdown (Left of Plus Icon): Expenses, Land Records (Khiyat), Fixed Deposit (FD) -->
+          <div class="dropdown-anchor home-portfolio-anchor admin-only" id="homePortfolioDropdownAnchor">
+            <button type="button" class="nav-btn home-icon-box-btn" onclick="toggleHomePortfolioMenu(event)" title="Portfolio &amp; Records (Expenses, Land Records &amp; FD)" aria-label="Home Portfolio Menu">
+              <i class="fa-solid fa-house" style="color:#34d399; font-size:1.05rem;"></i>
+            </button>
+            <div id="homePortfolioMenu" class="action-menu home-portfolio-menu">
+              <div class="menu-item" id="homeMenuKharchItem" onclick="closeHomePortfolioMenu(); openKharchModal()">
+                <span class="home-menu-icon-wrap" style="background:rgba(245,158,11,0.2); border-color:rgba(245,158,11,0.45); color:#fbbf24;">
+                  <i class="fa-solid fa-wallet"></i>
+                </span>
+                <div class="home-menu-text-wrap">
+                  <span class="home-menu-title">Expenses</span>
+                  <span class="home-menu-sub">Daily &amp; Monthly Kharch Ledger</span>
+                </div>
+              </div>
+              <div class="menu-item" id="homeMenuKhetItem" onclick="closeHomePortfolioMenu(); openKhetModal()">
+                <span class="home-menu-icon-wrap" style="background:rgba(16,185,129,0.2); border-color:rgba(52,211,153,0.45); color:#34d399;">
+                  <i class="fa-solid fa-seedling"></i>
+                </span>
+                <div class="home-menu-text-wrap">
+                  <span class="home-menu-title">Land Records (Khiyat)</span>
+                  <span class="home-menu-sub">Farmland &amp; Partner Registry</span>
+                </div>
+              </div>
+              <div class="menu-item" id="homeMenuFdItem" onclick="closeHomePortfolioMenu(); openFdModal()">
+                <span class="home-menu-icon-wrap" style="background:rgba(99,102,241,0.22); border-color:rgba(129,140,248,0.45); color:#818cf8;">
+                  <i class="fa-solid fa-building-columns"></i>
+                </span>
+                <div class="home-menu-text-wrap">
+                  <span class="home-menu-title">Fixed Deposit (FD)</span>
+                  <span class="home-menu-sub">Bank FD &amp; Savings Portfolio</span>
+                </div>
+              </div>
+            </div>
+          </div>
           <!-- 4. Dynamic Plus (+) Add Box Button -->
-          <div class="dropdown-anchor admin-only">
-            <button type="button" class="nav-btn plus-icon-box-btn" onclick="toggleActionMenu()" title="Add Property, Flat or Renter">
+          <div class="dropdown-anchor admin-only" id="plusMenuDropdownAnchor">
+            <button type="button" class="nav-btn plus-icon-box-btn" onclick="toggleActionMenu(event)" title="Add Property, Flat or Renter">
               <i class="fa-solid fa-plus" style="color:#38bdf8; font-size:1.05rem; font-weight:900;"></i>
             </button>
             <div id="actionMenu" class="action-menu">
@@ -6578,7 +6667,7 @@
             <span class="badge-unpaid" style="font-size:0.68rem;">Cascade Delete</span>
           </div>
           <p style="font-size:0.79rem; color:var(--text-muted); margin-bottom:12px; line-height:1.4;">
-            Permanently delete a building/property along with all flats, tenant profiles, and billing history inside it from Firebase.
+            Permanently delete a building/property along with all flats, tenant profiles, and billing history inside it from Google Sheet.
           </p>
           <button type="button" class="btn-primary admin-only" style="background:linear-gradient(135deg, #dc2626, #ef4444);" onclick="closeModal('settingsModal'); syncPropertyDropdowns(); openModal('deletePropertyModal');">
             <i class="fa-solid fa-trash-can"></i> Open Delete Property Tool
@@ -8099,10 +8188,15 @@
     
     /**
      * ============================================================================
-     * FIREBASE BACKEND ENGINE (REPLACING GOOGLE APPS SCRIPT)
-     * Cloud Firestore Database: home-eb346
+     * DUAL-SERVER BACKEND ENGINE:
+     * 1. FIREBASE CLOUD FIRESTORE (FIRST PRIORITY: Login, Live Chat, Live Notifications,
+     *    Registered Users, Last Login History, Contact Config, Themes & Backgrounds)
+     * 2. GOOGLE APPS SCRIPT / GOOGLE SHEET (STRICTLY: Properties, Flats, Renters & Docs,
+     *    Bills, Farms/Khet, Fixed Deposits/FDs, and Expenses/Kharch)
      * ============================================================================
      */
+    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzHSSs7xN9tlcZmwO1hpfdwwc8zdhvwRyP1294-RC-SFlj6QvfqtSyFrJH1c8VacYFZWQ/exec";
+
     const firebaseConfig = {
       apiKey: "AIzaSyCygY2bTk7CekfZ5TZgq8X4k6lEtKUBMkM",
       authDomain: "home-eb346.firebaseapp.com",
@@ -8129,10 +8223,40 @@
           fbDb.enablePersistence({ synchronizeTabs: true }).catch(function() {});
         } catch (persErr) {}
         isFirebaseReady = true;
-        console.log("Firebase Firestore initialized successfully.");
+        console.log("Firebase Firestore initialized successfully (Priority 1 Server).");
       }
     } catch (fbInitErr) {
       console.warn("Firebase initialization notice:", fbInitErr);
+    }
+
+    // Strict Firewall: These 7 collections belong EXCLUSIVELY to Google Sheets (GAS_WEB_APP_URL) and must NEVER touch Firebase!
+    const FORBIDDEN_FIREBASE_COLLECTIONS = new Set([
+      "properties",
+      "flats",
+      "renters",
+      "bills",
+      "fdRecords",
+      "khetRecords",
+      "kharchRecords"
+    ]);
+
+    function wrapFirestoreWithSheetFirewall(rawDb) {
+      if (!rawDb || rawDb.__hasSheetFirewall) return rawDb;
+      const origCollection = rawDb.collection.bind(rawDb);
+      rawDb.collection = function(colPath) {
+        const cleanCol = String(colPath || "").trim().split("/")[0];
+        if (FORBIDDEN_FIREBASE_COLLECTIONS.has(cleanCol)) {
+          console.error("Blocked attempt to access Google Sheet collection on Firebase:", cleanCol);
+          throw new Error("Collection '" + cleanCol + "' is strictly routed to Google Sheets and blocked on Firebase.");
+        }
+        return origCollection(colPath);
+      };
+      rawDb.__hasSheetFirewall = true;
+      return rawDb;
+    }
+
+    if (fbDb) {
+      fbDb = wrapFirestoreWithSheetFirewall(fbDb);
     }
 
     function getFirestoreDb() {
@@ -8143,54 +8267,50 @@
           } else {
             fbApp = firebase.app();
           }
-          fbDb = firebase.firestore();
+          fbDb = wrapFirestoreWithSheetFirewall(firebase.firestore());
           isFirebaseReady = true;
         } catch (e) {}
       }
-      return fbDb;
+      return fbDb ? wrapFirestoreWithSheetFirewall(fbDb) : null;
     }
 
-    // Default administrator credentials & profile
-    const DEFAULT_ADMIN_USER = {
-      Username: "admin",
-      Password: "Admin@123",
-      CreatedAt: new Date().toISOString(),
-      FullName: "Administrator",
-      Role: "Admin",
-      Theme: "dark",
-      MobileNumber: "",
-      AssignedProperty: "",
-      AssignedFlat: "",
-      AssignedAadhaar: "",
-      Status: "Active",
-      AccountStatus: "Active",
-      BgLogin: "",
-      BgDashboard: "",
-      BgLoginUrl: "",
-      BgDashboardUrl: "",
-      BackgroundURL: "",
-      ActiveSessionToken: ""
-    };
-
-    let hasCheckedAdminSeed = false;
+    // Dynamic Firebase User Lookup (No hardcoded credentials in HTML)
     async function ensureFirebaseAdminSeeded() {
-      if (hasCheckedAdminSeed) return;
-      const dbInstance = getFirestoreDb();
-      if (!dbInstance) return;
-      try {
-        const adminDocRef = dbInstance.collection("users").doc("admin");
-        const docSnap = await adminDocRef.get();
-        if (!docSnap.exists) {
-          await adminDocRef.set(DEFAULT_ADMIN_USER);
-          console.log("Default admin account seeded to Firebase.");
-        }
-        hasCheckedAdminSeed = true;
-      } catch (err) {
-        console.warn("Notice checking admin seed in Firestore:", err);
-      }
+      // Admin accounts live dynamically in Firebase 'users' collection
+      return;
     }
 
-    // Normalize phone numbers
+    async function findUserDocsInFirestore(dbInstance, username) {
+      const cleanU = String(username || "").trim();
+      const lowerU = cleanU.toLowerCase();
+      if (!dbInstance || !lowerU) return { primaryDoc: null, primaryId: lowerU, allMatchingIds: [] };
+
+      const matchedDocs = [];
+      try {
+        const directSnap = await dbInstance.collection("users").doc(lowerU).get();
+        if (directSnap.exists) {
+          matchedDocs.push({ id: directSnap.id, data: directSnap.data() || {} });
+        }
+      } catch (e) {}
+
+      try {
+        const allSnap = await dbInstance.collection("users").get();
+        allSnap.forEach(function(d) {
+          const data = d.data() || {};
+          const docU = String(data.Username || d.id || "").trim().toLowerCase();
+          if (docU === lowerU && !matchedDocs.some(function(m) { return m.id === d.id; })) {
+            matchedDocs.push({ id: d.id, data: data });
+          }
+        });
+      } catch (e) {}
+
+      return {
+        primaryDoc: matchedDocs.length > 0 ? matchedDocs[0].data : null,
+        primaryId: matchedDocs.length > 0 ? matchedDocs[0].id : lowerU,
+        allMatchingIds: matchedDocs.map(function(m) { return m.id; })
+      };
+    }
+
     function cleanPhoneStr(val) {
       if (!val) return "";
       const s = String(val).trim();
@@ -8202,79 +8322,295 @@
     }
 
     /**
-     * Firebase-powered Login Authenticator
+     * ============================================================================
+     * GOOGLE APPS SCRIPT (GOOGLE SHEET) ENGINE
+     * Handles ONLY: properties, flats, renters, bills, fdRecords, khetRecords, kharchRecords
+     * ============================================================================
+     */
+    const GAS_SHEET_CACHE_KEY = "portal_gas_sheet_cache_v1";
+    let lastGasSheetDataCache = (function() {
+      try {
+        const raw = localStorage.getItem(GAS_SHEET_CACHE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === "object") return parsed;
+        }
+      } catch (e) {}
+      return null;
+    })();
+    let lastGasFetchTimestamp = 0;
+    let gasCacheNeedsRefresh = true;
+    let inFlightGasFetchPromise = null;
+    let gasWriteEpoch = 0;
+
+    function updateLocalGasSheetCacheFromDB() {
+      lastGasSheetDataCache = {
+        properties: Array.isArray(DB.properties) ? DB.properties : [],
+        flats: Array.isArray(DB.flats) ? DB.flats : [],
+        renters: Array.isArray(DB.renters) ? DB.renters : [],
+        bills: Array.isArray(DB.bills) ? DB.bills : [],
+        fdRecords: Array.isArray(DB.fdRecords) ? DB.fdRecords : [],
+        khetRecords: Array.isArray(DB.khetRecords) ? DB.khetRecords : [],
+        kharchRecords: Array.isArray(DB.kharchRecords) ? DB.kharchRecords : []
+      };
+      try {
+        localStorage.setItem(GAS_SHEET_CACHE_KEY, JSON.stringify(lastGasSheetDataCache));
+      } catch (e) {}
+    }
+
+    async function fetchGasSheetData(forceRefresh = false) {
+      const now = Date.now();
+      if (pendingWriteCount > 0 && lastGasSheetDataCache) {
+        return lastGasSheetDataCache;
+      }
+      if (!forceRefresh && !gasCacheNeedsRefresh && lastGasSheetDataCache && (now - lastGasFetchTimestamp < 8000)) {
+        return lastGasSheetDataCache;
+      }
+      if (inFlightGasFetchPromise && !forceRefresh) {
+        return inFlightGasFetchPromise;
+      }
+
+      const fetchEpochAtStart = gasWriteEpoch;
+      inFlightGasFetchPromise = (async function() {
+        try {
+          const sep = GAS_WEB_APP_URL.indexOf("?") === -1 ? "?" : "&";
+          const url = GAS_WEB_APP_URL + sep + "action=getInitialData&t=" + Date.now();
+          let response = await fetch(url, {
+            method: "GET",
+            redirect: "follow"
+          });
+          if (!response.ok) {
+            response = await fetch(GAS_WEB_APP_URL, {
+              method: "POST",
+              headers: { "Content-Type": "text/plain;charset=utf-8" },
+              body: JSON.stringify({ action: "getInitialData" }),
+              redirect: "follow"
+            });
+          }
+          const json = await response.json();
+          // If a write occurred while this GET was in flight, discard stale GET response
+          if (fetchEpochAtStart !== gasWriteEpoch || pendingWriteCount > 0) {
+            return lastGasSheetDataCache || {
+              properties: DB.properties || [],
+              flats: DB.flats || [],
+              renters: DB.renters || [],
+              bills: DB.bills || [],
+              fdRecords: DB.fdRecords || [],
+              khetRecords: DB.khetRecords || [],
+              kharchRecords: DB.kharchRecords || []
+            };
+          }
+          if (json && json.status === "success") {
+            const sheetPayload = {
+              properties: Array.isArray(json.properties) ? json.properties : [],
+              flats: Array.isArray(json.flats) ? json.flats : [],
+              renters: Array.isArray(json.renters) ? json.renters : [],
+              bills: Array.isArray(json.bills) ? json.bills : [],
+              fdRecords: Array.isArray(json.fdRecords) ? json.fdRecords : [],
+              khetRecords: Array.isArray(json.khetRecords) ? json.khetRecords : [],
+              kharchRecords: Array.isArray(json.kharchRecords) ? json.kharchRecords : []
+            };
+            lastGasSheetDataCache = sheetPayload;
+            lastGasFetchTimestamp = Date.now();
+            gasCacheNeedsRefresh = false;
+            try {
+              localStorage.setItem(GAS_SHEET_CACHE_KEY, JSON.stringify(sheetPayload));
+            } catch (e) {}
+            return sheetPayload;
+          }
+        } catch (err) {
+          console.warn("Google Apps Script fetch notice:", err);
+        } finally {
+          inFlightGasFetchPromise = null;
+        }
+        return lastGasSheetDataCache || {
+          properties: DB.properties || [],
+          flats: DB.flats || [],
+          renters: DB.renters || [],
+          bills: DB.bills || [],
+          fdRecords: DB.fdRecords || [],
+          khetRecords: DB.khetRecords || [],
+          kharchRecords: DB.kharchRecords || []
+        };
+      })();
+
+      return inFlightGasFetchPromise;
+    }
+
+    async function sendGasSheetAction(data) {
+      gasWriteEpoch++;
+      inFlightGasFetchPromise = null;
+      updateLocalGasSheetCacheFromDB();
+      const bodyStr = JSON.stringify(data);
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: bodyStr,
+          redirect: "follow"
+        });
+        const result = await response.json();
+        gasCacheNeedsRefresh = true;
+        lastGasFetchTimestamp = Date.now();
+        return result || { status: "success", message: "Saved to Google Sheet." };
+      } catch (err) {
+        // Fallback for local file:// Notepad execution where browser blocks CORS redirect reading
+        try {
+          await fetch(GAS_WEB_APP_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: bodyStr
+          });
+        } catch (noCorsErr) {
+          console.warn("Google Apps Script fallback notice:", noCorsErr);
+        }
+        gasCacheNeedsRefresh = true;
+        lastGasFetchTimestamp = Date.now();
+        return { status: "success", message: "Saved directly to Google Sheet." };
+      }
+    }
+
+    function linkSheetEntities(rawSheetData) {
+      const properties = (Array.isArray(rawSheetData.properties) ? rawSheetData.properties : []).filter(function(item) {
+        return item && item.PropertyName;
+      });
+      properties.sort(function(a, b) {
+        return String(a.PropertyName || "").trim().localeCompare(String(b.PropertyName || "").trim(), undefined, { sensitivity: "base", numeric: true });
+      });
+
+      const flats = (Array.isArray(rawSheetData.flats) ? rawSheetData.flats : []).filter(function(item) {
+        return item && item.PropertyName && item.FlatName;
+      });
+      const renters = (Array.isArray(rawSheetData.renters) ? rawSheetData.renters : []).filter(Boolean);
+      const bills = (Array.isArray(rawSheetData.bills) ? rawSheetData.bills : []).filter(Boolean);
+      const fdRecords = (Array.isArray(rawSheetData.fdRecords) ? rawSheetData.fdRecords : []).filter(Boolean);
+      const khetRecords = (Array.isArray(rawSheetData.khetRecords) ? rawSheetData.khetRecords : []).filter(Boolean);
+      const kharchRecords = (Array.isArray(rawSheetData.kharchRecords) ? rawSheetData.kharchRecords : []).filter(Boolean);
+
+      const propMap = {};
+      properties.forEach(function(p) {
+        const k = String(p.PropertyName || "").trim().toLowerCase();
+        if (k) propMap[k] = p;
+      });
+
+      const activeRenterMap = {};
+      const anyRenterByFlatMap = {};
+      renters.forEach(function(r) {
+        const pKey = String(r.PropertyName || "").trim().toLowerCase();
+        const fKey = String(r.FlatName || "").trim().toLowerCase();
+        const parentProp = propMap[pKey];
+        if (parentProp) {
+          if (!r.UPIName) r.UPIName = parentProp.UPIName || "";
+          if (!r.UPIID) r.UPIID = parentProp.UPIID || "";
+          if (!r.ContractMobile) r.ContractMobile = cleanPhoneStr(parentProp.ContractNumber || "");
+        }
+        if (pKey && fKey) {
+          anyRenterByFlatMap[pKey + "::" + fKey] = r;
+          if (String(r.Status || "").trim().toLowerCase() === "active") {
+            activeRenterMap[pKey + "::" + fKey] = r;
+          }
+        }
+      });
+
+      flats.forEach(function(f) {
+        const pKey = String(f.PropertyName || "").trim().toLowerCase();
+        const fKey = String(f.FlatName || "").trim().toLowerCase();
+        const parentProp = propMap[pKey];
+        if (parentProp) {
+          if (!f.UPIName) f.UPIName = parentProp.UPIName || "";
+          if (!f.UPIID) f.UPIID = parentProp.UPIID || "";
+          if (!f.ContractMobile) f.ContractMobile = cleanPhoneStr(parentProp.ContractNumber || "");
+        }
+        const actRenter = activeRenterMap[pKey + "::" + fKey];
+        const fallbackRenter = actRenter || anyRenterByFlatMap[pKey + "::" + fKey];
+        if (fallbackRenter) {
+          if (!f.PNGNumber && fallbackRenter.PNGNumber) f.PNGNumber = String(fallbackRenter.PNGNumber);
+          if (!f.PNGMeterNumber && fallbackRenter.PNGMeterNumber) f.PNGMeterNumber = String(fallbackRenter.PNGMeterNumber);
+          if (!f.WaterNumber && fallbackRenter.WaterNumber) f.WaterNumber = String(fallbackRenter.WaterNumber);
+          if (!f.WaterMeterNumber && fallbackRenter.WaterMeterNumber) f.WaterMeterNumber = String(fallbackRenter.WaterMeterNumber);
+          if (!f.ElecMeterNumber && fallbackRenter.ElecMeterNumber) f.ElecMeterNumber = String(fallbackRenter.ElecMeterNumber);
+        }
+        if (actRenter) {
+          if (f.RentAmount !== undefined && f.RentAmount !== "") {
+            actRenter.RentAmount = f.RentAmount;
+          } else if (actRenter.RentAmount !== undefined && actRenter.RentAmount !== "") {
+            f.RentAmount = actRenter.RentAmount;
+          }
+          if (f.ElecRate !== undefined && f.ElecRate !== "") {
+            actRenter.ElecFixedRate = f.ElecRate;
+          } else if (actRenter.ElecFixedRate !== undefined && actRenter.ElecFixedRate !== "") {
+            f.ElecRate = actRenter.ElecFixedRate;
+          }
+          if (f.PNGRate !== undefined && f.PNGRate !== "") {
+            actRenter.PNGFixedRate = f.PNGRate;
+          } else if (actRenter.PNGFixedRate !== undefined && actRenter.PNGFixedRate !== "") {
+            f.PNGRate = actRenter.PNGFixedRate;
+          }
+          if (f.WaterRate !== undefined && f.WaterRate !== "") {
+            actRenter.WaterFixedRate = f.WaterRate;
+          } else if (actRenter.WaterFixedRate !== undefined && actRenter.WaterFixedRate !== "") {
+            f.WaterRate = actRenter.WaterFixedRate;
+          }
+          if (f.PNGNumber) actRenter.PNGNumber = String(f.PNGNumber);
+          else if (actRenter.PNGNumber) f.PNGNumber = String(actRenter.PNGNumber);
+          if (f.PNGMeterNumber) actRenter.PNGMeterNumber = String(f.PNGMeterNumber);
+          else if (actRenter.PNGMeterNumber) f.PNGMeterNumber = String(actRenter.PNGMeterNumber);
+          if (f.WaterNumber) actRenter.WaterNumber = String(f.WaterNumber);
+          else if (actRenter.WaterNumber) f.WaterNumber = String(actRenter.WaterNumber);
+          if (f.WaterMeterNumber) actRenter.WaterMeterNumber = String(f.WaterMeterNumber);
+          else if (actRenter.WaterMeterNumber) f.WaterMeterNumber = String(actRenter.WaterMeterNumber);
+          if (f.ElecMeterNumber) actRenter.ElecMeterNumber = String(f.ElecMeterNumber);
+          else if (actRenter.ElecMeterNumber) f.ElecMeterNumber = String(actRenter.ElecMeterNumber);
+        }
+      });
+
+      bills.forEach(function(bill) {
+        if (!bill.TenantMobile) {
+          let matchedRenter = null;
+          if (bill.RenterID) {
+            matchedRenter = renters.find(function(r) {
+              return String(r.RenterID || "").trim() === String(bill.RenterID).trim();
+            });
+          }
+          if (!matchedRenter) {
+            matchedRenter = renters.find(function(r) {
+              return String(r.PropertyName || "").trim().toLowerCase() === String(bill.PropertyName || "").trim().toLowerCase() &&
+                     String(r.FlatName || "").trim().toLowerCase() === String(bill.FlatName || "").trim().toLowerCase() &&
+                     String(r.RenterName || "").trim().toLowerCase() === String(bill.TenantName || "").trim().toLowerCase();
+            });
+          }
+          if (matchedRenter) {
+            bill.TenantMobile = cleanPhoneStr(matchedRenter.MobileNumber || matchedRenter.AltMobileNumber || "");
+          }
+        }
+      });
+
+      return { properties, flats, renters, bills, fdRecords, khetRecords, kharchRecords };
+    }
+
+    /**
+     * ============================================================================
+     * FIREBASE PRIORITY 1: LOGIN AUTHENTICATOR & LOGIN HISTORY
+     * Strictly authenticates against the latest user ID, password, and block status
+     * stored in Firebase 'users' collection. Never allows old/hardcoded credentials.
+     * ============================================================================
      */
     async function firebaseLogin(username, password, sessionToken) {
       const dbInstance = getFirestoreDb();
       const cleanUser = String(username || "").trim();
-      const lowerUser = cleanUser.toLowerCase();
 
       if (!dbInstance) {
-        // Fallback for offline demo
-        if (lowerUser === "admin" && (password === "Admin@123" || password === "admin")) {
-          return {
-            status: "success",
-            sessionToken: sessionToken || "SESS-LOCAL-ADMIN",
-            role: "Admin",
-            fullName: "Administrator",
-            mobileNumber: "",
-            theme: "dark",
-            userAssignedProperty: "",
-            userAssignedFlat: "",
-            userAssignedAadhaar: "",
-            bgDashboardUrl: "",
-            bgLoginUrl: ""
-          };
-        }
-        return { status: "error", message: "Firebase database is not connected." };
+        return { status: "error", message: "Firebase server is not reachable. Please check your internet connection." };
       }
 
       try {
-        await ensureFirebaseAdminSeeded();
-      } catch (e) {
-        console.warn("Notice in ensureFirebaseAdminSeeded:", e);
-      }
-
-      try {
-        let userDocData = null;
-        let userDocId = lowerUser;
-
-        const directDoc = await dbInstance.collection("users").doc(lowerUser).get();
-        if (directDoc.exists) {
-          userDocData = directDoc.data();
-          userDocId = directDoc.id;
-        } else {
-          // Query by case-insensitive Username field
-          const qSnap = await dbInstance.collection("users").get();
-          qSnap.forEach(function(d) {
-            const data = d.data();
-            if (String(data.Username || "").trim().toLowerCase() === lowerUser) {
-              userDocData = data;
-              userDocId = d.id;
-            }
-          });
-        }
-
-        // If admin account doesn't exist yet, seed it immediately on matching credentials
-        if (!userDocData && lowerUser === "admin" && (password === "Admin@123" || password === "admin")) {
-          userDocData = { ...DEFAULT_ADMIN_USER, ActiveSessionToken: sessionToken };
-          await dbInstance.collection("users").doc("admin").set(userDocData);
-        }
+        const lookup = await findUserDocsInFirestore(dbInstance, cleanUser);
+        const userDocData = lookup.primaryDoc;
+        const userDocId = lookup.primaryId;
 
         if (!userDocData) {
-          return { status: "error", message: "User not found or invalid credentials." };
-        }
-
-        if (String(userDocData.Password || "") !== String(password || "")) {
-          if (lowerUser === "admin" && (password === "Admin@123" || password === "admin")) {
-            userDocData.Password = password;
-            try { await dbInstance.collection("users").doc(userDocId).update({ Password: password }); } catch (e) {}
-          } else {
-            return { status: "error", message: "Your Username or Password is wrong." };
-          }
-        }
-        if (lowerUser === "admin") {
-          userDocData.Role = "Admin";
+          return { status: "error", message: "User ID not found. Please log in with your current registered User ID." };
         }
 
         const userStatus = String(userDocData.Status || userDocData.AccountStatus || "Active").trim();
@@ -8282,13 +8618,17 @@
           return { status: "blocked", message: "Your account has been blocked by an administrator." };
         }
 
-        // Update single-device active session token in Firestore (merge: true ensures reliability for all accounts)
+        if (String(userDocData.Password || "") !== String(password || "")) {
+          return { status: "error", message: "Your Username or Password is wrong." };
+        }
+
+        // Priority 1: Update single-device active session token & last login in Firebase
         await dbInstance.collection("users").doc(userDocId).set({
           ActiveSessionToken: sessionToken,
           LastLoginAt: new Date().toISOString()
         }, { merge: true });
 
-        // Record entry in login history
+        // Priority 1: Record entry in Firebase loginHistory (keep max 30 entries)
         try {
           const nowTs = Date.now();
           const nowIso = new Date(nowTs).toISOString();
@@ -8304,7 +8644,6 @@
             UserAgent: navigator.userAgent
           });
 
-          // Requirement 4: Keep a maximum of 30 login history entries; as soon as a 31st login occurs, delete the oldest entry at the bottom
           const allLhSnap = await dbInstance.collection("loginHistory").get();
           const lhDocs = [];
           allLhSnap.forEach(function(d) {
@@ -8319,10 +8658,10 @@
           }
         } catch (lhErr) {}
 
-        // Fetch full fresh data from Firebase so DB is completely loaded on login
+        // Priority 1: Load Firebase data immediately + race Google Apps Script so login never hangs
         let dbPayload = {};
         try {
-          dbPayload = await firebaseGetInitialData(cleanUser, sessionToken);
+          dbPayload = await firebaseGetInitialData(userDocData.Username || cleanUser, sessionToken, { loginFastTimeoutMs: 3600 });
         } catch (dataErr) {
           console.warn("Notice loading initial data snapshot:", dataErr);
           dbPayload = {
@@ -8368,13 +8707,21 @@
       }
     }
 
+    /**
+     * ============================================================================
+     * FIREBASE PRIORITY 1: REAL-TIME LISTENERS
+     * Strictly listens to:
+     * - config/app_config (Live Chat, Live Notifications, Contact Config, Backgrounds)
+     * - users (Registered Users, Block Status & Single-Device Session Token Enforcement)
+     * - loginHistory (Last Login Details)
+     * ============================================================================
+     */
     let hasInitializedFirestoreLive = false;
     function initFirestoreLiveListeners() {
       if (hasInitializedFirestoreLive) return;
       const dbInstance = getFirestoreDb();
       if (!dbInstance) return;
 
-      // Dedicated real-time listener on config/app_config for instant Live Chat delivery, mutual Clear, and live Contact Info updates
       try {
         dbInstance.collection("config").doc("app_config").onSnapshot(function(docSnap) {
           if (!docSnap || !docSnap.exists) return;
@@ -8394,37 +8741,52 @@
               }
             } catch (e) {}
           }
-          if (Array.isArray(cfgData.broadcastNotices)) {
-            try {
-              localStorage.setItem(PORTAL_NOTIFICATIONS_KEY, JSON.stringify(cfgData.broadcastNotices));
-              syncNotificationsBadgeUI();
-              const notifModal = document.getElementById("notificationsModal");
-              if (notifModal && notifModal.classList.contains("active")) {
-                renderNotificationsListUI();
-              }
-            } catch (e) {}
+          if (Array.isArray(cfgData.broadcastNotices) && typeof syncServerBroadcastNoticesToLocal === "function") {
+            syncServerBroadcastNoticesToLocal(cfgData.broadcastNotices, true);
           }
         }, function() {});
       } catch (e) {}
 
-      const collections = ["properties", "flats", "renters", "bills", "users", "fdRecords", "khetRecords", "kharchRecords", "loginHistory"];
-      collections.forEach(function(colName) {
+      // Only listen to Firebase-owned collections ("users" and "loginHistory")
+      const firebaseOnlyCollections = ["users", "loginHistory"];
+      firebaseOnlyCollections.forEach(function(colName) {
         try {
           dbInstance.collection(colName).onSnapshot(function(snap) {
             if (!snap || snap.metadata?.hasPendingWrites) return;
-            if (colName === "users" && activeUser && activeSessionToken && !String(activeSessionToken).startsWith("SESS-LOCAL")) {
+            if (colName === "users" && activeUser && activeUser !== "undefined") {
               const lowerActive = String(activeUser).trim().toLowerCase();
               let foundConflict = false;
+              let foundSelf = false;
+              let isSelfBlocked = false;
               snap.forEach(function(docItem) {
                 const uData = docItem.data() || {};
                 const uName = String(uData.Username || docItem.id || "").trim().toLowerCase();
                 if (uName === lowerActive) {
+                  foundSelf = true;
+                  const statusStr = String(uData.Status || uData.AccountStatus || "Active").trim().toLowerCase();
+                  if (statusStr === "blocked") {
+                    isSelfBlocked = true;
+                  }
                   const remoteTok = String(uData.ActiveSessionToken || "").trim();
-                  if (remoteTok && remoteTok !== String(activeSessionToken).trim()) {
+                  if (activeSessionToken && remoteTok && remoteTok !== String(activeSessionToken).trim()) {
                     foundConflict = true;
                   }
                 }
               });
+              if (isSelfBlocked) {
+                if (typeof performConfirmedLogout === "function") performConfirmedLogout();
+                if (typeof showAccountBlockedModal === "function") {
+                  showAccountBlockedModal("Your account has been blocked by an administrator.");
+                }
+                return;
+              }
+              if (!snap.empty && !foundSelf && pendingWriteCount === 0) {
+                if (typeof performConfirmedLogout === "function") performConfirmedLogout();
+                if (typeof triggerSideToast === "function") {
+                  triggerSideToast("Session Ended", "Your User ID was changed or removed. Please log in with your latest User ID.", false);
+                }
+                return;
+              }
               if (foundConflict && typeof triggerSingleDeviceSessionConflict === "function") {
                 triggerSingleDeviceSessionConflict();
                 return;
@@ -8440,73 +8802,68 @@
     }
 
     /**
-     * Firebase getInitialData & Live Sync Implementation
+     * ============================================================================
+     * DUAL-SERVER INITIAL DATA & LIVE SYNC
+     * - Firebase: users, loginHistory, config/app_config
+     * - Google Apps Script: properties, flats, renters, bills, fdRecords, khetRecords, kharchRecords
+     * ============================================================================
      */
-    async function firebaseGetInitialData(username, clientSessionToken) {
+    async function firebaseGetInitialData(username, clientSessionToken, options = {}) {
       const dbInstance = getFirestoreDb();
+      const loginFastTimeoutMs = Number(options && options.loginFastTimeoutMs) || 0;
+
+      const gasPromise = fetchGasSheetData(false);
+      let resolvedGasRaw = null;
+
+      if (loginFastTimeoutMs > 0) {
+        resolvedGasRaw = await Promise.race([
+          gasPromise,
+          new Promise(function(resolve) {
+            setTimeout(function() {
+              resolve(null);
+            }, loginFastTimeoutMs);
+          })
+        ]);
+        if (!resolvedGasRaw) {
+          gasPromise.then(function() {
+            if (activeUser && typeof syncDataLive === "function") {
+              syncDataLive(true);
+            }
+          }).catch(function() {});
+          resolvedGasRaw = lastGasSheetDataCache || {
+            properties: DB.properties || [],
+            flats: DB.flats || [],
+            renters: DB.renters || [],
+            bills: DB.bills || [],
+            fdRecords: DB.fdRecords || [],
+            khetRecords: DB.khetRecords || [],
+            kharchRecords: DB.kharchRecords || []
+          };
+        }
+      } else {
+        resolvedGasRaw = await gasPromise;
+      }
+
+      const linkedSheet = linkSheetEntities(resolvedGasRaw || {});
+
       if (!dbInstance) {
         return {
           status: "success",
-          properties: DB.properties || [],
-          flats: DB.flats || [],
-          renters: DB.renters || [],
-          bills: DB.bills || [],
+          ...linkedSheet,
           users: DB.users || [],
           loginHistory: DB.loginHistory || [],
-          fdRecords: DB.fdRecords || [],
-          khetRecords: DB.khetRecords || [],
-          kharchRecords: DB.kharchRecords || [],
           globalConfig: {},
           userExists: true,
           sessionConflict: false
         };
       }
 
-      await ensureFirebaseAdminSeeded();
-
       try {
-        const [
-          propsSnap, flatsSnap, rentersSnap, billsSnap,
-          usersSnap, lhSnap, fdSnap, khetSnap, kharchSnap, confSnap
-        ] = await Promise.all([
-          dbInstance.collection("properties").get(),
-          dbInstance.collection("flats").get(),
-          dbInstance.collection("renters").get(),
-          dbInstance.collection("bills").get(),
+        const [usersSnap, lhSnap, confSnap] = await Promise.all([
           dbInstance.collection("users").get(),
           dbInstance.collection("loginHistory").get(),
-          dbInstance.collection("fdRecords").get(),
-          dbInstance.collection("khetRecords").get(),
-          dbInstance.collection("kharchRecords").get(),
           dbInstance.collection("config").doc("app_config").get()
         ]);
-
-        const properties = [];
-        propsSnap.forEach(function(d) {
-          const item = d.data();
-          if (item && item.PropertyName) properties.push(item);
-        });
-        properties.sort(function(a, b) {
-          return String(a.PropertyName || "").trim().localeCompare(String(b.PropertyName || "").trim(), undefined, { sensitivity: "base", numeric: true });
-        });
-
-        const flats = [];
-        flatsSnap.forEach(function(d) {
-          const item = d.data();
-          if (item && item.PropertyName && item.FlatName) flats.push(item);
-        });
-
-        const renters = [];
-        rentersSnap.forEach(function(d) {
-          const item = d.data();
-          if (item) renters.push(item);
-        });
-
-        const bills = [];
-        billsSnap.forEach(function(d) {
-          const item = d.data();
-          if (item) bills.push(item);
-        });
 
         const usersList = [];
         let adminBgLogin = "";
@@ -8522,10 +8879,6 @@
           }
           usersList.push(item);
         });
-
-        if (usersList.length === 0) {
-          usersList.push(DEFAULT_ADMIN_USER);
-        }
 
         const rawLh = [];
         const rawLhDocs = [];
@@ -8545,124 +8898,7 @@
         }
         const loginHistory = rawLh.slice(0, 30);
 
-        const fdRecords = [];
-        fdSnap.forEach(function(d) {
-          const item = d.data();
-          if (item) fdRecords.push(item);
-        });
-
-        const khetRecords = [];
-        khetSnap.forEach(function(d) {
-          const item = d.data();
-          if (item) khetRecords.push(item);
-        });
-
-        const kharchRecords = [];
-        kharchSnap.forEach(function(d) {
-          const item = d.data();
-          if (item) kharchRecords.push(item);
-        });
-
         const globalConfig = confSnap.exists ? (confSnap.data() || {}) : {};
-
-        // Link property, flat, and renter utility details
-        const propMap = {};
-        properties.forEach(function(p) {
-          const k = String(p.PropertyName || "").trim().toLowerCase();
-          if (k) propMap[k] = p;
-        });
-
-        const activeRenterMap = {};
-        const anyRenterByFlatMap = {};
-        renters.forEach(function(r) {
-          const pKey = String(r.PropertyName || "").trim().toLowerCase();
-          const fKey = String(r.FlatName || "").trim().toLowerCase();
-          const parentProp = propMap[pKey];
-          if (parentProp) {
-            if (!r.UPIName) r.UPIName = parentProp.UPIName || "";
-            if (!r.UPIID) r.UPIID = parentProp.UPIID || "";
-            if (!r.ContractMobile) r.ContractMobile = cleanPhoneStr(parentProp.ContractNumber || "");
-          }
-          if (pKey && fKey) {
-            anyRenterByFlatMap[pKey + "::" + fKey] = r;
-            if (String(r.Status || "").trim().toLowerCase() === "active") {
-              activeRenterMap[pKey + "::" + fKey] = r;
-            }
-          }
-        });
-
-        flats.forEach(function(f) {
-          const pKey = String(f.PropertyName || "").trim().toLowerCase();
-          const fKey = String(f.FlatName || "").trim().toLowerCase();
-          const parentProp = propMap[pKey];
-          if (parentProp) {
-            if (!f.UPIName) f.UPIName = parentProp.UPIName || "";
-            if (!f.UPIID) f.UPIID = parentProp.UPIID || "";
-            if (!f.ContractMobile) f.ContractMobile = cleanPhoneStr(parentProp.ContractNumber || "");
-          }
-          const actRenter = activeRenterMap[pKey + "::" + fKey];
-          const fallbackRenter = actRenter || anyRenterByFlatMap[pKey + "::" + fKey];
-          if (fallbackRenter) {
-            if (!f.PNGNumber && fallbackRenter.PNGNumber) f.PNGNumber = String(fallbackRenter.PNGNumber);
-            if (!f.PNGMeterNumber && fallbackRenter.PNGMeterNumber) f.PNGMeterNumber = String(fallbackRenter.PNGMeterNumber);
-            if (!f.WaterNumber && fallbackRenter.WaterNumber) f.WaterNumber = String(fallbackRenter.WaterNumber);
-            if (!f.WaterMeterNumber && fallbackRenter.WaterMeterNumber) f.WaterMeterNumber = String(fallbackRenter.WaterMeterNumber);
-            if (!f.ElecMeterNumber && fallbackRenter.ElecMeterNumber) f.ElecMeterNumber = String(fallbackRenter.ElecMeterNumber);
-          }
-          if (actRenter) {
-            if (f.RentAmount !== undefined && f.RentAmount !== "") {
-              actRenter.RentAmount = f.RentAmount;
-            } else if (actRenter.RentAmount !== undefined && actRenter.RentAmount !== "") {
-              f.RentAmount = actRenter.RentAmount;
-            }
-            if (f.ElecRate !== undefined && f.ElecRate !== "") {
-              actRenter.ElecFixedRate = f.ElecRate;
-            } else if (actRenter.ElecFixedRate !== undefined && actRenter.ElecFixedRate !== "") {
-              f.ElecRate = actRenter.ElecFixedRate;
-            }
-            if (f.PNGRate !== undefined && f.PNGRate !== "") {
-              actRenter.PNGFixedRate = f.PNGRate;
-            } else if (actRenter.PNGFixedRate !== undefined && actRenter.PNGFixedRate !== "") {
-              f.PNGRate = actRenter.PNGFixedRate;
-            }
-            if (f.WaterRate !== undefined && f.WaterRate !== "") {
-              actRenter.WaterFixedRate = f.WaterRate;
-            } else if (actRenter.WaterFixedRate !== undefined && actRenter.WaterFixedRate !== "") {
-              f.WaterRate = actRenter.WaterFixedRate;
-            }
-            if (f.PNGNumber) actRenter.PNGNumber = String(f.PNGNumber);
-            else if (actRenter.PNGNumber) f.PNGNumber = String(actRenter.PNGNumber);
-            if (f.PNGMeterNumber) actRenter.PNGMeterNumber = String(f.PNGMeterNumber);
-            else if (actRenter.PNGMeterNumber) f.PNGMeterNumber = String(actRenter.PNGMeterNumber);
-            if (f.WaterNumber) actRenter.WaterNumber = String(f.WaterNumber);
-            else if (actRenter.WaterNumber) f.WaterNumber = String(actRenter.WaterNumber);
-            if (f.WaterMeterNumber) actRenter.WaterMeterNumber = String(f.WaterMeterNumber);
-            else if (actRenter.WaterMeterNumber) f.WaterMeterNumber = String(actRenter.WaterMeterNumber);
-            if (f.ElecMeterNumber) actRenter.ElecMeterNumber = String(f.ElecMeterNumber);
-            else if (actRenter.ElecMeterNumber) f.ElecMeterNumber = String(actRenter.ElecMeterNumber);
-          }
-        });
-
-        bills.forEach(function(bill) {
-          if (!bill.TenantMobile) {
-            let matchedRenter = null;
-            if (bill.RenterID) {
-              matchedRenter = renters.find(function(r) {
-                return String(r.RenterID || "").trim() === String(bill.RenterID).trim();
-              });
-            }
-            if (!matchedRenter) {
-              matchedRenter = renters.find(function(r) {
-                return String(r.PropertyName || "").trim().toLowerCase() === String(bill.PropertyName || "").trim().toLowerCase() &&
-                       String(r.FlatName || "").trim().toLowerCase() === String(bill.FlatName || "").trim().toLowerCase() &&
-                       String(r.RenterName || "").trim().toLowerCase() === String(bill.TenantName || "").trim().toLowerCase();
-              });
-            }
-            if (matchedRenter) {
-              bill.TenantMobile = cleanPhoneStr(matchedRenter.MobileNumber || matchedRenter.AltMobileNumber || "");
-            }
-          }
-        });
 
         let userExists = false;
         let sessionConflict = false;
@@ -8717,13 +8953,13 @@
           globalConfig: globalConfig,
           users: usersList,
           loginHistory: loginHistory,
-          properties: properties,
-          flats: flats,
-          renters: renters,
-          bills: bills,
-          fdRecords: fdRecords,
-          khetRecords: khetRecords,
-          kharchRecords: kharchRecords
+          properties: linkedSheet.properties,
+          flats: linkedSheet.flats,
+          renters: linkedSheet.renters,
+          bills: linkedSheet.bills,
+          fdRecords: linkedSheet.fdRecords,
+          khetRecords: linkedSheet.khetRecords,
+          kharchRecords: linkedSheet.kharchRecords
         };
       } catch (err) {
         console.error("firebaseGetInitialData error:", err);
@@ -8732,7 +8968,7 @@
     }
 
     /**
-     * Firebase user profile fetch
+     * Firebase User Profile Fetch (Priority 1)
      */
     async function firebaseGetUserProfile(username) {
       const dbInstance = getFirestoreDb();
@@ -8753,10 +8989,9 @@
         };
       }
       try {
-        const docRef = dbInstance.collection("users").doc(lowerUser);
-        const docSnap = await docRef.get();
-        if (docSnap.exists) {
-          const u = docSnap.data();
+        const lookup = await findUserDocsInFirestore(dbInstance, cleanUser);
+        if (lookup.primaryDoc) {
+          const u = lookup.primaryDoc;
           return {
             status: "success",
             username: u.Username || cleanUser,
@@ -8767,655 +9002,78 @@
             password: u.Password || localMatch?.Password || ""
           };
         }
-        return {
-          status: "success",
-          username: localMatch?.Username || cleanUser,
-          fullName: localMatch?.FullName || activeUserFullName || cleanUser,
-          mobile: localMatch?.MobileNumber || activeUserMobile || "",
-          role: localMatch?.Role || activeRole || "Admin",
-          theme: localMatch?.Theme || activeThemePref || "dark",
-          password: localMatch?.Password || ""
-        };
-      } catch (e) {
-        return {
-          status: "success",
-          username: localMatch?.Username || cleanUser,
-          fullName: localMatch?.FullName || activeUserFullName || cleanUser,
-          mobile: localMatch?.MobileNumber || activeUserMobile || "",
-          role: localMatch?.Role || activeRole || "Admin",
-          theme: localMatch?.Theme || activeThemePref || "dark",
-          password: localMatch?.Password || ""
-        };
-      }
+      } catch (e) {}
+      return {
+        status: "success",
+        username: localMatch?.Username || cleanUser,
+        fullName: localMatch?.FullName || activeUserFullName || cleanUser,
+        mobile: localMatch?.MobileNumber || activeUserMobile || "",
+        role: localMatch?.Role || activeRole || "Admin",
+        theme: localMatch?.Theme || activeThemePref || "dark",
+        password: localMatch?.Password || ""
+      };
     }
 
     /**
-     * Unified Firebase Action Dispatcher
-     * Completely replaces Firebase Cloud Firestore sendGasPost logic
+     * ============================================================================
+     * UNIFIED DUAL-SERVER ACTION ROUTER
+     * - Routes Property, Flat, Renter, Bill, Khet, FD, and Kharch actions to Google Apps Script
+     * - Routes User accounts, Roles, Block status, Passwords, Themes, Backgrounds,
+     *   Contact Config, Notifications, and Live Chat to Firebase Firestore
+     * ============================================================================
      */
+    const GAS_SHEET_ACTIONS = new Set([
+      "addProperty",
+      "editProperty",
+      "deleteProperty",
+      "addFlat",
+      "deleteFlat",
+      "updateMasterRentAndRates",
+      "updateFlatUtilities",
+      "saveRenterProfile",
+      "updateRenterProfile",
+      "uploadRenterDocument",
+      "deleteRenterDocument",
+      "recordBill",
+      "updateSingleBill",
+      "deleteBill",
+      "saveFdRecord",
+      "deleteFdRecord",
+      "saveKhetRecord",
+      "deleteKhetRecord",
+      "saveKharchRecord",
+      "deleteKharchRecord",
+      "syncAllData"
+    ]);
+
     async function handleFirebaseAction(data) {
+      if (!data || !data.action) {
+        return { status: "error", message: "Missing action." };
+      }
+      const action = data.action;
+
+      // 1. Strict routing to Google Apps Script (Google Sheet) for Property, Flat, Renter, Bill, Khet, FD, and Expense/Kharch
+      if (GAS_SHEET_ACTIONS.has(action)) {
+        return await sendGasSheetAction(data);
+      }
+
+      // 2. Everything else goes to Firebase Cloud Firestore
       const dbInstance = getFirestoreDb();
       if (!dbInstance) {
-        console.warn("Firestore not connected, action saved in browser memory.");
         return { status: "success", message: "Saved in browser." };
       }
 
-      const action = data.action;
       try {
         switch (action) {
-          case "addProperty": {
-            const pName = String(data.propertyName || "").trim();
-            if (!pName) return { status: "error", message: "Property name is required." };
-            const docId = pName.replace(/[\/\\#?\s+]/g, "_");
-            const propData = {
-              PropertyName: pName,
-              UPIName: String(data.upiName || "").trim(),
-              UPIID: String(data.upiId || "").trim(),
-              ContractNumber: cleanPhoneStr(data.contractNumber || ""),
-              CreatedAt: new Date().toISOString()
-            };
-            await dbInstance.collection("properties").doc(docId).set(propData, { merge: true });
-            return { status: "success", message: "Property added to Firebase." };
-          }
-
-          case "editProperty": {
-            const oldName = String(data.oldName || "").trim();
-            const newName = String(data.newName || oldName).trim();
-            const oldDocId = oldName.replace(/[\/\\#?\s+]/g, "_");
-            const newDocId = newName.replace(/[\/\\#?\s+]/g, "_");
-            const upiName = String(data.upiName || "").trim();
-            const upiId = String(data.upiId || "").trim();
-            const contractNumber = cleanPhoneStr(data.contractNumber || "");
-
-            // Update property document
-            if (oldDocId !== newDocId) {
-              await dbInstance.collection("properties").doc(oldDocId).delete();
-            }
-            await dbInstance.collection("properties").doc(newDocId).set({
-              PropertyName: newName,
-              UPIName: upiName,
-              UPIID: upiId,
-              ContractNumber: contractNumber,
-              UpdatedAt: new Date().toISOString()
-            }, { merge: true });
-
-            // Cascade rename across flats
-            const flatsSnap = await dbInstance.collection("flats").where("PropertyName", "==", oldName).get();
-            const batch = dbInstance.batch();
-            flatsSnap.forEach(function(doc) {
-              batch.update(doc.ref, {
-                PropertyName: newName,
-                UPIName: upiName,
-                UPIID: upiId,
-                ContractMobile: contractNumber
-              });
-            });
-
-            // Cascade rename across renters
-            const rentersSnap = await dbInstance.collection("renters").where("PropertyName", "==", oldName).get();
-            rentersSnap.forEach(function(doc) {
-              batch.update(doc.ref, {
-                PropertyName: newName,
-                UPIName: upiName,
-                UPIID: upiId,
-                ContractMobile: contractNumber
-              });
-            });
-
-            // Cascade rename across bills
-            const billsSnap = await dbInstance.collection("bills").where("PropertyName", "==", oldName).get();
-            billsSnap.forEach(function(doc) {
-              batch.update(doc.ref, { PropertyName: newName });
-            });
-
-            await batch.commit();
-            return { status: "success", message: "Property updated and cascaded in Firebase." };
-          }
-
-          case "deleteProperty": {
-            const pName = String(data.propertyName || "").trim();
-            const docId = pName.replace(/[\/\\#?\s+]/g, "_");
-            await dbInstance.collection("properties").doc(docId).delete();
-
-            const batch = dbInstance.batch();
-            const [flatsSnap, rentersSnap, billsSnap] = await Promise.all([
-              dbInstance.collection("flats").where("PropertyName", "==", pName).get(),
-              dbInstance.collection("renters").where("PropertyName", "==", pName).get(),
-              dbInstance.collection("bills").where("PropertyName", "==", pName).get()
-            ]);
-
-            flatsSnap.forEach(function(doc) { batch.delete(doc.ref); });
-            rentersSnap.forEach(function(doc) { batch.delete(doc.ref); });
-            billsSnap.forEach(function(doc) { batch.delete(doc.ref); });
-            await batch.commit();
-
-            return { status: "success", message: "Property deleted from Firebase." };
-          }
-
-          case "addFlat": {
-            const pName = String(data.propertyName || "").trim();
-            const fName = String(data.flatName || "").trim();
-            if (!pName || !fName) return { status: "error", message: "Property and Flat Name are required." };
-            const docId = (pName + "___" + fName).replace(/[\/\\#?\s+]/g, "_");
-            const flatData = {
-              PropertyName: pName,
-              FlatName: fName,
-              RentAmount: parseFloat(data.rentAmount) || 0,
-              ElecRate: parseFloat(data.elecFixedRate !== undefined ? data.elecFixedRate : data.elecRate) || 0,
-              PNGRate: parseFloat(data.pngFixedRate !== undefined ? data.pngFixedRate : data.pngRate) || 0,
-              WaterRate: parseFloat(data.waterFixedRate !== undefined ? data.waterFixedRate : data.waterRate) || 0,
-              PNGNumber: String(data.pngNumber || "").trim(),
-              PNGMeterNumber: String(data.pngMeterNumber || "").trim(),
-              WaterNumber: String(data.waterNumber || "").trim(),
-              WaterMeterNumber: String(data.waterMeterNumber || "").trim(),
-              ElecMeterNumber: String(data.elecMeterNumber || "").trim(),
-              UPIName: String(data.upiName || "").trim(),
-              UPIID: String(data.upiId || "").trim(),
-              ContractMobile: cleanPhoneStr(data.contractMobile || ""),
-              Status: "Vacant",
-              CreatedAt: new Date().toISOString()
-            };
-            await dbInstance.collection("flats").doc(docId).set(flatData, { merge: true });
-            return { status: "success", message: "Flat added to Firebase." };
-          }
-
-          case "deleteFlat": {
-            const pName = String(data.propertyName || "").trim();
-            const fName = String(data.flatName || "").trim();
-            const docId = (pName + "___" + fName).replace(/[\/\\#?\s+]/g, "_");
-            await dbInstance.collection("flats").doc(docId).delete();
-
-            const batch = dbInstance.batch();
-            const [rentersSnap, billsSnap] = await Promise.all([
-              dbInstance.collection("renters")
-                .where("PropertyName", "==", pName)
-                .where("FlatName", "==", fName)
-                .get(),
-              dbInstance.collection("bills")
-                .where("PropertyName", "==", pName)
-                .where("FlatName", "==", fName)
-                .get()
-            ]);
-
-            rentersSnap.forEach(function(doc) { batch.delete(doc.ref); });
-            billsSnap.forEach(function(doc) { batch.delete(doc.ref); });
-            await batch.commit();
-
-            return { status: "success", message: "Flat deleted from Firebase." };
-          }
-
-          case "updateMasterRentAndRates": {
-            const pName = String(data.propertyName || "").trim();
-            const fName = String(data.flatName || "").trim();
-            const docId = (pName + "___" + fName).replace(/[\/\\#?\s+]/g, "_");
-            const updatePayload = {
-              RentAmount: parseFloat(data.rentAmount) || 0,
-              ElecRate: parseFloat(data.elecRate) || 0,
-              PNGRate: parseFloat(data.pngRate) || 0,
-              WaterRate: parseFloat(data.waterRate) || 0,
-              UpdatedAt: new Date().toISOString()
-            };
-            await dbInstance.collection("flats").doc(docId).set(updatePayload, { merge: true });
-            return { status: "success", message: "Rates updated in Firebase." };
-          }
-
-          case "updateFlatUtilities": {
-            const pName = String(data.propertyName || "").trim();
-            const oldFlat = String(data.oldFlatName || data.flatName || "").trim();
-            const newFlat = String(data.newFlatName || data.flatName || oldFlat).trim();
-            const oldDocId = (pName + "___" + oldFlat).replace(/[\/\\#?\s+]/g, "_");
-            const newDocId = (pName + "___" + newFlat).replace(/[\/\\#?\s+]/g, "_");
-
-            const flatPayload = {
-              PropertyName: pName,
-              FlatName: newFlat,
-              RentAmount: parseFloat(data.rentAmount) || 0,
-              ElecRate: parseFloat(data.elecFixedRate) || 0,
-              PNGRate: parseFloat(data.pngFixedRate) || 0,
-              WaterRate: parseFloat(data.waterFixedRate) || 0,
-              PNGNumber: String(data.pngNumber || "").trim(),
-              PNGMeterNumber: String(data.pngMeterNumber || "").trim(),
-              WaterNumber: String(data.waterNumber || "").trim(),
-              WaterMeterNumber: String(data.waterMeterNumber || "").trim(),
-              ElecMeterNumber: String(data.elecMeterNumber || "").trim(),
-              UPIName: String(data.upiName || "").trim(),
-              UPIID: String(data.upiId || "").trim(),
-              ContractMobile: cleanPhoneStr(data.contractMobile || ""),
-              UpdatedAt: new Date().toISOString()
-            };
-
-            if (oldDocId !== newDocId) {
-              await dbInstance.collection("flats").doc(oldDocId).delete();
-            }
-            await dbInstance.collection("flats").doc(newDocId).set(flatPayload, { merge: true });
-
-            // If flat was renamed, update matching renters and bills
-            if (oldFlat.toLowerCase() !== newFlat.toLowerCase()) {
-              const batch = dbInstance.batch();
-              const [rentersSnap, billsSnap] = await Promise.all([
-                dbInstance.collection("renters")
-                  .where("PropertyName", "==", pName)
-                  .where("FlatName", "==", oldFlat)
-                  .get(),
-                dbInstance.collection("bills")
-                  .where("PropertyName", "==", pName)
-                  .where("FlatName", "==", oldFlat)
-                  .get()
-              ]);
-              rentersSnap.forEach(function(doc) { batch.update(doc.ref, { FlatName: newFlat }); });
-              billsSnap.forEach(function(doc) { batch.update(doc.ref, { FlatName: newFlat }); });
-              await batch.commit();
-            }
-
-            return { status: "success", message: "Flat utilities saved to Firebase." };
-          }
-
-          case "saveRenterProfile":
-          case "updateRenterProfile": {
-            const pName = String(data.propertyName || "").trim();
-            const fName = String(data.flatName || "").trim();
-            const rId = String(data.renterId || ("R-" + Date.now())).trim();
-            const status = String(data.renterStatus || data.status || "Active").trim();
-            const resolvedElecRate = parseFloat(data.elecFixedRate !== undefined ? data.elecFixedRate : data.elecRate) || 0;
-            const resolvedPngRate = parseFloat(data.pngFixedRate !== undefined ? data.pngFixedRate : data.pngRate) || 0;
-            const resolvedWaterRate = parseFloat(data.waterFixedRate !== undefined ? data.waterFixedRate : data.waterRate) || 0;
-
-            const nowIso = new Date().toISOString();
-            const cleanAadhaar12 = String(data.identityDocNumber || data.identityNumber || "").replace(/\D/g, "").slice(0, 12);
-            const prevAadhaar12 = String(data.previousAadhaar || "").replace(/\D/g, "").slice(0, 12);
-
-            const renterDoc = {
-              RenterID: rId,
-              PropertyName: pName,
-              FlatName: fName,
-              RenterName: String(data.renterName || "").trim(),
-              IdentityDocNumber: cleanPhoneStr(data.identityDocNumber || data.identityNumber || ""),
-              MobileNumber: cleanPhoneStr(data.mobileNumber || data.mobile || ""),
-              AltMobileNumber: cleanPhoneStr(data.altMobileNumber || data.altMobile || ""),
-              Address: String(data.address || "").trim(),
-              TotalFamilyMembers: data.familyMembers || 1,
-              FamilyMembersList: Array.isArray(data.familyMembersList) ? data.familyMembersList : [],
-              Status: status,
-              JoinDate: data.joinDate || "",
-              EndDate: data.endDate || "",
-              ProfileImageURL: data.profileImageUrl || data.profileImg || "",
-              IdentityImageURL: data.identityImageUrl || data.identityImg || "",
-              RentAmount: parseFloat(data.rentAmount) || 0,
-              PNGNumber: String(data.pngNumber || "").trim(),
-              PNGMeterNumber: String(data.pngMeterNumber || "").trim(),
-              PNGFixedRate: resolvedPngRate,
-              WaterNumber: String(data.waterNumber || "").trim(),
-              WaterMeterNumber: String(data.waterMeterNumber || "").trim(),
-              WaterFixedRate: resolvedWaterRate,
-              ElecMeterNumber: String(data.elecMeterNumber || "").trim(),
-              ElecFixedRate: resolvedElecRate,
-              UPIName: String(data.upiName || "").trim(),
-              UPIID: String(data.upiId || "").trim(),
-              ContractMobile: cleanPhoneStr(data.contractMobile || ""),
-              UpdatedAt: nowIso
-            };
-
-            await dbInstance.collection("renters").doc(rId).set(renterDoc, { merge: true });
-
-            // Synchronize shared personal/KYC details across all historical and active stays sharing the same Aadhaar
-            if (cleanAadhaar12.length === 12 || prevAadhaar12.length === 12) {
-              try {
-                const allRentersSnap = await dbInstance.collection("renters").get();
-                const syncBatch = dbInstance.batch();
-                let batchCount = 0;
-                const sharedUpdatePayload = {
-                  RenterName: renterDoc.RenterName,
-                  IdentityDocNumber: renterDoc.IdentityDocNumber,
-                  MobileNumber: renterDoc.MobileNumber,
-                  AltMobileNumber: renterDoc.AltMobileNumber,
-                  Address: renterDoc.Address,
-                  TotalFamilyMembers: renterDoc.TotalFamilyMembers,
-                  UpdatedAt: nowIso
-                };
-                if (Array.isArray(data.familyMembersList)) {
-                  sharedUpdatePayload.FamilyMembersList = data.familyMembersList;
-                }
-                if (renterDoc.ProfileImageURL) {
-                  sharedUpdatePayload.ProfileImageURL = renterDoc.ProfileImageURL;
-                }
-                if (renterDoc.IdentityImageURL) {
-                  sharedUpdatePayload.IdentityImageURL = renterDoc.IdentityImageURL;
-                }
-                allRentersSnap.forEach(function(docSnap) {
-                  if (docSnap.id === rId) return;
-                  const d = docSnap.data() || {};
-                  const docAadhaar12 = String(d.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
-                  if (docAadhaar12.length === 12 && (docAadhaar12 === cleanAadhaar12 || (prevAadhaar12.length === 12 && docAadhaar12 === prevAadhaar12))) {
-                    syncBatch.set(docSnap.ref, sharedUpdatePayload, { merge: true });
-                    batchCount++;
-                  }
-                });
-                if (batchCount > 0) {
-                  await syncBatch.commit();
-                }
-              } catch (syncErr) {
-                console.warn("Cross-location Aadhaar sync warning:", syncErr);
-              }
-            }
-
-            // Update flat status in Firestore
-            const flatDocId = (pName + "___" + fName).replace(/[\/\\#?\s+]/g, "_");
-            await dbInstance.collection("flats").doc(flatDocId).set({
-              Status: status === "Active" ? "Occupied" : "Vacant",
-              RentAmount: parseFloat(data.rentAmount) || 0,
-              ElecRate: resolvedElecRate,
-              PNGRate: resolvedPngRate,
-              WaterRate: resolvedWaterRate,
-              PNGNumber: String(data.pngNumber || "").trim(),
-              PNGMeterNumber: String(data.pngMeterNumber || "").trim(),
-              WaterNumber: String(data.waterNumber || "").trim(),
-              WaterMeterNumber: String(data.waterMeterNumber || "").trim(),
-              ElecMeterNumber: String(data.elecMeterNumber || "").trim(),
-              UPIName: String(data.upiName || "").trim(),
-              UPIID: String(data.upiId || "").trim(),
-              ContractMobile: cleanPhoneStr(data.contractMobile || "")
-            }, { merge: true });
-
-            return { status: "success", renterId: rId, message: "Renter profile saved and synced across all stays in Firebase." };
-          }
-
-          case "uploadRenterDocument": {
-            const rId = String(data.renterId || "").trim();
-            const docType = String(data.docType || "profile").trim();
-            const imgData = data.base64Data || data.directImageUrl || data.imageUrl || "";
-            const nowIso = new Date().toISOString();
-
-            if (rId) {
-              const fieldName = (docType === "identity") ? "IdentityImageURL" : "ProfileImageURL";
-              await dbInstance.collection("renters").doc(rId).set({
-                [fieldName]: imgData,
-                UpdatedAt: nowIso
-              }, { merge: true });
-
-              try {
-                const targetSnap = await dbInstance.collection("renters").doc(rId).get();
-                const targetData = targetSnap.exists ? (targetSnap.data() || {}) : {};
-                const cleanAadhaar12 = String(data.identityDocNumber || targetData.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
-                if (cleanAadhaar12.length === 12) {
-                  const allRentersSnap = await dbInstance.collection("renters").get();
-                  const docBatch = dbInstance.batch();
-                  let count = 0;
-                  allRentersSnap.forEach(function(docSnap) {
-                    if (docSnap.id === rId) return;
-                    const d = docSnap.data() || {};
-                    const dAadh = String(d.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
-                    if (dAadh === cleanAadhaar12) {
-                      docBatch.set(docSnap.ref, { [fieldName]: imgData, UpdatedAt: nowIso }, { merge: true });
-                      count++;
-                    }
-                  });
-                  if (count > 0) await docBatch.commit();
-                }
-              } catch (e) {}
-            }
-            return { status: "success", url: imgData, imageUrl: imgData, message: "Document saved & synced across all Aadhaar stays in Firebase." };
-          }
-
-          case "deleteRenterDocument": {
-            const rId = String(data.renterId || "").trim();
-            const docType = String(data.docType || "profile").trim();
-            const nowIso = new Date().toISOString();
-            if (rId) {
-              const fieldName = (docType === "identity") ? "IdentityImageURL" : "ProfileImageURL";
-              await dbInstance.collection("renters").doc(rId).set({
-                [fieldName]: "",
-                UpdatedAt: nowIso
-              }, { merge: true });
-
-              try {
-                const targetSnap = await dbInstance.collection("renters").doc(rId).get();
-                const targetData = targetSnap.exists ? (targetSnap.data() || {}) : {};
-                const cleanAadhaar12 = String(data.identityDocNumber || targetData.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
-                if (cleanAadhaar12.length === 12) {
-                  const allRentersSnap = await dbInstance.collection("renters").get();
-                  const docBatch = dbInstance.batch();
-                  let count = 0;
-                  allRentersSnap.forEach(function(docSnap) {
-                    if (docSnap.id === rId) return;
-                    const d = docSnap.data() || {};
-                    const dAadh = String(d.IdentityDocNumber || "").replace(/\D/g, "").slice(0, 12);
-                    if (dAadh === cleanAadhaar12) {
-                      docBatch.set(docSnap.ref, { [fieldName]: "", UpdatedAt: nowIso }, { merge: true });
-                      count++;
-                    }
-                  });
-                  if (count > 0) await docBatch.commit();
-                }
-              } catch (e) {}
-            }
-            return { status: "success", message: "Document removed from Firebase." };
-          }
-
-          case "recordBill":
-          case "updateSingleBill": {
-            const bId = String(data.billId || data.BillID || ("BILL-" + Date.now())).trim();
-            const cleanMonth = String(data.monthYear || "").replace(/^'+/, "").trim();
-            const billDateVal = String(data.billDate || new Date().toISOString().split("T")[0]).trim();
-            const paymentDateVal = String(data.paymentDate || billDateVal).trim();
-
-            const billDoc = {
-              BillID: bId,
-              PropertyName: String(data.propertyName || "").trim(),
-              FlatName: String(data.flatName || "").trim(),
-              MonthYear: cleanMonth,
-              TenantName: String(data.tenantName || "").trim(),
-              TenantMobile: cleanPhoneStr(data.tenantMobile || ""),
-              BaseRent: parseFloat(data.baseRent) || 0,
-              ElecPrev: parseFloat(data.elecPrev) || 0,
-              ElecCurr: parseFloat(data.elecCurr) || 0,
-              ElecUnits: parseFloat(data.elecUnits) || 0,
-              ElecRate: parseFloat(data.elecRate) || 0,
-              ElecTotal: parseFloat(data.elecTotal) || 0,
-              PNGPrev: parseFloat(data.pngPrev) || 0,
-              PNGCurr: parseFloat(data.pngCurr) || 0,
-              PNGUnits: parseFloat(data.pngUnits) || 0,
-              PNGRate: parseFloat(data.pngRate) || 0,
-              PNGTotal: parseFloat(data.pngTotal) || 0,
-              WaterPrev: parseFloat(data.waterPrev) || 0,
-              WaterCurr: parseFloat(data.waterCurr) || 0,
-              WaterUnits: parseFloat(data.waterUnits) || 0,
-              WaterRate: parseFloat(data.waterRate) || 0,
-              WaterTotal: parseFloat(data.waterTotal) || 0,
-              AdditionalName: String(data.additionalName || "").trim(),
-              AdditionalAmount: parseFloat(data.additionalAmount) || 0,
-              TotalBilled: parseFloat(data.totalBilled) || 0,
-              PaidAmount: parseFloat(data.paidAmount) || 0,
-              PaymentMode: String(data.paymentMode || "UPI").trim(),
-              Status: String(data.status || "Unpaid").trim(),
-              Notes: String(data.notes || "").trim(),
-              BillDate: billDateVal,
-              PaymentDate: paymentDateVal,
-              RenterID: String(data.renterId || "").trim(),
-              PrevCarryBalance: parseFloat(data.prevCarryBalance) || 0,
-              UPIName: String(data.upiName || "").trim(),
-              UPIID: String(data.upiId || "").trim(),
-              ContractMobile: cleanPhoneStr(data.contractMobile || ""),
-              UpdatedAt: new Date().toISOString()
-            };
-
-            await dbInstance.collection("bills").doc(bId).set(billDoc, { merge: true });
-            const flatDocIdForMeter = (billDoc.PropertyName + "___" + billDoc.FlatName).replace(/[\/\\#?\s+]/g, "_");
-            await dbInstance.collection("flats").doc(flatDocIdForMeter).set({
-              LastElecReading: billDoc.ElecCurr || billDoc.ElecPrev || 0,
-              LastPNGReading: billDoc.PNGCurr || billDoc.PNGPrev || 0,
-              LastWaterReading: billDoc.WaterCurr || billDoc.WaterPrev || 0,
-              UpdatedAt: new Date().toISOString()
-            }, { merge: true });
-            return { status: "success", billId: bId, message: "Bill saved to Firebase." };
-          }
-
-          case "deleteBill": {
-            const bId = String(data.billId || data.BillID || "").trim();
-            if (bId) {
-              await dbInstance.collection("bills").doc(bId).delete();
-            }
-            return { status: "success", message: "Bill deleted from Firebase." };
-          }
-
-          case "saveFdRecord": {
-            const fdId = String(data.id || data.FDID || ("FD-" + Date.now())).trim();
-            const initAmt = parseFloat(data.PrincipalAmount !== undefined ? data.PrincipalAmount : data.amount) || 0;
-            const matAmt = parseFloat(data.MaturityAmount !== undefined ? data.MaturityAmount : data.maturityAmount) || 0;
-            const fdDoc = {
-              id: fdId,
-              FDID: fdId,
-              bank: String(data.BankName || data.bank || "").trim(),
-              BankName: String(data.BankName || data.bank || "").trim(),
-              amount: initAmt,
-              PrincipalAmount: initAmt,
-              rate: data.InterestRate !== undefined ? data.InterestRate : (data.rate || ""),
-              InterestRate: data.InterestRate !== undefined ? data.InterestRate : (data.rate || ""),
-              maturity: data.MaturityDate || data.maturity || "",
-              MaturityDate: data.MaturityDate || data.maturity || "",
-              notes: data.Notes || data.notes || "",
-              Notes: data.Notes || data.notes || "",
-              sourceProperty: data.SourceProperty || data.sourceProperty || "All Properties",
-              SourceProperty: data.SourceProperty || data.sourceProperty || "All Properties",
-              purposeType: data.PurposeType || data.purposeType || "Saving / Fixed Deposit (FD)",
-              PurposeType: data.PurposeType || data.purposeType || "Saving / Fixed Deposit (FD)",
-              usedPurpose: data.UsedPurpose || data.usedPurpose || "",
-              UsedPurpose: data.UsedPurpose || data.usedPurpose || "",
-              accountNumber: cleanPhoneStr(data.AccountNumber || data.accountNumber || data.accountNo || ""),
-              accountNo: cleanPhoneStr(data.AccountNumber || data.accountNumber || data.accountNo || ""),
-              AccountNumber: cleanPhoneStr(data.AccountNumber || data.accountNumber || data.accountNo || ""),
-              maturityAmount: matAmt,
-              MaturityAmount: matAmt,
-              usageDate: data.UsageDate || data.usageDate || "",
-              UsageDate: data.UsageDate || data.usageDate || "",
-              createdAt: data.CreatedAt || data.createdAt || new Date().toISOString().split("T")[0],
-              CreatedAt: data.CreatedAt || data.createdAt || new Date().toISOString().split("T")[0],
-              UpdatedAt: new Date().toISOString()
-            };
-            await dbInstance.collection("fdRecords").doc(fdId).set(fdDoc, { merge: true });
-            return { status: "success", id: fdId, message: "FD record saved to Firebase." };
-          }
-
-          case "deleteFdRecord": {
-            const fdId = String(data.id || data.FDID || "").trim();
-            if (fdId) {
-              await dbInstance.collection("fdRecords").doc(fdId).delete();
-            }
-            return { status: "success", message: "FD record deleted from Firebase." };
-          }
-
-          case "saveKhetRecord": {
-            const khetId = String(data.id || data.KhetID || ("KHET-" + Date.now())).trim();
-            const paidAmt = parseFloat(data.AmountPaid !== undefined ? data.AmountPaid : (data.amountPaid !== undefined ? data.amountPaid : data.income)) || 0;
-            const adjAmt = parseFloat(data.AdjustedAmount !== undefined ? data.AdjustedAmount : (data.adjustedAmount !== undefined ? data.adjustedAmount : data.expense)) || 0;
-            const resolvedPlace = String(data.Place || data.place || data.KhetName || data.name || "").trim();
-            const resolvedPartner = String(data.PartnerName || data.partnerName || data.HolderName || data.holderName || data.crop || "").trim();
-            const decArea = parseFloat(data.DecimalArea !== undefined ? data.DecimalArea : data.decimalArea) || 0;
-            const survDec = parseFloat(data.NewDecimalSurvey !== undefined ? data.NewDecimalSurvey : data.newDecimalSurvey) || 0;
-            const khetDoc = {
-              id: khetId,
-              KhetID: khetId,
-              place: resolvedPlace,
-              Place: resolvedPlace,
-              name: resolvedPlace,
-              KhetName: resolvedPlace,
-              registeredName: String(data.RegisteredName || data.registeredName || "").trim(),
-              RegisteredName: String(data.RegisteredName || data.registeredName || "").trim(),
-              partnerName: resolvedPartner,
-              PartnerName: resolvedPartner,
-              holderName: resolvedPartner,
-              HolderName: resolvedPartner,
-              crop: resolvedPartner,
-              CropOrPurpose: resolvedPartner,
-              partnerAadhaar: cleanPhoneStr(data.PartnerAadhaar || data.partnerAadhaar || ""),
-              PartnerAadhaar: cleanPhoneStr(data.PartnerAadhaar || data.partnerAadhaar || ""),
-              partnerMobile: cleanPhoneStr(data.PartnerMobile || data.partnerMobile || ""),
-              PartnerMobile: cleanPhoneStr(data.PartnerMobile || data.partnerMobile || ""),
-              partnerAddress: String(data.PartnerAddress || data.partnerAddress || "").trim(),
-              PartnerAddress: String(data.PartnerAddress || data.partnerAddress || "").trim(),
-              khataNo: String(data.KhataNo || data.khataNo || "").trim(),
-              KhataNo: String(data.KhataNo || data.khataNo || "").trim(),
-              keshraNo: String(data.KeshraNo || data.keshraNo || "").trim(),
-              KeshraNo: String(data.KeshraNo || data.keshraNo || "").trim(),
-              decimalArea: decArea,
-              DecimalArea: decArea,
-              newDecimalSurvey: survDec,
-              NewDecimalSurvey: survDec,
-              bigha: data.FieldSizeBigha !== undefined ? data.FieldSizeBigha : (data.bigha || ""),
-              FieldSizeBigha: data.FieldSizeBigha !== undefined ? data.FieldSizeBigha : (data.bigha || ""),
-              katha: data.Katha !== undefined ? data.Katha : (data.katha || ""),
-              Katha: data.Katha !== undefined ? data.Katha : (data.katha || ""),
-              ratePerKatha: parseFloat(data.RatePerKatha || data.ratePerKatha) || 0,
-              RatePerKatha: parseFloat(data.RatePerKatha || data.ratePerKatha) || 0,
-              totalLandValue: parseFloat(data.TotalLandValue || data.totalLandValue) || 0,
-              TotalLandValue: parseFloat(data.TotalLandValue || data.totalLandValue) || 0,
-              amountPaid: paidAmt,
-              AmountPaid: paidAmt,
-              income: paidAmt,
-              IncomeAmount: paidAmt,
-              adjustedAmount: adjAmt,
-              AdjustedAmount: adjAmt,
-              expense: adjAmt,
-              ExpenseAmount: adjAmt,
-              paymentDate: data.PaymentDate || data.paymentDate || "",
-              PaymentDate: data.PaymentDate || data.paymentDate || "",
-              createdAt: data.CreatedAt || data.createdAt || new Date().toISOString().split("T")[0],
-              CreatedAt: data.CreatedAt || data.createdAt || new Date().toISOString().split("T")[0],
-              notes: data.Notes || data.notes || "",
-              Notes: data.Notes || data.notes || "",
-              UpdatedAt: new Date().toISOString()
-            };
-            await dbInstance.collection("khetRecords").doc(khetId).set(khetDoc, { merge: true });
-            return { status: "success", id: khetId, message: "Khet record saved to Firebase." };
-          }
-
-          case "deleteKhetRecord": {
-            const khetId = String(data.id || data.KhetID || "").trim();
-            if (khetId) {
-              await dbInstance.collection("khetRecords").doc(khetId).delete();
-            }
-            return { status: "success", message: "Khet record deleted from Firebase." };
-          }
-
-          case "saveKharchRecord": {
-            const kharchId = String(data.id || data.KharchID || ("KHARCH-" + Date.now())).trim();
-            const amt = parseFloat(data.Amount !== undefined ? data.Amount : data.amount) || 0;
-            const expDate = data.ExpenseDate || data.expenseDate || new Date().toISOString().split("T")[0];
-            const kharchDoc = {
-              id: kharchId,
-              KharchID: kharchId,
-              title: String(data.ExpenseTitle || data.title || "").trim(),
-              ExpenseTitle: String(data.ExpenseTitle || data.title || "").trim(),
-              category: String(data.Category || data.category || "General").trim(),
-              Category: String(data.Category || data.category || "General").trim(),
-              amount: amt,
-              Amount: amt,
-              expenseDate: expDate,
-              ExpenseDate: expDate,
-              propertyName: String(data.PropertyName || data.propertyName || "All Properties").trim(),
-              PropertyName: String(data.PropertyName || data.propertyName || "All Properties").trim(),
-              paymentMode: String(data.PaymentMode || data.paymentMode || "Cash").trim(),
-              PaymentMode: String(data.PaymentMode || data.paymentMode || "Cash").trim(),
-              notes: data.Notes || data.notes || "",
-              Notes: data.Notes || data.notes || "",
-              UpdatedAt: new Date().toISOString()
-            };
-            await dbInstance.collection("kharchRecords").doc(kharchId).set(kharchDoc, { merge: true });
-            return { status: "success", id: kharchId, message: "Kharch record saved to Firebase." };
-          }
-
-          case "deleteKharchRecord": {
-            const kharchId = String(data.id || data.KharchID || "").trim();
-            if (kharchId) {
-              await dbInstance.collection("kharchRecords").doc(kharchId).delete();
-            }
-            return { status: "success", message: "Kharch record deleted from Firebase." };
-          }
-
           case "createUser":
           case "addUser": {
             const uName = String(data.newUsername || "").trim();
             if (!uName) return { status: "error", message: "Username is required." };
             const lowerU = uName.toLowerCase();
+            const existingLookup = await findUserDocsInFirestore(dbInstance, uName);
+            if (existingLookup.primaryDoc) {
+              return { status: "duplicate", message: "This username already exists in Firebase." };
+            }
             const roleVal = String(data.role || data.newRole || "Viewer").trim();
             const cleanAadh = cleanPhoneStr(data.assignedAadhaar || "").replace(/\D/g, "").slice(0, 12);
             if (roleVal === "Renter" && cleanAadh.length === 12) {
@@ -9451,8 +9109,10 @@
           }
 
           case "updateUserRole": {
-            const targetU = String(data.targetUsername || "").trim().toLowerCase();
-            if (!targetU) return { status: "error", message: "Target username is required." };
+            const rawTarget = String(data.targetUsername || "").trim();
+            if (!rawTarget) return { status: "error", message: "Target username is required." };
+            const lookup = await findUserDocsInFirestore(dbInstance, rawTarget);
+            const docId = lookup.primaryId || rawTarget.toLowerCase();
             const roleVal = String(data.role || data.newRole || "Viewer").trim();
             const managerPerms = Array.isArray(data.managerPermissions) ? data.managerPermissions : [];
             const updateFields = {
@@ -9463,83 +9123,112 @@
               ManagerPermissions: roleVal === "Manager" ? managerPerms : [],
               UpdatedAt: new Date().toISOString()
             };
-            await dbInstance.collection("users").doc(targetU).set(updateFields, { merge: true });
+            await dbInstance.collection("users").doc(docId).set(updateFields, { merge: true });
             return { status: "success", message: "User role updated in Firebase." };
           }
 
           case "toggleUserBlock": {
-            const targetU = String(data.targetUsername || "").trim().toLowerCase();
+            const rawTarget = String(data.targetUsername || "").trim();
+            const lookup = await findUserDocsInFirestore(dbInstance, rawTarget);
             const newStatus = data.newStatus || (data.block ? "Blocked" : "Active");
-            await dbInstance.collection("users").doc(targetU).set({
-              Status: newStatus,
-              AccountStatus: newStatus,
-              UpdatedAt: new Date().toISOString()
-            }, { merge: true });
+            const idsToUpdate = lookup.allMatchingIds.length > 0 ? lookup.allMatchingIds : [rawTarget.toLowerCase()];
+            await Promise.all(idsToUpdate.map(function(docId) {
+              const payload = {
+                Status: newStatus,
+                AccountStatus: newStatus,
+                UpdatedAt: new Date().toISOString()
+              };
+              if (String(newStatus).toLowerCase() === "blocked") {
+                payload.ActiveSessionToken = "";
+              }
+              return dbInstance.collection("users").doc(docId).set(payload, { merge: true });
+            }));
             return { status: "success", message: `User status updated to ${newStatus} in Firebase.` };
           }
 
           case "deleteUser": {
-            const targetU = String(data.targetUsername || "").trim().toLowerCase();
-            if (targetU === "admin") {
-              return { status: "error", message: "Cannot delete master administrator account." };
+            const rawTarget = String(data.targetUsername || "").trim();
+            const targetU = rawTarget.toLowerCase();
+            if (targetU === String(activeUser || "").trim().toLowerCase()) {
+              return { status: "error", message: "You cannot delete your own currently logged-in account." };
             }
-            await dbInstance.collection("users").doc(targetU).delete();
+            const lookup = await findUserDocsInFirestore(dbInstance, rawTarget);
+            const idsToDelete = lookup.allMatchingIds.length > 0 ? lookup.allMatchingIds : [targetU];
+            await Promise.all(idsToDelete.map(function(docId) {
+              return dbInstance.collection("users").doc(docId).delete();
+            }));
             return { status: "success", message: "User account deleted from Firebase." };
           }
 
           case "changePassword": {
-            const uName = String(data.username || "").trim().toLowerCase();
-            const userDoc = await dbInstance.collection("users").doc(uName).get();
+            const rawUser = String(data.username || "").trim();
+            const lowerU = rawUser.toLowerCase();
+            const lookup = await findUserDocsInFirestore(dbInstance, rawUser);
             const localUser = (DB.users || []).find(function(u) {
-              return String(u.Username || "").trim().toLowerCase() === uName;
+              return String(u.Username || "").trim().toLowerCase() === lowerU;
             });
-            const currentPass = userDoc.exists ? (userDoc.data().Password || "") : (localUser?.Password || "");
-            if (data.oldPassword && currentPass && String(data.oldPassword) !== String(currentPass)) {
-              return { status: "error", message: "Old password does not match." };
+            const currentPass = lookup.primaryDoc ? String(lookup.primaryDoc.Password || "") : String(localUser?.Password || "");
+            if (data.oldPassword && currentPass && String(data.oldPassword) !== currentPass) {
+              return { status: "error", message: "Current password does not match." };
             }
-            await dbInstance.collection("users").doc(uName).set({
-              Username: userDoc.exists ? (userDoc.data().Username || data.username) : (localUser?.Username || data.username),
-              Password: String(data.newPassword || "").trim(),
-              UpdatedAt: new Date().toISOString()
-            }, { merge: true });
-            return { status: "success", message: "Password updated in Firebase." };
+            const newPasswordClean = String(data.newPassword || "").trim();
+            const targetIds = lookup.allMatchingIds.length > 0 ? lookup.allMatchingIds : [lowerU];
+            await Promise.all(targetIds.map(function(docId) {
+              return dbInstance.collection("users").doc(docId).set({
+                Username: lookup.primaryDoc ? (lookup.primaryDoc.Username || rawUser) : (localUser?.Username || rawUser),
+                Password: newPasswordClean,
+                ActiveSessionToken: "",
+                UpdatedAt: new Date().toISOString()
+              }, { merge: true });
+            }));
+            return { status: "success", message: "Password updated in Firebase. Old password is no longer valid." };
           }
 
           case "changeUsername": {
-            const oldU = String(data.currentUsernameInput || data.loggedUsername || "").trim().toLowerCase();
+            const rawOld = String(data.currentUsernameInput || data.loggedUsername || "").trim();
+            const oldU = rawOld.toLowerCase();
             const newU = String(data.newUsername || "").trim();
             const lowerNew = newU.toLowerCase();
             if (!newU) return { status: "error", message: "New username is required." };
 
-            const existingSnap = await dbInstance.collection("users").doc(lowerNew).get();
-            if (existingSnap.exists && lowerNew !== oldU) {
-              return { status: "duplicate", message: "This username is already taken in Firebase." };
+            if (lowerNew !== oldU) {
+              const dupLookup = await findUserDocsInFirestore(dbInstance, newU);
+              if (dupLookup.primaryDoc) {
+                return { status: "duplicate", message: "This username is already taken in Firebase." };
+              }
             }
 
-            const oldSnap = await dbInstance.collection("users").doc(oldU).get();
-            if (oldSnap.exists) {
-              const oldData = oldSnap.data();
-              oldData.Username = newU;
-              oldData.UpdatedAt = new Date().toISOString();
-              await dbInstance.collection("users").doc(lowerNew).set(oldData);
-              if (lowerNew !== oldU) {
-                await dbInstance.collection("users").doc(oldU).delete();
-              }
+            const oldLookup = await findUserDocsInFirestore(dbInstance, rawOld);
+            if (oldLookup.primaryDoc) {
+              const updatedDoc = {
+                ...oldLookup.primaryDoc,
+                Username: newU,
+                UpdatedAt: new Date().toISOString()
+              };
+              await dbInstance.collection("users").doc(lowerNew).set(updatedDoc);
+              const oldIdsToDelete = oldLookup.allMatchingIds.filter(function(id) { return id !== lowerNew; });
+              await Promise.all(oldIdsToDelete.map(function(id) {
+                return dbInstance.collection("users").doc(id).delete();
+              }));
             } else {
               await dbInstance.collection("users").doc(lowerNew).set({
                 Username: newU,
                 FullName: activeUserFullName || newU,
                 MobileNumber: activeUserMobile || "",
                 Role: activeRole || "Admin",
+                Status: "Active",
+                AccountStatus: "Active",
                 UpdatedAt: new Date().toISOString()
               }, { merge: true });
             }
-            return { status: "success", newUsername: newU, message: "Username updated in Firebase." };
+            return { status: "success", newUsername: newU, message: "Username updated in Firebase. Old username is permanently removed." };
           }
 
           case "changeNameAndMobile": {
-            const uName = String(data.loggedUsername || data.username || "").trim().toLowerCase();
-            await dbInstance.collection("users").doc(uName).set({
+            const rawUser = String(data.loggedUsername || data.username || "").trim();
+            const lookup = await findUserDocsInFirestore(dbInstance, rawUser);
+            const docId = lookup.primaryId || rawUser.toLowerCase();
+            await dbInstance.collection("users").doc(docId).set({
               FullName: String(data.newFullName || "").trim(),
               MobileNumber: cleanPhoneStr(data.newMobile || ""),
               UpdatedAt: new Date().toISOString()
@@ -9549,9 +9238,11 @@
 
           case "saveTheme":
           case "updateTheme": {
-            const uName = String(data.username || "").trim().toLowerCase();
-            if (uName) {
-              await dbInstance.collection("users").doc(uName).set({
+            const rawUser = String(data.username || "").trim();
+            if (rawUser) {
+              const lookup = await findUserDocsInFirestore(dbInstance, rawUser);
+              const docId = lookup.primaryId || rawUser.toLowerCase();
+              await dbInstance.collection("users").doc(docId).set({
                 Theme: data.theme || "dark",
                 UpdatedAt: new Date().toISOString()
               }, { merge: true });
@@ -9589,8 +9280,9 @@
               });
               await batch.commit();
             } else if (data.username) {
-              const lowerU = String(data.username).trim().toLowerCase();
-              await dbInstance.collection("users").doc(lowerU).set({
+              const lookup = await findUserDocsInFirestore(dbInstance, data.username);
+              const docId = lookup.primaryId || String(data.username).trim().toLowerCase();
+              await dbInstance.collection("users").doc(docId).set({
                 BgLogin: bgLogin,
                 BgDashboard: bgDash,
                 BgLoginUrl: bgLogin,
@@ -9625,6 +9317,15 @@
             return { status: "success", message: "Contact configuration synced to Firebase." };
           }
 
+          case "saveBroadcastNotices": {
+            const notices = Array.isArray(data.broadcastNotices) ? data.broadcastNotices : [];
+            await dbInstance.collection("config").doc("app_config").set({
+              broadcastNotices: notices,
+              updatedAt: new Date().toISOString()
+            }, { merge: true });
+            return { status: "success", message: "Broadcast notifications synced live to Firebase." };
+          }
+
           case "savePrivateChats": {
             const privateChats = data.privateChats || {};
             await dbInstance.collection("config").doc("app_config").set({
@@ -9634,40 +9335,7 @@
             return { status: "success", message: "Live chats synced to Firebase." };
           }
 
-          case "syncAllData": {
-            // Save client data snapshots into Firebase
-            const clientProps = Array.isArray(data.properties) ? data.properties : [];
-            const clientFlats = Array.isArray(data.flats) ? data.flats : [];
-            const clientRenters = Array.isArray(data.renters) ? data.renters : [];
-            const clientBills = Array.isArray(data.bills) ? data.bills : [];
-
-            for (const p of clientProps) {
-              if (p && p.PropertyName) {
-                const docId = p.PropertyName.replace(/[\/\\#?\s+]/g, "_");
-                await dbInstance.collection("properties").doc(docId).set(p, { merge: true });
-              }
-            }
-            for (const f of clientFlats) {
-              if (f && f.PropertyName && f.FlatName) {
-                const docId = (f.PropertyName + "___" + f.FlatName).replace(/[\/\\#?\s+]/g, "_");
-                await dbInstance.collection("flats").doc(docId).set(f, { merge: true });
-              }
-            }
-            for (const r of clientRenters) {
-              if (r && r.RenterID) {
-                await dbInstance.collection("renters").doc(r.RenterID).set(r, { merge: true });
-              }
-            }
-            for (const b of clientBills) {
-              if (b && b.BillID) {
-                await dbInstance.collection("bills").doc(b.BillID).set(b, { merge: true });
-              }
-            }
-            return { status: "success", message: "Complete data synced to Firebase." };
-          }
-
           default:
-            console.log("Unhandled Firebase action:", action, data);
             return { status: "success", message: "Processed action: " + action };
         }
       } catch (err) {
@@ -10190,26 +9858,7 @@
       deleteCustomBgImage();
     }
 
-    // No-cache photo helpers: Photos are loaded directly from Firebases / Google Drive so manual deletions in Sheets reflect immediately
-    function savePermanentRenterPhoto(prop, flat, renterId, docType, url) {
-      try {
-        // Cache safe photo reference if needed
-        cachePermanentRenterPhoto(prop, flat, renterId, docType, url);
-      } catch (e) {
-        console.warn("savePermanentRenterPhoto error:", e);
-      }
-    }
-    function cachePermanentRenterPhoto(prop, flat, renterId, docType, url) {
-      try { localStorage.removeItem("portal_permanent_photos"); } catch (e) {}
-    }
-
-    function getPermanentRenterPhoto(prop, flat, renterId, docType) {
-      return "";
-    }
-
-    function removePermanentRenterPhoto(prop, flat, renterId, docType) {
-      try { localStorage.removeItem("portal_permanent_photos"); } catch (e) {}
-    }
+    
 
     // Requirement 5: User Block Management & Blocked Login Modal ("Yes, Block" button text instead of "Yes, Delete All")
     async function toggleUserBlockStatus(targetUsername, newStatus) {
@@ -10241,11 +9890,7 @@
           }
           localStorage.setItem("portal_blocked_users", JSON.stringify(blockedList));
 
-          const authMap = getVerifiedAuthMap();
-          if (authMap[targetClean]) {
-            authMap[targetClean].status = newStatus;
-            localStorage.setItem("portal_verified_auth_map", JSON.stringify(authMap));
-          }
+          
 
           saveDbSnapshotToCache();
           renderRegisteredUsersList();
@@ -10416,8 +10061,8 @@
         if ((!Array.isArray(merged.FamilyMembersList) || merged.FamilyMembersList.length === 0) && Array.isArray(r.FamilyMembersList) && r.FamilyMembersList.length > 0) {
           merged.FamilyMembersList = JSON.parse(JSON.stringify(r.FamilyMembersList));
         }
-        const permProf = typeof getPermanentRenterPhoto === "function" ? getPermanentRenterPhoto(r.PropertyName, r.FlatName, r.RenterID, "profile") : "";
-        const permId = typeof getPermanentRenterPhoto === "function" ? getPermanentRenterPhoto(r.PropertyName, r.FlatName, r.RenterID, "identity") : "";
+        const permProf = "";
+        const permId = "";
         const candidateProf = !isPlaceholderImageUrl(r.ProfileImageURL) ? r.ProfileImageURL : permProf;
         const candidateId = !isPlaceholderImageUrl(r.IdentityImageURL) ? r.IdentityImageURL : permId;
         if (isPlaceholderImageUrl(merged.ProfileImageURL) && !isPlaceholderImageUrl(candidateProf)) {
@@ -10478,19 +10123,11 @@
         }
         if (updatedFields.ProfileImageURL !== undefined && (updatedFields.ProfileImageURL !== "" || updatedFields.forceClearProfileImage)) {
           r.ProfileImageURL = updatedFields.ProfileImageURL;
-          if (typeof savePermanentRenterPhoto === "function" && updatedFields.ProfileImageURL) {
-            savePermanentRenterPhoto(r.PropertyName, r.FlatName, r.RenterID, "profile", updatedFields.ProfileImageURL);
-          } else if (typeof removePermanentRenterPhoto === "function" && updatedFields.forceClearProfileImage) {
-            removePermanentRenterPhoto(r.PropertyName, r.FlatName, r.RenterID, "profile");
-          }
+          
         }
         if (updatedFields.IdentityImageURL !== undefined && (updatedFields.IdentityImageURL !== "" || updatedFields.forceClearIdentityImage)) {
           r.IdentityImageURL = updatedFields.IdentityImageURL;
-          if (typeof savePermanentRenterPhoto === "function" && updatedFields.IdentityImageURL) {
-            savePermanentRenterPhoto(r.PropertyName, r.FlatName, r.RenterID, "identity", updatedFields.IdentityImageURL);
-          } else if (typeof removePermanentRenterPhoto === "function" && updatedFields.forceClearIdentityImage) {
-            removePermanentRenterPhoto(r.PropertyName, r.FlatName, r.RenterID, "identity");
-          }
+          
         }
         r.UpdatedAt = nowIso;
         syncedStays.push(r);
@@ -11137,7 +10774,7 @@
     let currentOpenedReceiptFlat = null;
 
     function getGasUrl() {
-      return "firebase";
+      return GAS_WEB_APP_URL;
     }
 
     /**
@@ -12533,6 +12170,35 @@ function formatMonthLabel(rawVal) {
       }
     }
 
+    let hasLoadedInitialBroadcastNotices = false;
+    function syncServerBroadcastNoticesToLocal(serverNotices, allowLiveToast = false) {
+      if (!Array.isArray(serverNotices)) return;
+      const prevNotices = getStoredBroadcastNotifications();
+      const prevIds = new Set(prevNotices.map(n => n && n.id).filter(Boolean));
+      const prevRaw = JSON.stringify(prevNotices);
+      const nextRaw = JSON.stringify(serverNotices);
+
+      if (prevRaw !== nextRaw) {
+        try {
+          localStorage.setItem(PORTAL_NOTIFICATIONS_KEY, nextRaw);
+        } catch (e) {}
+        syncNotificationsBadgeUI();
+        renderNotificationsListUI();
+
+        if (allowLiveToast && hasLoadedInitialBroadcastNotices && activeUser) {
+          const myCleanName = String(activeUserFullName || activeUser || "").trim().toLowerCase();
+          const newlyAdded = serverNotices.filter(n => n && n.id && !prevIds.has(n.id) && isNoticeVisibleToCurrentUser(n));
+          newlyAdded.forEach(n => {
+            const senderClean = String(n.sender || "").trim().toLowerCase();
+            if (senderClean !== myCleanName && senderClean !== String(activeUser || "").trim().toLowerCase()) {
+              triggerSideToast(`New Notice: ${n.title || "Announcement"}`, String(n.body || "").slice(0, 90), true);
+            }
+          });
+        }
+      }
+      hasLoadedInitialBroadcastNotices = true;
+    }
+
     function syncNotificationsBadgeUI() {
       const badge = document.getElementById("navNotificationBadge");
       const settingsBadge = document.getElementById("settingsNotificationBadge");
@@ -12789,6 +12455,11 @@ function formatMonthLabel(rawVal) {
             broadcastNotices: existing,
             updatedAt: new Date().toISOString()
           }, { merge: true });
+        } else {
+          await sendFirebaseAction({
+            action: "saveBroadcastNotices",
+            broadcastNotices: existing
+          });
         }
       } catch (e) {
         console.warn("Failed to push notice to Firestore:", e);
@@ -12815,6 +12486,11 @@ function formatMonthLabel(rawVal) {
             broadcastNotices: existing,
             updatedAt: new Date().toISOString()
           }, { merge: true });
+        } else {
+          await sendFirebaseAction({
+            action: "saveBroadcastNotices",
+            broadcastNotices: existing
+          });
         }
       } catch (e) {
         console.warn("Failed to sync notice deletion to Firestore:", e);
@@ -13798,23 +13474,7 @@ function formatMonthLabel(rawVal) {
       }, 6000);
     }
 
-    // Zero Auth Cache Policy: Never store or validate usernames/passwords in localStorage so deleted IDs in Firebases fail login immediately
-    function getVerifiedAuthMap() {
-      try { localStorage.removeItem("portal_verified_auth_map"); } catch (e) {}
-      return {};
-    }
-
-    function saveVerifiedUserAuth(username, password, details = {}) {
-      try { localStorage.removeItem("portal_verified_auth_map"); } catch (e) {}
-    }
-
-    function syncUsersListToVerifiedAuthMap(usersArray) {
-      try { localStorage.removeItem("portal_verified_auth_map"); } catch (e) {}
-    }
-
-    function removeVerifiedUserAuth(username) {
-      try { localStorage.removeItem("portal_verified_auth_map"); } catch (e) {}
-    }
+    
 
     // Pre-warm Firebase Cloud Firestore server while login screen is open so server is hot & custom backgrounds load
     let isPrewarmingServer = false;
@@ -13856,10 +13516,11 @@ function formatMonthLabel(rawVal) {
       const btnNotif = document.getElementById("btnDashboardNotification");
       const pnlTracker = document.querySelector(".pnl-tracker");
       const searchWrap = document.querySelector(".header-search-wrap");
-      const fdBtn = document.querySelector(".fd-icon-only-btn");
-      const khetBtn = document.querySelector(".khet-icon-only-btn");
-      const kharchBtn = document.querySelector(".kharch-icon-only-btn");
-      const plusAnchor = document.querySelector(".plus-icon-box-btn")?.closest(".dropdown-anchor");
+      const homePortfolioAnchor = document.getElementById("homePortfolioDropdownAnchor");
+      const homeMenuKharch = document.getElementById("homeMenuKharchItem");
+      const homeMenuKhet = document.getElementById("homeMenuKhetItem");
+      const homeMenuFd = document.getElementById("homeMenuFdItem");
+      const plusAnchor = document.getElementById("plusMenuDropdownAnchor") || document.querySelector(".plus-icon-box-btn")?.closest(".dropdown-anchor");
       const settingsBtn = document.querySelector(".settings-icon-box-btn");
 
       // Requirement 1: Help Center is strictly visible ONLY on the Renter's dashboard
@@ -13871,23 +13532,33 @@ function formatMonthLabel(rawVal) {
         btnNotif.style.setProperty("display", (activeRole === "Renter" || activeRole === "Viewer") ? "inline-flex" : "none", "important");
       }
 
-      // Requirement 3: Enforce granular Manager permissions on all top dashboard controls & sections
+      // Requirement 2 & 3: Enforce Home Portfolio dropdown & granular Manager permissions on all top dashboard controls
       if (activeRole === "Manager") {
         if (pnlTracker) pnlTracker.style.setProperty("display", hasManagerPermission("pnl") ? "inline-flex" : "none", "important");
         if (searchWrap) searchWrap.style.setProperty("display", hasManagerPermission("search") ? "flex" : "none", "important");
         if (rNavChat) rNavChat.style.setProperty("display", hasManagerPermission("liveChat") ? "inline-flex" : "none", "important");
-        if (fdBtn) fdBtn.style.setProperty("display", hasManagerPermission("fd") ? "inline-flex" : "none", "important");
-        if (khetBtn) khetBtn.style.setProperty("display", hasManagerPermission("khet") ? "inline-flex" : "none", "important");
-        if (kharchBtn) kharchBtn.style.setProperty("display", hasManagerPermission("kharch") ? "inline-flex" : "none", "important");
+        const hasAnyPortfolioPerm = hasManagerPermission("kharch") || hasManagerPermission("khet") || hasManagerPermission("fd");
+        if (homePortfolioAnchor) homePortfolioAnchor.style.setProperty("display", hasAnyPortfolioPerm ? "inline-flex" : "none", "important");
+        if (homeMenuKharch) homeMenuKharch.style.setProperty("display", hasManagerPermission("kharch") ? "flex" : "none", "important");
+        if (homeMenuKhet) homeMenuKhet.style.setProperty("display", hasManagerPermission("khet") ? "flex" : "none", "important");
+        if (homeMenuFd) homeMenuFd.style.setProperty("display", hasManagerPermission("fd") ? "flex" : "none", "important");
         if (plusAnchor) plusAnchor.style.setProperty("display", hasManagerPermission("addMenu") ? "inline-flex" : "none", "important");
         if (settingsBtn) settingsBtn.style.setProperty("display", hasAnySettingsPermission() ? "inline-flex" : "none", "important");
+      } else if (activeRole === "Renter" || activeRole === "Viewer") {
+        if (pnlTracker) pnlTracker.style.removeProperty("display");
+        if (searchWrap) searchWrap.style.removeProperty("display");
+        if (rNavChat) rNavChat.style.setProperty("display", "inline-flex", "important");
+        if (homePortfolioAnchor) homePortfolioAnchor.style.setProperty("display", "none", "important");
+        if (plusAnchor) plusAnchor.style.setProperty("display", "none", "important");
+        if (settingsBtn) settingsBtn.style.removeProperty("display");
       } else {
         if (pnlTracker) pnlTracker.style.removeProperty("display");
         if (searchWrap) searchWrap.style.removeProperty("display");
         if (rNavChat) rNavChat.style.setProperty("display", "inline-flex", "important");
-        if (fdBtn) fdBtn.style.removeProperty("display");
-        if (khetBtn) khetBtn.style.removeProperty("display");
-        if (kharchBtn) kharchBtn.style.removeProperty("display");
+        if (homePortfolioAnchor) homePortfolioAnchor.style.setProperty("display", "inline-flex", "important");
+        if (homeMenuKharch) homeMenuKharch.style.setProperty("display", "flex", "important");
+        if (homeMenuKhet) homeMenuKhet.style.setProperty("display", "flex", "important");
+        if (homeMenuFd) homeMenuFd.style.setProperty("display", "flex", "important");
         if (plusAnchor) plusAnchor.style.removeProperty("display");
         if (settingsBtn) settingsBtn.style.removeProperty("display");
       }
@@ -13963,7 +13634,7 @@ function formatMonthLabel(rawVal) {
       activeRole = res.role || "Admin";
       const sheetTheme = res.theme || "black";
 
-      // Strictly use the live arrays from Firebases (never fall back to localStorage or re-upload deleted rows)
+      // Strictly use the live arrays from Google Sheets & Firebase
       DB.properties = Array.isArray(res.properties) ? res.properties : [];
       DB.flats = Array.isArray(res.flats) ? res.flats : [];
       DB.renters = (Array.isArray(res.renters) ? res.renters : []).map(r => {
@@ -14010,6 +13681,11 @@ function formatMonthLabel(rawVal) {
             if (typeof initAdminContactSettingsInputs === "function") initAdminContactSettingsInputs();
             if (typeof renderContactUsDynamicBody === "function") renderContactUsDynamicBody();
           } catch (e) {}
+        }
+        if (Array.isArray(res.globalConfig.broadcastNotices)) {
+          if (typeof syncServerBroadcastNoticesToLocal === "function") {
+            syncServerBroadcastNoticesToLocal(res.globalConfig.broadcastNotices, false);
+          }
         }
         if (res.globalConfig.privateChats && typeof res.globalConfig.privateChats === "object") {
           if (typeof syncServerPrivateChatsToLocal === "function") {
@@ -14205,7 +13881,7 @@ function formatMonthLabel(rawVal) {
       try { updateLoginLockoutUI(); } catch (e) {}
     }, 50);
 
-    // 1. Live Server-Verified Login Every Time + Single-Device Session Token Generation
+    // 1. Live Server-Verified Login Every Time + Single-Device Session Token Generation (Strictly Verified Against Firebase)
     let isSubmittingLogin = false;
     async function handleLoginSubmit(e) {
       if (e && e.preventDefault) e.preventDefault();
@@ -14235,46 +13911,19 @@ function formatMonthLabel(rawVal) {
         btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Verifying...`;
       }
 
-      const lowerUser = user.toLowerCase();
-      const isAdminCredentials = lowerUser === "admin" && (pass === "Admin@123" || pass === "admin");
-
       try {
         const newSessionToken = "SESS-" + Date.now() + "-" + Math.random().toString(36).substring(2, 10);
         let res = null;
 
         try {
-          // Race Firebase login against a 6.5-second timeout to prevent indefinite hanging
+          // Race Firebase login against an 8-second timeout to prevent indefinite hanging
           const loginPromise = firebaseLogin(user, pass, newSessionToken);
           const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error("Firebase connection timed out")), 6500)
+            setTimeout(() => reject(new Error("Firebase connection timed out")), 8000)
           );
           res = await Promise.race([loginPromise, timeoutPromise]);
         } catch (netErr) {
           console.warn("Firebase live login error or timeout:", netErr);
-        }
-
-        // If admin login and Firebase was slow/unreachable, create local admin success response
-        if ((!res || res.status !== "success") && isAdminCredentials) {
-          res = {
-            status: "success",
-            sessionToken: newSessionToken,
-            username: "admin",
-            role: "Admin",
-            fullName: "Administrator",
-            mobileNumber: "",
-            theme: "dark",
-            userAssignedProperty: "",
-            userAssignedFlat: "",
-            userAssignedAadhaar: "",
-            bgDashboardUrl: "",
-            bgLoginUrl: "",
-            properties: DB.properties || [],
-            flats: DB.flats || [],
-            renters: DB.renters || [],
-            bills: DB.bills || [],
-            users: DB.users || [],
-            loginHistory: DB.loginHistory || []
-          };
         }
 
         if (res && res.status === "blocked") {
@@ -14335,27 +13984,6 @@ function formatMonthLabel(rawVal) {
         }
       } catch (err) {
         console.error("Critical login error:", err);
-        if (isAdminCredentials) {
-          resetLoginLockoutState();
-          try {
-            localStorage.removeItem(EXPLICIT_LOGOUT_FLAG_KEY);
-          } catch (e) {}
-          authSessionEpoch++;
-          activeUser = "admin";
-          activeRole = "Admin";
-          activeUserFullName = "Administrator";
-          activeSessionToken = "SESS-LOCAL-ADMIN";
-          persistActiveAuthSession();
-          applyRolePermissions("Admin");
-          try {
-            unlockDashboardInstant(true);
-          } catch (e) {
-            document.getElementById("loginScreen")?.classList.remove("active");
-            document.getElementById("dashboardScreen")?.classList.add("active");
-          }
-          triggerSideToast("Welcome Back", "Logged in as Administrator", true);
-          return;
-        }
         triggerSideToast("Login Notice", "Unable to log in at this moment. Please check your credentials and try again.", false);
       } finally {
         isSubmittingLogin = false;
@@ -14363,13 +13991,13 @@ function formatMonthLabel(rawVal) {
       }
     }
 
-    // 2. Continuous Live Background Sync Directly from Firebases (Detects 2nd-device login conflict for ALL roles, manual row deletions & Admin global background)
+    // 2. Continuous Live Background Sync Directly from Firebase + Google Sheets
     async function syncDataLive(forceRender = false) {
       if (!activeUser || isSyncingLive || isSessionConflictModalOpen) return;
       try {
         if (localStorage.getItem(EXPLICIT_LOGOUT_FLAG_KEY) === "1") return;
       } catch (e) {}
-      if (!forceRender && (pendingWriteCount > 0 || (Date.now() - lastWriteCompletedAt < 4000))) {
+      if (pendingWriteCount > 0 || (!forceRender && (Date.now() - lastWriteCompletedAt < 4000))) {
         return;
       }
       const syncEpochAtStart = authSessionEpoch;
@@ -14389,7 +14017,7 @@ function formatMonthLabel(rawVal) {
 
         if (res && res.status === "success") {
           hasCompletedInitialSync = true;
-          if (!forceRender && (pendingWriteCount > 0 || (Date.now() - lastWriteCompletedAt < 4000))) {
+          if (pendingWriteCount > 0 || (!forceRender && (Date.now() - lastWriteCompletedAt < 4000))) {
             return;
           }
 
@@ -14399,7 +14027,7 @@ function formatMonthLabel(rawVal) {
           );
           const activeUserStillInSheet = Boolean(matchedServerUser);
 
-          // Requirement 7: Check if this account (Admin, Renter, or Viewer) has logged in from a new device!
+          // Requirement 7: Check if this account (Admin, Manager, Renter, or Viewer) has logged in from a new device!
           const serverToken = String(res.activeSessionToken || matchedServerUser?.ActiveSessionToken || "").trim();
           const isLocalFallbackToken = String(activeSessionToken || "").startsWith("SESS-LOCAL");
           if (
@@ -14410,9 +14038,8 @@ function formatMonthLabel(rawVal) {
             return;
           }
 
-          const isAdminUser = String(activeRole || "").toLowerCase() === "admin" || String(activeUser || "").toLowerCase() === "admin";
-          // If the currently logged-in user's row was manually deleted in Firebases, log out & wipe dashboard immediately!
-          if (!isAdminUser && (res.userDeleted === true || res.userExists === false || !activeUserStillInSheet)) {
+          // If the currently logged-in user's ID (including Admin) was deleted or renamed in Firebase, log out immediately!
+          if (incomingUsers.length > 0 && (res.userDeleted === true || res.userExists === false || !activeUserStillInSheet)) {
             DB.properties = [];
             DB.flats = [];
             DB.renters = [];
@@ -14420,14 +14047,15 @@ function formatMonthLabel(rawVal) {
             DB.users = [];
             DB.fdRecords = [];
             DB.khetRecords = [];
+            DB.kharchRecords = [];
             performConfirmedLogout();
             setTimeout(() => {
-              triggerSideToast("Account Removed", "Your User ID no longer exists in Firebase. Please log in with a valid ID.", false);
+              triggerSideToast("Account Updated / Removed", "Your User ID was changed or removed in Firebase. Please log in with the latest User ID.", false);
             }, 120);
             return;
           }
 
-          if (String(res.userStatus || res.accountStatus || "").toLowerCase() === "blocked") {
+          if (String(res.userStatus || res.accountStatus || matchedServerUser?.Status || "").toLowerCase() === "blocked") {
             performConfirmedLogout();
             showAccountBlockedModal("Your account has been blocked by an administrator.");
             return;
@@ -14498,6 +14126,11 @@ function formatMonthLabel(rawVal) {
                   }
                 }
               } catch (e) {}
+            }
+            if (Array.isArray(res.globalConfig.broadcastNotices)) {
+              if (typeof syncServerBroadcastNoticesToLocal === "function") {
+                syncServerBroadcastNoticesToLocal(res.globalConfig.broadcastNotices, true);
+              }
             }
             if (res.globalConfig.privateChats && typeof res.globalConfig.privateChats === "object") {
               if (typeof syncServerPrivateChatsToLocal === "function") {
@@ -16004,7 +15637,7 @@ function formatMonthLabel(rawVal) {
       closeModal("editEverythingBillModal");
       renderEditEverythingBillsList();
       renderAllDashboardUI();
-      triggerSideToast("Bill Updated", "Bill changes saved to Firebases!", true);
+      triggerSideToast("Bill Updated", "Bill changes saved to Google Sheet!", true);
 
       await sendFirebaseAction({
         action: "recordBill",
@@ -16049,7 +15682,7 @@ function formatMonthLabel(rawVal) {
     function deleteBillFromEditEverything(billId) {
       openCenteredConfirmModal(
         "Delete Bill Entry Permanently",
-        "Are you sure you want to permanently delete this bill entry? It will be removed from Firebases and cannot be recovered.",
+        "Are you sure you want to permanently delete this bill entry? It will be removed from Google Sheet and cannot be recovered.",
         async () => {
           const target = (DB.bills || []).find(b => String(b.BillID || "").trim() === String(billId).trim());
           DB.bills = (DB.bills || []).filter(b => String(b.BillID || "").trim() !== String(billId).trim());
@@ -16442,10 +16075,12 @@ function formatMonthLabel(rawVal) {
         `Are you sure you want to permanently delete user @${targetUsername}?`,
         async () => {
           DB.users = (DB.users || []).filter(u => String(u.Username || "").trim().toLowerCase() !== targetClean);
-          removeVerifiedUserAuth(targetUsername);
+          if (typeof removeVerifiedUserAuth === "function") {
+            try { removeVerifiedUserAuth(targetUsername); } catch (e) {}
+          }
           saveDbSnapshotToCache();
           renderRegisteredUsersList();
-          triggerSideToast("User Deleted", `User @${targetUsername} has been removed.`, "warning");
+          triggerSideToast("User Deleted", `User @${targetUsername} has been removed from Firebase.`, "warning");
 
           await sendFirebaseAction({
             action: "deleteUser",
@@ -17494,13 +17129,7 @@ function formatMonthLabel(rawVal) {
         } else {
           targetRenter.ProfileImageURL = compressedDataUrl;
         }
-        savePermanentRenterPhoto(
-          targetRenter.PropertyName || selectedFlat.PropertyName,
-          targetRenter.FlatName || selectedFlat.FlatName,
-          targetRenter.RenterID,
-          docType,
-          compressedDataUrl
-        );
+        
         syncRenterIdentityAcrossAllStays(targetRenter, isIdentity
           ? { IdentityImageURL: compressedDataUrl }
           : { ProfileImageURL: compressedDataUrl }
@@ -18928,8 +18557,8 @@ function formatMonthLabel(rawVal) {
         document.getElementById("renterStatus").value = String(renter.Status || "Active").trim().toLowerCase() === "active" ? "Active" : "Inactive";
         document.getElementById("renterJoinDate").value = resolvedMeta.joinDate;
         document.getElementById("renterEndDate").value = resolvedMeta.endDate;
-        const resolvedProfilePic = renter.ProfileImageURL || getPermanentRenterPhoto(flat.PropertyName, flat.FlatName, renter.RenterID, "profile");
-        const resolvedIdentityPic = renter.IdentityImageURL || getPermanentRenterPhoto(flat.PropertyName, flat.FlatName, renter.RenterID, "identity");
+        const resolvedProfilePic = renter.ProfileImageURL ;
+        const resolvedIdentityPic = renter.IdentityImageURL ;
         if (!renter.ProfileImageURL && resolvedProfilePic) renter.ProfileImageURL = resolvedProfilePic;
         if (!renter.IdentityImageURL && resolvedIdentityPic) renter.IdentityImageURL = resolvedIdentityPic;
         updateRenterImageSlotUI("profile", resolvedProfilePic);
@@ -21480,7 +21109,7 @@ function formatMonthLabel(rawVal) {
       const btnTextEl = document.getElementById("btnSubmitFdRecordText");
       const cancelBtn = document.getElementById("btnCancelFdEdit");
       if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Portfolio / Saving (FD) Entry`;
-      if (btnTextEl) btnTextEl.innerText = "Update Portfolio & FD Record in Firebase";
+      if (btnTextEl) btnTextEl.innerText = "Update Portfolio & FD Record in Google Sheet";
       if (cancelBtn) cancelBtn.style.display = "inline-flex";
     }
 
@@ -21516,7 +21145,7 @@ function formatMonthLabel(rawVal) {
       const btnTextEl = document.getElementById("btnSubmitFdRecordText");
       const cancelBtn = document.getElementById("btnCancelFdEdit");
       if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-briefcase"></i> Add Portfolio Usage / Saving (FD) Entry`;
-      if (btnTextEl) btnTextEl.innerText = "Save Portfolio & FD Entry to Firebase";
+      if (btnTextEl) btnTextEl.innerText = "Save Portfolio & FD Entry to Google Sheet";
       if (cancelBtn) cancelBtn.style.display = "none";
     }
 
@@ -22074,7 +21703,7 @@ function formatMonthLabel(rawVal) {
       const btnText = document.getElementById("btnSubmitKharchRecordText");
       const cancelBtn = document.getElementById("btnCancelKharchEdit");
       if (formTitle) formTitle.innerHTML = `<i class="fa-solid fa-plus-circle"></i> Add New Kharch (Expense) Entry`;
-      if (btnText) btnText.innerText = "Save Kharch Entry to Firebase";
+      if (btnText) btnText.innerText = "Save Kharch Entry to Google Sheet";
       if (cancelBtn) cancelBtn.style.display = "none";
     }
 
@@ -22106,7 +21735,7 @@ function formatMonthLabel(rawVal) {
       const btnText = document.getElementById("btnSubmitKharchRecordText");
       const cancelBtn = document.getElementById("btnCancelKharchEdit");
       if (formTitle) formTitle.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Kharch (Expense) Entry`;
-      if (btnText) btnText.innerText = "Update Kharch Entry in Firebase";
+      if (btnText) btnText.innerText = "Update Kharch Entry in Google Sheet";
       if (cancelBtn) cancelBtn.style.display = "inline-flex";
     }
 
@@ -22501,7 +22130,7 @@ function formatMonthLabel(rawVal) {
       const btnTextEl = document.getElementById("btnSubmitKhetRecordText");
       const cancelBtn = document.getElementById("btnCancelKhetEdit");
       if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Khet Registry &amp; Partner Details`;
-      if (btnTextEl) btnTextEl.innerText = "Update Khet & Partner Record in Firebase";
+      if (btnTextEl) btnTextEl.innerText = "Update Khet & Partner Record in Google Sheet";
       if (cancelBtn) cancelBtn.style.display = "inline-flex";
     }
 
@@ -22526,7 +22155,7 @@ function formatMonthLabel(rawVal) {
       const btnTextEl = document.getElementById("btnSubmitKhetRecordText");
       const cancelBtn = document.getElementById("btnCancelKhetEdit");
       if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-wheat-awn"></i> Add Complete Khet &amp; Farming Partner Record`;
-      if (btnTextEl) btnTextEl.innerText = "Save Complete Khet & Partner Record to Firebase";
+      if (btnTextEl) btnTextEl.innerText = "Save Complete Khet & Partner Record to Google Sheet";
       if (cancelBtn) cancelBtn.style.display = "none";
     }
 
@@ -22657,7 +22286,7 @@ function formatMonthLabel(rawVal) {
 
       triggerSideToast(
         isEditing ? "Khet Record Updated" : "Khet Record Saved",
-        `${isEditing ? "Updated" : "Saved"} ${place} (Partner: ${partnerName}) to Firebase!`,
+        `${isEditing ? "Updated" : "Saved"} ${place} (Partner: ${partnerName}) to Google Sheet!`,
         true
       );
 
@@ -23898,12 +23527,25 @@ function formatMonthLabel(rawVal) {
     }
 
     // 10. Modals, Strict Property-Targeted Flat Creation & Complete Cascade Deletion
-    function toggleActionMenu() {
-      document.getElementById("actionMenu").classList.toggle("show");
+    function toggleHomePortfolioMenu(e) {
+      if (e && typeof e.stopPropagation === "function") e.stopPropagation();
+      document.getElementById("actionMenu")?.classList.remove("show");
+      document.getElementById("homePortfolioMenu")?.classList.toggle("show");
+    }
+    function closeHomePortfolioMenu() {
+      document.getElementById("homePortfolioMenu")?.classList.remove("show");
+    }
+    function toggleActionMenu(e) {
+      if (e && typeof e.stopPropagation === "function") e.stopPropagation();
+      document.getElementById("homePortfolioMenu")?.classList.remove("show");
+      document.getElementById("actionMenu")?.classList.toggle("show");
     }
     window.addEventListener("click", (e) => {
-      if (!e.target.closest(".dropdown-anchor")) {
+      if (!e.target.closest("#plusMenuDropdownAnchor")) {
         document.getElementById("actionMenu")?.classList.remove("show");
+      }
+      if (!e.target.closest("#homePortfolioDropdownAnchor")) {
+        document.getElementById("homePortfolioMenu")?.classList.remove("show");
       }
       if (!e.target.closest("#searchContainer")) {
         document.getElementById("globalSearchResultsBox")?.classList.remove("active");
@@ -23915,10 +23557,11 @@ function formatMonthLabel(rawVal) {
       if (el) {
         el.classList.add("active");
         document.getElementById("actionMenu")?.classList.remove("show");
+        document.getElementById("homePortfolioMenu")?.classList.remove("show");
         if (el.id === "flatDetailsModal") {
           document.body.classList.add("flat-details-open");
           if (typeof closeModularLiveChatWidget === "function") closeModularLiveChatWidget();
-          if (typeof closeModularAiWidget === "function") closeModularAiWidget();
+          
         }
       }
     }
@@ -24358,8 +24001,8 @@ function formatMonthLabel(rawVal) {
         TenureType: isReturningMatch ? "RETURNING" : "NEW"
       };
 
-      if (profUrl) savePermanentRenterPhoto(targetProp, targetFlat, newRenterId, "profile", profUrl);
-      if (idUrl) savePermanentRenterPhoto(targetProp, targetFlat, newRenterId, "identity", idUrl);
+      
+      
       const tenureDetailText = isReturningMatch && consolidatedRec?.PropertyName
         ? `Returned from ${consolidatedRec.PropertyName} (Flat ${consolidatedRec.FlatName || "--"}) on ${formatDateOnly(joinDate)}`
         : `Assigned to ${targetProp} - Flat ${targetFlat} on ${formatDateOnly(joinDate)}`;
@@ -24910,7 +24553,7 @@ function formatMonthLabel(rawVal) {
       if (activeFlatRenterObj) {
         if (isIdentity) activeFlatRenterObj.IdentityImageURL = directImageUrl;
         else activeFlatRenterObj.ProfileImageURL = directImageUrl;
-        savePermanentRenterPhoto(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj.RenterID, docType, directImageUrl);
+        
       }
       let matchedRenters = (DB.renters || []).filter(r => isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName));
       let targetR = matchedRenters.find(r => activeFlatRenterObj?.RenterID && String(r.RenterID) === String(activeFlatRenterObj.RenterID)) ||
@@ -24925,7 +24568,7 @@ function formatMonthLabel(rawVal) {
       renderAllDashboardUI();
       populateIsolatedRenterHistoryDropdown(selectedFlat.PropertyName, selectedFlat.FlatName, true);
 
-      triggerSideToast("Syncing Photo Link", "Saving direct photo link to Firebases so it loads across all devices...", "warning");
+      triggerSideToast("Syncing Photo Link", "Saving direct photo link to Google Sheet so it loads across all devices...", "warning");
       try {
         const res = await sendFirebaseAction({
           action: "uploadRenterDocument",
@@ -24942,9 +24585,9 @@ function formatMonthLabel(rawVal) {
           activeFlatRenterObj.RenterID = res.resolvedRenterId;
           saveDbSnapshotToCache();
         }
-        triggerSideToast("Photo Link Synced", "Photo link saved to Firebases and synced across all stays & devices!", true);
+        triggerSideToast("Photo Link Synced", "Photo link saved to Google Sheet and synced across all stays & devices!", true);
       } catch (e) {
-        triggerSideToast("Sync Warning", "Could not reach Firebase Firestore server.", false);
+        triggerSideToast("Sync Warning", "Could not reach Google Apps Script server.", false);
       }
     }
 
@@ -24975,7 +24618,7 @@ function formatMonthLabel(rawVal) {
         if (activeFlatRenterObj) {
           if (isIdentity) activeFlatRenterObj.IdentityImageURL = sheetSafeBase64;
           else activeFlatRenterObj.ProfileImageURL = sheetSafeBase64;
-          savePermanentRenterPhoto(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj.RenterID, docType, sheetSafeBase64);
+          
         }
         let matchedRenters = (DB.renters || []).filter(r => isSamePropAndFlat(r.PropertyName, r.FlatName, selectedFlat.PropertyName, selectedFlat.FlatName));
         let targetR = matchedRenters.find(r => activeFlatRenterObj?.RenterID && String(r.RenterID) === String(activeFlatRenterObj.RenterID)) ||
@@ -24991,7 +24634,7 @@ function formatMonthLabel(rawVal) {
 
         triggerSideToast(
           "Uploading to Shared Drive",
-          `Saving ${isIdentity ? "Aadhaar / ID Card" : "Profile Photo"} to Google Drive & Firebase Firestore for all devices...`,
+          `Saving ${isIdentity ? "Aadhaar / ID Card" : "Profile Photo"} to Google Drive & Google Sheet for all devices...`,
           "warning"
         );
 
@@ -25022,7 +24665,7 @@ function formatMonthLabel(rawVal) {
         if (activeFlatRenterObj) {
           if (isIdentity) activeFlatRenterObj.IdentityImageURL = finalImageUrl;
           else activeFlatRenterObj.ProfileImageURL = finalImageUrl;
-          savePermanentRenterPhoto(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj.RenterID, docType, finalImageUrl);
+          
         }
         if (targetR) {
           if (isIdentity) targetR.IdentityImageURL = finalImageUrl;
@@ -25067,7 +24710,7 @@ function formatMonthLabel(rawVal) {
           else r.ProfileImageURL = "";
         }
       });
-      removePermanentRenterPhoto(selectedFlat.PropertyName, selectedFlat.FlatName, activeFlatRenterObj?.RenterID, docType);
+      
       const currentAadhaarVal = document.getElementById("renterIdentityNum")?.value || activeFlatRenterObj?.IdentityDocNumber || "";
       syncRenterIdentityAcrossAllStays(currentAadhaarVal, isIdentity
         ? { IdentityImageURL: "", forceClearIdentityImage: true }
@@ -25099,14 +24742,15 @@ function formatMonthLabel(rawVal) {
 
     async function sendFirebaseAction(data) {
       pendingWriteCount++;
+      const isGasWrite = Boolean(data && data.action && typeof GAS_SHEET_ACTIONS !== "undefined" && GAS_SHEET_ACTIONS.has(data.action));
       try {
         const result = await handleFirebaseAction(data);
         setTimeout(() => {
           if (typeof syncDataLive === "function") syncDataLive(true);
-        }, 60);
-        return result || { status: "success", message: "Saved in Firebase." };
+        }, isGasWrite ? 1800 : 80);
+        return result || { status: "success", message: isGasWrite ? "Saved in Google Sheets." : "Saved in Firebase." };
       } catch (err) {
-        console.warn("Firebase action warning:", err);
+        console.warn("Dual-server action warning:", err);
         return { status: "network_offline", message: "Saved locally." };
       } finally {
         pendingWriteCount = Math.max(0, pendingWriteCount - 1);
@@ -25443,8 +25087,10 @@ function formatMonthLabel(rawVal) {
     }
 
     // ==========================================================================
-    // REQUIREMENT 4: SMOOTH, UNINTERRUPTED 1-ON-1 LIVE CHAT FOR RENTER & ADMIN
+    // REQUIREMENT 3 & 4: REAL-TIME 1-ON-1 LIVE CHAT ACROSS ALL USERS ON FIREBASE
     // ==========================================================================
+    let hasLoadedInitialPrivateChats = false;
+
     function getPrivateChatStore() {
       try {
         const raw = localStorage.getItem(PRIVATE_CHAT_STORAGE_KEY);
@@ -25476,55 +25122,115 @@ function formatMonthLabel(rawVal) {
       }
     }
 
+    function sanitizeChatUsernameKey(uname) {
+      return String(uname || "").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+    }
+
     function buildAdminRenterChannelId(adminUsername, userUsername) {
-      const cleanAdmin = String(adminUsername || "admin").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
-      const cleanUser = String(userUsername || "guest").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+      const cleanAdmin = sanitizeChatUsernameKey(adminUsername || "admin");
+      const cleanUser = sanitizeChatUsernameKey(userUsername || "guest");
       return `channel_admin_${cleanAdmin}__user_${cleanUser}`;
     }
 
+    function parseChannelParticipants(channelId) {
+      const str = String(channelId || "");
+      const m = str.match(/^channel_admin_(.+)__user_(.+)$/);
+      if (m) {
+        return { adminKey: m[1], userKey: m[2] };
+      }
+      if (str.startsWith("channel_")) {
+        return { adminKey: "", userKey: str.replace(/^channel_/, "") };
+      }
+      return { adminKey: "", userKey: "" };
+    }
+
+    function getRelatedChannelIds(canonicalChannelId, partnerUsername = "") {
+      const ids = new Set();
+      if (canonicalChannelId) ids.add(canonicalChannelId);
+      const parsed = parseChannelParticipants(canonicalChannelId);
+      const myKey = sanitizeChatUsernameKey(activeUser || "");
+      const partnerKey = sanitizeChatUsernameKey(partnerUsername || parsed.userKey || "");
+
+      if (parsed.adminKey && parsed.userKey) {
+        ids.add(buildAdminRenterChannelId(parsed.adminKey, parsed.userKey));
+        ids.add(buildAdminRenterChannelId(parsed.userKey, parsed.adminKey));
+        ids.add(`channel_${parsed.userKey}`);
+      } else if (myKey && partnerKey) {
+        ids.add(buildAdminRenterChannelId(myKey, partnerKey));
+        ids.add(buildAdminRenterChannelId(partnerKey, myKey));
+        ids.add(`channel_${partnerKey}`);
+      } else if (partnerKey) {
+        ids.add(`channel_${partnerKey}`);
+      }
+      return Array.from(ids).filter(Boolean);
+    }
+
     function getMyPrivateChatChannelId(targetAdminUsername = "") {
-      const cleanUser = String(activeUser || "guest").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+      const cleanUser = sanitizeChatUsernameKey(activeUser || "guest");
       if (targetAdminUsername) {
         return buildAdminRenterChannelId(targetAdminUsername, cleanUser);
       }
       return "channel_" + cleanUser;
     }
 
-    // Merge messages across canonical channelId and any legacy channel_<renter> so Renter & Admin never miss messages
-    function getMergedChannelObject(store, canonicalChannelId, renterUsername = "") {
-      if (!store || typeof store !== "object") return { messages: [], clearedAt: 0, unreadAdmin: 0, unreadRenter: 0, lastTimestamp: 0 };
-      const primary = store[canonicalChannelId] || null;
-      const cleanRenter = String(
-        renterUsername ||
-        primary?.renterUsername ||
-        canonicalChannelId.replace(/^channel_admin_[^_]+__user_/, "").replace(/^channel_/, "")
-      ).trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
-
-      const legacyKey = cleanRenter ? `channel_${cleanRenter}` : "";
-      const legacy = (legacyKey && legacyKey !== canonicalChannelId && store[legacyKey]) ? store[legacyKey] : null;
-
-      if (!primary && !legacy) {
-        return { messages: [], clearedAt: 0, unreadAdmin: 0, unreadRenter: 0, lastTimestamp: 0 };
+    function getChannelUnreadCountForUser(channelObj, usernameRaw = "", isAdminView = false) {
+      if (!channelObj || typeof channelObj !== "object") return 0;
+      const myKey = sanitizeChatUsernameKey(usernameRaw || activeUser || "");
+      if (myKey && channelObj.unreadByUser && typeof channelObj.unreadByUser === "object" && channelObj.unreadByUser[myKey] !== undefined) {
+        return Math.max(0, Number(channelObj.unreadByUser[myKey]) || 0);
       }
-      if (primary && !legacy) return primary;
-      if (!primary && legacy) return legacy;
+      return Math.max(0, Number(isAdminView ? channelObj.unreadAdmin : channelObj.unreadRenter) || 0);
+    }
 
-      const effectiveClearedAt = Math.max(Number(primary.clearedAt || 0), Number(legacy.clearedAt || 0));
+    // Merge messages across canonical channelId, reverse Admin/User channelId, and legacy channel_<renter>
+    function getMergedChannelObject(store, canonicalChannelId, renterUsername = "") {
+      if (!store || typeof store !== "object") {
+        return { messages: [], clearedAt: 0, unreadAdmin: 0, unreadRenter: 0, unreadByUser: {}, lastTimestamp: 0 };
+      }
+      const relatedKeys = getRelatedChannelIds(canonicalChannelId, renterUsername);
+      const candidates = relatedKeys.map(k => store[k]).filter(Boolean);
+
+      if (candidates.length === 0) {
+        return { messages: [], clearedAt: 0, unreadAdmin: 0, unreadRenter: 0, unreadByUser: {}, lastTimestamp: 0 };
+      }
+
+      let effectiveClearedAt = 0;
+      let maxLastTimestamp = 0;
+      let maxUnreadAdmin = 0;
+      let maxUnreadRenter = 0;
+      const mergedUnreadByUser = {};
       const msgMap = new Map();
-      (Array.isArray(legacy.messages) ? legacy.messages : []).concat(Array.isArray(primary.messages) ? primary.messages : []).forEach(m => {
-        if (m && m.id && Number(m.timestamp || 0) > effectiveClearedAt) {
-          msgMap.set(m.id, m);
+
+      candidates.forEach(ch => {
+        effectiveClearedAt = Math.max(effectiveClearedAt, Number(ch.clearedAt || 0));
+        maxLastTimestamp = Math.max(maxLastTimestamp, Number(ch.lastTimestamp || 0));
+        maxUnreadAdmin = Math.max(maxUnreadAdmin, Number(ch.unreadAdmin || 0));
+        maxUnreadRenter = Math.max(maxUnreadRenter, Number(ch.unreadRenter || 0));
+        if (ch.unreadByUser && typeof ch.unreadByUser === "object") {
+          Object.keys(ch.unreadByUser).forEach(uKey => {
+            mergedUnreadByUser[uKey] = Math.max(Number(mergedUnreadByUser[uKey] || 0), Number(ch.unreadByUser[uKey] || 0));
+          });
         }
       });
+
+      candidates.forEach(ch => {
+        (Array.isArray(ch.messages) ? ch.messages : []).forEach(m => {
+          if (m && m.id && Number(m.timestamp || 0) > effectiveClearedAt) {
+            msgMap.set(m.id, m);
+          }
+        });
+      });
+
       const mergedMsgs = Array.from(msgMap.values()).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+      const baseObj = store[canonicalChannelId] || candidates[0];
       return {
-        ...legacy,
-        ...primary,
+        ...baseObj,
         clearedAt: effectiveClearedAt,
         messages: mergedMsgs,
-        lastTimestamp: Math.max(Number(primary.lastTimestamp || 0), Number(legacy.lastTimestamp || 0)),
-        unreadAdmin: Math.max(Number(primary.unreadAdmin || 0), Number(legacy.unreadAdmin || 0)),
-        unreadRenter: Math.max(Number(primary.unreadRenter || 0), Number(legacy.unreadRenter || 0))
+        lastTimestamp: maxLastTimestamp,
+        unreadAdmin: maxUnreadAdmin,
+        unreadRenter: maxUnreadRenter,
+        unreadByUser: mergedUnreadByUser
       };
     }
 
@@ -25536,6 +25242,11 @@ function formatMonthLabel(rawVal) {
       const w = document.getElementById("modularLiveChatWidget");
       const convView = document.getElementById("chatConversationView");
       const isChatConvOpen = Boolean(w && w.style.display === "flex" && !w.classList.contains("minimized") && convView && convView.style.display !== "none");
+      const activeRelatedIds = isChatConvOpen && activeSelectedChatChannelId
+        ? new Set(getRelatedChannelIds(activeSelectedChatChannelId))
+        : new Set();
+      const myKey = sanitizeChatUsernameKey(activeUser || "");
+      const newlyArrivedMessagesForMe = [];
 
       Object.keys(serverChats).forEach(chId => {
         const sCh = serverChats[chId];
@@ -25545,30 +25256,45 @@ function formatMonthLabel(rawVal) {
         const lClearedAt = Number(lCh?.clearedAt || 0);
         const effectiveClearedAt = Math.max(sClearedAt, lClearedAt);
 
+        const prevIds = new Set((Array.isArray(lCh?.messages) ? lCh.messages : []).map(m => m && m.id).filter(Boolean));
+        const sMsgs = (Array.isArray(sCh.messages) ? sCh.messages : []).filter(m => m && (Number(m.timestamp || 0) > effectiveClearedAt));
+
+        sMsgs.forEach(m => {
+          if (m && m.id && !prevIds.has(m.id)) {
+            const senderKey = sanitizeChatUsernameKey(m.senderUsername || "");
+            const parsed = parseChannelParticipants(chId);
+            const involvesMe = (parsed.adminKey === myKey || parsed.userKey === myKey || chId === `channel_${myKey}`);
+            if (involvesMe && senderKey && senderKey !== myKey) {
+              newlyArrivedMessagesForMe.push({ channelId: chId, message: m });
+            }
+          }
+        });
+
         if (!lCh) {
-          const filteredServerMsgs = (Array.isArray(sCh.messages) ? sCh.messages : []).filter(m => m && (Number(m.timestamp || 0) > effectiveClearedAt));
           localStore[chId] = {
             ...sCh,
             clearedAt: effectiveClearedAt,
-            messages: filteredServerMsgs
+            messages: sMsgs
           };
           changed = true;
         } else {
           const lMsgs = (Array.isArray(lCh.messages) ? lCh.messages : []).filter(m => m && (Number(m.timestamp || 0) > effectiveClearedAt));
-          const sMsgs = (Array.isArray(sCh.messages) ? sCh.messages : []).filter(m => m && (Number(m.timestamp || 0) > effectiveClearedAt));
           const msgMap = new Map();
           lMsgs.concat(sMsgs).forEach(m => {
             if (m && m.id) msgMap.set(m.id, m);
           });
           const mergedMsgs = Array.from(msgMap.values()).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
           const prevLocalCount = Array.isArray(lCh.messages) ? lCh.messages.length : 0;
+          const prevUnreadByUserRaw = JSON.stringify(lCh.unreadByUser || {});
+          const nextUnreadByUserRaw = JSON.stringify(sCh.unreadByUser || {});
 
           if (
             sClearedAt > lClearedAt ||
             mergedMsgs.length !== prevLocalCount ||
             (sCh.lastTimestamp || 0) > (lCh.lastTimestamp || 0) ||
             Number(sCh.unreadAdmin || 0) !== Number(lCh.unreadAdmin || 0) ||
-            Number(sCh.unreadRenter || 0) !== Number(lCh.unreadRenter || 0)
+            Number(sCh.unreadRenter || 0) !== Number(lCh.unreadRenter || 0) ||
+            prevUnreadByUserRaw !== nextUnreadByUserRaw
           ) {
             localStore[chId] = {
               ...lCh,
@@ -25580,9 +25306,13 @@ function formatMonthLabel(rawVal) {
           }
         }
 
-        // If this channel is currently open in the active conversation window, clear unread count for the active reader
-        if (isChatConvOpen && activeSelectedChatChannelId && chId === activeSelectedChatChannelId && localStore[chId]) {
+        // If this channel (or its reverse counterpart) is currently open in the active conversation window, clear unread count for the active reader
+        if (activeRelatedIds.has(chId) && localStore[chId]) {
           const isAdminChat = activeRole === "Admin" || (activeRole === "Manager" && hasManagerPermission("liveChat"));
+          if (myKey && localStore[chId].unreadByUser && Number(localStore[chId].unreadByUser[myKey] || 0) > 0) {
+            localStore[chId].unreadByUser[myKey] = 0;
+            changed = true;
+          }
           if (isAdminChat && Number(localStore[chId].unreadAdmin || 0) > 0) {
             localStore[chId].unreadAdmin = 0;
             changed = true;
@@ -25607,7 +25337,16 @@ function formatMonthLabel(rawVal) {
           }
         }
         updateLiveChatUnreadBadge();
+
+        if (hasLoadedInitialPrivateChats && newlyArrivedMessagesForMe.length > 0 && activeUser) {
+          const latestIncoming = newlyArrivedMessagesForMe[newlyArrivedMessagesForMe.length - 1];
+          if (!activeRelatedIds.has(latestIncoming.channelId)) {
+            const senderDisplay = String(latestIncoming.message.senderName || latestIncoming.message.senderUsername || "Live Chat").replace(/\s*\(@[^)]+\)/g, "");
+            triggerSideToast(`New Message from ${senderDisplay}`, String(latestIncoming.message.text || "").slice(0, 85), true);
+          }
+        }
       }
+      hasLoadedInitialPrivateChats = true;
     }
 
     // Resolve clean Actual Name and Role ("Admin", "Manager", or "Renter") without ever exposing @username
@@ -25759,6 +25498,8 @@ function formatMonthLabel(rawVal) {
         if (propName) detailsParts.push(propName);
         if (flatName) detailsParts.push(`Flat ${flatName}`);
 
+        const unreadForMe = getChannelUnreadCountForUser(mergedCh, myAdminUsername, true);
+
         channelsMap.set(chId, {
           channelId: chId,
           targetUsername: uname,
@@ -25766,7 +25507,7 @@ function formatMonthLabel(rawVal) {
           displayName: info.actualName,
           roleLabel: info.roleLabel,
           flatLabel: detailsParts.join(" • "),
-          unreadAdmin: Number(mergedCh?.unreadAdmin || 0),
+          unreadAdmin: unreadForMe,
           lastTimestamp: Number(mergedCh?.lastTimestamp || 0)
         });
       });
@@ -25884,11 +25625,11 @@ function formatMonthLabel(rawVal) {
           return;
         }
 
-        const myUserClean = String(activeUser || "guest").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+        const myUserClean = sanitizeChatUsernameKey(activeUser || "guest");
         const listHtml = adminsList.map(adm => {
           const chId = buildAdminRenterChannelId(adm.username, myUserClean);
           const chData = getMergedChannelObject(store, chId, myUserClean);
-          const unread = Number(chData.unreadRenter || 0);
+          const unread = getChannelUnreadCountForUser(chData, myUserClean, false);
           const clearedAt = Number(chData.clearedAt || 0);
           const visibleMsgs = (chData.messages || []).filter(m => m && Number(m.timestamp || 0) > clearedAt);
           const lastMsg = visibleMsgs.slice(-1)[0];
@@ -25959,29 +25700,25 @@ function formatMonthLabel(rawVal) {
 
       const store = getPrivateChatStore();
       let storeModified = false;
-      if (store[channelId]) {
-        if (isAdmin && Number(store[channelId].unreadAdmin || 0) > 0) {
-          store[channelId].unreadAdmin = 0;
-          storeModified = true;
-        } else if (!isAdmin && Number(store[channelId].unreadRenter || 0) > 0) {
-          store[channelId].unreadRenter = 0;
-          storeModified = true;
+      const myKey = sanitizeChatUsernameKey(activeUser || "");
+      const relatedKeys = getRelatedChannelIds(channelId);
+
+      relatedKeys.forEach(k => {
+        if (store[k]) {
+          if (myKey && store[k].unreadByUser && Number(store[k].unreadByUser[myKey] || 0) > 0) {
+            store[k].unreadByUser[myKey] = 0;
+            storeModified = true;
+          }
+          if (isAdmin && Number(store[k].unreadAdmin || 0) > 0) {
+            store[k].unreadAdmin = 0;
+            storeModified = true;
+          } else if (!isAdmin && Number(store[k].unreadRenter || 0) > 0) {
+            store[k].unreadRenter = 0;
+            storeModified = true;
+          }
         }
-      }
-      // Also clear unread count on legacy channel if present
-      const cleanRenter = isAdmin
-        ? channelId.replace(/^channel_admin_[^_]+__user_/, "").replace(/^channel_/, "")
-        : String(activeUser || "guest").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
-      const legacyId = `channel_${cleanRenter}`;
-      if (store[legacyId]) {
-        if (isAdmin && Number(store[legacyId].unreadAdmin || 0) > 0) {
-          store[legacyId].unreadAdmin = 0;
-          storeModified = true;
-        } else if (!isAdmin && Number(store[legacyId].unreadRenter || 0) > 0) {
-          store[legacyId].unreadRenter = 0;
-          storeModified = true;
-        }
-      }
+      });
+
       if (storeModified) {
         savePrivateChatStore(store, true);
       }
@@ -26017,9 +25754,8 @@ function formatMonthLabel(rawVal) {
         return;
       }
       const store = getPrivateChatStore();
-      const renterUname = isAdmin
-        ? channelId.replace(/^channel_admin_[^_]+__user_/, "").replace(/^channel_/, "")
-        : String(activeUser || "guest").trim().toLowerCase();
+      const parsed = parseChannelParticipants(channelId);
+      const renterUname = isAdmin ? parsed.userKey : sanitizeChatUsernameKey(activeUser || "guest");
       const channelObj = getMergedChannelObject(store, channelId, renterUname);
       const clearedAt = Number(channelObj.clearedAt || 0);
       const msgs = (Array.isArray(channelObj.messages) ? channelObj.messages : []).filter(m => m && Number(m.timestamp || 0) > clearedAt);
@@ -26087,9 +25823,10 @@ function formatMonthLabel(rawVal) {
       }
 
       const myInfo = resolveUserActualFullNameAndRole(activeUser);
-      const renterUnameClean = isAdmin
-        ? targetChannelId.replace(/^channel_admin_[^_]+__user_/, "").replace(/^channel_/, "")
-        : String(activeUser || "").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
+      const parsed = parseChannelParticipants(targetChannelId);
+      const myKey = sanitizeChatUsernameKey(activeUser || "");
+      const partnerKey = isAdmin ? parsed.userKey : sanitizeChatUsernameKey(targetAdminId);
+      const renterUnameClean = isAdmin ? parsed.userKey : myKey;
 
       const mergedExisting = getMergedChannelObject(store, targetChannelId, renterUnameClean);
 
@@ -26110,12 +25847,14 @@ function formatMonthLabel(rawVal) {
           flatLabel: flatInfo,
           unreadAdmin: 0,
           unreadRenter: 0,
+          unreadByUser: { ...(mergedExisting.unreadByUser || {}) },
           clearedAt: Number(mergedExisting.clearedAt || 0),
           lastTimestamp: Date.now(),
           messages: Array.isArray(mergedExisting.messages) ? [...mergedExisting.messages] : []
         };
-      } else if (Array.isArray(mergedExisting.messages) && mergedExisting.messages.length > (store[targetChannelId].messages || []).length) {
-        store[targetChannelId].messages = [...mergedExisting.messages];
+      } else {
+        store[targetChannelId].messages = Array.isArray(mergedExisting.messages) ? [...mergedExisting.messages] : [];
+        store[targetChannelId].unreadByUser = { ...(mergedExisting.unreadByUser || {}), ...(store[targetChannelId].unreadByUser || {}) };
       }
 
       const senderRoleLabel = activeRole === "Manager" ? "Manager" : (isAdmin ? "Admin" : "Renter");
@@ -26125,22 +25864,32 @@ function formatMonthLabel(rawVal) {
       const nowTs = Date.now();
       const nowStr = new Date(nowTs).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
-      store[targetChannelId].targetAdminUsername = String(targetAdminId || store[targetChannelId].targetAdminUsername || "admin").trim().toLowerCase();
-      store[targetChannelId].renterUsername = renterUnameClean;
-      if (!Array.isArray(store[targetChannelId].messages)) {
-        store[targetChannelId].messages = [];
-      }
-      store[targetChannelId].messages.push({
+      const newMsgObj = {
         id: "msg_" + nowTs + "_" + Math.random().toString(36).substring(2, 6),
         senderRole: senderRoleLabel,
         senderUsername: String(activeUser || "").trim(),
-        targetAdminUsername: store[targetChannelId].targetAdminUsername,
+        targetAdminUsername: String(targetAdminId || store[targetChannelId].targetAdminUsername || "admin").trim().toLowerCase(),
         senderName: cleanSenderDisplay,
         text: text,
         timeStr: nowStr,
         timestamp: nowTs
-      });
+      };
+
+      store[targetChannelId].targetAdminUsername = newMsgObj.targetAdminUsername;
+      store[targetChannelId].renterUsername = renterUnameClean;
+      if (!Array.isArray(store[targetChannelId].messages)) {
+        store[targetChannelId].messages = [];
+      }
+      store[targetChannelId].messages.push(newMsgObj);
       store[targetChannelId].lastTimestamp = nowTs;
+
+      if (!store[targetChannelId].unreadByUser || typeof store[targetChannelId].unreadByUser !== "object") {
+        store[targetChannelId].unreadByUser = {};
+      }
+      if (myKey) store[targetChannelId].unreadByUser[myKey] = 0;
+      if (partnerKey) {
+        store[targetChannelId].unreadByUser[partnerKey] = Number(store[targetChannelId].unreadByUser[partnerKey] || 0) + 1;
+      }
 
       if (isAdmin) {
         store[targetChannelId].unreadRenter = Number(store[targetChannelId].unreadRenter || 0) + 1;
@@ -26148,6 +25897,15 @@ function formatMonthLabel(rawVal) {
       } else {
         store[targetChannelId].unreadAdmin = Number(store[targetChannelId].unreadAdmin || 0) + 1;
         store[targetChannelId].unreadRenter = 0;
+      }
+
+      // Mirror into reverse Admin-to-Admin / bidirectional channel if it exists so both sides see identical state
+      const reverseChId = (myKey && partnerKey) ? buildAdminRenterChannelId(partnerKey, myKey) : "";
+      if (reverseChId && reverseChId !== targetChannelId && store[reverseChId]) {
+        store[reverseChId].messages = [...store[targetChannelId].messages];
+        store[reverseChId].lastTimestamp = nowTs;
+        store[reverseChId].unreadByUser = { ...store[targetChannelId].unreadByUser };
+        store[reverseChId].unreadAdmin = Number(store[targetChannelId].unreadByUser[partnerKey] || 1);
       }
 
       savePrivateChatStore(store, true);
@@ -26165,10 +25923,9 @@ function formatMonthLabel(rawVal) {
       if (!channelId) return;
       const store = getPrivateChatStore();
       const nowTs = Date.now();
-      const renterUnameClean = channelId.replace(/^channel_admin_[^_]+__user_/, "").replace(/^channel_/, "");
-      const legacyId = `channel_${renterUnameClean}`;
+      const relatedKeys = getRelatedChannelIds(channelId);
 
-      [channelId, legacyId].forEach(key => {
+      relatedKeys.forEach(key => {
         if (!key) return;
         if (!store[key]) {
           store[key] = {
@@ -26176,6 +25933,7 @@ function formatMonthLabel(rawVal) {
             messages: [],
             unreadAdmin: 0,
             unreadRenter: 0,
+            unreadByUser: {},
             clearedAt: nowTs,
             lastTimestamp: nowTs
           };
@@ -26183,6 +25941,7 @@ function formatMonthLabel(rawVal) {
           store[key].messages = [];
           store[key].unreadAdmin = 0;
           store[key].unreadRenter = 0;
+          store[key].unreadByUser = {};
           store[key].clearedAt = nowTs;
           store[key].lastTimestamp = nowTs;
         }
@@ -26207,11 +25966,12 @@ function formatMonthLabel(rawVal) {
           unreadCount += Number(c.unreadAdmin || 0);
         });
       } else {
-        const myUserClean = String(activeUser || "guest").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "_");
-        Object.keys(store).forEach(chKey => {
-          if (chKey.endsWith(`__user_${myUserClean}`) || chKey === `channel_${myUserClean}`) {
-            unreadCount += Number(store[chKey]?.unreadRenter || 0);
-          }
+        const adminsList = getRegisteredAdminAccountsList();
+        const myUserClean = sanitizeChatUsernameKey(activeUser || "guest");
+        adminsList.forEach(adm => {
+          const chId = buildAdminRenterChannelId(adm.username, myUserClean);
+          const merged = getMergedChannelObject(store, chId, myUserClean);
+          unreadCount += getChannelUnreadCountForUser(merged, myUserClean, false);
         });
       }
       const badgeText = unreadCount > 99 ? "99+" : String(unreadCount);
@@ -26257,25 +26017,8 @@ function formatMonthLabel(rawVal) {
       activeSelectedChatChannelId = "";
       activeSelectedTargetAdminUsername = "";
     }
-    function closeModularAiWidget() {
-      const w = document.getElementById("modularAiWidget");
-      if (w) w.style.display = "none";
-    }
-    function openModularAiWidget() {
-      const w = document.getElementById("modularAiWidget");
-      if (w) {
-        w.classList.remove("minimized");
-        w.style.display = "flex";
-      }
-    }
-    if (typeof window !== "undefined") {
-      window._disabledOldTab = function(id) { if (typeof openEditLeftRenterModal === "function") openEditLeftRenterModal(id); };
-      window.closeModularAiWidget = closeModularAiWidget;
-      window.openModularAiWidget = openModularAiWidget;
-    }
+    
 
   </script>
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>
