@@ -4827,7 +4827,7 @@
             <i class="fa-solid fa-building-columns" style="color:#6366f1;"></i> FD, Savings &amp; Place Collection Utilization Portfolio
           </h3>
           <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
-            Track total amount collected by each place, what purpose it was used for, and full Saving / Future Saving FD details
+        
           </div>
         </div>
         <span style="font-size:0.7rem; font-weight:800; color:#10b981; background:rgba(16,185,129,0.12); padding:5px 12px; border-radius:20px; border:1.5px solid rgba(16,185,129,0.4);">
@@ -6119,7 +6119,7 @@
               <i class="fa-solid fa-at" style="color:#38bdf8; font-size:0.78rem;"></i>
               <span id="profDisplayHeroUser" style="color:#38bdf8; letter-spacing:0.3px;">@username</span>
               <span style="color:rgba(255,255,255,0.4);">•</span>
-              <span style="color:#a7f3d0; font-weight:600; font-size:0.74rem;"><i class="fa-solid fa-cloud-arrow-up"></i> Google Drive Synced</span>
+              <span style="color:#a7f3d0; font-weight:600; font-size:0.74rem;"><i class="fa-solid fa-cloud-arrow-up"></i></span>
             </div>
           </div>
         </div>
@@ -6220,11 +6220,11 @@
           <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-bottom:8px;">
             <div id="themeCardBlack" class="theme-card active" onclick="selectAndSaveTheme('black')" style="cursor:pointer; padding:12px 8px; text-align:center; border-radius:12px; border:1.5px solid rgba(255,255,255,0.15); background:#090d16;">
               <i class="fa-solid fa-moon" style="font-size:1.2rem; color:#60a5fa; margin-bottom:6px; display:block;"></i>
-              <strong style="font-size:0.78rem; color:#fff;">Black / Dark</strong>
+              <strong style="font-size:0.78rem; color:#fff;">Black</strong>
             </div>
             <div id="themeCardWhite" class="theme-card" onclick="selectAndSaveTheme('white')" style="cursor:pointer; padding:12px 8px; text-align:center; border-radius:12px; border:1.5px solid rgba(255,255,255,0.15); background:#f8fafc;">
               <i class="fa-solid fa-sun" style="font-size:1.2rem; color:#f59e0b; margin-bottom:6px; display:block;"></i>
-              <strong style="font-size:0.78rem; color:#0f172a;">White / Light</strong>
+              <strong style="font-size:0.78rem; color:#0f172a;">White </strong>
             </div>
             <div id="themeCardSystem" class="theme-card" onclick="selectAndSaveTheme('system')" style="cursor:pointer; padding:12px 8px; text-align:center; border-radius:12px; border:1.5px solid rgba(255,255,255,0.15); background:#1e293b;">
               <i class="fa-solid fa-desktop" style="font-size:1.2rem; color:#a855f7; margin-bottom:6px; display:block;"></i>
@@ -6304,7 +6304,7 @@
             <input type="text" id="changeNameOnlyInput" class="form-control" placeholder="Enter your official full name">
           </div>
           <div class="form-group">
-            <label>Mobile No. (+91 &amp; 10 Digits) <span class="req-star">*</span></label>
+            <label>Mobile No. <span class="req-star">*</span></label>
             <input type="tel" id="changeMobileOnlyInput" class="form-control" maxlength="14" inputmode="tel" placeholder="+91 9876543210" onfocus="ensurePlus91Prefix(this)" oninput="this.value = formatIndianMobilePlus91(this.value)">
           </div>
           <button class="btn-primary" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%); font-weight:800;" onclick="submitChangeNameAndMobile()">
@@ -6369,7 +6369,7 @@
               </label>
               <span class="exec-field-tag tag-required">Official Broadcast</span>
             </div>
-            <span class="exec-field-purpose">Compose an announcement or alert. It will immediately reach all selected renters' dashboards live and update their notification bells.</span>
+            <span class="exec-field-purpose"></span>
             <input type="text" id="adminNoticeTitleInput" class="form-control" style="margin-bottom:8px;" placeholder="Notice Title (e.g. Water Tank Cleaning / Rent Due Reminder)">
             <textarea id="adminNoticeBodyInput" class="form-control" rows="3" style="margin-bottom:8px;" placeholder="Type complete announcement message details here..."></textarea>
 
@@ -6615,7 +6615,7 @@
             onclick="switchOtherSubOption('users')"
           >
             <div class="tool-top" style="color:#38bdf8;"><i class="fa-solid fa-users-gear"></i> 1. Registered Users</div>
-            <div class="tool-desc">Change roles, assign flats, block/unblock or delete User IDs</div>
+            <div class="tool-desc"></div>
           </button>
           <button
             type="button"
@@ -6625,7 +6625,7 @@
             onclick="switchOtherSubOption('history')"
           >
             <div class="tool-top" style="color:#34d399;"><i class="fa-solid fa-clock-rotate-left"></i> 2. Last Logins</div>
-            <div class="tool-desc">Audit timestamps &amp; roles of everyone who signed in</div>
+            <div class="tool-desc"></div>
           </button>
           <button
             type="button"
@@ -6635,7 +6635,7 @@
             onclick="switchOtherSubOption('changeBg')"
           >
             <div class="tool-top" style="color:#f472b6;"><i class="fa-solid fa-image"></i> 3. Background Photo</div>
-            <div class="tool-desc">Admin Only: Upload global background wallpaper for all devices</div>
+            <div class="tool-desc"></div>
           </button>
           <button
             type="button"
@@ -6645,7 +6645,7 @@
             onclick="switchOtherSubOption('editEverything')"
           >
             <div class="tool-top" style="color:#c084fc;"><i class="fa-solid fa-pen-ruler"></i> 4. Edit Everything</div>
-            <div class="tool-desc">Search, modify or delete any historical bill across all flats</div>
+            <div class="tool-desc"></div>
           </button>
           <button
             type="button"
@@ -6655,7 +6655,7 @@
             onclick="switchOtherSubOption('contactSettings')"
           >
             <div class="tool-top" style="color:#f59e0b;"><i class="fa-solid fa-address-book"></i> 5. Contact Info</div>
-            <div class="tool-desc">Admin Only: Set WhatsApp, phone, email &amp; address for Contact Us popup</div>
+            <div class="tool-desc"></div>
           </button>
         </div>
 
@@ -6817,7 +6817,6 @@
                 <i class="fa-solid fa-address-book"></i> Contact Us Details &amp; WhatsApp Support Configuration
               </span>
               <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">
-                Configure support phone, WhatsApp support phone, mobile number, email ID, and official property address. Updates live across all Renter Help Centers (missing fields display "N/A").
               </div>
             </div>
             <span style="font-size:0.7rem; color:#f59e0b; font-weight:700; background:rgba(245,158,11,0.15); padding:3px 8px; border-radius:12px;">
@@ -6889,12 +6888,12 @@
         <div class="exec-field-card">
           <div class="exec-field-label-row">
             <label class="exec-field-label" for="newPropName">
-              <i class="fa-solid fa-hotel" style="color:#6366f1;"></i> 1. Property / Building Name <span class="req-star">*</span>
+              <i class="fa-solid fa-hotel" style="color:#6366f1;"></i> 1. Property Name <span class="req-star">*</span>
             </label>
             <span class="exec-field-tag tag-required">Compulsory</span>
           </div>
           <span class="exec-field-purpose"></span>
-          <input type="text" id="newPropName" class="form-control" placeholder="e.g. Sunrise Enclave or Royal Residency">
+          <input type="text" id="newPropName" class="form-control" placeholder="e.g. Patna">
         </div>
 
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:12px;">
@@ -7097,7 +7096,7 @@
           <span class="exec-modal-badge" style="background:rgba(14,165,233,0.2); color:#38bdf8; border:1px solid rgba(14,165,233,0.4);">
             <i class="fa-solid fa-layer-group"></i> Unit Creation
           </span>
-          <h3 class="exec-modal-title">Add New Flat / Unit</h3>
+          <h3 class="exec-modal-title">Add New Flat</h3>
           <p class="exec-modal-subtitle"></p>
         </div>
       </div>
@@ -7154,7 +7153,7 @@
           <div class="exec-field-card">
             <div class="exec-field-label-row">
               <label class="exec-field-label" for="addRenterPropDropdown">
-                <i class="fa-solid fa-location-dot" style="color:#10b981;"></i> 1. Location (Property) <span class="req-star">*</span>
+                <i class="fa-solid fa-location-dot" style="color:#10b981;"></i> 1. Location <span class="req-star">*</span>
               </label>
               <span class="exec-field-tag tag-required">Compulsory</span>
             </div>
@@ -7165,7 +7164,7 @@
           <div class="exec-field-card">
             <div class="exec-field-label-row">
               <label class="exec-field-label" for="addRenterFlatDropdown">
-                <i class="fa-solid fa-door-open" style="color:#06b6d4;"></i> 2. Vacant Flat Number <span class="req-star">*</span>
+                <i class="fa-solid fa-door-open" style="color:#06b6d4;"></i> 2. Flat <span class="req-star">*</span>
               </label>
               <span class="exec-field-tag tag-required">Compulsory</span>
             </div>
@@ -7190,7 +7189,7 @@
           <div class="exec-field-card">
             <div class="exec-field-label-row">
               <label class="exec-field-label" for="addRenterFlatRateInput">
-                <i class="fa-solid fa-indian-rupee-sign" style="color:#10b981;"></i> 4. Flat Rate (Monthly Rent ₹) <span class="req-star">*</span>
+                <i class="fa-solid fa-indian-rupee-sign" style="color:#10b981;"></i> 4. ₹ Flat Rate  <span class="req-star">*</span>
               </label>
               <span class="exec-field-tag tag-required">Compulsory</span>
             </div>
@@ -7201,7 +7200,7 @@
               class="form-control"
               min="1"
               step="1"
-              placeholder="e.g. 8500"
+              placeholder="e.g. 3200"
               required
             >
           </div>
@@ -7209,7 +7208,7 @@
           <div class="exec-field-card">
             <div class="exec-field-label-row">
               <label class="exec-field-label" for="addRenterElecRateInput">
-                <i class="fa-solid fa-bolt" style="color:#f59e0b;"></i> 5. Electricity Rate Per Unit (₹)
+                <i class="fa-solid fa-bolt" style="color:#f59e0b;"></i> 5. ₹ Electricity Rate 
               </label>
               <span class="exec-field-tag tag-optional">₹ / Unit</span>
             </div>
@@ -7220,7 +7219,7 @@
               class="form-control"
               min="0"
               step="0.01"
-              placeholder="e.g. 9 or 10.5"
+              placeholder="9"
             >
           </div>
         </div>
@@ -7228,11 +7227,11 @@
         <div class="exec-field-card">
           <div class="exec-field-label-row">
             <label class="exec-field-label" for="addRenterAadhaarInput">
-              <i class="fa-solid fa-address-card" style="color:#38bdf8;"></i> 6. Aadhaar Number (Auto-Fills Past Renter Record)
+              <i class="fa-solid fa-address-card" style="color:#38bdf8;"></i> 6. Aadhaar Number
             </label>
             <span class="exec-field-tag tag-optional">Optional</span>
           </div>
-          <span class="exec-field-purpose">12-digit Aadhaar (XXXX-XXXX-XXXX). If returning tenant, auto-loads their saved profile &amp; photos.</span>
+          <span class="exec-field-purpose"></span>
           <input
             type="text"
             id="addRenterAadhaarInput"
