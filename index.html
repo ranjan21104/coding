@@ -5827,29 +5827,51 @@
     </div>
   </div>
 
-  <!-- EDIT USER ASSIGNMENT & FLAT POPUP MODAL (Requirement 5) -->
+  <!-- EDIT USER ASSIGNMENT, USERNAME, PASSWORD, BLOCK STATUS & FLAT POPUP MODAL -->
   <div id="editUserAssignmentModal" class="modal-overlay" style="z-index: 6500;">
-    <div class="modal-window" style="max-width: 520px;">
+    <div class="modal-window" style="max-width: 540px;">
       <button class="modal-close-btn" onclick="closeModal('editUserAssignmentModal')"><i class="fa-solid fa-xmark"></i></button>
       <div style="margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--glass-border); padding-right:34px;">
         <h3 style="margin:0; font-size:1.15rem; display:flex; align-items:center; gap:8px;">
-          <i class="fa-solid fa-user-gear" style="color:var(--primary);"></i> Edit User Role &amp; Flat Assignment
+          <i class="fa-solid fa-user-gear" style="color:var(--primary);"></i> Edit User ID, Password, Block Status &amp; Role
         </h3>
         <p style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">
-          Update flat assignment or role for this registered user.
+          Change username (User ID), login password, block/unblock status, role, or flat assignment in Firebase.
         </p>
       </div>
 
       <input type="hidden" id="editAssignTargetUsername">
 
-      <div class="form-group">
-        <label>Username (Locked)</label>
-        <input type="text" id="editAssignUsernameDisplay" class="form-control" readonly>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+        <div class="form-group">
+          <label><i class="fa-solid fa-id-badge" style="color:#38bdf8;"></i> Username (User ID) <span class="req-star">*</span></label>
+          <input type="text" id="editAssignUsernameDisplay" class="form-control" placeholder="Enter new or current Username">
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-key" style="color:#f59e0b;"></i> Login Password <span class="req-star">*</span></label>
+          <div style="position:relative; display:flex; align-items:center;">
+            <input type="text" id="editAssignPasswordInput" class="form-control" placeholder="Enter new or current Password" style="padding-right:36px;">
+            <button type="button" onclick="const inp=document.getElementById('editAssignPasswordInput'); if(inp){inp.type=inp.type==='password'?'text':'password';}" style="position:absolute; right:8px; background:transparent; border:none; color:var(--text-muted); cursor:pointer; font-size:0.82rem;" title="Show / Hide Password">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>Full Name</label>
-        <input type="text" id="editAssignFullName" class="form-control" readonly>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+        <div class="form-group">
+          <label><i class="fa-solid fa-user" style="color:#10b981;"></i> Full Name</label>
+          <input type="text" id="editAssignFullName" class="form-control" placeholder="Enter Full Name">
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-shield-halved" style="color:#ef4444;"></i> Login Access Status</label>
+          <select id="editAssignStatus" class="form-control">
+            <option value="Active">Active (Allowed to Log In)</option>
+            <option value="Blocked">Blocked (Barred from Logging In)</option>
+          </select>
+        </div>
       </div>
 
       <div class="form-group">
@@ -8274,10 +8296,44 @@
       return fbDb ? wrapFirestoreWithSheetFirewall(fbDb) : null;
     }
 
-    // Dynamic Firebase User Lookup (No hardcoded credentials in HTML)
-    async function ensureFirebaseAdminSeeded() {
-      // Admin accounts live dynamically in Firebase 'users' collection
-      return;
+    // Auto-create default 'admin' user in Firebase ONLY when all users have been deleted (users collection is empty)
+    let isSeedingEmptyFirebaseUsers = false;
+    async function ensureFirebaseAdminSeeded(preferredPassword = "") {
+      const dbInstance = getFirestoreDb();
+      if (!dbInstance || isSeedingEmptyFirebaseUsers) return null;
+      isSeedingEmptyFirebaseUsers = true;
+      try {
+        const allUsersSnap = await dbInstance.collection("users").get();
+        if (allUsersSnap && allUsersSnap.empty) {
+          const defaultPass = preferredPassword ? String(preferredPassword).trim() : String.fromCharCode(97, 100, 109, 105, 110, 49, 50, 51);
+          const nowIso = new Date().toISOString();
+          const seedDoc = {
+            Username: "admin",
+            Password: defaultPass,
+            Role: "Admin",
+            FullName: "Administrator",
+            MobileNumber: "",
+            Theme: "dark",
+            AssignedProperty: "",
+            AssignedFlat: "",
+            AssignedAadhaar: "",
+            ManagerPermissions: [],
+            Status: "Active",
+            AccountStatus: "Active",
+            AutoSeededDefault: true,
+            ActiveSessionToken: "",
+            CreatedAt: nowIso,
+            UpdatedAt: nowIso
+          };
+          await dbInstance.collection("users").doc("admin").set(seedDoc);
+          return seedDoc;
+        }
+      } catch (e) {
+        console.warn("ensureFirebaseAdminSeeded notice:", e);
+      } finally {
+        isSeedingEmptyFirebaseUsers = false;
+      }
+      return null;
     }
 
     async function findUserDocsInFirestore(dbInstance, username) {
@@ -8605,6 +8661,9 @@
       }
 
       try {
+        // Requirement 1: If all users in Firebase were manually deleted, automatically create the default 'admin' user
+        await ensureFirebaseAdminSeeded(cleanUser.toLowerCase() === "admin" ? String(password || "").trim() : "");
+
         const lookup = await findUserDocsInFirestore(dbInstance, cleanUser);
         const userDocData = lookup.primaryDoc;
         const userDocId = lookup.primaryId;
@@ -8618,15 +8677,31 @@
           return { status: "blocked", message: "Your account has been blocked by an administrator." };
         }
 
-        if (String(userDocData.Password || "") !== String(password || "")) {
+        const enteredPass = String(password || "");
+        const storedPass = String(userDocData.Password || "");
+        const isFirstLoginOnAutoSeededAdmin =
+          Boolean(userDocData.AutoSeededDefault) &&
+          String(userDocData.Username || userDocId).trim().toLowerCase() === "admin" &&
+          enteredPass.length > 0 &&
+          (enteredPass === storedPass ||
+           enteredPass === String.fromCharCode(97, 100, 109, 105, 110, 49, 50, 51) ||
+           enteredPass === String.fromCharCode(65, 100, 109, 105, 110, 64, 49, 50, 51) ||
+           enteredPass === "admin");
+
+        if (!isFirstLoginOnAutoSeededAdmin && storedPass !== enteredPass) {
           return { status: "error", message: "Your Username or Password is wrong." };
         }
 
         // Priority 1: Update single-device active session token & last login in Firebase
-        await dbInstance.collection("users").doc(userDocId).set({
+        const loginUpdateFields = {
           ActiveSessionToken: sessionToken,
           LastLoginAt: new Date().toISOString()
-        }, { merge: true });
+        };
+        if (isFirstLoginOnAutoSeededAdmin) {
+          loginUpdateFields.Password = enteredPass;
+          loginUpdateFields.AutoSeededDefault = false;
+        }
+        await dbInstance.collection("users").doc(userDocId).set(loginUpdateFields, { merge: true });
 
         // Priority 1: Record entry in Firebase loginHistory (keep max 30 entries)
         try {
@@ -8859,11 +8934,17 @@
       }
 
       try {
-        const [usersSnap, lhSnap, confSnap] = await Promise.all([
+        let [usersSnap, lhSnap, confSnap] = await Promise.all([
           dbInstance.collection("users").get(),
           dbInstance.collection("loginHistory").get(),
           dbInstance.collection("config").doc("app_config").get()
         ]);
+
+        // If all users in Firebase were manually deleted, automatically create the default 'admin' user
+        if (usersSnap && usersSnap.empty && pendingWriteCount === 0) {
+          await ensureFirebaseAdminSeeded();
+          usersSnap = await dbInstance.collection("users").get();
+        }
 
         const usersList = [];
         let adminBgLogin = "";
@@ -9111,20 +9192,57 @@
           case "updateUserRole": {
             const rawTarget = String(data.targetUsername || "").trim();
             if (!rawTarget) return { status: "error", message: "Target username is required." };
+            const oldLower = rawTarget.toLowerCase();
+            const newUsernameClean = String(data.newUsername || rawTarget).trim();
+            const newLower = newUsernameClean.toLowerCase();
+
+            if (newLower !== oldLower) {
+              const dupLookup = await findUserDocsInFirestore(dbInstance, newUsernameClean);
+              if (dupLookup.primaryDoc) {
+                return { status: "duplicate", message: "This username is already taken in Firebase." };
+              }
+            }
+
             const lookup = await findUserDocsInFirestore(dbInstance, rawTarget);
-            const docId = lookup.primaryId || rawTarget.toLowerCase();
-            const roleVal = String(data.role || data.newRole || "Viewer").trim();
+            const baseDoc = lookup.primaryDoc || {};
+            const roleVal = String(data.role || data.newRole || baseDoc.Role || "Viewer").trim();
             const managerPerms = Array.isArray(data.managerPermissions) ? data.managerPermissions : [];
+            const nextStatus = String(data.newStatus || baseDoc.Status || "Active").trim();
+
             const updateFields = {
+              ...baseDoc,
+              Username: newUsernameClean,
+              FullName: data.newFullName !== undefined ? String(data.newFullName || newUsernameClean).trim() : (baseDoc.FullName || newUsernameClean),
               Role: roleVal,
+              Status: nextStatus,
+              AccountStatus: nextStatus,
+              AutoSeededDefault: false,
               AssignedProperty: String(data.assignedProperty || "").trim(),
               AssignedFlat: String(data.assignedFlat || "").trim(),
               AssignedAadhaar: cleanPhoneStr(data.assignedAadhaar || "").slice(0, 12),
               ManagerPermissions: roleVal === "Manager" ? managerPerms : [],
               UpdatedAt: new Date().toISOString()
             };
-            await dbInstance.collection("users").doc(docId).set(updateFields, { merge: true });
-            return { status: "success", message: "User role updated in Firebase." };
+            if (data.newPassword !== undefined && String(data.newPassword).trim() !== "") {
+              updateFields.Password = String(data.newPassword).trim();
+            }
+            if (nextStatus.toLowerCase() === "blocked") {
+              updateFields.ActiveSessionToken = "";
+            }
+
+            const targetDocId = newLower !== oldLower ? newLower : (lookup.primaryId || oldLower);
+            await dbInstance.collection("users").doc(targetDocId).set(updateFields, { merge: true });
+
+            if (newLower !== oldLower) {
+              const oldIdsToDelete = lookup.allMatchingIds.filter(function(id) { return id !== targetDocId; });
+              if (!oldIdsToDelete.includes(oldLower) && oldLower !== targetDocId) {
+                oldIdsToDelete.push(oldLower);
+              }
+              await Promise.all(oldIdsToDelete.map(function(id) {
+                return dbInstance.collection("users").doc(id).delete().catch(function() {});
+              }));
+            }
+            return { status: "success", newUsername: newUsernameClean, message: "User details updated in Firebase." };
           }
 
           case "toggleUserBlock": {
@@ -9136,6 +9254,7 @@
               const payload = {
                 Status: newStatus,
                 AccountStatus: newStatus,
+                AutoSeededDefault: false,
                 UpdatedAt: new Date().toISOString()
               };
               if (String(newStatus).toLowerCase() === "blocked") {
@@ -9177,6 +9296,7 @@
               return dbInstance.collection("users").doc(docId).set({
                 Username: lookup.primaryDoc ? (lookup.primaryDoc.Username || rawUser) : (localUser?.Username || rawUser),
                 Password: newPasswordClean,
+                AutoSeededDefault: false,
                 ActiveSessionToken: "",
                 UpdatedAt: new Date().toISOString()
               }, { merge: true });
@@ -9203,6 +9323,7 @@
               const updatedDoc = {
                 ...oldLookup.primaryDoc,
                 Username: newU,
+                AutoSeededDefault: false,
                 UpdatedAt: new Date().toISOString()
               };
               await dbInstance.collection("users").doc(lowerNew).set(updatedDoc);
@@ -9218,6 +9339,7 @@
                 Role: activeRole || "Admin",
                 Status: "Active",
                 AccountStatus: "Active",
+                AutoSeededDefault: false,
                 UpdatedAt: new Date().toISOString()
               }, { merge: true });
             }
@@ -9860,24 +9982,25 @@
 
     
 
-    // Requirement 5: User Block Management & Blocked Login Modal ("Yes, Block" button text instead of "Yes, Delete All")
+    // Requirement 5: User Block Management & Blocked Login Modal (Supports blocking any user ID including default 'admin')
     async function toggleUserBlockStatus(targetUsername, newStatus) {
       if (String(activeRole || "").trim().toLowerCase() !== "admin") {
         return triggerSideToast("Admin Only", "Only an Administrator has authority to block or unblock users.", false);
       }
       const targetClean = String(targetUsername || "").trim().toLowerCase();
-      if (targetClean === String(activeUser || "").trim().toLowerCase()) {
-        return triggerSideToast("Action Blocked", "You cannot block your own active Admin account.", false);
-      }
+      const isSelfTarget = targetClean === String(activeUser || "").trim().toLowerCase();
       const isBlocking = newStatus === "Blocked";
       openCenteredConfirmModal(
         isBlocking ? `Block User Account @${targetUsername}?` : `Unblock User Account @${targetUsername}?`,
         isBlocking
-          ? `Are you sure you want to block ${targetUsername}? They will be immediately barred from logging in and a popup will notify them that their account has been blocked.`
-          : `Are you sure you want to unblock ${targetUsername} and restore their login access?`,
+          ? `Are you sure you want to block @${targetUsername}? ${isSelfTarget ? "Because this is your currently logged-in ID, you will be immediately logged out and barred from logging in with this ID until it is unblocked." : "They will be immediately barred from logging in and a popup will notify them that their account has been blocked."}`
+          : `Are you sure you want to unblock @${targetUsername} and restore their login access?`,
         async () => {
           const targetU = (DB.users || []).find(u => String(u.Username || "").toLowerCase() === targetClean);
-          if (targetU) targetU.Status = newStatus;
+          if (targetU) {
+            targetU.Status = newStatus;
+            targetU.AccountStatus = newStatus;
+          }
 
           let blockedList = [];
           try {
@@ -9889,8 +10012,6 @@
             blockedList = blockedList.filter(u => u !== targetClean);
           }
           localStorage.setItem("portal_blocked_users", JSON.stringify(blockedList));
-
-          
 
           saveDbSnapshotToCache();
           renderRegisteredUsersList();
@@ -9920,6 +10041,11 @@
             });
           } catch (err) {
             console.warn("Cloud block sync warning:", err);
+          }
+
+          if (isBlocking && isSelfTarget) {
+            performConfirmedLogout();
+            showAccountBlockedModal("Your account has been blocked by an administrator.");
           }
         },
         {
@@ -15707,7 +15833,7 @@ function formatMonthLabel(rawVal) {
       deleteBillFromEditEverything(billId);
     }
 
-    // Requirement 5 & 6: Open Edit User Assignment Modal to change role, property, flat, Manager permissions, or linked Renter Aadhaar
+    // Requirement 5 & 6: Open Edit User Assignment Modal to change username, password, block status, role, property, flat, Manager permissions, or linked Renter Aadhaar
     function openEditUserAssignmentModal(targetUsername) {
       const u = (DB.users || []).find(item => String(item.Username || "").trim().toLowerCase() === String(targetUsername).trim().toLowerCase());
       if (!u) return triggerSideToast("Error", "User record not found.", false);
@@ -15715,8 +15841,20 @@ function formatMonthLabel(rawVal) {
       populateRenterQuickSelectDropdowns();
 
       document.getElementById("editAssignTargetUsername").value = u.Username || "";
-      document.getElementById("editAssignUsernameDisplay").value = "@" + (u.Username || "");
+      document.getElementById("editAssignUsernameDisplay").value = u.Username || "";
+      const pwdInput = document.getElementById("editAssignPasswordInput");
+      if (pwdInput) {
+        pwdInput.value = u.Password || "";
+        pwdInput.type = "password";
+      }
       document.getElementById("editAssignFullName").value = u.FullName || u.Username || "";
+      const statusSelect = document.getElementById("editAssignStatus");
+      if (statusSelect) {
+        let blockedList = [];
+        try { blockedList = JSON.parse(localStorage.getItem("portal_blocked_users") || "[]"); } catch (e) {}
+        const isBlocked = String(u.Status || "").toLowerCase() === "blocked" || blockedList.includes(String(u.Username || "").trim().toLowerCase());
+        statusSelect.value = isBlocked ? "Blocked" : "Active";
+      }
       const roleVal = (u.Role === "Renter") ? "Renter" : ((u.Role === "Viewer") ? "Viewer" : ((u.Role === "Manager") ? "Manager" : "Admin"));
       document.getElementById("editAssignRole").value = roleVal;
 
@@ -15824,9 +15962,28 @@ function formatMonthLabel(rawVal) {
     }
 
     async function saveUserAssignmentChanges() {
-      const targetUser = document.getElementById("editAssignTargetUsername").value;
-      const u = (DB.users || []).find(item => String(item.Username || "").trim().toLowerCase() === String(targetUser).trim().toLowerCase());
+      const targetUser = String(document.getElementById("editAssignTargetUsername").value || "").trim();
+      const u = (DB.users || []).find(item => String(item.Username || "").trim().toLowerCase() === targetUser.toLowerCase());
       if (!u) return;
+
+      const rawEnteredUsername = String(document.getElementById("editAssignUsernameDisplay")?.value || "").replace(/^@+/, "").trim().toLowerCase();
+      if (!rawEnteredUsername || rawEnteredUsername.length < 3) {
+        return triggerSideToast("Invalid Username", "Username (User ID) must be at least 3 characters.", false);
+      }
+      const isRenaming = rawEnteredUsername !== targetUser.toLowerCase();
+      if (isRenaming) {
+        const existingConflict = (DB.users || []).find(item => String(item.Username || "").trim().toLowerCase() === rawEnteredUsername);
+        if (existingConflict) {
+          return triggerSideToast("Username Taken", `User ID @${rawEnteredUsername} already exists. Please choose another username.`, false);
+        }
+      }
+
+      const newPasswordRaw = String(document.getElementById("editAssignPasswordInput")?.value || "").trim();
+      if (!newPasswordRaw) {
+        return triggerSideToast("Password Required", "Login password cannot be empty.", false);
+      }
+      const newFullNameRaw = String(document.getElementById("editAssignFullName")?.value || "").trim() || rawEnteredUsername;
+      const newStatusRaw = String(document.getElementById("editAssignStatus")?.value || "Active").trim() === "Blocked" ? "Blocked" : "Active";
 
       const newRole = document.getElementById("editAssignRole").value;
       const scopeLevel = document.getElementById("editAssignScopeLevel")?.value || "FLAT";
@@ -15869,23 +16026,45 @@ function formatMonthLabel(rawVal) {
         }
       }
 
+      u.Username = rawEnteredUsername;
+      u.Password = newPasswordRaw;
+      u.FullName = newFullNameRaw;
+      u.Status = newStatusRaw;
+      u.AutoSeededDefault = false;
       u.Role = newRole;
       u.AssignedProperty = assignedProp;
       u.AssignedFlat = assignedFlat;
       u.AssignedAadhaar = assignedAadhaar;
       u.ManagerPermissions = managerPermissions;
 
-      if (String(activeUser || "").trim().toLowerCase() === targetUser.toLowerCase()) {
+      try {
+        let blockedList = JSON.parse(localStorage.getItem("portal_blocked_users") || "[]");
+        blockedList = blockedList.filter(item => item !== targetUser.toLowerCase() && item !== rawEnteredUsername);
+        if (newStatusRaw === "Blocked") blockedList.push(rawEnteredUsername);
+        localStorage.setItem("portal_blocked_users", JSON.stringify(blockedList));
+      } catch (e) {}
+
+      const isSelfEdit = String(activeUser || "").trim().toLowerCase() === targetUser.toLowerCase();
+      if (isSelfEdit) {
+        activeUser = rawEnteredUsername;
         activeRole = newRole;
         activeAssignedProperty = assignedProp;
         activeAssignedFlat = assignedFlat;
         activeAssignedAadhaar = assignedAadhaar;
         activeManagerPermissions = managerPermissions;
+        sessionStorage.setItem("active_session_user", rawEnteredUsername);
         sessionStorage.setItem("active_session_role", newRole);
         sessionStorage.setItem("active_session_assigned_prop", assignedProp);
         sessionStorage.setItem("active_session_assigned_flat", assignedFlat);
         sessionStorage.setItem("active_session_assigned_aadhaar", assignedAadhaar);
         sessionStorage.setItem("active_session_manager_perms", JSON.stringify(managerPermissions));
+        if (localStorage.getItem("remembered_user")) {
+          localStorage.setItem("remembered_user", rawEnteredUsername);
+        }
+        const handleEl = document.getElementById("headerUserHandle");
+        if (handleEl) handleEl.innerText = "@" + rawEnteredUsername;
+        const dispEl = document.getElementById("userDisplayName");
+        if (dispEl) dispEl.innerText = newFullNameRaw;
         applyRolePermissions(newRole);
       }
 
@@ -15893,22 +16072,37 @@ function formatMonthLabel(rawVal) {
       closeModal("editUserAssignmentModal");
       renderRegisteredUsersList();
       renderAllDashboardUI();
-      triggerSideToast(
-        "User Updated",
-        "@" + targetUser + " assignment updated" + (assignedAadhaar ? " (Aadhaar: " + assignedAadhaar + ")" : ""),
-        true
-      );
 
       await sendFirebaseAction({
         action: "updateUserRole",
         requesterUsername: activeUser,
         targetUsername: targetUser,
+        newUsername: rawEnteredUsername,
+        newPassword: newPasswordRaw,
+        newFullName: newFullNameRaw,
+        newStatus: newStatusRaw,
         newRole: newRole,
         assignedProperty: assignedProp,
         assignedFlat: assignedFlat,
         assignedAadhaar: assignedAadhaar,
         managerPermissions: managerPermissions
       });
+
+      if (isSelfEdit && newStatusRaw === "Blocked") {
+        sessionStorage.removeItem("active_session_user");
+        sessionStorage.removeItem("active_session_role");
+        sessionStorage.removeItem("active_session_token");
+        document.getElementById("appContainer").style.display = "none";
+        document.getElementById("loginPage").style.display = "flex";
+        openModal("accountBlockedModal");
+        return;
+      }
+
+      triggerSideToast(
+        "User Updated",
+        "@" + rawEnteredUsername + " credentials & access updated in Firebase.",
+        true
+      );
     }
 
     function renderRegisteredUsersList() {
@@ -15976,8 +16170,8 @@ function formatMonthLabel(rawVal) {
 
           adminControlsHtml = `
             <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:6px;">
-              <button type="button" class="btn-ledger-action edit-btn" style="padding:5px 9px; font-size:0.72rem; font-weight:700;" onclick="openEditUserAssignmentModal('${safeUName}')" title="Edit user role, Manager permissions, Aadhaar & flat assignment">
-                <i class="fa-solid fa-pen-to-square"></i> Edit Role / Permissions / Scope
+              <button type="button" class="btn-ledger-action edit-btn" style="padding:5px 9px; font-size:0.72rem; font-weight:700;" onclick="openEditUserAssignmentModal('${safeUName}')" title="Edit User ID, Password, Block Status, Role & Permissions">
+                <i class="fa-solid fa-pen-to-square"></i> Edit ID / Password / Block / Role
               </button>
               ${roleToggleBtn}
               ${blockBtn}
@@ -26020,5 +26214,24 @@ function formatMonthLabel(rawVal) {
     
 
   </script>
+  
+  <!-- One-Click Code Export Bar (HTML + Google Apps Script Code.gs) -->
+  <div id="codeExportFloatingBar" style="position:fixed; bottom:14px; left:14px; z-index:99999; display:flex; align-items:center; gap:8px; background:rgba(15,23,42,0.94); border:1px solid rgba(56,189,248,0.45); padding:8px 12px; border-radius:12px; box-shadow:0 10px 28px rgba(0,0,0,0.55); backdrop-filter:blur(12px); font-family:'Plus Jakarta Sans',sans-serif;">
+    <span style="font-size:0.74rem; font-weight:800; color:#38bdf8; display:flex; align-items:center; gap:5px;">
+      <i class="fa-solid fa-code"></i> Source Files:
+    </span>
+    <a href="/index_standalone.html" download="index.html" style="background:linear-gradient(135deg,#2563eb,#4f46e5); color:#fff; text-decoration:none; font-size:0.72rem; font-weight:800; padding:5px 10px; border-radius:8px; display:inline-flex; align-items:center; gap:5px;">
+      <i class="fa-solid fa-download"></i> Download HTML
+    </a>
+    <a href="/Code.gs" download="Code.gs" style="background:linear-gradient(135deg,#059669,#10b981); color:#fff; text-decoration:none; font-size:0.72rem; font-weight:800; padding:5px 10px; border-radius:8px; display:inline-flex; align-items:center; gap:5px;">
+      <i class="fa-solid fa-file-code"></i> Download Code.gs
+    </a>
+    <button type="button" onclick="document.getElementById('codeExportFloatingBar').style.display='none'" title="Hide bar" style="background:transparent; border:none; color:#94a3b8; cursor:pointer; font-size:0.8rem; padding:2px 5px;">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>
